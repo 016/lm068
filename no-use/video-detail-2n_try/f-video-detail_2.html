@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频详情 - 视频创作展示网站</title>
+    
+    <!-- Bootstrap CSS 5.3.7 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons 1.13.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- 自定义CSS -->
+    <link href="../css/main_7.css" rel="stylesheet">
+    <link href="../css/f-video-detail_2.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-play-circle-fill me-2"></i>
+                视频创作
+            </a>
+            
+            <!-- 移动端切换按钮 -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 导航内容 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- 主要导航 -->
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">视频</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">关于</a>
+                    </li>
+                </ul>
+                
+                <!-- 右侧功能区 -->
+                <div class="d-flex align-items-center">
+                    <!-- 语言切换 -->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-globe"></i> CN
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item active" href="#">简体中文</a></li>
+                            <li><a class="dropdown-item" href="#">English</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 主题切换 -->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" id="themeDropdown" type="button" data-bs-toggle="dropdown" title="主题切换">
+                            <i class="bi bi-palette"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-theme="dark"><i class="bi bi-moon me-2"></i>深色</a></li>
+                            <li><a class="dropdown-item" href="#" data-theme="light"><i class="bi bi-sun me-2"></i>浅色</a></li>
+                            <li><a class="dropdown-item" href="#" data-theme="auto"><i class="bi bi-circle-half me-2"></i>自动</a></li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn btn-sm btn-outline-primary me-2 login-type-btn" type="button">登录</button>
+                    <button class="btn btn-sm btn-primary login-type-btn" type="button">注册</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container my-4">
+        <div class="row g-4">
+            <!-- 主内容区域 -->
+            <div class="col-lg-8">
+                <!-- 视频封面和播放区域 -->
+                <div class="card mb-4">
+                    <div class="video-player-container">
+                        <img src="https://picsum.photos/800/450?random=video1" alt="视频封面" class="video-cover">
+                        <div class="video-overlay">
+                            <button class="btn btn-light btn-lg play-btn">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视频信息区域 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h1 class="video-title mb-3">
+                            <i class="bi bi-camera-video text-primary me-2"></i>
+                            JavaScript基础教程详解 - 从零开始学编程
+                        </h1>
+                        
+                        <div class="video-meta mb-3">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-calendar3 me-2"></i>
+                                        发布时间: 2024-01-15
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-clock me-2"></i>
+                                        时长: 15:30
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-eye me-2"></i>
+                                        浏览数: 1,234 次
+                                    </div>
+                                    <div class="video-platforms">
+                                        <span class="me-2">多平台链接:</span>
+                                        <a href="#" class="btn btn-outline-danger btn-sm me-1">
+                                            <i class="bi bi-youtube"></i> YouTube
+                                        </a>
+                                        <a href="#" class="btn btn-outline-info btn-sm me-1">
+                                            <i class="bi bi-tv"></i> Bilibili
+                                        </a>
+                                        <a href="#" class="btn btn-outline-dark btn-sm">
+                                            <i class="bi bi-tiktok"></i> 抖音
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 标签和合集 -->
+                        <div class="tags-collections mb-3">
+                            <div class="mb-2">
+                                <i class="bi bi-tags text-primary me-2"></i>
+                                <span class="fw-semibold me-2">标签:</span>
+                                <span class="badge bg-primary me-1">教程</span>
+                                <span class="badge bg-primary me-1">前端</span>
+                                <span class="badge bg-primary">JavaScript</span>
+                            </div>
+                            <div>
+                                <i class="bi bi-collection text-success me-2"></i>
+                                <span class="fw-semibold me-2">所属合集:</span>
+                                <a href="#" class="btn btn-outline-success btn-sm">前端开发系列</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视频正文内容 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4><i class="bi bi-file-text me-2"></i>视频详情</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="video-content">
+                            ## 课程介绍
+
+                            这是一个全面的JavaScript基础知识教程，涵盖变量、函数、对象、数组等核心概念，适合初学者系统学习编程基础。
+
+                            ### 学习要点
+
+                            - **变量声明**: let、const、var 的使用场景
+                            - **数据类型**: 基本类型与引用类型的区别
+                            - **函数**: 函数声明、表达式和箭头函数
+                            - **对象**: 对象的创建和属性操作
+                            - **数组**: 数组方法和遍历技巧
+
+                            ## 资源下载
+
+                            - [源代码下载](https://example.com/code.zip)
+                            - [课程笔记](https://example.com/notes.pdf)
+                            - [练习题集](https://example.com/exercises.pdf)
+
+                            ## 相关链接
+
+                            - [MDN JavaScript文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)
+                            - [JavaScript高级教程](https://example.com/advanced)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户交互功能区域 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="interaction-buttons">
+                            <button class="btn btn-outline-primary btn-sm me-2">
+                                <i class="bi bi-hand-thumbs-up me-1"></i>
+                                点赞 <span class="badge bg-primary">123</span>
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm me-2">
+                                <i class="bi bi-star me-1"></i>
+                                收藏 <span class="badge bg-warning">45</span>
+                            </button>
+                            <button class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-share me-1"></i>
+                                分享
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评论区域 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="bi bi-chat-dots me-2"></i>评论 <span class="badge bg-secondary">18</span></h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- 发表评论 -->
+                        <div class="comment-form mb-4">
+                            <textarea class="form-control mb-2" rows="3" placeholder="写下你的评论..."></textarea>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-send me-1"></i>发表评论
+                            </button>
+                        </div>
+
+                        <!-- 评论列表 -->
+                        <div class="comments-list">
+                            <div class="comment-item">
+                                <div class="comment-avatar">
+                                    <img src="https://picsum.photos/40/40?random=user1" alt="用户头像">
+                                </div>
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <strong>张同学</strong>
+                                        <small class="text-muted ms-2">2024-01-15</small>
+                                    </div>
+                                    <div class="comment-text">
+                                        这个教程讲得非常清楚，特别是函数这一部分，让我理解了很多之前不懂的概念。感谢老师的分享！
+                                    </div>
+                                    <div class="comment-actions">
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="bi bi-reply me-1"></i>回复
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-hand-thumbs-up me-1"></i>3
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="comment-item">
+                                <div class="comment-avatar">
+                                    <img src="https://picsum.photos/40/40?random=user2" alt="用户头像">
+                                </div>
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <strong>李小明</strong>
+                                        <small class="text-muted ms-2">2024-01-14</small>
+                                    </div>
+                                    <div class="comment-text">
+                                        作为一个新手，这个视频帮助我很大。希望老师能出更多这样的基础教程！
+                                    </div>
+                                    <div class="comment-actions">
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="bi bi-reply me-1"></i>回复
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-hand-thumbs-up me-1"></i>5
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 分页 -->
+                        <nav class="mt-4">
+                            <ul class="pagination pagination-sm justify-content-center">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏 -->
+            <div class="col-lg-4">
+                <!-- 公告模块 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="bi bi-megaphone text-warning me-2"></i>最新公告</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-item">
+                            <a href="#" class="text-decoration-none">
+                                <i class="bi bi-dot text-primary"></i>
+                                网站升级维护通知
+                            </a>
+                        </div>
+                        <div class="announcement-item">
+                            <a href="#" class="text-decoration-none">
+                                <i class="bi bi-dot text-primary"></i>
+                                新增视频分类功能
+                            </a>
+                        </div>
+                        <div class="announcement-item">
+                            <a href="#" class="text-decoration-none">
+                                <i class="bi bi-dot text-primary"></i>
+                                评论系统优化上线
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 关联视频模块 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-collection-play text-info me-2"></i>关联视频</h5>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="related-video-item">
+                            <img src="https://picsum.photos/80/45?random=related1" alt="缩略图" class="related-thumbnail">
+                            <div class="related-info">
+                                <h6 class="related-title">React组件开发基础</h6>
+                                <small class="text-muted">时长: 12:30 | 456次观看</small>
+                            </div>
+                        </div>
+                        <div class="related-video-item">
+                            <img src="https://picsum.photos/80/45?random=related2" alt="缩略图" class="related-thumbnail">
+                            <div class="related-info">
+                                <h6 class="related-title">CSS布局实战技巧</h6>
+                                <small class="text-muted">时长: 18:15 | 789次观看</small>
+                            </div>
+                        </div>
+                        <div class="related-video-item">
+                            <img src="https://picsum.photos/80/45?random=related3" alt="缩略图" class="related-thumbnail">
+                            <div class="related-info">
+                                <h6 class="related-title">Node.js入门教程</h6>
+                                <small class="text-muted">时长: 25:40 | 321次观看</small>
+                            </div>
+                        </div>
+                        <div class="related-video-item">
+                            <img src="https://picsum.photos/80/45?random=related4" alt="缩略图" class="related-thumbnail">
+                            <div class="related-info">
+                                <h6 class="related-title">Vue3新特性解析</h6>
+                                <small class="text-muted">时长: 14:20 | 678次观看</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐视频区域 -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="bi bi-target text-success me-2"></i>相关推荐</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec1" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">HTML5入门教程</h6>
+                                    <small class="text-muted">10:30 | 234次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">HTML</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec2" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">CSS3动画效果</h6>
+                                    <small class="text-muted">15:45 | 567次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">CSS</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec3" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">ES6新特性详解</h6>
+                                    <small class="text-muted">20:15 | 890次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">ES6</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec4" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">TypeScript基础</h6>
+                                    <small class="text-muted">18:30 | 432次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">TS</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec5" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">Webpack配置指南</h6>
+                                    <small class="text-muted">22:10 | 654次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">工具</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="recommended-item">
+                                    <img src="https://picsum.photos/200/113?random=rec6" alt="推荐视频" class="recommended-thumbnail">
+                                    <h6 class="recommended-title">Git版本控制</h6>
+                                    <small class="text-muted">16:25 | 321次</small>
+                                    <div class="recommended-tags">
+                                        <span class="badge bg-secondary">Git</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- 快速链接 -->
+                <div class="col-lg-9 mb-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="mb-3">网站导航</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-light">首页</a></li>
+                                <li><a href="#" class="text-light">视频列表</a></li>
+                                <li><a href="#" class="text-light">用户中心</a></li>
+                                <li><a href="#" class="text-light">收藏夹</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="mb-3">关于我们</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-light">公司介绍</a></li>
+                                <li><a href="#" class="text-light">联系我们</a></li>
+                                <li><a href="#" class="text-light">加入我们</a></li>
+                                <li><a href="#" class="text-light">隐私政策</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="mb-3">学习资源</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-light">编程教程</a></li>
+                                <li><a href="#" class="text-light">实战案例</a></li>
+                                <li><a href="#" class="text-light">技术博客</a></li>
+                                <li><a href="#" class="text-light">开发工具</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 订阅邮件+社交媒体 -->
+                <div class="col-lg-3 mb-4">
+                    <!-- 邮件订阅 -->
+                    <div class="mb-4">
+                        <h5 class="mb-1">邮件订阅</h5>
+                        <p class="mb-2 ms-2">加入邮件列表，获取最新视频更新和资讯</p>
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="请输入您的邮箱地址">
+                            <button class="btn btn-primary" type="button">订阅</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 社交媒体 -->
+                    <div>
+                        <h5 class="mb-0 mt-2">社交媒体</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#" class="text-light"><i class="bi bi-youtube me-1"></i>YT</a>
+                            <a href="#" class="text-light"><i class="bi bi-tv me-1"></i>Bilibili</a>
+                            <a href="#" class="text-light"><i class="bi bi-tiktok me-1"></i>抖音</a>
+                            <a href="#" class="text-light"><i class="bi bi-wechat me-1"></i>微信</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 版权信息 -->
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2024 视频创作展示网站. 保留所有权利. | 
+                        <a href="#" class="text-light">使用条款</a> | 
+                        <a href="#" class="text-light">隐私政策</a> | 
+                        <a href="#" class="text-light">Cookie政策</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 悬浮按钮 -->
+    <div class="floating-buttons">
+        <!-- 回到顶部 -->
+        <button class="btn btn-primary float-btn" id="backToTop" title="回到顶部">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+        
+        <!-- 联系我们 -->
+        <button class="btn btn-success float-btn" id="contactUs" title="联系我们">
+            <i class="bi bi-chat-dots"></i>
+        </button>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 自定义JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/f-video-detail_2.js"></script>
+</body>
+</html>

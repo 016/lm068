@@ -1,0 +1,1 @@
+Check $2's weather in $1, direct output it in CMD.
