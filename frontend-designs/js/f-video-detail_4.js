@@ -1,4 +1,4 @@
-// f-video-detail_3.js - 视频详情页面专用脚本
+// f-video-detail_4.js - 视频详情页面专用脚本
 
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化Markdown渲染
@@ -311,14 +311,28 @@ function updateCommentCount(increment) {
     }
 }
 
-// 初始化分页功能
+// 初始化分页功能 - 现在支持链接
 function initPagination() {
     const paginationPages = document.querySelectorAll('.pagination-page');
     const prevBtn = document.querySelector('.pagination-btn:first-child');
     const nextBtn = document.querySelector('.pagination-btn:last-child');
     
     paginationPages.forEach((page, index) => {
-        page.addEventListener('click', function() {
+        page.addEventListener('click', function(e) {
+            // 如果是链接，允许默认行为但添加视觉反馈
+            if (this.tagName.toLowerCase() === 'a') {
+                // 添加点击效果
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
+                const pageNum = this.textContent;
+                showToast(`正在跳转到第${pageNum}页...`, 'info');
+                return; // 让链接正常工作
+            }
+            
+            // 原有的按钮逻辑（如果仍然是按钮的话）
             if (this.classList.contains('active')) return;
             
             // 移除所有活动状态
@@ -333,8 +347,8 @@ function initPagination() {
             
             // 更新按钮状态
             const pageNum = parseInt(this.textContent);
-            prevBtn.disabled = pageNum === 1;
-            nextBtn.disabled = pageNum === 8; // 假设总共8页
+            if (prevBtn) prevBtn.disabled = pageNum === 1;
+            if (nextBtn) nextBtn.disabled = pageNum === 8; // 假设总共8页
             
             // 模拟加载新内容
             showToast(`正在加载第${pageNum}页内容...`, 'info');
@@ -346,34 +360,6 @@ function initPagination() {
             }
         });
     });
-    
-    // 上一页按钮
-    if (prevBtn) {
-        prevBtn.addEventListener('click', function() {
-            if (this.disabled) return;
-            
-            const activePage = document.querySelector('.pagination-page.active');
-            const prevPage = activePage.previousElementSibling;
-            
-            if (prevPage && prevPage.classList.contains('pagination-page')) {
-                prevPage.click();
-            }
-        });
-    }
-    
-    // 下一页按钮
-    if (nextBtn) {
-        nextBtn.addEventListener('click', function() {
-            if (this.disabled) return;
-            
-            const activePage = document.querySelector('.pagination-page.active');
-            const nextPage = activePage.nextElementSibling;
-            
-            if (nextPage && nextPage.classList.contains('pagination-page')) {
-                nextPage.click();
-            }
-        });
-    }
 }
 
 // 初始化推荐视频点击
@@ -382,8 +368,8 @@ function initRecommendedVideos() {
     
     recommendedItems.forEach(item => {
         item.addEventListener('click', function(e) {
-            // 如果点击的是按钮，不执行跳转
-            if (e.target.closest('.btn')) return;
+            // 如果点击的是按钮或链接，不执行跳转
+            if (e.target.closest('.btn') || e.target.closest('a')) return;
             
             const title = this.querySelector('.recommended-title, .related-title')?.textContent;
             
@@ -410,32 +396,42 @@ function initRecommendedVideos() {
         
         // 悬停效果增强
         item.addEventListener('mouseenter', function() {
-            const thumbnail = this.querySelector('.recommended-thumbnail, .related-thumbnail');
+            const thumbnail = this.querySelector('.recommended-thumbnail, .related-thumbnail, .video-thumbnail');
             if (thumbnail) {
                 thumbnail.style.filter = 'brightness(1.1)';
             }
         });
         
         item.addEventListener('mouseleave', function() {
-            const thumbnail = this.querySelector('.recommended-thumbnail, .related-thumbnail');
+            const thumbnail = this.querySelector('.recommended-thumbnail, .related-thumbnail, .video-thumbnail');
             if (thumbnail) {
                 thumbnail.style.filter = 'brightness(1)';
             }
         });
     });
     
-    // 标签按钮点击事件
+    // 标签按钮点击事件 - 现在支持链接
     document.addEventListener('click', function(e) {
         if (e.target.closest('.tags-section .btn, .recommended-tags .badge, .related-tags .badge')) {
-            e.preventDefault();
-            e.stopPropagation();
-            
+            // 如果是链接，添加视觉反馈但允许默认行为
             const tagElement = e.target.closest('.btn, .badge');
             const tagText = tagElement.textContent.trim();
             
-            showToast(`正在搜索标签: ${tagText}`, 'info');
+            if (tagElement.tagName.toLowerCase() === 'a') {
+                // 添加点击效果
+                tagElement.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    tagElement.style.transform = 'scale(1)';
+                }, 150);
+                
+                showToast(`正在搜索标签: ${tagText}`, 'info');
+                return; // 让链接正常工作
+            }
             
-            // 这里可以实现标签搜索功能
+            // 原有的按钮逻辑
+            e.preventDefault();
+            e.stopPropagation();
+            showToast(`正在搜索标签: ${tagText}`, 'info');
             console.log('搜索标签：', tagText);
         }
     });
@@ -481,24 +477,26 @@ function showToast(message, type = 'info') {
     });
 }
 
-// 公告点击事件
+// 公告点击事件 - 现在支持链接
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.announcement-title a')) {
-        e.preventDefault();
-        const announcement = e.target.closest('.announcement-title a');
+    if (e.target.closest('.announcement-title a, .announcement-desc a')) {
+        const announcement = e.target.closest('a');
         const title = announcement.textContent.trim();
         
-        showToast(`正在打开公告: ${title}`, 'info');
+        // 添加点击效果
+        announcement.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            announcement.style.transform = 'scale(1)';
+        }, 150);
         
-        // 这里可以实现公告详情页面跳转
-        console.log('打开公告：', title);
+        showToast(`正在打开公告: ${title}`, 'info');
+        // 链接会自然跳转，无需阻止默认行为
     }
 });
 
 // 平台按钮点击事件
 document.addEventListener('click', function(e) {
     if (e.target.closest('.platform-buttons .btn')) {
-        e.preventDefault();
         const platform = e.target.closest('.btn');
         const platformName = platform.textContent.trim();
         
@@ -512,6 +510,23 @@ document.addEventListener('click', function(e) {
         
         // 这里可以实现平台跳转
         console.log('跳转到平台：', platformName);
+    }
+});
+
+// 关联视频链接点击事件
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.video-thumbnail-container a, .card-title a')) {
+        const link = e.target.closest('a');
+        const title = link.textContent.trim() || '视频';
+        
+        // 添加点击效果
+        link.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            link.style.transform = 'scale(1)';
+        }, 150);
+        
+        showToast(`正在跳转到: ${title}`, 'info');
+        // 链接会自然跳转，无需阻止默认行为
     }
 });
 

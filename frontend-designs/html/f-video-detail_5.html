@@ -15,7 +15,7 @@
     
     <!-- 自定义CSS -->
     <link href="../css/main_7.css" rel="stylesheet">
-    <link href="../css/f-video-detail_3.css" rel="stylesheet">
+    <link href="../css/f-video-detail_5.css" rel="stylesheet">
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -87,7 +87,7 @@
                 <!-- 视频封面和信息区域 -->
                 <div class="card mb-4">
                     <div class="video-cover-container card-img-top">
-                        <img src="https://picsum.photos/800/450?random=video1" alt="视频封面" class="video-cover">
+                        <img src="https://picsum.photos/856/481?random=video1" alt="视频封面" class="video-cover">
                     </div>
                     <div class="card-body">
                         <!-- 视频标题行 -->
@@ -135,7 +135,7 @@
                         </div>
                         
                         <div class="video-meta">
-                            <div class="row g-3">
+                            <div class="row g-2">
                                 <div class="col-6">
                                     <div class="meta-item">
                                         <i class="bi bi-calendar3 me-2"></i>
@@ -160,6 +160,30 @@
                                         浏览数: 1,234 次
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-download me-2"></i>
+                                        下载次数: 456 次
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-share me-2"></i>
+                                        分享次数: 89 次
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-chat-square me-2"></i>
+                                        讨论热度: 热门
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="meta-item">
+                                        <i class="bi bi-trophy me-2"></i>
+                                        推荐指数: ⭐⭐⭐⭐⭐
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -167,12 +191,12 @@
                     <div class="card-footer">
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                             <div class="tags-section">
-                                <span class="btn btn-outline-primary btn-sm me-1">教程</span>
-                                <span class="btn btn-outline-primary btn-sm me-1">前端</span>
-                                <span class="btn btn-outline-primary btn-sm">JavaScript</span>
+                                <a href="?tag=教程" class="btn btn-outline-success btn-sm me-1">教程</a>
+                                <a href="?tag=前端" class="btn btn-outline-success btn-sm me-1">前端</a>
+                                <a href="?tag=JavaScript" class="btn btn-outline-success btn-sm">JavaScript</a>
                             </div>
                             <div class="collection-section">
-                                <a href="#" class="btn btn-outline-success btn-sm">前端开发系列</a>
+                                <a href="?collection=前端开发系列" class="btn btn-outline-success btn-sm">前端开发系列</a>
                             </div>
                         </div>
                     </div>
@@ -395,19 +419,19 @@
                         <!-- 精致的分页样式 -->
                         <nav class="mt-4">
                             <div class="custom-pagination d-flex justify-content-center align-items-center">
-                                <button class="btn btn-outline-secondary btn-sm pagination-btn" disabled>
+                                <a href="?page=0" class="btn btn-outline-secondary btn-sm pagination-btn" disabled>
                                     <i class="bi bi-chevron-left"></i>
-                                </button>
+                                </a>
                                 <div class="pagination-pages mx-3">
-                                    <button class="btn btn-primary btn-sm pagination-page active">1</button>
-                                    <button class="btn btn-outline-secondary btn-sm pagination-page">2</button>
-                                    <button class="btn btn-outline-secondary btn-sm pagination-page">3</button>
+                                    <a href="?page=1" class="btn btn-primary btn-sm pagination-page active">1</a>
+                                    <a href="?page=2" class="btn btn-outline-secondary btn-sm pagination-page">2</a>
+                                    <a href="?page=3" class="btn btn-outline-secondary btn-sm pagination-page">3</a>
                                     <span class="pagination-dots">...</span>
-                                    <button class="btn btn-outline-secondary btn-sm pagination-page">8</button>
+                                    <a href="?page=8" class="btn btn-outline-secondary btn-sm pagination-page">8</a>
                                 </div>
-                                <button class="btn btn-outline-secondary btn-sm pagination-btn">
+                                <a href="?page=2" class="btn btn-outline-secondary btn-sm pagination-btn">
                                     <i class="bi bi-chevron-right"></i>
-                                </button>
+                                </a>
                             </div>
                         </nav>
                     </div>
@@ -427,9 +451,11 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-semibold">
                                         <i class="bi bi-exclamation-circle text-warning me-2"></i>
-                                        网站升级维护通知
+                                        <a href="?announcement=1" class="text-decoration-none">网站升级维护通知</a>
                                     </h6>
-                                    <p class="mb-1 text-muted small">为了提升用户体验，我们将在本周末进行系统升级维护，预计维护时间为2小时...</p>
+                                    <p class="mb-1 text-muted small">
+                                        <a href="?announcement=1" class="text-decoration-none text-muted">为了提升用户体验，我们将在本周末进行系统升级维护，预计维护时间为2小时...</a>
+                                    </p>
                                     <small class="text-success">
                                         <i class="bi bi-clock me-1"></i>2024-01-15
                                     </small>
@@ -443,9 +469,11 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-semibold">
                                         <i class="bi bi-plus-circle text-success me-2"></i>
-                                        新增视频分类功能
+                                        <a href="?announcement=2" class="text-decoration-none">新增视频分类功能</a>
                                     </h6>
-                                    <p class="mb-1 text-muted small">现在您可以通过分类功能更快速地找到感兴趣的视频内容，支持多标签筛选...</p>
+                                    <p class="mb-1 text-muted small">
+                                        <a href="?announcement=2" class="text-decoration-none text-muted">现在您可以通过分类功能更快速地找到感兴趣的视频内容，支持多标签筛选...</a>
+                                    </p>
                                     <small class="text-success">
                                         <i class="bi bi-clock me-1"></i>2024-01-14
                                     </small>
@@ -459,9 +487,11 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-semibold">
                                         <i class="bi bi-gear text-info me-2"></i>
-                                        评论系统优化上线
+                                        <a href="?announcement=3" class="text-decoration-none">评论系统优化上线</a>
                                     </h6>
-                                    <p class="mb-1 text-muted small">我们优化了评论系统的性能和用户界面，现在评论体验更加流畅...</p>
+                                    <p class="mb-1 text-muted small">
+                                        <a href="?announcement=3" class="text-decoration-none text-muted">我们优化了评论系统的性能和用户界面，现在评论体验更加流畅...</a>
+                                    </p>
                                     <small class="text-success">
                                         <i class="bi bi-clock me-1"></i>2024-01-13
                                     </small>
@@ -471,7 +501,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?announcements=all" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-arrow-right me-1"></i>查看更多公告
                         </a>
                     </div>
@@ -483,120 +513,150 @@
                         <h6 class="mb-0"><i class="bi bi-collection-play text-info me-2"></i>关联视频</h6>
                     </div>
                     <div class="card-body p-0">
-                        <div class="card mb-2">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related1" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related1" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related1" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">React组件开发基础</h6>
-                                        <small class="text-muted d-block">时长: 12:30</small>
-                                        <small class="text-muted d-block">456次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related1" class="text-decoration-none">React组件开发基础</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 12:30 | <i class="bi bi-person me-1"></i>React老师</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill me-1">React</a>
-                                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill me-1">组件</a>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">基础</a>
+                                            <a href="?tag=React" class="btn btn-outline-primary btn-sm me-1">React</a>
+                                            <a href="?tag=组件" class="btn btn-outline-secondary btn-sm me-1">组件</a>
+                                            <a href="?tag=基础" class="btn btn-outline-success btn-sm">基础</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card mb-2">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related2" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related2" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related2" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">CSS布局实战技巧</h6>
-                                        <small class="text-muted d-block">时长: 18:15</small>
-                                        <small class="text-muted d-block">789次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related2" class="text-decoration-none">CSS布局实战技巧</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 18:15 | <i class="bi bi-person me-1"></i>CSS大师</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-info btn-sm rounded-pill me-1">CSS</a>
-                                            <a href="#" class="btn btn-outline-warning btn-sm rounded-pill me-1">布局</a>
-                                            <a href="#" class="btn btn-outline-danger btn-sm rounded-pill">实战</a>
+                                            <a href="?tag=CSS" class="btn btn-outline-info btn-sm me-1">CSS</a>
+                                            <a href="?tag=布局" class="btn btn-outline-warning btn-sm me-1">布局</a>
+                                            <a href="?tag=实战" class="btn btn-outline-danger btn-sm">实战</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card mb-2">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related3" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related3" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related3" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">Node.js入门教程</h6>
-                                        <small class="text-muted d-block">时长: 25:40</small>
-                                        <small class="text-muted d-block">321次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related3" class="text-decoration-none">Node.js入门教程</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 25:40 | <i class="bi bi-person me-1"></i>后端专家</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill me-1">Node.js</a>
-                                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill me-1">后端</a>
-                                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill">入门</a>
+                                            <a href="?tag=Node.js" class="btn btn-outline-success btn-sm me-1">Node.js</a>
+                                            <a href="?tag=后端" class="btn btn-outline-primary btn-sm me-1">后端</a>
+                                            <a href="?tag=入门" class="btn btn-outline-secondary btn-sm">入门</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card mb-2">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related4" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related4" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related4" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">Vue3新特性解析</h6>
-                                        <small class="text-muted d-block">时长: 14:20</small>
-                                        <small class="text-muted d-block">678次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related4" class="text-decoration-none">Vue3新特性解析</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 14:20 | <i class="bi bi-person me-1"></i>Vue导师</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill me-1">Vue3</a>
-                                            <a href="#" class="btn btn-outline-info btn-sm rounded-pill me-1">框架</a>
-                                            <a href="#" class="btn btn-outline-warning btn-sm rounded-pill">特性</a>
+                                            <a href="?tag=Vue3" class="btn btn-outline-success btn-sm me-1">Vue3</a>
+                                            <a href="?tag=框架" class="btn btn-outline-info btn-sm me-1">框架</a>
+                                            <a href="?tag=特性" class="btn btn-outline-warning btn-sm">特性</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card mb-2">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related5" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related5" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related5" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">TypeScript进阶指南</h6>
-                                        <small class="text-muted d-block">时长: 22:10</small>
-                                        <small class="text-muted d-block">543次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related5" class="text-decoration-none">TypeScript进阶指南</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 22:10 | <i class="bi bi-person me-1"></i>TS专家</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill me-1">TypeScript</a>
-                                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill me-1">进阶</a>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">类型</a>
+                                            <a href="?tag=TypeScript" class="btn btn-outline-primary btn-sm me-1">TypeScript</a>
+                                            <a href="?tag=进阶" class="btn btn-outline-secondary btn-sm me-1">进阶</a>
+                                            <a href="?tag=类型" class="btn btn-outline-success btn-sm">类型</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card">
+                        <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="https://picsum.photos/100/75?random=related6" alt="缩略图" class="img-fluid rounded-start h-100 object-fit-cover">
+                                <div class="col-5 d-flex align-items-center">
+                                    <a href="?video=related6" class="d-block w-100">
+                                        <div class="video-thumbnail-container">
+                                            <img src="https://picsum.photos/320/180?random=related6" alt="缩略图" class="img-fluid video-thumbnail">
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="card-body p-2">
-                                        <h6 class="card-title mb-1 small">Webpack配置实战</h6>
-                                        <small class="text-muted d-block">时长: 19:30</small>
-                                        <small class="text-muted d-block">432次观看</small>
+                                        <h6 class="card-title mb-1 small">
+                                            <a href="?video=related6" class="text-decoration-none">Webpack配置实战</a>
+                                        </h6>
+                                        <small class="text-muted d-block">时长: 19:30 | <i class="bi bi-person me-1"></i>构建大师</small>
                                         <div class="mt-2">
-                                            <a href="#" class="btn btn-outline-dark btn-sm rounded-pill me-1">Webpack</a>
-                                            <a href="#" class="btn btn-outline-danger btn-sm rounded-pill me-1">构建</a>
-                                            <a href="#" class="btn btn-outline-info btn-sm rounded-pill">配置</a>
+                                            <a href="?tag=Webpack" class="btn btn-outline-dark btn-sm me-1">Webpack</a>
+                                            <a href="?tag=构建" class="btn btn-outline-danger btn-sm me-1">构建</a>
+                                            <a href="?tag=配置" class="btn btn-outline-info btn-sm">配置</a>
                                         </div>
                                     </div>
                                 </div>
@@ -617,77 +677,77 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
-                                <div class="card h-100">
+                                <div class="card h-100 shadow-sm border-1">
                                     <img src="https://picsum.photos/200/113?random=rec3" alt="推荐视频" class="card-img-top">
                                     <div class="card-body">
                                         <h6 class="card-title">ES6新特性详解</h6>
                                         <small class="text-muted">20:15 | 890次</small>
-                                        <p class="card-text">深入了解ES6的新语法和特性，提升JavaScript编程技能。</p>
+                                        <p class="card-text">深入了解ES6的新语法和特性，提升JavaScript编程技能。学习箭头函数、解构赋值、模板字符串、类与继承等现代JavaScript必备知识点。</p>
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="recommended-tags">
-                                                <span class="badge bg-outline-primary me-1">ES6</span>
-                                                <span class="badge bg-outline-success">进阶</span>
+                                                <a href="?tag=ES6" class="btn btn-outline-success btn-sm me-1">ES6</a>
+                                                <a href="?tag=进阶" class="btn btn-outline-success btn-sm">进阶</a>
                                             </div>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">JS系列</a>
+                                            <a href="?collection=JS系列" class="btn btn-outline-success btn-md">JS系列</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
-                                <div class="card h-100">
+                                <div class="card h-100 shadow-sm border-1">
                                     <img src="https://picsum.photos/200/113?random=rec4" alt="推荐视频" class="card-img-top">
                                     <div class="card-body">
                                         <h6 class="card-title">TypeScript基础</h6>
                                         <small class="text-muted">18:30 | 432次</small>
-                                        <p class="card-text">TypeScript入门指南，为JavaScript添加类型系统。</p>
+                                        <p class="card-text">TypeScript入门指南，为JavaScript添加类型系统。掌握静态类型检查、接口定义、泛型使用等核心概念，提升代码质量和开发效率。</p>
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="recommended-tags">
-                                                <span class="badge bg-outline-primary me-1">TS</span>
-                                                <span class="badge bg-outline-secondary">类型</span>
+                                                <a href="?tag=TS" class="btn btn-outline-success btn-sm me-1">TS</a>
+                                                <a href="?tag=类型" class="btn btn-outline-success btn-sm">类型</a>
                                             </div>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">JS系列</a>
+                                            <a href="?collection=JS系列" class="btn btn-outline-success btn-md">JS系列</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
-                                <div class="card h-100">
+                                <div class="card h-100 shadow-sm border-1">
                                     <img src="https://picsum.photos/200/113?random=rec5" alt="推荐视频" class="card-img-top">
                                     <div class="card-body">
                                         <h6 class="card-title">Webpack配置指南</h6>
                                         <small class="text-muted">22:10 | 654次</small>
-                                        <p class="card-text">从零开始配置Webpack，掌握现代前端构建工具。</p>
+                                        <p class="card-text">从零开始配置Webpack，掌握现代前端构建工具。学习入口配置、加载器使用、插件开发、代码分割和性能优化等高级技巧。</p>
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="recommended-tags">
-                                                <span class="badge bg-outline-dark me-1">工具</span>
-                                                <span class="badge bg-outline-danger">构建</span>
+                                                <a href="?tag=工具" class="btn btn-outline-success btn-sm me-1">工具</a>
+                                                <a href="?tag=构建" class="btn btn-outline-success btn-sm">构建</a>
                                             </div>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">工具系列</a>
+                                            <a href="?collection=工具系列" class="btn btn-outline-success btn-md">工具系列</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
-                                <div class="card h-100">
+                                <div class="card h-100 shadow-sm border-1">
                                     <img src="https://picsum.photos/200/113?random=rec6" alt="推荐视频" class="card-img-top">
                                     <div class="card-body">
                                         <h6 class="card-title">Git版本控制</h6>
                                         <small class="text-muted">16:25 | 321次</small>
-                                        <p class="card-text">Git版本控制入门到精通，团队协作必备技能。</p>
+                                        <p class="card-text">Git版本控制入门到精通，团队协作必备技能。学习分支管理、合并策略、冲突解决、工作流程和最佳实践，提升团队开发效率。</p>
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="recommended-tags">
-                                                <span class="badge bg-outline-success me-1">Git</span>
-                                                <span class="badge bg-outline-info">协作</span>
+                                                <a href="?tag=Git" class="btn btn-outline-success btn-sm me-1">Git</a>
+                                                <a href="?tag=协作" class="btn btn-outline-success btn-sm">协作</a>
                                             </div>
-                                            <a href="#" class="btn btn-outline-success btn-sm rounded-pill">工具系列</a>
+                                            <a href="?collection=工具系列" class="btn btn-outline-success btn-md">工具系列</a>
                                         </div>
                                     </div>
                                 </div>
@@ -793,6 +853,6 @@
     
     <!-- 自定义JavaScript -->
     <script src="../js/main.js"></script>
-    <script src="../js/f-video-detail_3.js"></script>
+    <script src="../js/f-video-detail_5.js"></script>
 </body>
 </html>
