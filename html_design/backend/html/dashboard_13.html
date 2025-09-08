@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频分享网站 - 管理后台</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS - Common Styles -->
+    <link rel="stylesheet" href="../css/main.css">
+    
+    <!-- Dashboard Specific CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <span class="logo-icon">📹</span>
+                    <span class="logo-text">视频管理</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-section">
+                    <a href="#" class="nav-item active">
+                        <i class="bi bi-grid nav-icon"></i>
+                        <span class="nav-text">仪表板</span>
+                        <span class="tooltip">仪表板</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-camera-video nav-icon"></i>
+                        <span class="nav-text">视频管理</span>
+                        <span class="tooltip">视频管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span class="nav-text">用户管理</span>
+                        <span class="tooltip">用户管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-chat-left nav-icon"></i>
+                        <span class="nav-text">评论管理</span>
+                        <span class="tooltip">评论管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-bar-chart nav-icon"></i>
+                        <span class="nav-text">数据分析</span>
+                        <span class="tooltip">数据分析</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-envelope nav-icon"></i>
+                        <span class="nav-text">订阅管理</span>
+                        <span class="tooltip">订阅管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-shield-check nav-icon"></i>
+                        <span class="nav-text">内容审核</span>
+                        <span class="tooltip">内容审核</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span class="nav-text">系统设置</span>
+                        <span class="tooltip">系统设置</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-sidebar" id="toggleSidebar">
+                        <i class="bi bi-list" style="font-size: 20px;"></i>
+                    </button>
+                    
+                    <!-- Navigation Tabs -->
+                    <nav class="topbar-nav">
+                        <a href="#" class="nav-tab active">视频</a>
+                        <a href="#" class="nav-tab">标签</a>
+                        <a href="#" class="nav-tab">合集</a>
+                        <a href="#" class="nav-tab">用户</a>
+                    </nav>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search Box - Moved here as first element -->
+                    <div class="header-search">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="搜索用户、视频、评论...">
+                    </div>
+                    
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="notificationBtn">
+                            <i class="bi bi-bell" style="font-size: 20px;"></i>
+                            <span class="notification-badge"></span>
+                        </button>
+                        <div class="dropdown-menu" id="notificationDropdown">
+                            <div class="dropdown-header">
+                                <h6>通知中心</h6>
+                                <button class="mark-all-read">全部标记已读</button>
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="notification-item">
+                                    <div class="notification-icon new-user">
+                                        <i class="bi bi-person-plus" style="font-size: 16px;"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">新用户注册</div>
+                                        <div class="notification-text">张小明刚刚注册了账户</div>
+                                        <div class="notification-time">2分钟前</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon system">
+                                        <i class="bi bi-gear" style="font-size: 16px;"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">系统更新</div>
+                                        <div class="notification-text">视频转码模块已更新至v2.1</div>
+                                        <div class="notification-time">1小时前</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon warning">
+                                        <i class="bi bi-exclamation-triangle" style="font-size: 16px;"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">存储警告</div>
+                                        <div class="notification-text">存储空间使用率达到78%</div>
+                                        <div class="notification-time">3小时前</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <button class="view-all-btn">查看全部通知</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="userBtn">
+                            <i class="bi bi-person" style="font-size: 20px;"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <div class="dropdown-body">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="bi bi-person" style="font-size: 24px;"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">管理员</div>
+                                        <div class="user-email">admin@example.com</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-person" style="font-size: 16px;"></i>
+                                    个人资料
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-gear" style="font-size: 16px;"></i>
+                                    账户设置
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right" style="font-size: 16px;"></i>
+                                    退出登录
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FIXED: Theme Toggle Button - Icon Only -->
+                    <div class="dropdown-container">
+                        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
+                            <i class="bi bi-sun theme-icon" id="themeIcon" style="font-size: 18px;"></i>
+                        </button>
+                        <div class="dropdown-menu" id="themeDropdown">
+                            <div class="dropdown-body">
+                                <div class="theme-option active" data-theme="light">
+                                    <i class="bi bi-sun" style="font-size: 16px;"></i>
+                                    <span>浅色模式</span>
+                                    <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                                </div>
+                                <div class="theme-option" data-theme="dark">
+                                    <i class="bi bi-moon" style="font-size: 16px;"></i>
+                                    <span>深色模式</span>
+                                    <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                                </div>
+                                <div class="theme-option" data-theme="auto">
+                                    <i class="bi bi-display" style="font-size: 16px;"></i>
+                                    <span>跟随系统</span>
+                                    <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="dashboard-content">
+                <!-- Key Metrics Overview -->
+                <div class="metrics-overview">
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div class="metric-icon videos">
+                                <i class="bi bi-camera-video" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>总视频数</h4>
+                                <span class="metric-subtitle">已发布的视频总数</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="metric-value">12,547</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                                +2.3% 本月
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div class="metric-icon views">
+                                <i class="bi bi-eye" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>总观看次数</h4>
+                                <span class="metric-subtitle">全平台播放量统计</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="metric-value">2.34M</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                                +15.2% 本月
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div class="metric-icon users">
+                                <i class="bi bi-people" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>注册用户</h4>
+                                <span class="metric-subtitle">活跃用户账户数</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="metric-value">45,678</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                                +8.7% 本月
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div class="metric-icon subscribers">
+                                <i class="bi bi-envelope" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>邮件订阅者</h4>
+                                <span class="metric-subtitle">活跃订阅用户数</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="metric-value">12,890</div>
+                            <div class="metric-change positive">
+                                <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                                +5.1% 本月
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Cards Grid - Updated to match metric card design -->
+                <div class="content-grid">
+                    <div class="metric-card-updated">
+                        <div class="metric-card-header">
+                            <div class="metric-icon-small videos">
+                                <i class="bi bi-camera-video" style="color: white; font-size: 16px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>视频状态统计</h4>
+                                <span class="metric-subtitle">内容管理概览</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="status-grid-updated">
+                                <div class="status-item-updated" onclick="showModal('videoModal')">
+                                    <div class="status-number-updated">11,234</div>
+                                    <div class="status-label-updated">已发布</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">345</div>
+                                    <div class="status-label-updated">草稿</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">892</div>
+                                    <div class="status-label-updated">私有</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">1,076</div>
+                                    <div class="status-label-updated">已归档</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card-updated">
+                        <div class="metric-card-header">
+                            <div class="metric-icon-small security">
+                                <i class="bi bi-shield-check" style="color: white; font-size: 16px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>内容健康度</h4>
+                                <span class="metric-subtitle">安全审核状态</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="status-grid-updated">
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">11,876</div>
+                                    <div class="status-label-updated">已审核</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">234</div>
+                                    <div class="status-label-updated">待审核</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">45</div>
+                                    <div class="status-label-updated">处理中</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">12</div>
+                                    <div class="status-label-updated">失败</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card-updated">
+                        <div class="metric-card-header">
+                            <div class="metric-icon-small moderation">
+                                <i class="bi bi-hammer" style="color: white; font-size: 16px;"></i>
+                            </div>
+                            <div class="metric-header-text">
+                                <h4>审核队列</h4>
+                                <span class="metric-subtitle">待处理任务</span>
+                            </div>
+                        </div>
+                        <div class="metric-card-body">
+                            <div class="status-grid-updated">
+                                <div class="status-item-updated" onclick="showModal('moderationModal')">
+                                    <div class="status-number-updated">23</div>
+                                    <div class="status-label-updated">待审评论</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">5</div>
+                                    <div class="status-label-updated">举报内容</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">3</div>
+                                    <div class="status-label-updated">申诉处理</div>
+                                </div>
+                                <div class="status-item-updated">
+                                    <div class="status-number-updated">1</div>
+                                    <div class="status-label-updated">版权投诉</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Chart with Chart.js - ENHANCED with Custom Date Range -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <i class="bi bi-trending-up card-icon" style="font-size: 20px;"></i>
+                            <h3>数据趋势分析</h3>
+                        </div>
+                        <div class="chart-controls">
+                            <!-- 快捷时间选择 -->
+                            <div class="dropdown-container">
+                                <button class="date-range-btn" id="dateRangeBtn">
+                                    <span id="dateRangeText">本月</span>
+                                    <i class="bi bi-chevron-down" style="font-size: 16px;"></i>
+                                </button>
+                                <div class="dropdown-menu" id="dateRangeDropdown">
+                                    <div class="dropdown-body">
+                                        <div class="date-range-option" data-value="7">最近7天</div>
+                                        <div class="date-range-option" data-value="10">最近10天</div>
+                                        <div class="date-range-option" data-value="15">最近15天</div>
+                                        <div class="date-range-option active" data-value="30">最近30天</div>
+                                        <div class="date-range-option" data-value="week">本周</div>
+                                        <div class="date-range-option" data-value="90">本季度</div>
+                                        <div class="date-range-option" data-value="180">最近6个月</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 自定义时间范围选择器 -->
+                            <div class="custom-date-range">
+                                <input type="date" id="startDate" />
+                                <span class="date-separator">至</span>
+                                <input type="date" id="endDate" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="analyticsChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>© 2024 视频分享平台</div>
+                    <div>状态: <span style="color: var(--success);">🟢 所有系统正常运行</span></div>
+                    <div>下次维护: 12月30日</div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Video Details Modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">视频详情管理</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>最新发布视频</h6>
+                            <div class="list-group">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>春季旅游攻略</strong><br>
+                                        <small class="text-muted">上传者: 张小明 • 2小时前</small>
+                                    </div>
+                                    <span class="badge bg-success">已发布</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>美食制作教程</strong><br>
+                                        <small class="text-muted">上传者: 李小红 • 4小时前</small>
+                                    </div>
+                                    <span class="badge bg-warning">待审核</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>编程入门指南</strong><br>
+                                        <small class="text-muted">上传者: 王工程师 • 6小时前</small>
+                                    </div>
+                                    <span class="badge bg-primary">已发布</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>热门视频统计</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="text-center p-3 bg-light rounded">
+                                        <div class="h4 mb-1">1.2M</div>
+                                        <small>本周观看</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center p-3 bg-light rounded">
+                                        <div class="h4 mb-1">23.4K</div>
+                                        <small>新增点赞</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary">导出报告</button>
+                    <button type="button" class="btn btn-primary">管理视频</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Moderation Modal -->
+    <div class="modal fade" id="moderationModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">内容审核中心</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-3" id="moderationTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#comments">评论审核 (23)</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reports">举报处理 (5)</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appeals">申诉处理 (3)</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="comments">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>评论内容</th>
+                                            <th>用户</th>
+                                            <th>视频</th>
+                                            <th>时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>这个视频很棒，学到了很多！</td>
+                                            <td>用户123</td>
+                                            <td>春季旅游攻略</td>
+                                            <td>2小时前</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success me-1">通过</button>
+                                                <button class="btn btn-sm btn-danger">拒绝</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>内容质量有待提高...</td>
+                                            <td>用户456</td>
+                                            <td>美食制作教程</td>
+                                            <td>3小时前</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success me-1">通过</button>
+                                                <button class="btn btn-sm btn-danger">拒绝</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="reports">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2" style="font-size: 16px;"></i>
+                                当前有5个举报待处理，平均处理时间: 2小时
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="appeals">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-clock me-2" style="font-size: 16px;"></i>
+                                当前有3个申诉待处理，请在24小时内处理
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary">批量操作</button>
+                    <button type="button" class="btn btn-primary">保存更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js - FIXED: Use CDN without module import issue -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <!-- Main JS - Common Functions -->
+    <script src="../js/main.js"></script>
+    
+    <!-- Dashboard Specific JS -->
+    <script src="../js/dashboard.js"></script>
+    
+    <script>
+        // Common functionality is now handled by main.js
+        // Dashboard-specific functionality is handled by dashboard.js
+        
+        // Legacy function for backward compatibility
+        function showModal(modalId) {
+            AdminCommon.showModal(modalId);
+        }
+    </script>
+</body>
+</html>
