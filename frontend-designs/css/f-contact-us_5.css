@@ -1,4 +1,4 @@
-/* 联系我们页面专属样式 - f-contact-us_4.css - 修复版本 */
+/* 联系我们页面专属样式 - f-contact-us_5.css - 优化版本 */
 /* 仅针对页面特定元素，不污染全局样式 */
 
 /* 页面专属变量 */
@@ -201,6 +201,7 @@
     border-radius: var(--contact-radius-lg) var(--contact-radius-lg) 0 0;
 }
 
+.contact-us-page .card-header h4,
 .contact-us-page .card-header h5 {
     font-family: var(--contact-font-secondary);
     font-size: 1.125rem;
@@ -260,6 +261,85 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+}
+
+/* 立即拨打按钮 - 修改为实心蓝色按钮 */
+.contact-us-page .btn-info {
+    color: #fff;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.contact-us-page .btn-info:hover {
+    color: #fff;
+    background-color: #0aa2c0;
+    border-color: #099fbc;
+    transform: translateY(-1px);
+    box-shadow: var(--contact-shadow-md);
+}
+
+/* 发送邮件按钮样式 */
+.contact-us-page .btn-success {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.contact-us-page .btn-success:hover {
+    color: #fff;
+    background-color: #146c43;
+    border-color: #13653f;
+    transform: translateY(-1px);
+    box-shadow: var(--contact-shadow-md);
+}
+
+/* 社交媒体按钮优化 - 使用更融合的颜色 */
+.contact-us-page .btn-outline-danger {
+    color: #dc3545;
+    border-color: rgba(220, 53, 69, 0.3);
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.contact-us-page .btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.contact-us-page .btn-outline-info {
+    color: #0dcaf0;
+    border-color: rgba(13, 202, 240, 0.3);
+    background: rgba(13, 202, 240, 0.05);
+}
+
+.contact-us-page .btn-outline-info:hover {
+    color: #fff;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.contact-us-page .btn-outline-secondary {
+    color: #6c757d;
+    border-color: rgba(108, 117, 125, 0.3);
+    background: rgba(108, 117, 125, 0.05);
+}
+
+.contact-us-page .btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.contact-us-page .btn-outline-success {
+    color: #198754;
+    border-color: rgba(25, 135, 84, 0.3);
+    background: rgba(25, 135, 84, 0.05);
+}
+
+.contact-us-page .btn-outline-success:hover {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
 }
 
 .contact-us-page .btn-outline-primary {
@@ -399,34 +479,54 @@
     --contact-border: #334155;
 }
 
+/* 深色主题下左侧导航卡片背景优化 */
+[data-bs-theme="dark"] .contact-us-page .card {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    border-color: #4a5568;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+}
+
 [data-bs-theme="dark"] .contact-us-page .nav-section-header {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
     color: var(--bs-body-color);
+    border-color: #4a5568;
 }
 
 [data-bs-theme="dark"] .contact-us-page .nav-section .nav-pills .nav-link:hover {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0.15) 100%);
+}
+
+/* 深色主题下右侧内容区域背景优化 */
+[data-bs-theme="dark"] .contact-us-page .tab-content .tab-pane .card {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    border-color: #4a5568;
+}
+
+[data-bs-theme="dark"] .contact-us-page .tab-content .tab-pane .card-header {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%) !important;
+    border-color: #4a5568;
 }
 
 [data-bs-theme="dark"] .contact-us-page .card.bg-light {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    border-color: #4a5568;
 }
 
 [data-bs-theme="dark"] .contact-us-page .contact-item {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    border-color: #334155;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    border-color: #4a5568;
 }
 
 [data-bs-theme="dark"] .contact-us-page .form-control,
 [data-bs-theme="dark"] .contact-us-page .form-select {
-    background-color: #1e293b;
-    border-color: #334155;
+    background-color: #2d3748;
+    border-color: #4a5568;
     color: var(--bs-body-color);
 }
 
 [data-bs-theme="dark"] .contact-us-page .form-control:focus,
 [data-bs-theme="dark"] .contact-us-page .form-select:focus {
-    background-color: #1e293b;
+    background-color: #2d3748;
     border-color: var(--contact-primary);
 }
 
