@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看标签 - 视频分享网站管理后台</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Main Common CSS -->
+    <link rel="stylesheet" href="../css/main_3.css">
+    
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../css/tag_view_3.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <span class="logo-icon">📺</span>
+                    <span class="logo-text">VideoHub Admin</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-section">
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-grid nav-icon"></i>
+                        <span class="nav-text">仪表板</span>
+                        <span class="tooltip">仪表板</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-camera-video nav-icon"></i>
+                        <span class="nav-text">视频管理</span>
+                        <span class="tooltip">视频管理</span>
+                    </a>
+                    <a href="#" class="nav-item active">
+                        <i class="bi bi-tags nav-icon"></i>
+                        <span class="nav-text">标签管理</span>
+                        <span class="tooltip">标签管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span class="nav-text">用户管理</span>
+                        <span class="tooltip">用户管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-chat-left nav-icon"></i>
+                        <span class="nav-text">评论管理</span>
+                        <span class="tooltip">评论管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-bar-chart nav-icon"></i>
+                        <span class="nav-text">数据分析</span>
+                        <span class="tooltip">数据分析</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-envelope nav-icon"></i>
+                        <span class="nav-text">订阅管理</span>
+                        <span class="tooltip">订阅管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-shield-check nav-icon"></i>
+                        <span class="nav-text">内容审核</span>
+                        <span class="tooltip">内容审核</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span class="nav-text">系统设置</span>
+                        <span class="tooltip">系统设置</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-sidebar" id="toggleSidebar">
+                        <i class="bi bi-list sidebar-toggle-icon"></i>
+                    </button>
+                    
+                    <!-- Navigation Tabs -->
+                    <nav class="topbar-nav">
+                        <a href="#" class="nav-tab">视频</a>
+                        <a href="#" class="nav-tab active">标签</a>
+                        <a href="#" class="nav-tab">合集</a>
+                        <a href="#" class="nav-tab">用户</a>
+                    </nav>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search Box -->
+                    <div class="header-search">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="搜索标签、关联视频...">
+                    </div>
+                    
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="notificationBtn">
+                            <i class="bi bi-bell header-icon"></i>
+                            <span class="notification-badge"></span>
+                        </button>
+                        <div class="dropdown-menu" id="notificationDropdown">
+                            <div class="dropdown-header">
+                                <h6>通知中心</h6>
+                                <button class="mark-all-read">全部标记已读</button>
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="notification-item">
+                                    <div class="notification-icon new-user">
+                                        <i class="bi bi-tag notification-icon-style"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">新标签创建</div>
+                                        <div class="notification-text">用户创建了"科技前沿"标签</div>
+                                        <div class="notification-time">5分钟前</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon system">
+                                        <i class="bi bi-tags notification-icon-style"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">标签批量更新</div>
+                                        <div class="notification-text">批量导入了50个标签</div>
+                                        <div class="notification-time">30分钟前</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <button class="view-all-btn">查看全部通知</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="userBtn">
+                            <i class="bi bi-person header-icon"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <div class="dropdown-body">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="bi bi-person" style="font-size: 24px;"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">管理员</div>
+                                        <div class="user-email">admin@videohub.com</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-person notification-icon-style"></i>
+                                    个人资料
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-gear notification-icon-style"></i>
+                                    账户设置
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right notification-icon-style"></i>
+                                    退出登录
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <div class="dropdown-container">
+                        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
+                            <i class="bi bi-sun theme-icon theme-toggle-icon" id="themeIcon"></i>
+                        </button>
+                        <div class="dropdown-menu" id="themeDropdown">
+                            <div class="dropdown-body">
+                                <div class="theme-option active" data-theme="light">
+                                    <i class="bi bi-sun notification-icon-style"></i>
+                                    <span>浅色模式</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                                <div class="theme-option" data-theme="dark">
+                                    <i class="bi bi-moon notification-icon-style"></i>
+                                    <span>深色模式</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                                <div class="theme-option" data-theme="auto">
+                                    <i class="bi bi-display notification-icon-style"></i>
+                                    <span>跟随系统</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tag View Content -->
+            <main class="dashboard-content">
+                <!-- Breadcrumb and Page Navigation -->
+                <div class="breadcrumb-container">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-eye page-title-icon"></i>
+                                <div>
+                                    <h1 class="page-title">查看标签</h1>
+                                    <p class="page-subtitle">Tag View Details</p>
+                                </div>
+                            </div>
+                            <a href="#" class="back-link">
+                                <i class="bi bi-arrow-left"></i>
+                                返回标签列表
+                            </a>
+                        </div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-custom">
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">首页</a></li>
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">内容管理</a></li>
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">标签管理</a></li>
+                                <li class="breadcrumb-item active breadcrumb-active" aria-current="page">查看标签</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Tag Hero Section -->
+                <div class="tag-hero-card">
+                    <div class="tag-hero-content">
+                        <div class="tag-icon-container">
+                            <i class="bi bi-tag"></i>
+                        </div>
+                        <div class="tag-hero-info">
+                            <h2 class="tag-hero-title">搞笑视频</h2>
+                            <div class="tag-hero-subtitle">#001 · funny-videos</div>
+                            <div class="tag-hero-description">
+                                这是一个收集搞笑有趣视频内容的分类标签，包含各种幽默、娱乐类视频内容。为用户提供轻松愉快的观看体验，涵盖搞笑短剧、趣味视频、爆笑合集等多种内容形式。
+                            </div>
+                            <div class="tag-quick-stats">
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">1,234</span>
+                                    <span class="quick-stat-label">关联视频</span>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">2.5M</span>
+                                    <span class="quick-stat-label">总播放量</span>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">15K</span>
+                                    <span class="quick-stat-label">总点赞</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="tag-view-layout">
+                    <!-- Main Content Column -->
+                    <div class="tag-main-content">
+                        <div class="info-cards-grid">
+                            <!-- Properties Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon properties">
+                                        <i class="bi bi-info-circle"></i>
+                                    </div>
+                                    <h3 class="info-card-title">标签属性</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <ul class="property-list">
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-hash property-icon"></i>
+                                                标签ID
+                                            </div>
+                                            <div class="property-value mono">#001</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-type property-icon"></i>
+                                                中文标题
+                                            </div>
+                                            <div class="property-value large">搞笑视频</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-link-45deg property-icon"></i>
+                                                URL标识
+                                            </div>
+                                            <div class="property-value mono">funny-videos</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-palette property-icon"></i>
+                                                标签颜色
+                                            </div>
+                                            <div class="color-display">
+                                                <div class="color-swatch" style="background-color: #6366f1;"></div>
+                                                <span class="property-value mono">#6366f1</span>
+                                            </div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-eye property-icon"></i>
+                                                显示状态
+                                            </div>
+                                            <span class="status-tag active">已启用</span>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-star property-icon"></i>
+                                                推荐标签
+                                            </div>
+                                            <span class="status-tag inactive">未启用</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Analytics Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon analytics">
+                                        <i class="bi bi-bar-chart"></i>
+                                    </div>
+                                    <h3 class="info-card-title">数据分析</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="analytics-grid">
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">1,234</div>
+                                            <div class="analytics-label">关联视频数量</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">2.5M</div>
+                                            <div class="analytics-label">总播放量</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">15K</div>
+                                            <div class="analytics-label">总点赞数</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">856</div>
+                                            <div class="analytics-label">总评论数</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Timeline Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon activity">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <h3 class="info-card-title">活动历史</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="activity-timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-02-20 09:15:42</div>
+                                            <div class="timeline-event">标签信息更新</div>
+                                            <div class="timeline-detail">管理员修改了标签描述和显示设置</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-02-15 16:30:15</div>
+                                            <div class="timeline-event">批量关联视频</div>
+                                            <div class="timeline-detail">系统自动关联了50个新视频到此标签</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-01-15 14:30:25</div>
+                                            <div class="timeline-event">标签创建</div>
+                                            <div class="timeline-detail">管理员创建了"搞笑视频"标签</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Related Videos Section -->
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <div class="chart-header-left">
+                                        <i class="bi bi-camera-video chart-title-icon"></i>
+                                        <h3>🎬 关联视频 (最近更新)</h3>
+                                    </div>
+                                    <div class="chart-controls">
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-plus"></i>
+                                            添加关联
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm">
+                                            <i class="bi bi-list-ul"></i>
+                                            查看全部
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-body" style="height: auto; padding: 1.5rem;">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="video-item">
+                                                <div class="video-thumbnail">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </div>
+                                                <div class="video-info">
+                                                    <div class="video-title">搞笑动物合集 - 猫咪日常爆笑瞬间</div>
+                                                    <div class="video-meta">
+                                                        <span>时长: 05:32</span>
+                                                        <span>上传者: 宠物达人</span>
+                                                        <span>发布时间: 2024-08-26</span>
+                                                    </div>
+                                                </div>
+                                                <div class="video-stats">
+                                                    <div><strong>125.8K</strong> 观看</div>
+                                                    <div><strong>2.3K</strong> 点赞</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="video-item">
+                                                <div class="video-thumbnail">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </div>
+                                                <div class="video-info">
+                                                    <div class="video-title">爆笑街头恶搞 - 路人反应集锦</div>
+                                                    <div class="video-meta">
+                                                        <span>时长: 08:45</span>
+                                                        <span>上传者: 恶搞君</span>
+                                                        <span>发布时间: 2024-08-25</span>
+                                                    </div>
+                                                </div>
+                                                <div class="video-stats">
+                                                    <div><strong>89.2K</strong> 观看</div>
+                                                    <div><strong>1.8K</strong> 点赞</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="video-item">
+                                                <div class="video-thumbnail">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </div>
+                                                <div class="video-info">
+                                                    <div class="video-title">办公室搞笑日常 - 同事间的欢乐时光</div>
+                                                    <div class="video-meta">
+                                                        <span>时长: 06:18</span>
+                                                        <span>上传者: 职场小剧场</span>
+                                                        <span>发布时间: 2024-08-24</span>
+                                                    </div>
+                                                </div>
+                                                <div class="video-stats">
+                                                    <div><strong>156.7K</strong> 观看</div>
+                                                    <div><strong>3.1K</strong> 点赞</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="video-item">
+                                                <div class="video-thumbnail">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </div>
+                                                <div class="video-info">
+                                                    <div class="video-title">搞笑配音系列 - 经典电影片段重新演绎</div>
+                                                    <div class="video-meta">
+                                                        <span>时长: 07:22</span>
+                                                        <span>上传者: 配音达人</span>
+                                                        <span>发布时间: 2024-08-23</span>
+                                                    </div>
+                                                </div>
+                                                <div class="video-stats">
+                                                    <div><strong>201.3K</strong> 观看</div>
+                                                    <div><strong>4.5K</strong> 点赞</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="video-item">
+                                                <div class="video-thumbnail">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </div>
+                                                <div class="video-info">
+                                                    <div class="video-title">儿童搞笑瞬间合集 - 天真可爱的童言童语</div>
+                                                    <div class="video-meta">
+                                                        <span>时长: 09:11</span>
+                                                        <span>上传者: 亲子时光</span>
+                                                        <span>发布时间: 2024-08-22</span>
+                                                    </div>
+                                                </div>
+                                                <div class="video-stats">
+                                                    <div><strong>178.9K</strong> 观看</div>
+                                                    <div><strong>2.9K</strong> 点赞</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Column -->
+                    <div class="tag-sidebar">
+                        <!-- Quick Actions Card -->
+                        <div class="sidebar-card">
+                            <div class="sidebar-card-header">快速操作</div>
+                            <div class="sidebar-card-body">
+                                <button class="btn btn-primary action-button">
+                                    <i class="bi bi-pencil-square"></i>
+                                    编辑标签
+                                </button>
+                                <button class="btn btn-outline-info action-button">
+                                    <i class="bi bi-list-ul"></i>
+                                    查看关联视频
+                                </button>
+                                <button class="btn btn-outline-secondary action-button">
+                                    <i class="bi bi-download"></i>
+                                    导出数据
+                                </button>
+                                <button class="btn btn-outline-danger action-button">
+                                    <i class="bi bi-trash"></i>
+                                    删除标签
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Info Card -->
+                        <div class="sidebar-card">
+                            <div class="sidebar-card-header">基本信息</div>
+                            <div class="sidebar-card-body">
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">创建时间</span>
+                                    <span class="quick-info-value">2024-01-15</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">最后更新</span>
+                                    <span class="quick-info-value">2024-02-20</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">关联视频</span>
+                                    <span class="quick-info-value highlight">1,234 个</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">状态</span>
+                                    <div class="status-summary">
+                                        <div class="status-dot active"></div>
+                                        <span class="quick-info-value">已启用</span>
+                                    </div>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">推荐</span>
+                                    <div class="status-summary">
+                                        <div class="status-dot inactive"></div>
+                                        <span class="quick-info-value">未启用</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>© 2024 VideoHub | 最后更新: 2分钟前</div>
+                    <div>在线管理员: <span class="summary-highlight">3人</span></div>
+                    <div>系统状态: <span style="color: var(--success);">🟢正常</span></div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main Common JS -->
+    <script src="../js/main_3.js"></script>
+    
+    <!-- Page Specific JS -->
+    <script src="../js/tag_view_3.js"></script>
+</body>
+</html>
