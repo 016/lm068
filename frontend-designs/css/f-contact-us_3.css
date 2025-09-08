@@ -1,0 +1,411 @@
+/* 联系我们页面专属样式 - f-contact-us_3.css */
+
+/* 左侧导航菜单容器 */
+.nav-menu-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: sticky;
+    top: 100px;
+}
+
+/* 导航组样式 */
+.nav-group {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-group:last-child {
+    border-bottom: none;
+}
+
+.nav-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: var(--bg-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.nav-group-header:hover {
+    background: var(--brand-color);
+    color: white;
+}
+
+.nav-group.active .nav-group-header {
+    background: var(--brand-color);
+    color: white;
+}
+
+.nav-group-header .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.nav-group.active .toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* 导航组内容 */
+.nav-group-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.nav-group.active .nav-group-content {
+    max-height: 300px;
+}
+
+/* 导航项按钮 */
+.nav-item-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.nav-item-btn:hover {
+    background: var(--bg-light);
+    color: var(--brand-color);
+    transform: translateX(8px);
+    padding-left: 1.75rem;
+}
+
+.nav-item-btn.active {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--brand-color);
+    border-left: 3px solid var(--brand-color);
+    font-weight: 500;
+}
+
+/* 内容区域 */
+.content-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    min-height: 600px;
+}
+
+.content-section {
+    display: none;
+    padding: 2rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header h2 {
+    color: var(--brand-color);
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+/* 联系卡片网格 */
+.contact-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.contact-card {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.phone-card {
+    border-left-color: #10b981;
+}
+
+.phone-card:hover {
+    border-left-color: #059669;
+}
+
+.email-card {
+    border-left-color: #3b82f6;
+}
+
+.email-card:hover {
+    border-left-color: #2563eb;
+}
+
+.address-card {
+    border-left-color: #f59e0b;
+}
+
+.address-card:hover {
+    border-left-color: #d97706;
+}
+
+.contact-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.phone-card .contact-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.email-card .contact-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.address-card .contact-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.contact-info h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.contact-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--text-primary);
+}
+
+.contact-info small {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* 留言表单卡片 */
+.message-form-card {
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+}
+
+.form-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-header h5 {
+    color: var(--brand-color);
+    margin: 0;
+    font-weight: 600;
+}
+
+.compact-form .form-floating {
+    margin-bottom: 1rem;
+}
+
+.compact-form .form-control,
+.compact-form .form-select {
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.compact-form .form-floating > label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* 政策内容样式 */
+.policy-content {
+    max-width: none;
+}
+
+.policy-card {
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 2rem;
+    line-height: 1.8;
+}
+
+.policy-card h2 {
+    color: var(--brand-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--brand-color);
+}
+
+.policy-card h3 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin: 2rem 0 1rem 0;
+    font-weight: 600;
+}
+
+.policy-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.policy-card ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.policy-card li {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.policy-card strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* 深色主题适配 */
+[data-bs-theme="dark"] .nav-menu-container,
+[data-bs-theme="dark"] .content-container {
+    background: var(--gray-800);
+}
+
+[data-bs-theme="dark"] .nav-group-header {
+    background: var(--gray-700);
+    color: var(--text-primary);
+}
+
+[data-bs-theme="dark"] .nav-item-btn:hover {
+    background: var(--gray-700);
+}
+
+[data-bs-theme="dark"] .contact-card,
+[data-bs-theme="dark"] .message-form-card,
+[data-bs-theme="dark"] .policy-card {
+    background: var(--gray-700);
+}
+
+/* 响应式设计 */
+@media (max-width: 991px) {
+    .nav-menu-container {
+        position: static;
+        margin-bottom: 2rem;
+    }
+    
+    .message-form-card {
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 1.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .contact-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem;
+    }
+    
+    .contact-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .nav-group-header {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-item-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .policy-card {
+        padding: 1.5rem;
+    }
+    
+    .policy-card h2 {
+        font-size: 1.25rem;
+    }
+    
+    .policy-card h3 {
+        font-size: 1.1rem;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.contact-card {
+    animation: slideInLeft 0.4s ease;
+}
+
+.contact-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.contact-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
