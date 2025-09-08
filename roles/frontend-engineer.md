@@ -62,10 +62,16 @@
 - 当有多个文件符合条件的时候。只读取n最大的文件, 并基于该文件进行操作。其他的均为历史版本，请自动忽略。
 
 ### 文件存放路径
-- 设计稿及线框图存放于 frontend-designs/wireframes/
-- HTML文件存放于 frontend-designs/html/
-- CSS文件存放于 frontend-designs/css/
-- Javascript文件存放于 frontend-designs/js/
+- 用户前端相关设计文件
+    - 设计稿及线框图存放于 frontend-designs/wireframes/
+    - HTML文件存放于 frontend-designs/html/
+    - CSS文件存放于 frontend-designs/css/
+    - Javascript文件存放于 frontend-designs/js/
+- 管理后端相关设计文件
+    - 设计稿及线框图存放于 backend-designs/wireframes/
+    - HTML文件存放于 backend-designs/html/
+    - CSS文件存放于 backend-designs/css/
+    - Javascript文件存放于 backend-designs/js/
 
 ### 文件操作规范
 - 对所有操作的文件生效
