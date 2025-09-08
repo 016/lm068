@@ -202,20 +202,6 @@ function formatNumber(num) {
     return num.toString();
 }
 
-// ========== GLOBAL EXPORTS ========== 
-// Make functions globally accessible for page-specific usage
-window.AdminCommon = {
-    showModal,
-    setupNotificationBlink,
-    formatDate,
-    formatNumber,
-    setTheme: window.setTheme,
-    updateThemeDisplay: window.updateThemeDisplay
-};
-
-// ========== NEWLY ADDED COMMON FUNCTIONS ========== 
-// Added from login_1.html for broader compatibility
-
 // ========== FORM VALIDATION UTILITIES ========== 
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -259,16 +245,6 @@ function validateField(e) {
         clearFieldError(field);
     }
 }
-
-// Add validation utilities to global exports
-window.AdminCommon.ValidationUtils = {
-    isValidEmail,
-    showFieldError,
-    clearFieldError,
-    clearValidation,
-    validateField,
-};
-window.AdminCommon.setupDropdown = setupDropdown;
 
 /* ========== NEW ADDITIONS FOR COMMON SWITCH FUNCTIONALITY ========== */
 /* 标注：新增 - 通用的开关控件功能，适用于标签编辑等页面 */
@@ -465,14 +441,31 @@ function showAlert(type, message) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Add switch functionality to global exports
-window.AdminCommon.SwitchUtils = {
-    initializeSwitches,
-    setSwitchVisualState,
-    setSwitchValue,
-    toggleSwitch,
-    setupSwitchInteraction,
-    showAlert
+// ========== GLOBAL EXPORTS ========== 
+// Make functions globally accessible for page-specific usage
+window.AdminCommon = {
+    showModal,
+    setupNotificationBlink,
+    formatDate,
+    formatNumber,
+    setTheme: window.setTheme,
+    updateThemeDisplay: window.updateThemeDisplay,
+    setupDropdown,
+    ValidationUtils: {
+        isValidEmail,
+        showFieldError,
+        clearFieldError,
+        clearValidation,
+        validateField,
+    },
+    SwitchUtils: {
+        initializeSwitches,
+        setSwitchVisualState,
+        setSwitchValue,
+        toggleSwitch,
+        setupSwitchInteraction,
+        showAlert
+    }
 };
 
 window.switchAPI = switchAPI;

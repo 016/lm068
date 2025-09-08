@@ -31,6 +31,7 @@
         - b-dashboard: 管理后台主页面
         - b-login: 管理后台登录页面
         - b-tag-list: 管理后台 tag list page
+        - b-tag-form: 管理后台 tag edit page
 
 
 ## 技术规则
