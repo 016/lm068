@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看标签 - 视频分享网站管理后台</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" href="backend_theme_2.css">
+    
+    <!-- Tag View Page Specific Styles (Iteration 2) -->
+    <style>
+        .tag-view-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tag-main-content {
+            min-width: 0;
+        }
+
+        .tag-sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .tag-hero-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tag-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .tag-hero-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .tag-icon-container {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--accent-primary);
+            border: 2px dashed var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .tag-hero-info {
+            flex: 1;
+        }
+
+        .tag-hero-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem 0;
+            line-height: 1.2;
+        }
+
+        .tag-hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-mono);
+        }
+
+        .tag-hero-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag-quick-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .quick-stat-item {
+            text-align: center;
+        }
+
+        .quick-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            display: block;
+        }
+
+        .quick-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-cards-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .info-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .info-card-header {
+            background: var(--bg-secondary);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .info-card-icon.properties { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .info-card-icon.analytics { background: linear-gradient(135deg, #10b981, #059669); }
+        .info-card-icon.activity { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .info-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .info-card-body {
+            padding: 1.5rem;
+        }
+
+        .property-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .property-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .property-item:last-child {
+            border-bottom: none;
+        }
+
+        .property-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-icon {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .property-value {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .property-value.mono {
+            font-family: var(--font-mono);
+        }
+
+        .property-value.large {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .status-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .status-tag.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-tag.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .color-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .analytics-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+        }
+
+        .analytics-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+
+        .analytics-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-timeline {
+            position: relative;
+        }
+
+        .timeline-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-event {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-detail {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-card-header {
+            background: var(--bg-secondary);
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .sidebar-card-body {
+            padding: 1.25rem;
+        }
+
+        .action-button {
+            width: 100%;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-button:last-child {
+            margin-bottom: 0;
+        }
+
+        .quick-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.875rem;
+        }
+
+        .quick-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .quick-info-label {
+            color: var(--text-secondary);
+        }
+
+        .quick-info-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .quick-info-value.highlight {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .status-summary {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.active {
+            background: var(--success);
+        }
+
+        .status-dot.inactive {
+            background: var(--danger);
+        }
+
+        .breadcrumb-container {
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .tag-view-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .tag-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tag-hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .tag-hero-title {
+                font-size: 1.875rem;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stat-item {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar (Copy from tag_edit_form_5.html) -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <span class="logo-icon">📺</span>
+                    <span class="logo-text">VideoHub Admin</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-section">
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-grid nav-icon"></i>
+                        <span class="nav-text">仪表板</span>
+                        <span class="tooltip">仪表板</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-camera-video nav-icon"></i>
+                        <span class="nav-text">视频管理</span>
+                        <span class="tooltip">视频管理</span>
+                    </a>
+                    <a href="#" class="nav-item active">
+                        <i class="bi bi-tags nav-icon"></i>
+                        <span class="nav-text">标签管理</span>
+                        <span class="tooltip">标签管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span class="nav-text">用户管理</span>
+                        <span class="tooltip">用户管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-chat-left nav-icon"></i>
+                        <span class="nav-text">评论管理</span>
+                        <span class="tooltip">评论管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-bar-chart nav-icon"></i>
+                        <span class="nav-text">数据分析</span>
+                        <span class="tooltip">数据分析</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-envelope nav-icon"></i>
+                        <span class="nav-text">订阅管理</span>
+                        <span class="tooltip">订阅管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-shield-check nav-icon"></i>
+                        <span class="nav-text">内容审核</span>
+                        <span class="tooltip">内容审核</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span class="nav-text">系统设置</span>
+                        <span class="tooltip">系统设置</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header (Copy from tag_edit_form_5.html) -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-sidebar" id="toggleSidebar">
+                        <i class="bi bi-list sidebar-toggle-icon"></i>
+                    </button>
+                    
+                    <!-- Navigation Tabs -->
+                    <nav class="topbar-nav">
+                        <a href="#" class="nav-tab">视频</a>
+                        <a href="#" class="nav-tab active">标签</a>
+                        <a href="#" class="nav-tab">合集</a>
+                        <a href="#" class="nav-tab">用户</a>
+                    </nav>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search Box -->
+                    <div class="header-search">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="搜索标签、关联视频...">
+                    </div>
+                    
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="notificationBtn">
+                            <i class="bi bi-bell header-icon"></i>
+                            <span class="notification-badge"></span>
+                        </button>
+                        <div class="dropdown-menu" id="notificationDropdown">
+                            <div class="dropdown-header">
+                                <h6>通知中心</h6>
+                                <button class="mark-all-read">全部标记已读</button>
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="notification-item">
+                                    <div class="notification-icon new-user">
+                                        <i class="bi bi-tag notification-icon-style"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">新标签创建</div>
+                                        <div class="notification-text">用户创建了"科技前沿"标签</div>
+                                        <div class="notification-time">5分钟前</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon system">
+                                        <i class="bi bi-tags notification-icon-style"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">标签批量更新</div>
+                                        <div class="notification-text">批量导入了50个标签</div>
+                                        <div class="notification-time">30分钟前</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <button class="view-all-btn">查看全部通知</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <button class="header-btn" id="userBtn">
+                            <i class="bi bi-person header-icon"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <div class="dropdown-body">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="bi bi-person" style="font-size: 24px;"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">管理员</div>
+                                        <div class="user-email">admin@videohub.com</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-person notification-icon-style"></i>
+                                    个人资料
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="bi bi-gear notification-icon-style"></i>
+                                    账户设置
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right notification-icon-style"></i>
+                                    退出登录
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <div class="dropdown-container">
+                        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
+                            <i class="bi bi-sun theme-icon theme-toggle-icon" id="themeIcon"></i>
+                        </button>
+                        <div class="dropdown-menu" id="themeDropdown">
+                            <div class="dropdown-body">
+                                <div class="theme-option active" data-theme="light">
+                                    <i class="bi bi-sun notification-icon-style"></i>
+                                    <span>浅色模式</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                                <div class="theme-option" data-theme="dark">
+                                    <i class="bi bi-moon notification-icon-style"></i>
+                                    <span>深色模式</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                                <div class="theme-option" data-theme="auto">
+                                    <i class="bi bi-display notification-icon-style"></i>
+                                    <span>跟随系统</span>
+                                    <i class="bi bi-check check-icon notification-icon-style"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tag View Content -->
+            <main class="dashboard-content">
+                <!-- Breadcrumb and Page Navigation -->
+                <div class="breadcrumb-container">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-eye page-title-icon"></i>
+                                <div>
+                                    <h1 class="page-title">查看标签</h1>
+                                    <p class="page-subtitle">Tag View Details</p>
+                                </div>
+                            </div>
+                            <a href="#" class="back-link">
+                                <i class="bi bi-arrow-left"></i>
+                                返回标签列表
+                            </a>
+                        </div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-custom">
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">首页</a></li>
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">内容管理</a></li>
+                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">标签管理</a></li>
+                                <li class="breadcrumb-item active breadcrumb-active" aria-current="page">查看标签</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Tag Hero Section -->
+                <div class="tag-hero-card">
+                    <div class="tag-hero-content">
+                        <div class="tag-icon-container">
+                            <i class="bi bi-tag"></i>
+                        </div>
+                        <div class="tag-hero-info">
+                            <h2 class="tag-hero-title">搞笑视频</h2>
+                            <div class="tag-hero-subtitle">#001 · funny-videos</div>
+                            <div class="tag-hero-description">
+                                这是一个收集搞笑有趣视频内容的分类标签，包含各种幽默、娱乐类视频内容。为用户提供轻松愉快的观看体验，涵盖搞笑短剧、趣味视频、爆笑合集等多种内容形式。
+                            </div>
+                            <div class="tag-quick-stats">
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">1,234</span>
+                                    <span class="quick-stat-label">关联视频</span>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">2.5M</span>
+                                    <span class="quick-stat-label">总播放量</span>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <span class="quick-stat-value">15K</span>
+                                    <span class="quick-stat-label">总点赞</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="tag-view-layout">
+                    <!-- Main Content Column -->
+                    <div class="tag-main-content">
+                        <div class="info-cards-grid">
+                            <!-- Properties Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon properties">
+                                        <i class="bi bi-info-circle"></i>
+                                    </div>
+                                    <h3 class="info-card-title">标签属性</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <ul class="property-list">
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-hash property-icon"></i>
+                                                标签ID
+                                            </div>
+                                            <div class="property-value mono">#001</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-type property-icon"></i>
+                                                中文标题
+                                            </div>
+                                            <div class="property-value large">搞笑视频</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-link-45deg property-icon"></i>
+                                                URL标识
+                                            </div>
+                                            <div class="property-value mono">funny-videos</div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-palette property-icon"></i>
+                                                标签颜色
+                                            </div>
+                                            <div class="color-display">
+                                                <div class="color-swatch" style="background-color: #6366f1;"></div>
+                                                <span class="property-value mono">#6366f1</span>
+                                            </div>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-eye property-icon"></i>
+                                                显示状态
+                                            </div>
+                                            <span class="status-tag active">已启用</span>
+                                        </li>
+                                        <li class="property-item">
+                                            <div class="property-label">
+                                                <i class="bi bi-star property-icon"></i>
+                                                推荐标签
+                                            </div>
+                                            <span class="status-tag inactive">未启用</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Analytics Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon analytics">
+                                        <i class="bi bi-bar-chart"></i>
+                                    </div>
+                                    <h3 class="info-card-title">数据分析</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="analytics-grid">
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">1,234</div>
+                                            <div class="analytics-label">关联视频数量</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">2.5M</div>
+                                            <div class="analytics-label">总播放量</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">15K</div>
+                                            <div class="analytics-label">总点赞数</div>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <div class="analytics-value">856</div>
+                                            <div class="analytics-label">总评论数</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Timeline Card -->
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <div class="info-card-icon activity">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <h3 class="info-card-title">活动历史</h3>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="activity-timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-02-20 09:15:42</div>
+                                            <div class="timeline-event">标签信息更新</div>
+                                            <div class="timeline-detail">管理员修改了标签描述和显示设置</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-02-15 16:30:15</div>
+                                            <div class="timeline-event">批量关联视频</div>
+                                            <div class="timeline-detail">系统自动关联了50个新视频到此标签</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-date">2024-01-15 14:30:25</div>
+                                            <div class="timeline-event">标签创建</div>
+                                            <div class="timeline-detail">管理员创建了"搞笑视频"标签</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Related Videos Section -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <i class="bi bi-camera-video chart-title-icon"></i>
+                            <h3>🎬 关联视频 (最近更新)</h3>
+                        </div>
+                        <div class="chart-controls">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus"></i>
+                                添加关联
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-list-ul"></i>
+                                查看全部
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-body" style="height: auto; padding: 1.5rem;">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="video-item">
+                                    <div class="video-thumbnail">
+                                        <i class="bi bi-play-circle"></i>
+                                    </div>
+                                    <div class="video-info">
+                                        <div class="video-title">搞笑动物合集 - 猫咪日常爆笑瞬间</div>
+                                        <div class="video-meta">
+                                            <span>时长: 05:32</span>
+                                            <span>上传者: 宠物达人</span>
+                                            <span>发布时间: 2024-08-26</span>
+                                        </div>
+                                    </div>
+                                    <div class="video-stats">
+                                        <div><strong>125.8K</strong> 观看</div>
+                                        <div><strong>2.3K</strong> 点赞</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="video-item">
+                                    <div class="video-thumbnail">
+                                        <i class="bi bi-play-circle"></i>
+                                    </div>
+                                    <div class="video-info">
+                                        <div class="video-title">爆笑街头恶搞 - 路人反应集锦</div>
+                                        <div class="video-meta">
+                                            <span>时长: 08:45</span>
+                                            <span>上传者: 恶搞君</span>
+                                            <span>发布时间: 2024-08-25</span>
+                                        </div>
+                                    </div>
+                                    <div class="video-stats">
+                                        <div><strong>89.2K</strong> 观看</div>
+                                        <div><strong>1.8K</strong> 点赞</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="video-item">
+                                    <div class="video-thumbnail">
+                                        <i class="bi bi-play-circle"></i>
+                                    </div>
+                                    <div class="video-info">
+                                        <div class="video-title">办公室搞笑日常 - 同事间的欢乐时光</div>
+                                        <div class="video-meta">
+                                            <span>时长: 06:18</span>
+                                            <span>上传者: 职场小剧场</span>
+                                            <span>发布时间: 2024-08-24</span>
+                                        </div>
+                                    </div>
+                                    <div class="video-stats">
+                                        <div><strong>156.7K</strong> 观看</div>
+                                        <div><strong>3.1K</strong> 点赞</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="video-item">
+                                    <div class="video-thumbnail">
+                                        <i class="bi bi-play-circle"></i>
+                                    </div>
+                                    <div class="video-info">
+                                        <div class="video-title">搞笑配音系列 - 经典电影片段重新演绎</div>
+                                        <div class="video-meta">
+                                            <span>时长: 07:22</span>
+                                            <span>上传者: 配音达人</span>
+                                            <span>发布时间: 2024-08-23</span>
+                                        </div>
+                                    </div>
+                                    <div class="video-stats">
+                                        <div><strong>201.3K</strong> 观看</div>
+                                        <div><strong>4.5K</strong> 点赞</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="video-item">
+                                    <div class="video-thumbnail">
+                                        <i class="bi bi-play-circle"></i>
+                                    </div>
+                                    <div class="video-info">
+                                        <div class="video-title">儿童搞笑瞬间合集 - 天真可爱的童言童语</div>
+                                        <div class="video-meta">
+                                            <span>时长: 09:11</span>
+                                            <span>上传者: 亲子时光</span>
+                                            <span>发布时间: 2024-08-22</span>
+                                        </div>
+                                    </div>
+                                    <div class="video-stats">
+                                        <div><strong>178.9K</strong> 观看</div>
+                                        <div><strong>2.9K</strong> 点赞</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Column -->
+                    <div class="tag-sidebar">
+                        <!-- Quick Actions Card -->
+                        <div class="sidebar-card">
+                            <div class="sidebar-card-header">快速操作</div>
+                            <div class="sidebar-card-body">
+                                <button class="btn btn-primary action-button">
+                                    <i class="bi bi-pencil-square"></i>
+                                    编辑标签
+                                </button>
+                                <button class="btn btn-outline-info action-button">
+                                    <i class="bi bi-list-ul"></i>
+                                    查看关联视频
+                                </button>
+                                <button class="btn btn-outline-secondary action-button">
+                                    <i class="bi bi-download"></i>
+                                    导出数据
+                                </button>
+                                <button class="btn btn-outline-danger action-button">
+                                    <i class="bi bi-trash"></i>
+                                    删除标签
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Info Card -->
+                        <div class="sidebar-card">
+                            <div class="sidebar-card-header">基本信息</div>
+                            <div class="sidebar-card-body">
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">创建时间</span>
+                                    <span class="quick-info-value">2024-01-15</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">最后更新</span>
+                                    <span class="quick-info-value">2024-02-20</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">关联视频</span>
+                                    <span class="quick-info-value highlight">1,234 个</span>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">状态</span>
+                                    <div class="status-summary">
+                                        <div class="status-dot active"></div>
+                                        <span class="quick-info-value">已启用</span>
+                                    </div>
+                                </div>
+                                <div class="quick-info-item">
+                                    <span class="quick-info-label">推荐</span>
+                                    <div class="status-summary">
+                                        <div class="status-dot inactive"></div>
+                                        <span class="quick-info-value">未启用</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer (Copy from tag_edit_form_5.html) -->
+            <footer class="footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>© 2024 VideoHub | 最后更新: 2分钟前</div>
+                    <div>在线管理员: <span class="summary-highlight">3人</span></div>
+                    <div>系统状态: <span style="color: var(--success);">🟢正常</span></div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar functionality (Copy from tag_edit_form_5.html)
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+                mobileOverlay.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        });
+        
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            mobileOverlay.classList.remove('active');
+        });
+        
+        // Navigation Tab functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+        
+        // Dropdown functionality
+        function setupDropdown(triggerId, dropdownId) {
+            const trigger = document.getElementById(triggerId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            if (!trigger || !dropdown) return;
+            
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    if (menu !== dropdown) menu.classList.remove('show');
+                });
+                dropdown.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+        
+        setupDropdown('notificationBtn', 'notificationDropdown');
+        setupDropdown('userBtn', 'userDropdown');
+        setupDropdown('themeToggleBtn', 'themeDropdown');
+        
+        // Theme functionality
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('themeIcon');
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function updateThemeDisplay() {
+            const activeTheme = html.getAttribute('data-theme');
+            if (activeTheme === 'dark') {
+                themeIcon.className = 'bi bi-moon theme-icon theme-toggle-icon';
+            } else {
+                themeIcon.className = 'bi bi-sun theme-icon theme-toggle-icon';
+            }
+        }
+        
+        function updateThemeDropdown() {
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.theme === currentTheme);
+            });
+        }
+        
+        function setTheme(theme) {
+            let actualTheme = theme;
+            if (theme === 'auto') {
+                actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            html.setAttribute('data-theme', actualTheme);
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+            updateThemeDisplay();
+            updateThemeDropdown();
+        }
+        
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', () => {
+                setTheme(option.dataset.theme);
+                document.getElementById('themeDropdown').classList.remove('show');
+            });
+        });
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (currentTheme === 'auto') {
+                setTheme('auto');
+            }
+        });
+        
+        setTheme(currentTheme);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('show');
+                mobileOverlay.classList.remove('active');
+            }
+        });
+
+        // Analytics hover effects
+        document.querySelectorAll('.analytics-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'translateY(-2px)';
+                item.style.boxShadow = 'var(--shadow-md)';
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'translateY(0)';
+                item.style.boxShadow = 'none';
+            });
+        });
+
+        // Info card hover effects
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = 'var(--accent-primary)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = 'var(--border-light)';
+            });
+        });
+    </script>
+</body>
+</html>
