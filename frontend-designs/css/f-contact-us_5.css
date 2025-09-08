@@ -177,13 +177,8 @@
 
 .contact-us-page .contact-item a {
     font-weight: 500;
-    color: var(--contact-primary);
     text-decoration: none;
     transition: color 0.3s ease;
-}
-
-.contact-us-page .contact-item a:hover {
-    color: #1d4ed8;
 }
 
 /* 留言表单样式优化 - 仅针对联系页面 */
@@ -458,21 +453,6 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-/* pre 标签特殊样式 - 仅针对联系页面 */
-.contact-us-page .markdown-content pre {
-    background: linear-gradient(135deg, #f1f5f9 0%, var(--contact-bg-light) 100%);
-    border: 1px solid var(--contact-border);
-    border-radius: var(--contact-radius-lg);
-    padding: var(--contact-spacing-xl);
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-    font-size: 0.875rem;
-    line-height: 1.75;
-    color: var(--bs-body-color);
-    overflow-x: auto;
-    white-space: pre-wrap;
-    box-shadow: var(--contact-shadow-sm);
-}
-
 /* 深色主题适配 - 仅针对联系页面 */
 [data-bs-theme="dark"] .contact-us-page {
     --contact-bg-light: #1e293b;
@@ -481,7 +461,7 @@
 
 /* 深色主题下左侧导航卡片背景优化 */
 [data-bs-theme="dark"] .contact-us-page .card {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    background: linear-gradient(135deg, #11151d 0%, #2d3748 100%) !important;
     border-color: #4a5568;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
 }
@@ -498,7 +478,7 @@
 
 /* 深色主题下右侧内容区域背景优化 */
 [data-bs-theme="dark"] .contact-us-page .tab-content .tab-pane .card {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    background: linear-gradient(135deg, #11151d 0%, #2d3748 100%) !important;
     border-color: #4a5568;
 }
 
@@ -508,12 +488,12 @@
 }
 
 [data-bs-theme="dark"] .contact-us-page .card.bg-light {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    background: linear-gradient(135deg, #11151d 0%, #2d3748 100%) !important;
     border-color: #4a5568;
 }
 
 [data-bs-theme="dark"] .contact-us-page .contact-item {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    background: linear-gradient(135deg, #11151d 0%, #2d3748 100%);
     border-color: #4a5568;
 }
 
