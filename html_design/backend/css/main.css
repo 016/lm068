@@ -948,3 +948,25 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* ========== NEWLY ADDED COMMON STYLES ========== */
+/* Added from backend_theme_2.css for login page compatibility */
+
+/* ========== ALERT MESSAGES ========== */
+.alert {
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border-left: 4px solid var(--success);
+}
+
+.alert-danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border-left: 4px solid var(--danger);
+}

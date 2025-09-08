@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频分享网站 - 管理员登录</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" href="backend_theme_2.css">
+    
+    <style>
+        /* Login Page Specific Styles */
+        body {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .login-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        
+        .login-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+        
+        .login-header {
+            padding: 2.5rem 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        
+        .login-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+        
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .login-form {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: var(--bg-secondary) !important;
+            border: 2px solid var(--border-light) !important;
+            border-radius: var(--radius) !important;
+            padding: 0.75rem 1rem !important;
+            color: var(--text-primary) !important;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none !important;
+            border-color: var(--accent-primary) !important;
+            box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1) !important;
+            background: var(--bg-primary) !important;
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .password-field {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+        
+        .password-toggle:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            accent-color: var(--accent-primary);
+        }
+        
+        .remember-me label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .forgot-password:hover {
+            color: var(--accent-secondary);
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.875rem 1rem;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            text-align: center;
+            padding: 1.5rem 2rem 2rem;
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+        }
+        
+        .footer-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Simplified topbar for login */
+        .login-topbar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .login-logo-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .login-logo-icon {
+            font-size: 1.5rem;
+        }
+        
+        /* Simplified footer */
+        .login-page-footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-light);
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        /* Background decoration */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--accent-primary) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, var(--accent-secondary) 0%, transparent 50%);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .login-topbar {
+                padding: 0 1rem;
+            }
+            
+            .login-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .login-card {
+                max-width: 100%;
+                margin: 0 1rem;
+            }
+            
+            .login-header,
+            .login-form,
+            .login-footer {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decoration -->
+    <div class="bg-decoration"></div>
+    
+    <div class="login-layout">
+        <!-- Simplified Topbar -->
+        <header class="login-topbar">
+            <a href="#" class="login-logo-brand">
+                <span class="login-logo-icon">📹</span>
+                <span>视频管理系统</span>
+            </a>
+            
+            <!-- Theme Toggle - Copied from dashboard -->
+            <div class="dropdown-container">
+                <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
+                    <i class="bi bi-sun theme-icon" id="themeIcon" style="font-size: 18px;"></i>
+                </button>
+                <div class="dropdown-menu" id="themeDropdown">
+                    <div class="dropdown-body">
+                        <div class="theme-option active" data-theme="light">
+                            <i class="bi bi-sun" style="font-size: 16px;"></i>
+                            <span>浅色模式</span>
+                            <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                        </div>
+                        <div class="theme-option" data-theme="dark">
+                            <i class="bi bi-moon" style="font-size: 16px;"></i>
+                            <span>深色模式</span>
+                            <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                        </div>
+                        <div class="theme-option" data-theme="auto">
+                            <i class="bi bi-display" style="font-size: 16px;"></i>
+                            <span>跟随系统</span>
+                            <i class="bi bi-check check-icon" style="font-size: 16px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Login Content -->
+        <main class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-logo">🔐</div>
+                    <h1 class="login-title">管理员登录</h1>
+                    <p class="login-subtitle">请输入您的管理员凭据以访问系统</p>
+                </div>
+                
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="username">用户名或邮箱</label>
+                        <input type="text" id="username" name="username" class="form-input" placeholder="请输入用户名或邮箱" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">密码</label>
+                        <div class="password-field">
+                            <input type="password" id="password" name="password" class="form-input" placeholder="请输入密码" required>
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <label for="rememberMe">记住我</label>
+                        </div>
+                        <a href="#" class="forgot-password d-none">忘记密码？</a>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        登录系统
+                    </button>
+                </form>
+                
+                <div class="login-footer">
+                    <p class="footer-text">
+                        登录表示您同意我们的服务条款和隐私政策
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Simplified Footer -->
+        <footer class="login-page-footer">
+            © 2024 视频分享平台管理系统 • 状态: <span style="color: var(--success);">🟢 系统正常运行</span>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Theme functionality - Copied from dashboard
+        function setupDropdown(triggerId, dropdownId) {
+            const trigger = document.getElementById(triggerId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            if (!trigger || !dropdown) return;
+            
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    if (menu !== dropdown) menu.classList.remove('show');
+                });
+                dropdown.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+        
+        setupDropdown('themeToggleBtn', 'themeDropdown');
+        
+        // Theme functionality - Copied from dashboard
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('themeIcon');
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function updateThemeDisplay() {
+            const activeTheme = html.getAttribute('data-theme');
+            
+            if (activeTheme === 'dark') {
+                themeIcon.className = 'bi bi-moon theme-icon';
+            } else {
+                themeIcon.className = 'bi bi-sun theme-icon';
+            }
+        }
+        
+        function updateThemeDropdown() {
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.theme === currentTheme);
+            });
+        }
+        
+        function setTheme(theme) {
+            let actualTheme = theme;
+            
+            if (theme === 'auto') {
+                actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            
+            html.setAttribute('data-theme', actualTheme);
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+            
+            updateThemeDisplay();
+            updateThemeDropdown();
+        }
+        
+        // Theme option clicks
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', () => {
+                setTheme(option.dataset.theme);
+                document.getElementById('themeDropdown').classList.remove('show');
+            });
+        });
+        
+        // System theme change listener for auto mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (currentTheme === 'auto') {
+                setTheme('auto');
+            }
+        });
+        
+        // Initialize theme
+        setTheme(currentTheme);
+        
+        // Password toggle functionality
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordToggleIcon = document.getElementById('passwordToggleIcon');
+        
+        passwordToggle.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            passwordToggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+        });
+        
+        // Form submission handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simulate login process
+            const loginBtn = document.querySelector('.login-btn');
+            const originalText = loginBtn.textContent;
+            
+            loginBtn.textContent = '登录中...';
+            loginBtn.style.opacity = '0.7';
+            loginBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button
+                loginBtn.textContent = originalText;
+                loginBtn.style.opacity = '1';
+                loginBtn.disabled = false;
+                
+                // For demo purposes, show success message
+                alert('登录功能演示 - 实际应用中这里会进行身份验证');
+            }, 2000);
+        });
+        
+        // Form validation
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('blur', validateField);
+            input.addEventListener('input', clearValidation);
+        });
+        
+        function validateField(e) {
+            const field = e.target;
+            const value = field.value.trim();
+            
+            if (!value && field.hasAttribute('required')) {
+                showFieldError(field, '此字段为必填项');
+            } else if (field.type === 'email' && value && !isValidEmail(value)) {
+                showFieldError(field, '请输入有效的邮箱地址');
+            } else {
+                clearFieldError(field);
+            }
+        }
+        
+        function showFieldError(field, message) {
+            clearFieldError(field);
+            field.style.borderColor = 'var(--danger)';
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.style.color = 'var(--danger)';
+            errorDiv.style.fontSize = '0.75rem';
+            errorDiv.style.marginTop = '0.25rem';
+            errorDiv.textContent = message;
+            
+            field.parentNode.appendChild(errorDiv);
+        }
+        
+        function clearFieldError(field) {
+            field.style.borderColor = '';
+            const errorDiv = field.parentNode.querySelector('.field-error');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+        
+        function clearValidation(e) {
+            clearFieldError(e.target);
+        }
+        
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        // Add some subtle animations
+        window.addEventListener('load', () => {
+            const loginCard = document.querySelector('.login-card');
+            loginCard.style.opacity = '0';
+            loginCard.style.transform = 'translateY(20px)';
+            loginCard.style.transition = 'all 0.4s ease';
+            
+            setTimeout(() => {
+                loginCard.style.opacity = '1';
+                loginCard.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

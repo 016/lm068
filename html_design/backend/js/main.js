@@ -212,3 +212,59 @@ window.AdminCommon = {
     setTheme: window.setTheme,
     updateThemeDisplay: window.updateThemeDisplay
 };
+
+// ========== NEWLY ADDED COMMON FUNCTIONS ========== 
+// Added from login_1.html for broader compatibility
+
+// ========== FORM VALIDATION UTILITIES ========== 
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function showFieldError(field, message) {
+    clearFieldError(field);
+    field.style.borderColor = 'var(--danger)';
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.style.color = 'var(--danger)';
+    errorDiv.style.fontSize = '0.75rem';
+    errorDiv.style.marginTop = '0.25rem';
+    errorDiv.textContent = message;
+    
+    field.parentNode.appendChild(errorDiv);
+}
+
+function clearFieldError(field) {
+    field.style.borderColor = '';
+    const errorDiv = field.parentNode.querySelector('.field-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+}
+
+function clearValidation(e) {
+    clearFieldError(e.target);
+}
+
+function validateField(e) {
+    const field = e.target;
+    const value = field.value.trim();
+    
+    if (!value && field.hasAttribute('required')) {
+        showFieldError(field, '此字段为必填项');
+    } else if (field.type === 'email' && value && !isValidEmail(value)) {
+        showFieldError(field, '请输入有效的邮箱地址');
+    } else {
+        clearFieldError(field);
+    }
+}
+
+// Add validation utilities to global exports
+window.AdminCommon.ValidationUtils = {
+    isValidEmail,
+    showFieldError,
+    clearFieldError,
+    clearValidation,
+    validateField
+};
