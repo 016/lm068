@@ -266,5 +266,6 @@ window.AdminCommon.ValidationUtils = {
     showFieldError,
     clearFieldError,
     clearValidation,
-    validateField
+    validateField,
 };
+window.AdminCommon.setupDropdown = setupDropdown
