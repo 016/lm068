@@ -3,7 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化联系我们页面专用样式类
-    document.body.classList.add('contact-us-page');
+    
     
     // 修复tab切换bug
     initTabSwitching();
@@ -11,13 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 表单验证和提交处理
     initContactForm();
     
-    // 初始化悬浮按钮功能增强
-    initContactFloatingButtons();
-    
     // 初始化其他交互功能
     initOtherFeatures();
-    
-    console.log('联系我们页面脚本加载完成 ✨');
 });
 
 // 修复tab切换bug - 确保只显示活动tab
@@ -340,92 +335,6 @@ function showMessage(text, type = 'info') {
     }, 5000);
 }
 
-// 悬浮按钮功能增强
-function initContactFloatingButtons() {
-    const floatingButtons = {
-        backToTop: document.getElementById('backToTop'),
-        contactUs: document.getElementById('contactUs'),
-        feedback: document.getElementById('feedback')
-    };
-    
-    // 回到顶部功能
-    if (floatingButtons.backToTop) {
-        floatingButtons.backToTop.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-        
-        // 根据滚动位置显示/隐藏按钮
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 300) {
-                floatingButtons.backToTop.style.display = 'block';
-                floatingButtons.backToTop.style.opacity = '1';
-                floatingButtons.backToTop.style.visibility = 'visible';
-            } else {
-                floatingButtons.backToTop.style.opacity = '0';
-                floatingButtons.backToTop.style.visibility = 'hidden';
-            }
-        });
-    }
-    
-    // 在线客服功能
-    if (floatingButtons.contactUs) {
-        floatingButtons.contactUs.addEventListener('click', function() {
-            // 切换到联系我们标签
-            const contactTab = document.querySelector('a[href="#contact-info"]');
-            if (contactTab) {
-                contactTab.click();
-            }
-            
-            // 滚动到表单
-            setTimeout(() => {
-                const form = document.getElementById('contactForm');
-                if (form) {
-                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // 聚焦到姓名输入框
-                    setTimeout(() => {
-                        const nameInput = document.getElementById('name');
-                        if (nameInput) {
-                            nameInput.focus();
-                        }
-                    }, 500);
-                }
-            }, 300);
-        });
-    }
-    
-    // 意见反馈功能
-    if (floatingButtons.feedback) {
-        floatingButtons.feedback.addEventListener('click', function() {
-            const subjectSelect = document.getElementById('subject');
-            const messageTextarea = document.getElementById('message');
-            
-            if (subjectSelect && messageTextarea) {
-                // 切换到联系我们标签
-                const contactTab = document.querySelector('a[href="#contact-info"]');
-                if (contactTab) {
-                    contactTab.click();
-                }
-                
-                setTimeout(() => {
-                    // 预设为意见反馈
-                    subjectSelect.value = 'feedback';
-                    subjectSelect.dispatchEvent(new Event('change'));
-                    
-                    // 滚动到表单
-                    messageTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    setTimeout(() => {
-                        messageTextarea.focus();
-                    }, 500);
-                }, 300);
-            }
-        });
-    }
-}
-
 // 初始化其他交互功能
 function initOtherFeatures() {
     // 联系方式卡片点击效果
@@ -518,16 +427,5 @@ function initOtherFeatures() {
             }
         }
     });
-    
-    // 性能监控
-    window.addEventListener('load', function() {
-        setTimeout(() => {
-            if ('performance' in window) {
-                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                if (loadTime > 3000) {
-                    console.warn(`页面加载时间较长: ${loadTime}ms`);
-                }
-            }
-        }, 0);
-    });
+
 }
