@@ -39,16 +39,17 @@
 ├── PRD.md # 产品需求文档
 ├── database/
 │ └── schema.sql # 数据库结构
-├── frontend-designs/ # 前端设计文件
-│ ├── wireframes/ # ASCII线框图
-│ ├── html/ # HTML文件
-│ ├── css/ # CSS文件
-│ └── js/ # JavaScript文件
-├── backend-designs/ # 后端设计文件
-│ ├── wireframes/ # ASCII线框图
-│ ├── html/ # HTML文件
-│ ├── css/ # CSS文件
-│ └── js/ # JavaScript文件
+├── html_design # 设计html相关文件
+│ ├── frontend/ # 前端html相关设计文件
+│ │ ├── wireframes/ # ASCII线框图
+│ │ ├── html/ # HTML文件
+│ │ ├── css/ # CSS文件
+│ │ └── js/ # JavaScript文件
+│ └── backend/ # 后端html相关设计文件
+│   ├── wireframes/ # ASCII线框图
+│   ├── html/ # HTML文件
+│   ├── css/ # CSS文件
+│   └── js/ # JavaScript文件
 ├── backend-php/ # 后端PHP文件
 │ ├── controllers/ # 控制器
 │ ├── models/ # 数据模型
