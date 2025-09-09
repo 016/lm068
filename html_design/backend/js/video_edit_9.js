@@ -199,27 +199,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 表单提交处理
-    const form = document.getElementById('videoEditForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // const form = document.getElementById('videoEditForm');
+    // if (form) {
+    //     form.addEventListener('submit', function(e) {
+    //         e.preventDefault();
             
-            if (validateForm()) {
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.classList.add('loading');
-                submitBtn.disabled = true;
+    //         if (validateForm()) {
+    //             const submitBtn = this.querySelector('button[type="submit"]');
+    //             submitBtn.classList.add('loading');
+    //             submitBtn.disabled = true;
                 
-                // 模拟保存过程
-                setTimeout(() => {
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    showAlert('视频信息保存成功！', 'success');
-                }, 2000);
-            } else {
-                showAlert('请检查并修正表单中的错误', 'danger');
-            }
-        });
-    }
+    //             // 模拟保存过程
+    //             setTimeout(() => {
+    //                 submitBtn.classList.remove('loading');
+    //                 submitBtn.disabled = false;
+    //                 showAlert('视频信息保存成功！', 'success');
+    //             }, 2000);
+    //         } else {
+    //             showAlert('请检查并修正表单中的错误', 'danger');
+    //         }
+    //     });
+    // }
     
     // 自动保存功能（可选）
     let autoSaveTimer;

@@ -136,25 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 预览按钮功能
-    const previewFormBtn = document.querySelector('.btn-outline-primary');
-    if (previewFormBtn) {
-        previewFormBtn.addEventListener('click', function() {
-            // 这里可以添加合集预览功能
-            const previewData = {
-                name_cn: nameCnInput.value,
-                name_en: document.getElementById('name_en').value,
-                color_class: colorClassSelect.value,
-                icon_class: iconClassInput.value,
-                short_desc_cn: document.getElementById('short_desc_cn').value,
-                short_desc_en: document.getElementById('short_desc_en').value
-            };
-            
-            console.log('Collection preview data:', previewData);
-            showAlert('合集预览功能开发中...', 'info');
-        });
-    }
-    
     // 图标输入框的智能提示功能 - 合集相关图标
     if (iconClassInput) {
         const commonCollectionIcons = [
@@ -254,34 +235,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 表单提交处理
-    const form = document.getElementById('collectionEditForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // const form = document.getElementById('collectionEditForm');
+    // if (form) {
+    //     form.addEventListener('submit', function(e) {
+    //         e.preventDefault();
             
-            if (!validateForm()) {
-                showAlert('请填写所有必填字段', 'danger');
-                return;
-            }
+    //         if (!validateForm()) {
+    //             showAlert('请填写所有必填字段', 'danger');
+    //             return;
+    //         }
             
-            // 显示加载状态
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.classList.add('loading');
-                submitBtn.disabled = true;
-            }
+    //         // 显示加载状态
+    //         const submitBtn = form.querySelector('button[type="submit"]');
+    //         if (submitBtn) {
+    //             submitBtn.classList.add('loading');
+    //             submitBtn.disabled = true;
+    //         }
             
-            // 模拟提交过程
-            setTimeout(() => {
-                showAlert('合集信息保存成功！', 'success');
+    //         // 模拟提交过程
+    //         setTimeout(() => {
+    //             showAlert('合集信息保存成功！', 'success');
                 
-                if (submitBtn) {
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                }
-            }, 2000);
-        });
-    }
+    //             if (submitBtn) {
+    //                 submitBtn.classList.remove('loading');
+    //                 submitBtn.disabled = false;
+    //             }
+    //         }, 2000);
+    //     });
+    // }
     
     // 实时验证
     const requiredInputs = document.querySelectorAll('#name_cn, #name_en');
