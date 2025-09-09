@@ -88,7 +88,7 @@ CREATE TABLE `video_stats_log` (
     `download_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '下载数',
     `comment_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '评论数',
     `share_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '分享数',
-    `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-fail, 1-new, 11-grabing, 99-finish',
+    `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-失败, 1-新任务, 11-进行中, 99-已完成',
     `collected_at` DATETIME NOT NULL COMMENT '数据采集时间',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX `idx_status_id` (`status_id`),
@@ -105,7 +105,7 @@ CREATE TABLE `comment` (
   `user_id` INT UNSIGNED NOT NULL,
   `video_id` INT UNSIGNED NOT NULL,
   `content` TEXT NOT NULL,
-  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-hide, 1-new add, 2-审核中, 99-show',
+  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-已隐藏, 1-待审核, 99-审核通过',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `idx_user_id` (`user_id`),
@@ -153,6 +153,7 @@ CREATE TABLE `tag` (
   `desc_cn` VARCHAR(500),
   `color_class` VARCHAR(50) DEFAULT NULL COMMENT '颜色样式类',
   `icon_class` VARCHAR(50) DEFAULT NULL COMMENT '图标样式类',
+  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `uk_name_cn` (`name_cn`)
@@ -181,6 +182,7 @@ CREATE TABLE `collection` (
   `desc_cn` VARCHAR(500),
   `color_class` VARCHAR(50) DEFAULT NULL COMMENT '颜色样式类',
   `icon_class` VARCHAR(50) DEFAULT NULL COMMENT '图标样式类',
+  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `uk_name_cn` (`name_cn`)

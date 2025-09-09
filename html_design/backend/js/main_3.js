@@ -18,7 +18,6 @@ function initializeCommonElements() {
     mobileOverlay = document.getElementById('mobileOverlay');
     
     setupSidebarFunctionality();
-    setupNavigationTabs();
     setupDropdowns();
     setupThemeFunctionality();
     setupResponsiveHandlers();
@@ -51,19 +50,6 @@ function setupSidebarFunctionality() {
             mobileOverlay.classList.remove('active');
         });
     }
-}
-
-// ========== NAVIGATION TABS ========== 
-function setupNavigationTabs() {
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Remove active from all tabs
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            // Add active to clicked tab
-            tab.classList.add('active');
-        });
-    });
 }
 
 // ========== DROPDOWN FUNCTIONALITY ========== 

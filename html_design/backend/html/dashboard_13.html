@@ -44,6 +44,16 @@
                         <span class="tooltip">视频管理</span>
                     </a>
                     <a href="#" class="nav-item">
+                        <i class="bi bi-bookmark nav-icon"></i>
+                        <span class="nav-text">标签管理</span>
+                        <span class="tooltip">标签管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="bi bi-card-list nav-icon"></i>
+                        <span class="nav-text">合集管理</span>
+                        <span class="tooltip">合集管理</span>
+                    </a>
+                    <a href="#" class="nav-item">
                         <i class="bi bi-people nav-icon"></i>
                         <span class="nav-text">用户管理</span>
                         <span class="tooltip">用户管理</span>
@@ -305,21 +315,21 @@
                         </div>
                         <div class="metric-card-body">
                             <div class="status-grid-updated">
-                                <div class="status-item-updated" onclick="showModal('videoModal')">
+                                <div class="status-item-updated">
                                     <div class="status-number-updated">11,234</div>
                                     <div class="status-label-updated">已发布</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">345</div>
-                                    <div class="status-label-updated">草稿</div>
+                                    <div class="status-label-updated">待发布</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">892</div>
-                                    <div class="status-label-updated">私有</div>
+                                    <div class="status-label-updated">拍摄完</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">1,076</div>
-                                    <div class="status-label-updated">已归档</div>
+                                    <div class="status-label-updated">剪辑完</div>
                                 </div>
                             </div>
                         </div>
@@ -331,15 +341,15 @@
                                 <i class="bi bi-shield-check" style="color: white; font-size: 16px;"></i>
                             </div>
                             <div class="metric-header-text">
-                                <h4>内容健康度</h4>
-                                <span class="metric-subtitle">安全审核状态</span>
+                                <h4>评论统计</h4>
+                                <span class="metric-subtitle">评论状态统计</span>
                             </div>
                         </div>
                         <div class="metric-card-body">
                             <div class="status-grid-updated">
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">11,876</div>
-                                    <div class="status-label-updated">已审核</div>
+                                    <div class="status-label-updated">总数</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">234</div>
@@ -347,11 +357,11 @@
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">45</div>
-                                    <div class="status-label-updated">处理中</div>
+                                    <div class="status-label-updated">审核通过</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">12</div>
-                                    <div class="status-label-updated">失败</div>
+                                    <div class="status-label-updated">已隐藏</div>
                                 </div>
                             </div>
                         </div>
@@ -363,27 +373,27 @@
                                 <i class="bi bi-hammer" style="color: white; font-size: 16px;"></i>
                             </div>
                             <div class="metric-header-text">
-                                <h4>审核队列</h4>
-                                <span class="metric-subtitle">待处理任务</span>
+                                <h4>数据处理队列</h4>
+                                <span class="metric-subtitle">抓取数据任务</span>
                             </div>
                         </div>
                         <div class="metric-card-body">
                             <div class="status-grid-updated">
-                                <div class="status-item-updated" onclick="showModal('moderationModal')">
+                                <div class="status-item-updated">
                                     <div class="status-number-updated">23</div>
-                                    <div class="status-label-updated">待审评论</div>
+                                    <div class="status-label-updated">新任务</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">5</div>
-                                    <div class="status-label-updated">举报内容</div>
+                                    <div class="status-label-updated">进行中</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">3</div>
-                                    <div class="status-label-updated">申诉处理</div>
+                                    <div class="status-label-updated">已完成</div>
                                 </div>
                                 <div class="status-item-updated">
                                     <div class="status-number-updated">1</div>
-                                    <div class="status-label-updated">版权投诉</div>
+                                    <div class="status-label-updated">失败</div>
                                 </div>
                             </div>
                         </div>
@@ -434,155 +444,10 @@
             <!-- Footer -->
             <footer class="footer">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>© 2024 视频分享平台</div>
                     <div>状态: <span style="color: var(--success);">🟢 所有系统正常运行</span></div>
-                    <div>下次维护: 12月30日</div>
+                    <div>© 2024 DP视频分享平台 v1.0</div>
                 </div>
             </footer>
-        </div>
-    </div>
-
-    <!-- Video Details Modal -->
-    <div class="modal fade" id="videoModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">视频详情管理</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>最新发布视频</h6>
-                            <div class="list-group">
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>春季旅游攻略</strong><br>
-                                        <small class="text-muted">上传者: 张小明 • 2小时前</small>
-                                    </div>
-                                    <span class="badge bg-success">已发布</span>
-                                </div>
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>美食制作教程</strong><br>
-                                        <small class="text-muted">上传者: 李小红 • 4小时前</small>
-                                    </div>
-                                    <span class="badge bg-warning">待审核</span>
-                                </div>
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>编程入门指南</strong><br>
-                                        <small class="text-muted">上传者: 王工程师 • 6小时前</small>
-                                    </div>
-                                    <span class="badge bg-primary">已发布</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>热门视频统计</h6>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="text-center p-3 bg-light rounded">
-                                        <div class="h4 mb-1">1.2M</div>
-                                        <small>本周观看</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-center p-3 bg-light rounded">
-                                        <div class="h4 mb-1">23.4K</div>
-                                        <small>新增点赞</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary">导出报告</button>
-                    <button type="button" class="btn btn-primary">管理视频</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Moderation Modal -->
-    <div class="modal fade" id="moderationModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">内容审核中心</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs mb-3" id="moderationTabs">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#comments">评论审核 (23)</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reports">举报处理 (5)</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appeals">申诉处理 (3)</button>
-                        </li>
-                    </ul>
-                    
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="comments">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>评论内容</th>
-                                            <th>用户</th>
-                                            <th>视频</th>
-                                            <th>时间</th>
-                                            <th>操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>这个视频很棒，学到了很多！</td>
-                                            <td>用户123</td>
-                                            <td>春季旅游攻略</td>
-                                            <td>2小时前</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-success me-1">通过</button>
-                                                <button class="btn btn-sm btn-danger">拒绝</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>内容质量有待提高...</td>
-                                            <td>用户456</td>
-                                            <td>美食制作教程</td>
-                                            <td>3小时前</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-success me-1">通过</button>
-                                                <button class="btn btn-sm btn-danger">拒绝</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="reports">
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2" style="font-size: 16px;"></i>
-                                当前有5个举报待处理，平均处理时间: 2小时
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="appeals">
-                            <div class="alert alert-warning">
-                                <i class="bi bi-clock me-2" style="font-size: 16px;"></i>
-                                当前有3个申诉待处理，请在24小时内处理
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary">批量操作</button>
-                    <button type="button" class="btn btn-primary">保存更改</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -600,15 +465,5 @@
     
     <!-- Dashboard Specific JS -->
     <script src="../js/dashboard.js"></script>
-    
-    <script>
-        // Common functionality is now handled by main.js
-        // Dashboard-specific functionality is handled by dashboard.js
-        
-        // Legacy function for backward compatibility
-        function showModal(modalId) {
-            AdminCommon.showModal(modalId);
-        }
-    </script>
 </body>
 </html>

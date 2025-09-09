@@ -18,6 +18,9 @@ function initializeDashboard() {
     setupDateRangeFunctionality();
     initChart();
     AdminCommon.setupNotificationBlink();
+
+    //date range pick DD
+    window.AdminCommon.setupDropdown('dateRangeBtn', 'dateRangeDropdown');
 }
 
 // ========== DATE RANGE FUNCTIONALITY ========== 

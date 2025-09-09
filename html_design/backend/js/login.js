@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeLoginPage() {
     setupPasswordToggle();
-    setupFormSubmission();
     setupFormValidation();
     setupPageAnimations();
 }
@@ -27,35 +26,6 @@ function setupPasswordToggle() {
         const isPassword = passwordInput.type === 'password';
         passwordInput.type = isPassword ? 'text' : 'password';
         passwordToggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
-    });
-}
-
-// ========== FORM SUBMISSION HANDLER ========== 
-function setupFormSubmission() {
-    const loginForm = document.getElementById('loginForm');
-    if (!loginForm) return;
-    
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Simulate login process
-        const loginBtn = document.querySelector('.login-btn');
-        const originalText = loginBtn.textContent;
-        
-        loginBtn.textContent = '登录中...';
-        loginBtn.style.opacity = '0.7';
-        loginBtn.disabled = true;
-        
-        // Simulate API call
-        setTimeout(() => {
-            // Reset button
-            loginBtn.textContent = originalText;
-            loginBtn.style.opacity = '1';
-            loginBtn.disabled = false;
-            
-            // For demo purposes, show success message
-            alert('登录功能演示 - 实际应用中这里会进行身份验证');
-        }, 2000);
     });
 }
 
