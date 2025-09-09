@@ -262,7 +262,7 @@
                                                 <div class="form-group">
                                                     <label for="videoId" class="form-label">视频ID</label>
                                                     <input type="text" class="form-control" id="videoId" value="#001" disabled>
-                                                    <div class="form-text">系统自动生成，不可修改</div>
+                                                    <div class="form-text">系统自动生成,不可修改</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
@@ -303,7 +303,7 @@
                                                 <div class="form-group">
                                                     <label for="duration" class="form-label">视频时长</label>
                                                     <input type="text" class="form-control" id="duration" name="duration" value="12:35" placeholder="mm:ss">
-                                                    <div class="form-text">格式：分钟:秒（如 12:35）</div>
+                                                    <div class="form-text">格式：分钟:秒(如 12:35)</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
@@ -315,31 +315,6 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6 pb-3">
-                                                <div class="form-group">
-                                                    <label for="color_class" class="form-label">主题颜色</label>
-                                                    <select class="form-control" id="color_class" name="color_class">
-                                                        <option value="btn-outline-primary" selected>Primary (蓝色)</option>
-                                                        <option value="btn-outline-secondary">Secondary (灰色)</option>
-                                                        <option value="btn-outline-success">Success (绿色)</option>
-                                                        <option value="btn-outline-danger">Danger (红色)</option>
-                                                        <option value="btn-outline-warning">Warning (黄色)</option>
-                                                        <option value="btn-outline-info">Info (青色)</option>
-                                                        <option value="btn-outline-light">Light (浅色)</option>
-                                                        <option value="btn-outline-dark">Dark (深色)</option>
-                                                    </select>
-                                                    <div class="form-text">选择视频在前端显示时的主题颜色</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 pb-3">
-                                                <div class="form-group">
-                                                    <label for="icon_class" class="form-label">图标样式</label>
-                                                    <input type="text" class="form-control" id="icon_class" name="icon_class" value="bi-play-circle" placeholder="请输入 Bootstrap 图标类名，如 bi-play-circle">
-                                                    <div class="form-text">直接输入Bootstrap icon 类名（如 bi-play-circle, bi-camera-video...）</div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <!-- 简介设置 -->
@@ -354,28 +329,28 @@
                                                 <div class="form-group">
                                                     <label for="short_desc_cn" class="form-label">中文简介</label>
                                                     <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="深入讲解前端开发实践技巧" maxlength="300">
-                                                    <div class="form-text">视频的简短中文描述（最多300字符）</div>
+                                                    <div class="form-text">视频的简短中文描述(最多300字符)</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="short_desc_en" class="form-label">英文简介</label>
                                                     <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="In-depth frontend development practice and tips" maxlength="300">
-                                                    <div class="form-text">视频的简短英文描述（最多300字符）</div>
+                                                    <div class="form-text">视频的简短英文描述(最多300字符)</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="desc_cn" class="form-label">中文描述</label>
-                                            <textarea class="form-control" id="desc_cn" name="desc_cn" rows="4" placeholder="请输入视频的详细中文描述..." maxlength="1000">本视频详细讲解了前端开发中的实践技巧，包括代码规范、性能优化、工具使用等方面的内容。适合有一定基础的前端开发者学习参考。</textarea>
-                                            <div class="form-text">视频的详细中文说明（最多1000字符，支持Markdown格式）</div>
+                                            <textarea class="form-control" id="desc_cn" name="desc_cn" rows="4" placeholder="请输入视频的详细中文描述..." maxlength="1000">本视频详细讲解了前端开发中的实践技巧,包括代码规范、性能优化、工具使用等方面的内容。适合有一定基础的前端开发者学习参考。</textarea>
+                                            <div class="form-text">视频的详细中文说明(最多1000字符,支持Markdown格式)</div>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="desc_en" class="form-label">英文描述</label>
                                             <textarea class="form-control" id="desc_en" name="desc_en" rows="4" placeholder="Please enter the detailed English description of the video..." maxlength="1000">This video provides detailed explanation of frontend development practices, including code standards, performance optimization, and tool usage. Suitable for frontend developers with some experience.</textarea>
-                                            <div class="form-text">视频的详细英文说明（最多1000字符，支持Markdown格式）</div>
+                                            <div class="form-text">视频的详细英文说明(最多1000字符,支持Markdown格式)</div>
                                         </div>
                                     </div>
 
@@ -409,8 +384,8 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="link_video_cnt" class="form-label">关联视频数</label>
-                                                    <input type="number" class="form-control" id="link_video_cnt" name="link_video_cnt" value="0" min="0" readonly>
-                                                    <div class="form-text">与此视频相关联的其他视频数量（自动统计）</div>
+                                                    <input type="number" class="form-control" id="link_video_cnt" name="link_video_cnt" value="0" min="0" disabled>
+                                                    <div class="form-text">与此视频相关联的其他视频数量(自动统计)</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -427,7 +402,7 @@
                                             <i class="bi bi-info-circle info-icon"></i>
                                             <div class="info-content">
                                                 <div class="info-title">数据统计</div>
-                                                <div class="info-text">以下数据为系统自动统计，实时更新</div>
+                                                <div class="info-text">以下数据为系统自动统计,实时更新</div>
                                             </div>
                                         </div>
 

@@ -21,6 +21,7 @@ CREATE TABLE `user` (
 -- 视频表
 CREATE TABLE `video` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `author` VARCHAR(255) DEFAULT 'DP' COMMENT '作者名称',
   `title_en` VARCHAR(255) NOT NULL COMMENT '英文标题',
   `title_cn` VARCHAR(255) DEFAULT NULL COMMENT '中文标题',
   `desc_en` TEXT COMMENT '英文描述, 支持markdown格式纯文本存储',
@@ -28,7 +29,7 @@ CREATE TABLE `video` (
   `short_desc_en` VARCHAR(300) COMMENT '英文简介',
   `short_desc_cn` VARCHAR(300) COMMENT '中文简介',
   `thumbnail` VARCHAR(255) COMMENT '视频缩略图URL',
-  `duration` INT UNSIGNED COMMENT '视频时长(秒)',
+  `duration` VARCHAR(10) COMMENT '视频时长 格式 1:20:18 (1小时20分18秒)',
   `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT 'PV计数',
   `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看次数',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
