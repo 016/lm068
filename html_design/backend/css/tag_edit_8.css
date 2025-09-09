@@ -4,24 +4,6 @@
 /* ========== PAGE-SPECIFIC CUSTOMIZATIONS ========== */
 /* 标注：页面专属 - 标签编辑页面特有样式 */
 
-/* Enhanced form section spacing for better visual separation */
-.form-section-spacing {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    position: relative;
-}
-
-.form-section-spacing::after {
-    content: '';
-    position: absolute;
-    bottom: 0.75rem;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent 10%, var(--border-light) 50%, transparent 90%);
-    opacity: 0.5;
-}
-
 /* Remove border from last item in each row */
 .row .form-section-spacing:nth-last-child(-n+2)::after {
     display: none;
@@ -97,21 +79,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-/* Enhanced select dropdown styles */
-.form-select {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.form-select:focus {
-    border-color: var(--accent-primary);
-    outline: 0;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 /* Character counter styles */
@@ -248,8 +215,7 @@
 }
 
 /* Form field focus animations */
-.form-control:focus,
-.form-select:focus {
+.form-control:focus {
     transform: translateY(-1px);
     transition: all 0.2s ease;
 }
@@ -266,7 +232,7 @@ textarea.form-control {
     position: relative;
 }
 
-.form-section:not(:last-child)::after {
+.form-section:not(:nth-last-child(2))::after {
     content: '';
     position: absolute;
     bottom: -1.25rem;
