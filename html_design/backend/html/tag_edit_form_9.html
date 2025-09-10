@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编辑合集 - 视频分享网站管理后台</title>
+    <title>编辑标签 - 视频分享网站管理后台</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../css/main_3.css">
     
     <!-- Page Specific CSS -->
-    <link rel="stylesheet" href="../css/collection_edit_2.css">
+    <link rel="stylesheet" href="../css/tag_edit_8.css">
     
     <!-- Multi-Select Dropdown CSS -->
     <link rel="stylesheet" href="../css/multi_select_dropdown_1.css">
@@ -46,15 +46,10 @@
                         <span class="nav-text">视频管理</span>
                         <span class="tooltip">视频管理</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item active">
                         <i class="bi bi-tags nav-icon"></i>
                         <span class="nav-text">标签管理</span>
                         <span class="tooltip">标签管理</span>
-                    </a>
-                    <a href="#" class="nav-item active">
-                        <i class="bi bi-collection nav-icon"></i>
-                        <span class="nav-text">合集管理</span>
-                        <span class="tooltip">合集管理</span>
                     </a>
                     <a href="#" class="nav-item">
                         <i class="bi bi-people nav-icon"></i>
@@ -102,8 +97,8 @@
                     <!-- Navigation Tabs -->
                     <nav class="topbar-nav">
                         <a href="#" class="nav-tab">视频</a>
-                        <a href="#" class="nav-tab">标签</a>
-                        <a href="#" class="nav-tab active">合集</a>
+                        <a href="#" class="nav-tab active">标签</a>
+                        <a href="#" class="nav-tab">合集</a>
                         <a href="#" class="nav-tab">用户</a>
                     </nav>
                 </div>
@@ -112,7 +107,7 @@
                     <!-- Search Box -->
                     <div class="header-search">
                         <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="搜索合集、关联视频...">
+                        <input type="text" class="search-input" placeholder="搜索标签、关联视频...">
                     </div>
                     
                     <div class="dropdown-container">
@@ -128,21 +123,21 @@
                             <div class="dropdown-body">
                                 <div class="notification-item">
                                     <div class="notification-icon new-user">
-                                        <i class="bi bi-collection notification-icon-style"></i>
+                                        <i class="bi bi-tag notification-icon-style"></i>
                                     </div>
                                     <div class="notification-content">
-                                        <div class="notification-title">新合集创建</div>
-                                        <div class="notification-text">用户创建了"科技前沿系列"合集</div>
+                                        <div class="notification-title">新标签创建</div>
+                                        <div class="notification-text">用户创建了"科技前沿"标签</div>
                                         <div class="notification-time">5分钟前</div>
                                     </div>
                                 </div>
                                 <div class="notification-item">
                                     <div class="notification-icon system">
-                                        <i class="bi bi-collection notification-icon-style"></i>
+                                        <i class="bi bi-tags notification-icon-style"></i>
                                     </div>
                                     <div class="notification-content">
-                                        <div class="notification-title">合集批量更新</div>
-                                        <div class="notification-text">批量导入了20个合集</div>
+                                        <div class="notification-title">标签批量更新</div>
+                                        <div class="notification-text">批量导入了50个标签</div>
                                         <div class="notification-time">30分钟前</div>
                                     </div>
                                 </div>
@@ -213,7 +208,7 @@
                 </div>
             </header>
 
-            <!-- Collection Edit Form Content -->
+            <!-- Tag Edit Form Content -->
             <main class="dashboard-content">
                 <!-- Breadcrumb and Page Title -->
                 <div class="d-flex justify-content-between align-items-start mb-4">
@@ -221,36 +216,36 @@
                         <div class="d-flex align-items-center gap-2 mb-2">
                             <i class="bi bi-pencil-square page-title-icon"></i>
                             <div>
-                                <h1 class="page-title">编辑合集</h1>
-                                <p class="page-subtitle">Edit Collection Information</p>
+                                <h1 class="page-title">编辑标签</h1>
+                                <p class="page-subtitle">Edit Tag Information</p>
                             </div>
                         </div>
                         <a href="#" class="back-link">
                             <i class="bi bi-arrow-left"></i>
-                            返回合集列表
+                            返回标签列表
                         </a>
                     </div>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-custom">
                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">首页</a></li>
                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">内容管理</a></li>
-                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">合集管理</a></li>
-                            <li class="breadcrumb-item active breadcrumb-active" aria-current="page">编辑合集</li>
+                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">标签管理</a></li>
+                            <li class="breadcrumb-item active breadcrumb-active" aria-current="page">编辑标签</li>
                         </ol>
                     </nav>
                 </div>
 
-                <!-- Collection Edit Form -->
+                <!-- Tag Edit Form -->
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-12">
                         <div class="form-container">
                             <div class="form-header">
-                                <i class="bi bi-collection form-icon"></i>
-                                <h3>合集详细信息</h3>
+                                <i class="bi bi-tag form-icon"></i>
+                                <h3>标签详细信息</h3>
                             </div>
                             
                             <div class="form-body">
-                                <form id="collectionEditForm" action="/api/collections/update" method="POST">
+                                <form id="tagEditForm" action="/api/tags/update" method="POST">
                                     <!-- CSRF Token for security -->
                                     <input type="hidden" name="_token" value="csrf_token_placeholder">
                                     <input type="hidden" name="id" id="id" value="1">
@@ -265,21 +260,21 @@
                                         <div class="row">
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="collectionId" class="form-label">合集ID</label>
-                                                    <input type="text" class="form-control" id="collectionId" value="#001" disabled>
+                                                    <label for="tagId" class="form-label">标签ID</label>
+                                                    <input type="text" class="form-control" id="tagId" value="#001" disabled>
                                                     <div class="form-text">系统自动生成，不可修改</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="collectionPreview" class="form-label">合集预览</label>
-                                                    <div class="collection-preview-container">
-                                                        <button type="button" id="collectionPreviewBtn" class="btn btn-outline-primary">
+                                                    <label for="tagPreview" class="form-label">标签预览</label>
+                                                    <div class="tag-preview-container">
+                                                        <button type="button" id="tagPreviewBtn" class="btn btn-outline-primary">
                                                             <i class="bi bi-star" id="previewIcon"></i>
-                                                            <span id="previewText">科技前沿系列</span>
+                                                            <span id="previewText">搞笑视频</span>
                                                         </button>
                                                     </div>
-                                                    <div class="form-text">实时预览合集显示效果</div>
+                                                    <div class="form-text">实时预览标签显示效果</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -288,15 +283,15 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_cn" class="form-label required">中文标题</label>
-                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" value="科技前沿系列" required>
-                                                    <div class="form-text">合集的中文显示名称</div>
+                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" value="搞笑视频" required>
+                                                    <div class="form-text">标签的中文显示名称</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_en" class="form-label required">英文标题</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" value="Tech Frontier Series" required>
-                                                    <div class="form-text">合集的英文显示名称</div>
+                                                    <input type="text" class="form-control" id="name_en" name="name_en" value="Funny Videos" required>
+                                                    <div class="form-text">标签的英文显示名称</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -304,7 +299,7 @@
                                         <div class="row">
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="color_class" class="form-label">合集颜色</label>
+                                                    <label for="color_class" class="form-label">标签颜色</label>
                                                     <select class="form-control" id="color_class" name="color_class">
                                                         <option value="btn-outline-primary" selected>Primary (蓝色)</option>
                                                         <option value="btn-outline-secondary">Secondary (灰色)</option>
@@ -315,7 +310,7 @@
                                                         <option value="btn-outline-light">Light (浅色)</option>
                                                         <option value="btn-outline-dark">Dark (深色)</option>
                                                     </select>
-                                                    <div class="form-text">选择合集在前端显示时的Bootstrap颜色样式</div>
+                                                    <div class="form-text">选择标签在前端显示时的Bootstrap颜色样式</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
@@ -332,7 +327,7 @@
                                                 <div class="form-group">
                                                     <label for="related_videos" class="form-label">关联视频</label>
                                                     <div id="videoMultiSelect" class="multi-select-container"></div>
-                                                    <div class="form-text">选择要关联到此合集的视频，可多选</div>
+                                                    <div class="form-text">选择要关联到此标签的视频，可多选</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -349,29 +344,29 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="short_desc_cn" class="form-label">中文简介</label>
-                                                    <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="探索科技前沿的视频合集" maxlength="100">
-                                                    <div class="form-text">合集的简短中文描述（最多100字符）</div>
+                                                    <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="搞笑有趣的视频内容" maxlength="100">
+                                                    <div class="form-text">标签的简短中文描述（最多100字符）</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="short_desc_en" class="form-label">英文简介</label>
-                                                    <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="Explore cutting-edge technology videos" maxlength="100">
-                                                    <div class="form-text">合集的简短英文描述（最多100字符）</div>
+                                                    <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="Funny and entertaining video content" maxlength="100">
+                                                    <div class="form-text">标签的简短英文描述（最多100字符）</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="desc_cn" class="form-label">中文描述</label>
-                                            <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入合集的详细中文描述..." maxlength="500">这是一个专门收集科技前沿内容的视频合集，包括人工智能、量子计算、新能源技术等前沿科技话题。</textarea>
-                                            <div class="form-text">合集的详细中文说明（最多500字符）</div>
+                                            <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入标签的详细中文描述..." maxlength="500">这是一个收集搞笑有趣视频内容的分类标签，包含各种幽默、娱乐类视频内容。</textarea>
+                                            <div class="form-text">标签的详细中文说明（最多500字符）</div>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="desc_en" class="form-label">英文描述</label>
-                                            <textarea class="form-control" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the collection..." maxlength="500">This is a video collection dedicated to cutting-edge technology content, including artificial intelligence, quantum computing, new energy technologies and other frontier technology topics.</textarea>
-                                            <div class="form-text">合集的详细英文说明（最多500字符）</div>
+                                            <textarea class="form-control" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the tag..." maxlength="500">This is a category tag for collecting funny and entertaining video content, including various humorous and entertainment videos.</textarea>
+                                            <div class="form-text">标签的详细英文说明（最多500字符）</div>
                                         </div>
                                     </div>
 
@@ -386,13 +381,13 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <div class="switch-group" id="statusSwitchGroup">
-                                                        <div class="custom-switch collection-edit-switch" id="statusSwitch">
+                                                        <div class="custom-switch tag-edit-switch" id="statusSwitch">
                                                             <input type="checkbox" id="status_id" name="status_id" value="1" checked>
                                                             <span class="switch-slider"></span>
                                                         </div>
                                                         <label for="status_id" class="switch-label">显示状态</label>
                                                     </div>
-                                                    <div class="form-text">开启后合集在前端可见，关闭后隐藏</div>
+                                                    <div class="form-text">开启后标签在前端可见，关闭后隐藏</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -415,19 +410,19 @@
 
                                         <div class="stats-row">
                                             <div class="stat-item">
-                                                <div class="stat-value">56</div>
+                                                <div class="stat-value">1,234</div>
                                                 <div class="stat-label">关联视频数量</div>
                                             </div>
                                             <div class="stat-item">
-                                                <div class="stat-value">3.2M</div>
+                                                <div class="stat-value">2.5M</div>
                                                 <div class="stat-label">总播放量</div>
                                             </div>
                                             <div class="stat-item">
-                                                <div class="stat-value">25K</div>
+                                                <div class="stat-value">15K</div>
                                                 <div class="stat-label">总点赞数</div>
                                             </div>
                                             <div class="stat-item">
-                                                <div class="stat-value">1.2K</div>
+                                                <div class="stat-value">856</div>
                                                 <div class="stat-label">总评论数</div>
                                             </div>
                                         </div>
@@ -461,6 +456,10 @@
                                         <button type="button" class="btn btn-outline-secondary">
                                             <i class="bi bi-x-lg"></i>
                                             取消
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                            预览
                                         </button>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-check-lg"></i>
@@ -498,6 +497,6 @@
     <script src="../js/multi_select_dropdown_2.js"></script>
     
     <!-- Page Specific JS -->
-    <script src="../js/collection_edit_2.js"></script>
+    <script src="../js/tag_edit_9.js"></script>
 </body>
 </html>
