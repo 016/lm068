@@ -4,7 +4,7 @@ description: wireframe workflow
 ---
 
 # workflow
-1. 使用 前端工程师 roles/frontend-engineer.md 作为role来负责本次任务
+1. 所有任务都读取 前端工程师 (roles/frontend-engineer.md) 作为role来负责
 2. 用获得的参数以合适形式驱动指定角色完成线框图(wireframe)相关工作
 3. 可以读取所需的文件，进行相关操作和使用必须的工具
 4. 以文字的形式反馈处理结果
