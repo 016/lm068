@@ -76,11 +76,11 @@ class VideoEditManager {
                 allowClear: true
             });
 
-            // 绑定标签变更事件
-            tagsContainer.addEventListener('multiselect:change', (e) => {
-                console.log('标签选择变更:', e.detail);
-                this.handleTagsChange(e.detail);
-            });
+            // // 绑定标签变更事件
+            // tagsContainer.addEventListener('multiselect:change', (e) => {
+            //     console.log('标签选择变更:', e.detail);
+            //     this.handleTagsChange(e.detail);
+            // });
         }
 
         // 初始化合集多选组件
@@ -99,94 +99,71 @@ class VideoEditManager {
                 allowClear: true
             });
 
-            // 绑定合集变更事件
-            collectionsContainer.addEventListener('multiselect:change', (e) => {
-                console.log('合集选择变更:', e.detail);
-                this.handleCollectionsChange(e.detail);
-            });
+            // // 绑定合集变更事件
+            // collectionsContainer.addEventListener('multiselect:change', (e) => {
+            //     console.log('合集选择变更:', e.detail);
+            //     this.handleCollectionsChange(e.detail);
+            // });
         }
     }
 
-    // 处理标签变更
-    handleTagsChange(detail) {
-        const { action, item, selected } = detail;
+    // // 处理标签变更
+    // handleTagsChange(detail) {
+    //     const { action, item, selected } = detail;
         
-        switch (action) {
-            case 'add':
-                this.showNotification(`已添加标签: ${item.text}`, 'success');
-                break;
-            case 'remove':
-                this.showNotification(`已移除标签: ${item.text}`, 'info');
-                break;
-            case 'clear':
-                this.showNotification('已清空所有标签', 'warning');
-                break;
-        }
+    //     switch (action) {
+    //         case 'add':
+    //             this.showNotification(`已添加标签: ${item.text}`, 'success');
+    //             break;
+    //         case 'remove':
+    //             this.showNotification(`已移除标签: ${item.text}`, 'info');
+    //             break;
+    //         case 'clear':
+    //             this.showNotification('已清空所有标签', 'warning');
+    //             break;
+    //     }
 
-        // 实时更新表单验证状态
-        this.validateTags(selected);
-    }
+    //     // 实时更新表单验证状态
+    //     this.validateTags(selected);
+    // }
 
-    // 处理合集变更
-    handleCollectionsChange(detail) {
-        const { action, item, selected } = detail;
+    // // 处理合集变更
+    // handleCollectionsChange(detail) {
+    //     const { action, item, selected } = detail;
         
-        switch (action) {
-            case 'add':
-                this.showNotification(`已添加到合集: ${item.text}`, 'success');
-                break;
-            case 'remove':
-                this.showNotification(`已从合集移除: ${item.text}`, 'info');
-                break;
-            case 'clear':
-                this.showNotification('已清空所有合集', 'warning');
-                break;
-        }
+    //     switch (action) {
+    //         case 'add':
+    //             this.showNotification(`已添加到合集: ${item.text}`, 'success');
+    //             break;
+    //         case 'remove':
+    //             this.showNotification(`已从合集移除: ${item.text}`, 'info');
+    //             break;
+    //         case 'clear':
+    //             this.showNotification('已清空所有合集', 'warning');
+    //             break;
+    //     }
 
-        // 实时更新表单验证状态
-        this.validateCollections(selected);
-    }
+    //     // 实时更新表单验证状态
+    //     this.validateCollections(selected);
+    // }
 
-    // 验证标签选择
-    validateTags(selected) {
-        const minTags = 1;
-        const maxTags = 10;
-        const tagsContainer = document.getElementById('videoTagsMultiSelect');
-        const tagsWrapper = tagsContainer?.querySelector('.multi-select-wrapper');
+    // // 验证合集选择
+    // validateCollections(selected) {
+    //     const maxCollections = 5;
+    //     const collectionsContainer = document.getElementById('videoCollectionsMultiSelect');
+    //     const collectionsWrapper = collectionsContainer?.querySelector('.multi-select-wrapper');
         
-        if (tagsWrapper) {
-            tagsWrapper.classList.remove('error', 'success');
+    //     if (collectionsWrapper) {
+    //         collectionsWrapper.classList.remove('error', 'success');
             
-            if (selected.length < minTags) {
-                tagsWrapper.classList.add('error');
-                this.setFieldError(tagsContainer, `请至少选择 ${minTags} 个标签`);
-            } else if (selected.length > maxTags) {
-                tagsWrapper.classList.add('error');
-                this.setFieldError(tagsContainer, `最多只能选择 ${maxTags} 个标签`);
-            } else {
-                tagsWrapper.classList.add('success');
-                this.clearFieldError(tagsContainer);
-            }
-        }
-    }
-
-    // 验证合集选择
-    validateCollections(selected) {
-        const maxCollections = 5;
-        const collectionsContainer = document.getElementById('videoCollectionsMultiSelect');
-        const collectionsWrapper = collectionsContainer?.querySelector('.multi-select-wrapper');
-        
-        if (collectionsWrapper) {
-            collectionsWrapper.classList.remove('error', 'success');
-            
-            if (selected.length > maxCollections) {
-                collectionsWrapper.classList.add('error');
-                this.setFieldError(collectionsContainer, `最多只能选择 ${maxCollections} 个合集`);
-            } else {
-                this.clearFieldError(collectionsContainer);
-            }
-        }
-    }
+    //         if (selected.length > maxCollections) {
+    //             collectionsWrapper.classList.add('error');
+    //             this.setFieldError(collectionsContainer, `最多只能选择 ${maxCollections} 个合集`);
+    //         } else {
+    //             this.clearFieldError(collectionsContainer);
+    //         }
+    //     }
+    // }
 
     // 设置字段错误
     setFieldError(container, message) {
@@ -225,7 +202,7 @@ class VideoEditManager {
         });
 
         // 取消按钮
-        const cancelBtn = this.form.querySelector('button[type="button"]');
+        const cancelBtn = this.form.querySelector('#btn-cancel');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => {
                 this.handleCancel();
@@ -294,23 +271,6 @@ class VideoEditManager {
                 isValid = false;
             }
         });
-        
-        // 验证多选组件
-        if (this.multiSelectInstances.tags) {
-            const selected = this.multiSelectInstances.tags.getSelected();
-            this.validateTags(selected);
-            if (selected.length < 1 || selected.length > 10) {
-                isValid = false;
-            }
-        }
-        
-        if (this.multiSelectInstances.collections) {
-            const selected = this.multiSelectInstances.collections.getSelected();
-            this.validateCollections(selected);
-            if (selected.length > 5) {
-                isValid = false;
-            }
-        }
         
         return isValid;
     }
