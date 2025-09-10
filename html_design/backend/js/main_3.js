@@ -220,6 +220,40 @@ function setupNotificationBlink() {
     }
 }
 
+// ========== Character Counter ========== 
+// 初始化字符计数器
+function initializeCharacterCounters(input_form) {
+    const textareas = input_form.querySelectorAll('textarea[maxlength], input[maxlength]');
+    textareas.forEach(textarea => {
+        updateCharacterCounter(textarea);
+        textarea.addEventListener('input', () => {
+            updateCharacterCounter(textarea);
+        });
+    });
+}
+
+// 更新字符计数器
+function updateCharacterCounter(field) {
+    const maxLength = parseInt(field.getAttribute('maxlength'));
+    const currentLength = field.value.length;
+    const formText = field.parentElement.querySelector('.form-text');
+    
+    if (formText && maxLength) {
+        const percentage = (currentLength / maxLength) * 100;
+        const originalText = formText.textContent.split('(')[0];
+        
+        formText.textContent = `${originalText}(${currentLength}/${maxLength})`;
+        
+        // 更新样式
+        formText.classList.remove('warning', 'danger');
+        if (percentage > 90) {
+            formText.classList.add('danger');
+        } else if (percentage > 75) {
+            formText.classList.add('warning');
+        }
+    }
+}
+
 // ========== UTILITY FUNCTIONS ========== 
 function formatDate(date) {
     return new Date(date).toLocaleDateString('zh-CN');
@@ -623,6 +657,8 @@ window.AdminCommon = {
         clearFieldError,
         clearValidation,
         validateField,
+        initializeCharacterCounters,
+        
     },
     SwitchUtils: {
         initializeSwitches,
