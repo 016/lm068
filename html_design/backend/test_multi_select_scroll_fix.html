@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多选组件滚动修复测试</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body { height: 200vh; padding: 50px; }
+        .test-section { margin: 50px 0; padding: 20px; border: 1px solid #ddd; }
+        .multi-select-wrapper {
+            position: relative;
+            width: 300px;
+        }
+        .multi-select-display {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 8px 12px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .multi-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+        }
+        .multi-select-dropdown.show { display: block; }
+        .multi-select-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+        .multi-select-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .multi-select-item:hover { background: #f8f9fa; }
+        .multi-select-item.selected { background: #e3f2fd; }
+        .multi-select-item-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin: 0;
+        }
+        .multi-select-checkbox {
+            margin-right: 8px;
+        }
+        .multi-select-search {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .multi-select-search-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 6px 8px;
+        }
+        .multi-select-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .multi-select-tag {
+            background: #007bff;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .multi-select-tag-remove {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        .scroll-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator">
+        滚动位置: <span id="scrollPos">0</span>
+    </div>
+    
+    <div class="test-section">
+        <h3>多选组件滚动修复测试</h3>
+        <p>请滚动页面到不同位置，然后点击选项进行测试。页面不应该出现跳动。</p>
+        
+        <div id="multiSelect1"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>更多内容区域</h3>
+        <p>这里是测试滚动的内容区域。请向下滚动，然后测试上面的多选组件。</p>
+        <p>当您点击多选组件中的选项时，页面不应该发生任何滚动跳动。</p>
+        <p>如果修复成功，您应该能够在页面的任何位置点击选项而不会看到页面跳动。</p>
+    </div>
+
+    <script src="js/multi_select_dropdown_1.js"></script>
+    <script>
+        // 显示滚动位置
+        function updateScrollIndicator() {
+            const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+            document.getElementById('scrollPos').textContent = scrollPos;
+        }
+        
+        window.addEventListener('scroll', updateScrollIndicator);
+        updateScrollIndicator();
+        
+        // 初始化多选组件
+        const multiSelect = new MultiSelectDropdown('#multiSelect1', {
+            placeholder: '选择选项...',
+            data: [
+                { id: '1', text: '选项 1' },
+                { id: '2', text: '选项 2' },
+                { id: '3', text: '选项 3' },
+                { id: '4', text: '选项 4' },
+                { id: '5', text: '选项 5' },
+                { id: '6', text: '选项 6' },
+                { id: '7', text: '选项 7' },
+                { id: '8', text: '选项 8' },
+                { id: '9', text: '选项 9' },
+                { id: '10', text: '选项 10' }
+            ],
+            maxDisplayItems: 2,
+            columns: 1
+        });
+        
+        // 监听变更事件
+        document.getElementById('multiSelect1').addEventListener('multiselect:change', (e) => {
+            console.log('Selection changed:', e.detail);
+        });
+    </script>
+</body>
+</html>
