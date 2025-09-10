@@ -158,6 +158,51 @@ function setupResponsiveHandlers() {
     });
 }
 
+// ========== Toast FUNCTIONALITY ========== 
+// 显示Toast消息
+function showToast(message, type = '') {
+    // 创建toast容器（如果不存在）
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // 创建toast元素
+    const toastId = 'toast-' + Date.now();
+    const toast = document.createElement('div');
+    let typeClass = ''
+    if (type != ''){
+        typeClass =  `text-bg-${type}`
+    }
+    toast.className = `toast align-items-center ${typeClass} border-0`;
+    toast.id = toastId;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // 显示toast
+    const bsToast = new bootstrap.Toast(toast, {
+        delay: 3000000
+    });
+    bsToast.show();
+    
+    // 自动移除
+    toast.addEventListener('hidden.bs.toast', function() {
+        toast.remove();
+    });
+}
+
 // ========== MODAL FUNCTIONALITY ========== 
 function showModal(modalId) {
     const modal = new bootstrap.Modal(document.getElementById(modalId));
@@ -564,6 +609,7 @@ function initializeAnimatedCounters() {
 // Make functions globally accessible for page-specific usage
 window.AdminCommon = {
     showModal,
+    showToast,
     setupNotificationBlink,
     formatDate,
     formatNumber,
