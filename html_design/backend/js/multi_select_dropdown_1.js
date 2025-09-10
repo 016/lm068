@@ -125,12 +125,22 @@ class MultiSelectDropdown {
         // 列表项点击事件
         this.elements.list.addEventListener('click', (e) => {
             const item = e.target.closest('.multi-select-item');
+            const checkbox = e.target.closest('.multi-select-checkbox');
+            
             if (item) {
+                e.preventDefault();
                 e.stopPropagation();
-                const id = item.dataset.id;
-                const checkbox = item.querySelector('.multi-select-checkbox');
                 
-                if (checkbox.checked) {
+                const id = item.dataset.id;
+                const isCurrentlySelected = this.selectedItems.some(selected => selected.id === id);
+                
+                // 如果点击的是checkbox，阻止默认行为让我们来处理
+                if (checkbox) {
+                    checkbox.checked = !isCurrentlySelected;
+                }
+                
+                // 根据当前选中状态来切换
+                if (isCurrentlySelected) {
                     this.removeItem(id);
                 } else {
                     this.addItem(id);
@@ -158,9 +168,9 @@ class MultiSelectDropdown {
         this.elements.display.setAttribute('aria-expanded', 'true');
         this.elements.arrow.style.transform = 'rotate(180deg)';
         
-        // 聚焦搜索框
+        // 聚焦搜索框，但不滚动页面
         setTimeout(() => {
-            this.elements.searchInput.focus();
+            this.elements.searchInput.focus({ preventScroll: true });
         }, 100);
 
         // 触发自定义事件
