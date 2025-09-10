@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化其他表单功能
     initFormPreview();
     initFormValidation();
+
+    window.AdminCommon.ValidationUtils.initializeCharacterCounters(document.getElementById('collectionEditForm'));
 });
 
 // 初始化视频多选组件
