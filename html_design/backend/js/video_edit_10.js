@@ -76,11 +76,11 @@ class VideoEditManager {
                 allowClear: true
             });
 
-            // // 绑定标签变更事件
-            // tagsContainer.addEventListener('multiselect:change', (e) => {
-            //     console.log('标签选择变更:', e.detail);
-            //     this.handleTagsChange(e.detail);
-            // });
+            // 绑定标签变更事件
+            tagsContainer.addEventListener('multiselect:change', (e) => {
+                console.log('标签选择变更:', e.detail);
+                this.handleTagsChange(e.detail);
+            });
         }
 
         // 初始化合集多选组件
@@ -99,53 +99,53 @@ class VideoEditManager {
                 allowClear: true
             });
 
-            // // 绑定合集变更事件
-            // collectionsContainer.addEventListener('multiselect:change', (e) => {
-            //     console.log('合集选择变更:', e.detail);
-            //     this.handleCollectionsChange(e.detail);
-            // });
+            // 绑定合集变更事件
+            collectionsContainer.addEventListener('multiselect:change', (e) => {
+                console.log('合集选择变更:', e.detail);
+                this.handleCollectionsChange(e.detail);
+            });
         }
     }
 
-    // // 处理标签变更
-    // handleTagsChange(detail) {
-    //     const { action, item, selected } = detail;
+    // 处理标签变更
+    handleTagsChange(detail) {
+        const { action, item, selected } = detail;
         
-    //     switch (action) {
-    //         case 'add':
-    //             this.showNotification(`已添加标签: ${item.text}`, 'success');
-    //             break;
-    //         case 'remove':
-    //             this.showNotification(`已移除标签: ${item.text}`, 'info');
-    //             break;
-    //         case 'clear':
-    //             this.showNotification('已清空所有标签', 'warning');
-    //             break;
-    //     }
+        switch (action) {
+            case 'add':
+                this.showNotification(`已添加标签: ${item.text}`, 'success');
+                break;
+            case 'remove':
+                this.showNotification(`已移除标签: ${item.text}`, 'info');
+                break;
+            case 'clear':
+                this.showNotification('已清空所有标签', 'warning');
+                break;
+        }
 
-    //     // 实时更新表单验证状态
-    //     this.validateTags(selected);
-    // }
+        // // 实时更新表单验证状态
+        // this.validateTags(selected);
+    }
 
-    // // 处理合集变更
-    // handleCollectionsChange(detail) {
-    //     const { action, item, selected } = detail;
+    // 处理合集变更
+    handleCollectionsChange(detail) {
+        const { action, item, selected } = detail;
         
-    //     switch (action) {
-    //         case 'add':
-    //             this.showNotification(`已添加到合集: ${item.text}`, 'success');
-    //             break;
-    //         case 'remove':
-    //             this.showNotification(`已从合集移除: ${item.text}`, 'info');
-    //             break;
-    //         case 'clear':
-    //             this.showNotification('已清空所有合集', 'warning');
-    //             break;
-    //     }
+        switch (action) {
+            case 'add':
+                this.showNotification(`已添加到合集: ${item.text}`, 'success');
+                break;
+            case 'remove':
+                this.showNotification(`已从合集移除: ${item.text}`, 'info');
+                break;
+            case 'clear':
+                this.showNotification('已清空所有合集', 'warning');
+                break;
+        }
 
-    //     // 实时更新表单验证状态
-    //     this.validateCollections(selected);
-    // }
+        // // 实时更新表单验证状态
+        // this.validateCollections(selected);
+    }
 
     // // 验证合集选择
     // validateCollections(selected) {
@@ -438,22 +438,7 @@ class VideoEditManager {
 
     // 显示通知
     showNotification(message, type = 'info') {
-        const alertContainer = document.getElementById('alertContainer');
-        if (!alertContainer) return;
-        
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        alertContainer.appendChild(alertDiv);
-        
-        // 自动移除通知
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
+        window.AdminCommon.showToast(message, type)
     }
 
     // 销毁组件

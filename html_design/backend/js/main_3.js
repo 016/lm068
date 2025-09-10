@@ -193,7 +193,7 @@ function showToast(message, type = '') {
     
     // 显示toast
     const bsToast = new bootstrap.Toast(toast, {
-        delay: 3000000
+        delay: 3000
     });
     bsToast.show();
     

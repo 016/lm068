@@ -105,24 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 显示提示消息的函数
     function showAlert(message, type = 'info') {
-        const alertContainer = document.getElementById('alertContainer');
-        if (!alertContainer) return;
-        
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        alertContainer.appendChild(alertDiv);
-        
-        // 自动移除提示（成功消息3秒，其他5秒）
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
-            }
-        }, type === 'success' ? 3000 : 5000);
+        window.AdminCommon.showToast(message, type)
     }
     
     // 取消按钮功能
