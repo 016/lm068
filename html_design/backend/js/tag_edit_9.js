@@ -16,12 +16,12 @@ function initVideoMultiSelect() {
 
     // 模拟视频数据 - 在实际项目中这些数据应该从后端API获取
     const videoData = [
-        { id: 'v101', text: '【搞笑】动物搞笑合集第一期' },
+        { id: 'v101', text: '【搞笑】动物搞笑合集第一期【搞笑】动物搞笑合集第一期【搞笑】动物搞笑合集第一期' },
         { id: 'v102', text: '【搞笑】网络热门段子精选' },
         { id: 'v103', text: '【搞笑】街头恶搞大合集' },
         { id: 'v104', text: '【搞笑】宠物萌宠搞怪瞬间' },
         { id: 'v105', text: '【搞笑】校园趣事分享' },
-        { id: 'v106', text: '【搞笑】办公室日常爆笑' },
+        { id: 'v106', text: '【搞笑】办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑' },
         { id: 'v107', text: '【搞笑】生活中的尴尬时刻' },
         { id: 'v108', text: '【搞笑】网红模仿秀合集' },
         { id: 'v109', text: '【搞笑】儿童童言无忌' },
@@ -31,10 +31,10 @@ function initVideoMultiSelect() {
         { id: 'v113', text: '【搞笑】家庭聚会爆笑时刻' },
         { id: 'v114', text: '【搞笑】公共场所尴尬瞬间' },
         { id: 'v115', text: '【搞笑】网络直播搞笑片段' },
-        { id: 'v116', text: '【搞笑】老人爆笑语录合集' },
+        { id: 'v116', text: '【搞笑】老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集' },
         { id: 'v117', text: '【搞笑】交通工具趣事' },
         { id: 'v118', text: '【搞笑】购物时的奇遇记' },
-        { id: 'v119', text: '【搞笑】节日庆典搞怪时刻' },
+        { id: 'v119', text: '【搞笑】节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻' },
         { id: 'v120', text: '【搞笑】科技产品使用囧事' }
     ];
 
@@ -47,8 +47,8 @@ function initVideoMultiSelect() {
         placeholder: '选择关联视频...',
         searchPlaceholder: '搜索视频标题...',
         hiddenInputName: 'related_videos', // PHP表单字段名
-        maxDisplayItems: 3,
-        columns: 1,
+        maxDisplayItems: 7,
+        columns: 4,
         data: videoData,
         selected: selectedVideos,
         allowClear: true

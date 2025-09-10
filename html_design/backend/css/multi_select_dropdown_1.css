@@ -84,7 +84,7 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    max-width: 120px;
+    max-width: 200px;
     white-space: nowrap;
 }
 
@@ -250,7 +250,9 @@
     cursor: pointer;
     transition: all 0.15s ease;
     border-bottom: 1px solid transparent;
+    max-width: 375px;
 }
+
 
 .multi-select-item:hover {
     background: var(--bg-tertiary);
@@ -376,6 +378,10 @@
         max-height: 200px;
         grid-template-columns: 1fr;
     }
+    .multi-select-item {
+        /* show 100% width for small screen */
+        max-width: 100%;
+    } 
     
     .multi-select-item-label {
         font-size: 0.9rem;

@@ -42,8 +42,8 @@ function initVideoMultiSelect() {
         placeholder: '选择关联视频...',
         searchPlaceholder: '搜索视频标题...',
         hiddenInputName: 'related_videos', // PHP表单字段名
-        maxDisplayItems: 4,
-        columns: 1,
+        maxDisplayItems: 7,
+        columns: 4,
         data: videoData,
         selected: selectedVideos,
         allowClear: true
