@@ -9,8 +9,8 @@ description: wireframe workflow
 3. 可以读取所需的文件，进行相关操作和使用必须的工具
 4. 以文字的形式反馈处理结果
 
-# arguments explain
-- 输入的arguments格式可以是 /wireframe generate user-login "add login button"
+# 命令 explain
+- 输入的命令格式可以是 /wireframe generate user-login "add login button"
 - 会包含如下变量
 - "--action" 为必选参数, 表示行为, 如generate, new, create, update, modify等
 - "--page" 为可选参数, 有可能不存在, 表示操作的页面, 在对应的role.md文件中有详细定义
