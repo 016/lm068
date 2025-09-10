@@ -15,8 +15,7 @@ class VideoEditManager {
         this.bindFormEvents();
         this.initializeCharacterCounters();
         this.initializeThumbnailUpload();
-        this.initializeValidation();
-        this.initializeAutoSave();
+        // this.initializeAutoSave();
         
         console.log('VideoEditManager initialized');
     }
@@ -71,6 +70,7 @@ class VideoEditManager {
                 data: tagsData,
                 selected: [
                     { id: '1', text: '前端开发' },
+                    { id: '7', text: '设计模式' },
                     { id: '2', text: 'JavaScript' }
                 ],
                 allowClear: true
@@ -397,19 +397,13 @@ class VideoEditManager {
         this.markAsModified();
     }
 
-    // 初始化验证
-    initializeValidation() {
-        // 实时验证逻辑已在其他方法中实现
-        console.log('Form validation initialized');
-    }
-
     // 初始化自动保存
     initializeAutoSave() {
         this.autoSaveInterval = setInterval(() => {
             if (this.isModified && this.validateForm()) {
                 this.autoSave();
             }
-        }, 30000); // 30秒自动保存一次
+        }, 1000); // 30秒自动保存一次
     }
 
     // 自动保存
@@ -460,18 +454,6 @@ class VideoEditManager {
         setTimeout(() => {
             alertDiv.remove();
         }, 5000);
-    }
-
-    // 更新多选组件数据
-    updateMultiSelectData(type, data) {
-        if (this.multiSelectInstances[type]) {
-            this.multiSelectInstances[type].setData(data);
-        }
-    }
-
-    // 获取多选组件选中的值
-    getMultiSelectValue(type) {
-        return this.multiSelectInstances[type]?.getSelected() || [];
     }
 
     // 销毁组件
