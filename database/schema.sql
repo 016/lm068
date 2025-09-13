@@ -1,7 +1,7 @@
 -- MySQL 5.7+ 标准数据库结构文件
-CREATE DATABASE IF NOT EXISTS `video_site` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `content_site` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE `video_site`;
+USE `content_site`;
 
 -- 用户表
 CREATE TABLE `user` (
@@ -18,24 +18,26 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_email` (`email`)
 ) ENGINE=InnoDB;
 
--- 视频表
-CREATE TABLE `video` (
+-- 内容主表 (包含: 网站公告, 一般文章, 视频, 共三类内容，用content_type_id区分)
+CREATE TABLE `content` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `content_type_id` TINYINT UNSIGNED NOT NULL COMMENT '内容类型: 1-网站公告, 11-一般文章, 21-视频',
   `author` VARCHAR(255) DEFAULT 'DP' COMMENT '作者名称',
   `title_en` VARCHAR(255) NOT NULL COMMENT '英文标题',
   `title_cn` VARCHAR(255) DEFAULT NULL COMMENT '中文标题',
-  `desc_en` TEXT COMMENT '英文描述, 支持markdown格式纯文本存储',
-  `desc_cn` TEXT COMMENT '中文描述, 支持markdown格式纯文本存储',
+  `desc_en` TEXT COMMENT '英文描述/内容, 支持markdown格式纯文本存储',
+  `desc_cn` TEXT COMMENT '中文描述/内容, 支持markdown格式纯文本存储',
   `short_desc_en` VARCHAR(300) COMMENT '英文简介',
   `short_desc_cn` VARCHAR(300) COMMENT '中文简介',
-  `thumbnail` VARCHAR(255) COMMENT '视频缩略图URL',
-  `duration` VARCHAR(10) COMMENT '视频时长 格式 1:20:18 (1小时20分18秒)',
+  `thumbnail` VARCHAR(255) COMMENT '缩略图URL',
+  `duration` VARCHAR(10) COMMENT '视频时长 格式 1:20:18 (1小时20分18秒)(仅视频类型使用)',
   `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT 'PV计数',
-  `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看次数',
+  `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看/阅读次数',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX `idx_status_id` (`status_id`)
+  INDEX `idx_status_id` (`status_id`),
+  INDEX `idx_content_type_id` (`content_type_id`)
 ) ENGINE=InnoDB;
 
 -- 视频第三方平台表
@@ -59,7 +61,7 @@ INSERT INTO `platform` (`name`, `code`, `base_url`) VALUES
 -- 视频第三方平台链接表
 CREATE TABLE `video_link` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    `video_id` INT UNSIGNED NOT NULL COMMENT '关联视频ID',
+    `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID (content_type_id 应为视频类型)',
     `platform_id` INT UNSIGNED NOT NULL COMMENT '关联平台表ID',
     `external_url` VARCHAR(500) NOT NULL COMMENT '第三方视频链接',
     `external_video_id` VARCHAR(200) NOT NULL COMMENT '第三方平台视频URI里的ID',
@@ -72,9 +74,9 @@ CREATE TABLE `video_link` (
     `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-正常, 0-失效',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX `idx_video_id` (`video_id`),
+    INDEX `idx_content_id` (`content_id`),
     UNIQUE KEY `uk_platform_external_id` (`platform_id`, `external_video_id`),
-    FOREIGN KEY (`video_id`) REFERENCES `video`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`platform_id`) REFERENCES `platform`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -82,6 +84,7 @@ CREATE TABLE `video_link` (
 CREATE TABLE `video_stats_log` (
     `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     `video_link_id` INT UNSIGNED NOT NULL COMMENT '关联video_links表ID',
+    `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID (content_type_id 应为视频类型)',
     `platform_id` INT UNSIGNED NOT NULL COMMENT '关联平台表ID',
     `play_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '播放数',
     `like_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '点赞数',
@@ -104,18 +107,18 @@ CREATE TABLE `comment` (
   `root_id` INT UNSIGNED DEFAULT NULL COMMENT '根评论ID, 用于快速查询整个评论树',
   `parent_id` INT UNSIGNED DEFAULT NULL COMMENT '父评论ID, 支持回复功能',
   `user_id` INT UNSIGNED NOT NULL,
-  `video_id` INT UNSIGNED NOT NULL,
+  `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
   `content` TEXT NOT NULL,
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-已隐藏, 1-待审核, 99-审核通过',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `idx_user_id` (`user_id`),
-  INDEX `idx_video_user` (`video_id`, `user_id`),
+  INDEX `content_user` (`content_id`, `user_id`),
   INDEX `idx_root_id` (`root_id`),
-  INDEX `idx_video_root` (`video_id`, `root_id`),
+  INDEX `content_root` (`content_id`, `root_id`),
   INDEX `idx_parent_id` (`parent_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`video_id`) REFERENCES `video`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`root_id`) REFERENCES `comment`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`parent_id`) REFERENCES `comment`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -124,13 +127,13 @@ CREATE TABLE `comment` (
 CREATE TABLE `favorite` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `user_id` INT UNSIGNED NOT NULL,
-  `video_id` INT UNSIGNED NOT NULL,
+  `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `uk_user_video` (`user_id`, `video_id`),
-  INDEX `idx_video_id` (`video_id`), 
+  UNIQUE KEY `uk_user_content` (`user_id`, `content_id`),
+  INDEX `content_id` (`content_id`), 
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`video_id`) REFERENCES `video`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- 邮件订阅表
@@ -143,7 +146,7 @@ CREATE TABLE `subscription` (
   UNIQUE KEY `uk_email` (`email`)
 ) ENGINE=InnoDB;
 
--- 视频标签表
+-- 内容标签表
 CREATE TABLE `tag` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `name_en` VARCHAR(50) NOT NULL,
@@ -154,26 +157,26 @@ CREATE TABLE `tag` (
   `desc_cn` VARCHAR(500),
   `color_class` VARCHAR(50) DEFAULT NULL COMMENT '颜色样式类',
   `icon_class` VARCHAR(50) DEFAULT NULL COMMENT '图标样式类',
-  `link_video_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联视频数量',
+  `content_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联内容数量',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `uk_name_cn` (`name_cn`)
 ) ENGINE=InnoDB;
 
--- 视频标签关联表
-CREATE TABLE `video_tag` (
+-- 内容标签关联表
+CREATE TABLE `content_tag` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `video_id` INT UNSIGNED NOT NULL,
+  `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
   `tag_id` INT UNSIGNED NOT NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY `uk_video_tag` (`video_id`, `tag_id`),
+  UNIQUE KEY `uk_content_tag` (`content_id`, `tag_id`),
   INDEX `idx_tag_id` (`tag_id`),
-  FOREIGN KEY (`video_id`) REFERENCES `video`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`tag_id`) REFERENCES `tag`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- 视频合集表
+-- 内容合集表
 CREATE TABLE `collection` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `name_en` VARCHAR(50) NOT NULL,
@@ -184,23 +187,23 @@ CREATE TABLE `collection` (
   `desc_cn` VARCHAR(500),
   `color_class` VARCHAR(50) DEFAULT NULL COMMENT '颜色样式类',
   `icon_class` VARCHAR(50) DEFAULT NULL COMMENT '图标样式类',
-  `link_video_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联视频数量',
+  `content_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联内容数量',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `uk_name_cn` (`name_cn`)
 ) ENGINE=InnoDB;
 
--- 合集与视频映射表
-CREATE TABLE `video_collection` (
+-- 合集与内容映射表
+CREATE TABLE `content_collection` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `collection_id` INT UNSIGNED NOT NULL,
-  `video_id` INT UNSIGNED NOT NULL,
+  `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY `uk_collection_video` (`collection_id`, `video_id`),
-  INDEX `idx_video_id` (`video_id`),
+  UNIQUE KEY `uk_collection_content` (`collection_id`, `content_id`),
+  INDEX `content_id` (`content_id`),
   FOREIGN KEY (`collection_id`) REFERENCES `collection`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`video_id`) REFERENCES `video`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- 后台管理员表
