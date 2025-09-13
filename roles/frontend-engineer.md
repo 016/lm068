@@ -74,12 +74,17 @@
     - 设计稿及线框图存放于 html_design/frontend-designs/wireframes/
     - HTML文件存放于 html_design/frontend-designs/html/
     - CSS文件存放于 html_design/frontend-designs/css/
+        - 基础CSS文件存放于 html_design/frontend-designs/css/main_{n}.css
     - Javascript文件存放于 html_design/frontend-designs/js/
+        - 基础Javascript文件存放于 html_design/frontend-designs/js/main.js
 - 管理后端相关设计文件
     - 设计稿及线框图存放于 html_design/backend-designs/wireframes/
     - HTML文件存放于 html_design/backend-designs/html/
     - CSS文件存放于 html_design/backend-designs/css/
+        - 基础CSS文件存放于 html_design/backend-designs/css/main_{n}.css
     - Javascript文件存放于 html_design/backend-designs/js/
+        - 基础Javascript文件存放于 html_design/backend-designs/js/main_{n}.js
+        - 表单基础Javascript文件存放于 html_design/backend-designs/js/form_utils_{n}.js
 
 ### 文件操作规范
 - 对所有操作的文件生效
