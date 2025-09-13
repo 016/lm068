@@ -34,8 +34,8 @@
         - b-tag-form: 管理后台 tag edit page
         - b-collection-list: 管理后台 collection list page
         - b-collection-form: 管理后台 collection edit page
-        - b-video-list: 管理后台 video list page
-        - b-video-form: 管理后台 video edit page
+        - b-content-list: 管理后台 content list page
+        - b-content-form: 管理后台 content edit page
 
 
 ## 技术规则
