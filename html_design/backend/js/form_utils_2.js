@@ -3,6 +3,14 @@
  * 基于 form_utils_1.js，添加更多共用的表单处理功能
  * 适用于管理后台的所有表单页面
  * 
+  * 功能模块：
+ * - 表单验证
+ * - 文件上传处理
+ * - 表单数据收集
+ * - 字符计数器
+ * - 自动保存
+ * - 多选组件管理
+ * - 通知系统
  * 新增功能模块：
  * - 预览功能管理
  * - 视频变更处理
@@ -37,6 +45,11 @@ class FormUtils {
 
     /**
      * 初始化表单工具
+     * 调用示例：
+     * const formUtils = new FormUtils('#myForm', {
+     *     enableAutoSave: true,
+     *     autoSaveInterval: 30000
+     * });
      */
     init() {
         this.bindFormEvents();
@@ -62,6 +75,7 @@ class FormUtils {
 
     /**
      * 绑定表单基础事件
+     * 自动处理表单提交、输入变化、取消操作等
      */
     bindFormEvents() {
         if (!this.form) return;
@@ -92,6 +106,9 @@ class FormUtils {
 
     /**
      * 处理表单提交
+     * 包含表单验证、数据收集、提交状态管理
+     * 使用示例：
+     * formUtils.handleFormSubmit(); // 手动触发提交处理
      */
     handleFormSubmit(e) {
         if (!this.validateForm()) {
@@ -434,6 +451,10 @@ class FormUtils {
 
     /**
      * 收集表单数据
+     * 返回包含表单所有数据的对象，包括多选组件数据
+     * 使用示例：
+     * const data = formUtils.collectFormData();
+     * console.log(data); // { name: 'test', tag_ids: '1,2,3', ... }
      */
     collectFormData() {
         const formData = new FormData(this.form);
@@ -454,6 +475,11 @@ class FormUtils {
 
     /**
      * 验证整个表单
+     * 返回布尔值表示表单是否有效
+     * 使用示例：
+     * if (formUtils.validateForm()) {
+     *     // 表单有效，可以提交
+     * }
      */
     validateForm() {
         let isValid = true;
@@ -471,6 +497,9 @@ class FormUtils {
 
     /**
      * 验证单个字段
+     * 支持必填、长度、格式等验证规则
+     * 使用示例：
+     * formUtils.validateField(document.getElementById('email'));
      */
     validateField(field) {
         const value = field.value.trim();
@@ -531,6 +560,7 @@ class FormUtils {
 
     /**
      * 设置字段错误信息
+     * 在字段下方显示错误提示
      */
     setFieldError(container, message) {
         this.clearFieldError(container);
@@ -555,6 +585,9 @@ class FormUtils {
 
     /**
      * 初始化字符计数器
+     * 为所有带有 maxlength 属性的输入框添加字符计数显示
+     * 使用示例：
+     * formUtils.initializeCharacterCounters();
      */
     initializeCharacterCounters() {
         const textareas = this.form.querySelectorAll('textarea[maxlength], input[maxlength]');
@@ -568,6 +601,7 @@ class FormUtils {
 
     /**
      * 更新字符计数器显示
+     * 根据输入长度更新计数器，并改变颜色提示
      */
     updateCharacterCounter(field) {
         const maxLength = parseInt(field.getAttribute('maxlength'));
@@ -592,6 +626,9 @@ class FormUtils {
 
     /**
      * 初始化文件上传功能
+     * 自动为文件输入框添加预览和验证功能
+     * 使用示例：
+     * formUtils.initializeFileUploads();
      */
     initializeFileUploads() {
         const fileInputs = this.form.querySelectorAll('input[type="file"]');
@@ -604,6 +641,7 @@ class FormUtils {
 
     /**
      * 处理文件上传
+     * 包含文件类型验证、大小验证、预览功能
      */
     handleFileUpload(e) {
         const file = e.target.files[0];
@@ -649,6 +687,13 @@ class FormUtils {
 
     /**
      * 初始化多选组件
+     * 创建和管理多选下拉组件实例
+     * 使用示例：
+     * formUtils.initializeMultiSelect('tags', {
+     *     container: '#tagsMultiSelect',
+     *     data: [{ id: '1', text: '标签1' }],
+     *     selected: [{ id: '1', text: '标签1' }]
+     * });
      */
     initializeMultiSelect(key, options) {
         if (!window.MultiSelectDropdown) {
@@ -693,6 +738,9 @@ class FormUtils {
 
     /**
      * 初始化自动保存功能
+     * 定期自动保存表单数据到本地存储
+     * 使用示例：
+     * formUtils.initializeAutoSave();
      */
     initializeAutoSave() {
         this.autoSaveInterval = setInterval(() => {
@@ -704,6 +752,7 @@ class FormUtils {
 
     /**
      * 执行自动保存
+     * 将表单数据保存到 localStorage
      */
     autoSave() {
         const data = this.collectFormData();
@@ -719,6 +768,7 @@ class FormUtils {
 
     /**
      * 加载自动保存的数据
+     * 从 localStorage 恢复之前保存的表单数据
      */
     loadAutoSave() {
         const formId = this.form.id || 'form';
@@ -737,6 +787,7 @@ class FormUtils {
 
     /**
      * 填充表单数据
+     * 根据数据对象填充表单字段
      */
     populateForm(data) {
         Object.entries(data).forEach(([key, value]) => {
@@ -756,6 +807,7 @@ class FormUtils {
 
     /**
      * 标记表单为已修改状态
+     * 更新页面标题，启用离开页面确认
      */
     markAsModified() {
         this.isModified = true;
@@ -765,6 +817,7 @@ class FormUtils {
 
     /**
      * 标记表单为未修改状态
+     * 清除修改标记
      */
     markAsClean() {
         this.isModified = false;
@@ -773,6 +826,7 @@ class FormUtils {
 
     /**
      * 处理取消操作
+     * 如果表单已修改，询问用户确认后返回上一页
      */
     handleCancel() {
         if (this.isModified) {
@@ -786,6 +840,9 @@ class FormUtils {
 
     /**
      * 显示通知消息
+     * 使用 Toast 组件显示操作反馈
+     * 使用示例：
+     * formUtils.showNotification('保存成功', 'success');
      */
     showNotification(message, type = 'info') {
         if (window.AdminCommon && window.AdminCommon.showToast) {
@@ -814,6 +871,9 @@ class FormUtils {
 
     /**
      * 获取多选组件实例
+     * 使用示例：
+     * const tagsInstance = formUtils.getMultiSelectInstance('tags');
+     * tagsInstance.setSelected([{ id: '1', text: '新标签' }]);
      */
     getMultiSelectInstance(key) {
         return this.multiSelectInstances[key];
@@ -821,6 +881,7 @@ class FormUtils {
 
     /**
      * 重置表单
+     * 清空所有字段和多选组件
      */
     resetForm() {
         this.form.reset();
@@ -846,6 +907,7 @@ class FormUtils {
 
     /**
      * 销毁表单工具实例
+     * 清理定时器和事件监听器
      */
     destroy() {
         // 清理自动保存定时器
@@ -866,10 +928,13 @@ class FormUtils {
 
 /**
  * 表单工具辅助函数集合
+ * 提供独立的表单相关工具函数
  */
 const FormUtilsHelper = {
     /**
      * 快速创建表单工具实例
+     * 使用示例：
+     * const formUtils = FormUtilsHelper.create('#myForm');
      */
     create(formSelector, options = {}) {
         return new FormUtils(formSelector, options);
@@ -877,6 +942,8 @@ const FormUtilsHelper = {
 
     /**
      * 为页面上所有表单初始化基础功能
+     * 使用示例：
+     * FormUtilsHelper.initializeAllForms();
      */
     initializeAllForms(options = {}) {
         const forms = document.querySelectorAll('form');
@@ -891,6 +958,7 @@ const FormUtilsHelper = {
 
     /**
      * 设置全局的离开页面确认
+     * 当页面有未保存的修改时，询问用户确认
      */
     setupGlobalUnloadWarning() {
         window.addEventListener('beforeunload', (e) => {
