@@ -11,6 +11,7 @@ const allTableData = [
         name_cn: '技术分享：前端开发实践', 
         name_en: 'Tech Sharing: Frontend Development Practice',
         views: 15420, 
+        content_type: '视频',
         duration: '12:35',
         durationSeconds: 755,
         status: 'published', 
@@ -22,6 +23,7 @@ const allTableData = [
         name_cn: '设计心得：用户体验优化', 
         name_en: 'Design Insights: User Experience Optimization',
         views: 8932, 
+        content_type: '视频',
         duration: '8:42',
         durationSeconds: 522,
         status: 'published', 
@@ -33,6 +35,7 @@ const allTableData = [
         name_cn: '代码审查最佳实践', 
         name_en: 'Code Review Best Practices',
         views: 0, 
+        content_type: '公告',
         duration: '15:18',
         durationSeconds: 918,
         status: 'draft', 
@@ -44,6 +47,7 @@ const allTableData = [
         name_cn: '项目管理工具使用指南', 
         name_en: 'Project Management Tools Guide',
         views: 23456, 
+        content_type: '视频',
         duration: '6:28',
         durationSeconds: 388,
         status: 'published', 
@@ -55,6 +59,7 @@ const allTableData = [
         name_cn: '数据库优化技巧', 
         name_en: 'Database Optimization Tips',
         views: 12890, 
+        content_type: '视频',
         duration: '10:52',
         durationSeconds: 652,
         status: 'published', 
@@ -66,6 +71,7 @@ const allTableData = [
         name_cn: 'API设计原则与实践', 
         name_en: 'API Design Principles and Practice',
         views: 7654, 
+        content_type: '视频',
         duration: '14:33',
         durationSeconds: 873,
         status: 'published', 
@@ -77,6 +83,7 @@ const allTableData = [
         name_cn: '移动端开发难点解析', 
         name_en: 'Mobile Development Challenges',
         views: 0, 
+        content_type: '视频',
         duration: '9:15',
         durationSeconds: 555,
         status: 'processing', 
@@ -88,6 +95,7 @@ const allTableData = [
         name_cn: '性能监控与调优', 
         name_en: 'Performance Monitoring and Optimization',
         views: 18732, 
+        content_type: '视频',
         duration: '11:07',
         durationSeconds: 667,
         status: 'published', 
@@ -99,6 +107,7 @@ const allTableData = [
         name_cn: '团队协作工具介绍', 
         name_en: 'Team Collaboration Tools Introduction',
         views: 9876, 
+        content_type: '视频',
         duration: '7:41',
         durationSeconds: 461,
         status: 'published', 
@@ -110,6 +119,7 @@ const allTableData = [
         name_cn: '安全编程指南', 
         name_en: 'Secure Programming Guide',
         views: 0, 
+        content_type: '视频',
         duration: '13:24',
         durationSeconds: 804,
         status: 'draft', 
@@ -351,6 +361,9 @@ function renderTable() {
                         <div class="video-subtitle">${row.name_en}</div>
                     </div>
                 </div>
+            </td>
+            <td class="table-cell video-content_type-cell" data-column="content_type">
+                <span class="content_type-badge">${row.content_type}</span>
             </td>
             <td class="table-cell video-views-cell" data-column="views">
                 <div class="view-count">
