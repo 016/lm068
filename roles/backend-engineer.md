@@ -47,3 +47,4 @@
 - 使用单入口模式。为用户前端和管理后端各配置一个入口。
 - 使用 MVC架构
 - use namespace auto load
+- 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了，正确的写法应该是。 "?int $limit = null"
