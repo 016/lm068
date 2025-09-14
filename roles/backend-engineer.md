@@ -33,3 +33,14 @@
     - b-comment-management: 评论管理模块
     - b-subscription-management: 订阅邮件管理模块
     - b-analytics: 视频数据分析模块
+
+## 技术规则
+### 技术栈
+- 后端: 原生PHP 7.4.33
+- 数据库: MySQL 5.7.40
+- 部署环境: Docker Nginx 1.23.3 + PHP-FPM 7.4.33
+
+### 技术规范
+- 这是一个中文项目, 默认使用中文显示
+- 用户前端支持i18n切换，目前支持中文和英文两个语言
+- php技术使用传统的页面刷新的方式呈现数据
