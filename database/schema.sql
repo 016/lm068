@@ -1,7 +1,7 @@
 -- MySQL 5.7+ 标准数据库结构文件
-CREATE DATABASE IF NOT EXISTS `content_site` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `lm068` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE `content_site`;
+USE `lm068`;
 
 -- 用户表
 CREATE TABLE `user` (
