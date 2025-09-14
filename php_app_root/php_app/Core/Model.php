@@ -23,7 +23,7 @@ abstract class Model
         return $this->db->fetch($sql, ['id' => $id]);
     }
 
-    public function findAll(array $conditions = [], int $limit = null, int $offset = 0, string $orderBy = null): array
+    public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
     {
         $sql = "SELECT * FROM {$this->table}";
         $params = [];
