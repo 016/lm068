@@ -17,7 +17,15 @@ class Database
 
     private function __construct()
     {
-        $config = require_once __DIR__ . '/../config/database.php';
+        // 优先使用 database.local.php，如果不存在则使用 database.php
+        $localConfigPath = __DIR__ . '/../config/database.local.php';
+        $defaultConfigPath = __DIR__ . '/../config/database.php';
+        
+        if (file_exists($localConfigPath)) {
+            $config = require_once $localConfigPath;
+        } else {
+            $config = require_once $defaultConfigPath;
+        }
         
         $this->host = $config['host'];
         $this->database = $config['database'];
