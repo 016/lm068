@@ -1,0 +1,681 @@
+/**
+ * Backend Admin Main JavaScript - Common Functions
+ * Updated with tag view page functionality
+ * 标注：基于 main_2.js 更新，新增了标签查看页面的公共功能
+ */
+
+// ========== GLOBAL VARIABLES ========== 
+let sidebar, toggleBtn, mobileOverlay;
+
+// ========== INITIALIZATION ========== 
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCommonElements();
+});
+
+function initializeCommonElements() {
+    sidebar = document.getElementById('sidebar');
+    toggleBtn = document.getElementById('toggleSidebar');
+    mobileOverlay = document.getElementById('mobileOverlay');
+    
+    setupSidebarFunctionality();
+    setupDropdowns();
+    setupThemeFunctionality();
+    setupResponsiveHandlers();
+}
+
+// ========== SIDEBAR FUNCTIONALITY ========== 
+function setupSidebarFunctionality() {
+    if (!sidebar || !toggleBtn) return;
+    
+    // Fixed toggle function with proper state management
+    toggleBtn.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            // Mobile: show full sidebar with overlay
+            sidebar.classList.toggle('show');
+            mobileOverlay.classList.toggle('active');
+        } else {
+            // Desktop: collapse/expand sidebar
+            sidebar.classList.toggle('collapsed');
+            
+            // Debug log to check state
+            console.log('Sidebar collapsed state:', sidebar.classList.contains('collapsed'));
+            console.log('Sidebar width after toggle:', getComputedStyle(sidebar).width);
+        }
+    });
+    
+    // Close mobile menu when overlay is clicked
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            mobileOverlay.classList.remove('active');
+        });
+    }
+}
+
+// ========== DROPDOWN FUNCTIONALITY ========== 
+function setupDropdowns() {
+    setupDropdown('notificationBtn', 'notificationDropdown');
+    setupDropdown('userBtn', 'userDropdown');
+    setupDropdown('themeToggleBtn', 'themeDropdown');
+}
+
+function setupDropdown(triggerId, dropdownId) {
+    const trigger = document.getElementById(triggerId);
+    const dropdown = document.getElementById(dropdownId);
+    
+    if (!trigger || !dropdown) return;
+    
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Close other dropdowns
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            if (menu !== dropdown) menu.classList.remove('show');
+        });
+        dropdown.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+// ========== THEME FUNCTIONALITY ========== 
+function setupThemeFunctionality() {
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+    let currentTheme = localStorage.getItem('theme') || 'light';
+    
+    function updateThemeDisplay() {
+        const activeTheme = html.getAttribute('data-theme');
+        
+        // Update icon to reflect CURRENT active theme
+        if (themeIcon) {
+            if (activeTheme === 'dark') {
+                themeIcon.className = 'bi bi-moon theme-icon';
+            } else {
+                themeIcon.className = 'bi bi-sun theme-icon';
+            }
+        }
+    }
+    
+    function updateThemeDropdown() {
+        // Update dropdown to show currently selected preference
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.classList.toggle('active', option.dataset.theme === currentTheme);
+        });
+    }
+    
+    function setTheme(theme) {
+        let actualTheme = theme;
+        
+        if (theme === 'auto') {
+            actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        
+        html.setAttribute('data-theme', actualTheme);
+        localStorage.setItem('theme', theme);
+        currentTheme = theme;
+        
+        // Update both display and dropdown
+        updateThemeDisplay();
+        updateThemeDropdown();
+    }
+    
+    // Theme option clicks
+    document.querySelectorAll('.theme-option').forEach(option => {
+        option.addEventListener('click', () => {
+            setTheme(option.dataset.theme);
+            document.getElementById('themeDropdown')?.classList.remove('show');
+        });
+    });
+    
+    // System theme change listener for auto mode
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (currentTheme === 'auto') {
+            setTheme('auto');
+        }
+    });
+    
+    // Initialize theme
+    setTheme(currentTheme);
+    
+    // Make theme functions globally accessible
+    window.setTheme = setTheme;
+    window.updateThemeDisplay = updateThemeDisplay;
+}
+
+// ========== RESPONSIVE HANDLERS ========== 
+function setupResponsiveHandlers() {
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && sidebar) {
+            sidebar.classList.remove('show');
+            mobileOverlay?.classList.remove('active');
+        }
+    });
+}
+
+// ========== Toast FUNCTIONALITY ========== 
+// 显示Toast消息
+function showToast(message, type = '') {
+    // 创建toast容器（如果不存在）
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // 创建toast元素
+    const toastId = 'toast-' + Date.now();
+    const toast = document.createElement('div');
+    let typeClass = ''
+    if (type != ''){
+        typeClass =  `text-bg-${type}`
+    }
+    toast.className = `toast align-items-center ${typeClass} border-0`;
+    toast.id = toastId;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // 显示toast
+    const bsToast = new bootstrap.Toast(toast, {
+        delay: 3000
+    });
+    bsToast.show();
+    
+    // 自动移除
+    toast.addEventListener('hidden.bs.toast', function() {
+        toast.remove();
+    });
+}
+
+// ========== MODAL FUNCTIONALITY ========== 
+function showModal(modalId) {
+    const modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.show();
+}
+
+// ========== NOTIFICATION FUNCTIONALITY ========== 
+function setupNotificationBlink() {
+    // Simulate real-time updates
+    const badge = document.querySelector('.notification-badge');
+    if (badge) {
+        setInterval(() => {
+            badge.style.display = badge.style.display === 'none' ? 'block' : 'none';
+        }, 3000);
+    }
+}
+
+// ========== Character Counter ========== 
+// 初始化字符计数器
+function initializeCharacterCounters(input_form) {
+    const textareas = input_form.querySelectorAll('textarea[maxlength], input[maxlength]');
+    textareas.forEach(textarea => {
+        updateCharacterCounter(textarea);
+        textarea.addEventListener('input', () => {
+            updateCharacterCounter(textarea);
+        });
+    });
+}
+
+// 更新字符计数器
+function updateCharacterCounter(field) {
+    const maxLength = parseInt(field.getAttribute('maxlength'));
+    const currentLength = field.value.length;
+    const formText = field.parentElement.querySelector('.form-text');
+    
+    if (formText && maxLength) {
+        const percentage = (currentLength / maxLength) * 100;
+        const originalText = formText.textContent.split('(')[0];
+        
+        formText.textContent = `${originalText}(${currentLength}/${maxLength})`;
+        
+        // 更新样式
+        formText.classList.remove('warning', 'danger');
+        if (percentage > 90) {
+            formText.classList.add('danger');
+        } else if (percentage > 75) {
+            formText.classList.add('warning');
+        }
+    }
+}
+
+// ========== UTILITY FUNCTIONS ========== 
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('zh-CN');
+}
+
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+// ========== FORM VALIDATION UTILITIES ========== 
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function showFieldError(field, message) {
+    clearFieldError(field);
+    field.style.borderColor = 'var(--danger)';
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.style.color = 'var(--danger)';
+    errorDiv.style.fontSize = '0.75rem';
+    errorDiv.style.marginTop = '0.25rem';
+    errorDiv.textContent = message;
+    
+    field.parentNode.appendChild(errorDiv);
+}
+
+function clearFieldError(field) {
+    field.style.borderColor = '';
+    const errorDiv = field.parentNode.querySelector('.field-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+}
+
+function clearValidation(e) {
+    clearFieldError(e.target);
+}
+
+function validateField(e) {
+    const field = e.target;
+    const value = field.value.trim();
+    
+    if (!value && field.hasAttribute('required')) {
+        showFieldError(field, '此字段为必填项');
+    } else if (field.type === 'email' && value && !isValidEmail(value)) {
+        showFieldError(field, '请输入有效的邮箱地址');
+    } else {
+        clearFieldError(field);
+    }
+}
+
+/* ========== COMMON SWITCH FUNCTIONALITY ========== */
+/* 标注：新增 - 通用的开关控件功能，适用于标签编辑等页面 */
+
+/**
+ * Initialize switches by reading their HTML checkbox attributes
+ * This allows server-side templates to set initial states
+ */
+function initializeSwitches() {
+    console.log('Initializing switches by reading HTML checkbox attributes...');
+    
+    // Find all custom switches on the page
+    const switches = document.querySelectorAll('.custom-switch input[type="checkbox"]');
+    
+    switches.forEach(checkbox => {
+        const switchId = checkbox.id;
+        if (switchId) {
+            // Read the current checked state from the HTML attribute
+            const isChecked = checkbox.checked;
+            
+            console.log(`Switch ${switchId}: HTML checkbox checked = ${isChecked}`);
+            
+            // Set the visual state based on the checkbox state
+            setSwitchVisualState(switchId, isChecked);
+        }
+    });
+    
+    console.log('All switches initialized from HTML checkbox attributes');
+}
+
+/**
+ * Set switch visual state based on checkbox value
+ * This function only updates the visual appearance, not the checkbox state
+ */
+function setSwitchVisualState(switchId, isChecked) {
+    const checkbox = document.getElementById(switchId);
+    if (!checkbox) return;
+    
+    const switchElement = checkbox.closest('.custom-switch');
+    const slider = switchElement.querySelector('.switch-slider');
+
+    // Update visual appearance based on checkbox state
+    if (isChecked) {
+        slider.style.backgroundColor = 'var(--accent-primary)';
+        slider.style.setProperty('--switch-translate', 'translateX(24px)');
+    } else {
+        slider.style.backgroundColor = 'var(--border-medium)';
+        slider.style.setProperty('--switch-translate', 'translateX(0)');
+    }
+
+    console.log(`Switch ${switchId} visual state set to: ${isChecked ? 'ON' : 'OFF'}`);
+}
+
+/**
+ * Set switch value (both checkbox and visual state)
+ * This function updates both the checkbox checked property and visual state
+ */
+function setSwitchValue(switchId, value) {
+    const checkbox = document.getElementById(switchId);
+    if (!checkbox) return;
+    
+    // Set checkbox state
+    checkbox.checked = value;
+    
+    // Update visual state
+    setSwitchVisualState(switchId, value);
+    
+    console.log(`Switch ${switchId} value set to: ${value ? 'ON' : 'OFF'}`);
+}
+
+/**
+ * Toggle switch value
+ */
+function toggleSwitch(switchId) {
+    const checkbox = document.getElementById(switchId);
+    if (!checkbox) return false;
+    
+    const switchGroup = checkbox.closest('.switch-group');
+    
+    // Check if switch is disabled
+    if (checkbox.disabled || switchGroup.classList.contains('disabled')) {
+        console.log(`Switch ${switchId} is disabled, cannot toggle`);
+        return false;
+    }
+
+    // Toggle the value
+    const newValue = !checkbox.checked;
+    setSwitchValue(switchId, newValue);
+    
+    // Trigger change event for form validation/handling
+    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    console.log(`Switch ${switchId} toggled to: ${newValue ? 'ON' : 'OFF'}`);
+    return true;
+}
+
+/**
+ * Setup switch click handlers
+ */
+function setupSwitchInteraction(switchId) {
+    const checkbox = document.getElementById(switchId);
+    if (!checkbox) return;
+    
+    const switchElement = checkbox.closest('.custom-switch');
+    const switchGroup = checkbox.closest('.switch-group');
+    const slider = switchElement.querySelector('.switch-slider');
+    const label = switchGroup.querySelector('.switch-label');
+
+    // Handle click on slider
+    if (slider) {
+        slider.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSwitch(switchId);
+        });
+    }
+
+    // Handle click on label
+    if (label) {
+        label.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSwitch(switchId);
+        });
+    }
+
+    // Handle direct checkbox change (for programmatic changes or accessibility)
+    checkbox.addEventListener('change', function() {
+        setSwitchVisualState(switchId, this.checked);
+    });
+
+    console.log(`Switch interaction setup completed for: ${switchId}`);
+}
+
+/**
+ * API for external control of switches
+ */
+const switchAPI = {
+    setValue: (switchId, value) => setSwitchValue(switchId, value),
+    getValue: (switchId) => {
+        const checkbox = document.getElementById(switchId);
+        return checkbox ? checkbox.checked : false;
+    },
+    toggle: (switchId) => toggleSwitch(switchId),
+    setEnabled: function(switchId, enabled) {
+        const checkbox = document.getElementById(switchId);
+        if (!checkbox) return;
+        
+        const switchGroup = checkbox.closest('.switch-group');
+        const switchElement = checkbox.closest('.custom-switch');
+        
+        checkbox.disabled = !enabled;
+        
+        if (enabled) {
+            switchGroup.classList.remove('disabled');
+            switchElement.classList.remove('disabled');
+        } else {
+            switchGroup.classList.add('disabled');
+            switchElement.classList.add('disabled');
+        }
+        
+        console.log(`Switch ${switchId} is now ${enabled ? 'enabled' : 'disabled'}`);
+    },
+    isEnabled: (switchId) => {
+        const checkbox = document.getElementById(switchId);
+        return checkbox ? !checkbox.disabled : false;
+    }
+};
+
+/**
+ * Alert message function for forms
+ */
+function showAlert(type, message) {
+    const alertContainer = document.getElementById('alertContainer');
+    if (!alertContainer) return;
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    alertContainer.appendChild(alertDiv);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv && alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
+
+    // Scroll to top to show alert
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ========== TAG VIEW PAGE SPECIFIC COMMON FUNCTIONS ========== */
+/* 标注：新增 - 标签查看页面的公共功能 */
+
+/**
+ * Setup info card hover effects
+ */
+function setupInfoCardEffects() {
+    document.querySelectorAll('.info-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.borderColor = 'var(--accent-primary)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.borderColor = 'var(--border-light)';
+        });
+    });
+}
+
+/**
+ * Setup analytics hover effects
+ */
+function setupAnalyticsEffects() {
+    document.querySelectorAll('.analytics-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.style.transform = 'translateY(-2px)';
+            item.style.boxShadow = 'var(--shadow-md)';
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            item.style.transform = 'translateY(0)';
+            item.style.boxShadow = 'none';
+        });
+    });
+}
+
+/**
+ * Initialize tag view page specific effects
+ */
+function initializeTagViewEffects() {
+    setupInfoCardEffects();
+    setupAnalyticsEffects();
+}
+
+/**
+ * Format large numbers for display
+ */
+function formatLargeNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+/**
+ * Update tag statistics display
+ */
+function updateTagStats(videoCount, viewCount, likeCount, commentCount) {
+    const statsElements = {
+        videoCount: document.querySelector('.analytics-item:nth-child(1) .analytics-value'),
+        viewCount: document.querySelector('.analytics-item:nth-child(2) .analytics-value'), 
+        likeCount: document.querySelector('.analytics-item:nth-child(3) .analytics-value'),
+        commentCount: document.querySelector('.analytics-item:nth-child(4) .analytics-value')
+    };
+    
+    if (statsElements.videoCount) {
+        statsElements.videoCount.textContent = formatLargeNumber(videoCount);
+    }
+    if (statsElements.viewCount) {
+        statsElements.viewCount.textContent = formatLargeNumber(viewCount);
+    }
+    if (statsElements.likeCount) {
+        statsElements.likeCount.textContent = formatLargeNumber(likeCount);
+    }
+    if (statsElements.commentCount) {
+        statsElements.commentCount.textContent = formatLargeNumber(commentCount);
+    }
+}
+
+/**
+ * Animate number counting effect
+ */
+function animateNumber(element, start, end, duration = 1000) {
+    const range = end - start;
+    const minTimer = 50;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    stepTime = Math.max(stepTime, minTimer);
+    
+    const startTime = new Date().getTime();
+    const endTime = startTime + duration;
+    
+    function run() {
+        const now = new Date().getTime();
+        const remaining = Math.max((endTime - now) / duration, 0);
+        const value = Math.round(end - (remaining * range));
+        element.textContent = formatLargeNumber(value);
+        
+        if (value == end) {
+            clearInterval(timer);
+        }
+    }
+    
+    const timer = setInterval(run, stepTime);
+    run();
+}
+
+/**
+ * Initialize animated counters for tag view page
+ */
+function initializeAnimatedCounters() {
+    const animatedElements = document.querySelectorAll('.analytics-value, .quick-stat-value');
+    
+    animatedElements.forEach(element => {
+        const text = element.textContent.trim();
+        let targetValue = 0;
+        
+        // Parse text to get numeric value
+        if (text.includes('M')) {
+            targetValue = parseFloat(text) * 1000000;
+        } else if (text.includes('K')) {
+            targetValue = parseFloat(text) * 1000;
+        } else {
+            targetValue = parseInt(text.replace(/,/g, ''));
+        }
+        
+        if (!isNaN(targetValue) && targetValue > 0) {
+            animateNumber(element, 0, targetValue, 2000);
+        }
+    });
+}
+
+// ========== GLOBAL EXPORTS ========== 
+// Make functions globally accessible for page-specific usage
+window.AdminCommon = {
+    showModal,
+    showToast,
+    setupNotificationBlink,
+    formatDate,
+    formatNumber,
+    formatLargeNumber,
+    setTheme: window.setTheme,
+    updateThemeDisplay: window.updateThemeDisplay,
+    setupDropdown,
+    ValidationUtils: {
+        isValidEmail,
+        showFieldError,
+        clearFieldError,
+        clearValidation,
+        validateField,
+        initializeCharacterCounters,
+        
+    },
+    SwitchUtils: {
+        initializeSwitches,
+        setSwitchVisualState,
+        setSwitchValue,
+        toggleSwitch,
+        setupSwitchInteraction,
+        showAlert
+    },
+    TagViewUtils: {
+        initializeTagViewEffects,
+        setupInfoCardEffects,
+        setupAnalyticsEffects,
+        updateTagStats,
+        animateNumber,
+        initializeAnimatedCounters
+    }
+};
+
+window.switchAPI = switchAPI;

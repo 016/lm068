@@ -104,4 +104,26 @@ class Request
     {
         return strtolower($this->getHeader('X-Requested-With') ?? '') === 'xmlhttprequest';
     }
+
+    public function getIp(): string
+    {
+        // 优先检查代理头
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            // 可能包含多个IP，取第一个
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ips[0]);
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED'])) {
+            return $_SERVER['HTTP_X_FORWARDED'];
+        } elseif (!empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
+            return $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_FORWARDED_FOR'];
+        } elseif (!empty($_SERVER['HTTP_FORWARDED'])) {
+            return $_SERVER['HTTP_FORWARDED'];
+        } else {
+            return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        }
+    }
 }
