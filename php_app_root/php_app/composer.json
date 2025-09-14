@@ -1,6 +1,6 @@
 {
-    "name": "video-content-site",
-    "description": "Video content display website built with PHP 7.4",
+    "name": "lib00/dpit_cc_rebuild",
+    "description": "rebuld dpit.lib00.com with cc with php",
     "version": "1.0.0",
     "type": "project",
     "keywords": ["php", "video", "content", "mvc"],
