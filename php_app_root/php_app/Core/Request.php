@@ -23,6 +23,14 @@ class Request
 
     public function getUri(): string
     {
+        $scriptPath = $_SERVER['SCRIPT_NAME'];
+
+        // 从请求路径中移除脚本路径部分
+        if (str_starts_with($this->uri, $scriptPath)) {
+            $this->uri = substr($this->uri, strlen($scriptPath));
+        }
+
+
         return $this->uri;
     }
 
@@ -46,7 +54,7 @@ class Request
         return $this->params[$key] ?? $default;
     }
 
-    public function getQuery(string $key = null, $default = null)
+    public function getQuery(?string $key = null, $default = null)
     {
         if ($key === null) {
             return $this->query;
@@ -54,7 +62,7 @@ class Request
         return $this->query[$key] ?? $default;
     }
 
-    public function getBody(string $key = null, $default = null)
+    public function getBody(?string $key = null, $default = null)
     {
         if ($key === null) {
             return $this->body;

@@ -23,9 +23,9 @@
 
 ## 技术栈
 - 前端: HTML5, Bootstrap 5.3.8, Bootstrap Icons 1.13.1, 原生JavaScript
-- 后端: 原生PHP 7.4.33
+- 后端: 原生PHP 8.4.13RC1
 - 数据库: MySQL 5.7.40
-- 部署环境: Docker Nginx 1.23.3 + PHP-FPM 7.4.33
+- 部署环境: Docker Nginx 1.23.3 + PHP-FPM 8.4.13RC1
 
 ## 设计风格
 简约、大气、专业、高端
