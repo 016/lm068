@@ -1,0 +1,29 @@
+# Ignore vendor directory
+vendor/
+
+# Ignore local configuration files  
+config/database.local.php
+
+# Ignore log files
+runtime/logs/*.log
+
+# Ignore temporary files
+runtime/cache/*
+
+# Ignore uploaded files (in development)
+../public_resources/uploads/*
+!../public_resources/uploads/.gitkeep
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+.env.local
