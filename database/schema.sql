@@ -211,7 +211,7 @@ CREATE TABLE `admin_user` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     `username` VARCHAR(50) NOT NULL,
     `password_hash` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100),
     `real_name` VARCHAR(50),
     `avatar` VARCHAR(255) COMMENT '管理员头像',
     `phone` VARCHAR(20),
@@ -224,3 +224,7 @@ CREATE TABLE `admin_user` (
     UNIQUE KEY `uk_username` (`username`),
     UNIQUE KEY `uk_email` (`email`)
 ) ENGINE=InnoDB;
+
+-- 插入默认第三方平台数据
+INSERT INTO `admin_user` (`username`, `password_hash`, `role_id`) VALUES
+('admin', '$2y$10$4x1JLpPnxgaErapg4Bg4wOyAlZjJF4lzLkbbAgVXWynmCAODx0OyC', 99);
