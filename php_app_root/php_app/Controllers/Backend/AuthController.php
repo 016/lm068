@@ -27,7 +27,7 @@ class AuthController extends BackendController
             exit;
         }
 
-        $this->render('login', [
+        $this->render('auth/login', [
             'title' => '管理员登录',
             'error' => $_SESSION['login_error'] ?? null
         ], false); // 不使用布局
