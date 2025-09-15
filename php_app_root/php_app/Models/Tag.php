@@ -15,6 +15,45 @@ class Tag extends Model
     ];
     protected $timestamps = true;
 
+    /**
+     * 定义验证规则
+     * @param bool $isUpdate 是否为更新操作
+     * @return array 验证规则
+     */
+    protected function rules(bool $isUpdate = false): array
+    {
+        return [
+            'name_cn' => 'required|max:50|unique',
+            'name_en' => 'required|max:50',
+            'short_desc_cn' => 'max:100',
+            'short_desc_en' => 'max:100',
+            'desc_cn' => 'max:500',
+            'desc_en' => 'max:500',
+            'color_class' => 'max:50',
+            'icon_class' => 'max:50',
+            'status_id' => 'numeric'
+        ];
+    }
+
+    /**
+     * 获取字段标签
+     * @return array 字段标签映射
+     */
+    protected function getFieldLabels(): array
+    {
+        return [
+            'name_cn' => '中文名称',
+            'name_en' => '英文名称',
+            'short_desc_cn' => '中文简介',
+            'short_desc_en' => '英文简介',
+            'desc_cn' => '中文描述',
+            'desc_en' => '英文描述',
+            'color_class' => '颜色样式',
+            'icon_class' => '图标样式',
+            'status_id' => '状态'
+        ];
+    }
+
     public function findAllWithPagination(int $page = 1, int $perPage = 10, array $conditions = [], ?string $search = null, ?string $orderBy = null): array
     {
         $offset = ($page - 1) * $perPage;

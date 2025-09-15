@@ -140,4 +140,140 @@ abstract class Model
 
         return array_intersect_key($data, array_flip($this->fillable));
     }
+
+    /**
+     * 验证数据是否符合规则
+     * @param array $data 要验证的数据
+     * @param bool $isUpdate 是否为更新操作
+     * @param ?int $excludeId 更新时排除的ID
+     * @return array 错误信息数组，为空表示验证通过
+     */
+    public function validate(array $data, bool $isUpdate = false, ?int $excludeId = null): array
+    {
+        $errors = [];
+
+        // 子类可以重写此方法实现具体验证逻辑
+        if (method_exists($this, 'rules')) {
+            $rules = $this->rules($isUpdate);
+            $errors = $this->validateRules($data, $rules, $excludeId);
+        }
+
+        return $errors;
+    }
+
+    /**
+     * 执行验证规则
+     * @param array $data 数据
+     * @param array $rules 规则
+     * @param ?int $excludeId 排除的ID
+     * @return array 错误信息
+     */
+    protected function validateRules(array $data, array $rules, ?int $excludeId = null): array
+    {
+        $errors = [];
+
+        foreach ($rules as $field => $ruleSet) {
+            $value = $data[$field] ?? null;
+            $fieldRules = explode('|', $ruleSet);
+
+            foreach ($fieldRules as $rule) {
+                $ruleParts = explode(':', $rule);
+                $ruleName = $ruleParts[0];
+                $ruleParam = $ruleParts[1] ?? null;
+
+                switch ($ruleName) {
+                    case 'required':
+                        if (empty($value) && $value !== '0' && $value !== 0) {
+                            $errors[$field] = $this->getErrorMessage($field, 'required');
+                        }
+                        break;
+
+                    case 'max':
+                        if (!empty($value) && mb_strlen($value) > (int)$ruleParam) {
+                            $errors[$field] = $this->getErrorMessage($field, 'max', $ruleParam);
+                        }
+                        break;
+
+                    case 'min':
+                        if (!empty($value) && mb_strlen($value) < (int)$ruleParam) {
+                            $errors[$field] = $this->getErrorMessage($field, 'min', $ruleParam);
+                        }
+                        break;
+
+                    case 'unique':
+                        if (!empty($value)) {
+                            $table = $ruleParam ?: $this->table;
+                            $exists = $this->checkUnique($field, $value, $table, $excludeId);
+                            if ($exists) {
+                                $errors[$field] = $this->getErrorMessage($field, 'unique');
+                            }
+                        }
+                        break;
+
+                    case 'numeric':
+                        if (!empty($value) && !is_numeric($value)) {
+                            $errors[$field] = $this->getErrorMessage($field, 'numeric');
+                        }
+                        break;
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * 检查字段值是否唯一
+     * @param string $field 字段名
+     * @param mixed $value 值
+     * @param string $table 表名
+     * @param ?int $excludeId 排除的ID
+     * @return bool 是否存在重复
+     */
+    protected function checkUnique(string $field, $value, string $table, ?int $excludeId = null): bool
+    {
+        $sql = "SELECT 1 FROM {$table} WHERE {$field} = :value";
+        $params = ['value' => $value];
+
+        if ($excludeId !== null) {
+            $sql .= " AND {$this->primaryKey} != :exclude_id";
+            $params['exclude_id'] = $excludeId;
+        }
+
+        $sql .= " LIMIT 1";
+
+        return (bool)$this->db->fetch($sql, $params);
+    }
+
+    /**
+     * 获取错误信息
+     * @param string $field 字段名
+     * @param string $rule 规则名
+     * @param ?string $param 参数
+     * @return string 错误信息
+     */
+    protected function getErrorMessage(string $field, string $rule, ?string $param = null): string
+    {
+        $fieldLabels = $this->getFieldLabels();
+        $fieldLabel = $fieldLabels[$field] ?? $field;
+
+        $messages = [
+            'required' => "{$fieldLabel}不能为空",
+            'max' => "{$fieldLabel}不能超过{$param}个字符",
+            'min' => "{$fieldLabel}不能少于{$param}个字符",
+            'unique' => "{$fieldLabel}已存在",
+            'numeric' => "{$fieldLabel}必须是数字"
+        ];
+
+        return $messages[$rule] ?? "{$fieldLabel}验证失败";
+    }
+
+    /**
+     * 获取字段标签，子类可重写
+     * @return array 字段标签映射
+     */
+    protected function getFieldLabels(): array
+    {
+        return [];
+    }
 }

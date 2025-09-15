@@ -108,3 +108,39 @@ php_app/
 ├── .gitignore                # Git 忽略配置
 ├── composer.json             # Composer 依赖管理文件
 └── README.md                 # 项目说明文件
+
+## 最佳实践与解决方案
+
+### 表单验证错误处理方案 (解决 b-tag-edit name_cn重复bug)
+**问题**: 当标签的name_cn重复时，数据库抛出SQLSTATE[23000]错误，用户看到不友好的JSON错误消息。
+
+**解决方案**: 
+1. **模型层验证**: 在Base Model(Core/Model.php)中添加通用验证框架
+   - 实现validate()方法，支持规则验证
+   - 支持required、max、min、unique、numeric等验证规则
+   - 提供字段标签映射，返回中文友好错误信息
+
+2. **Tag模型规则**: 在Tag.php中定义验证规则
+   ```php
+   protected function rules(bool $isUpdate = false): array {
+       return [
+           'name_cn' => 'required|max:50|unique',
+           'name_en' => 'required|max:50',
+           // 其他字段规则...
+       ];
+   }
+   ```
+
+3. **控制器验证**: 在TagController的store()和update()方法中
+   - 调用模型验证: `$errors = $this->tagModel->validate($data, $isUpdate, $excludeId)`
+   - 返回结构化错误: `{'success': false, 'message': '表单验证失败', 'errors': {'field_name': 'error_message'}}`
+
+4. **前端错误显示**: 在form_utils_2.js中实现
+   - displayFormErrors()方法处理后端返回的errors对象
+   - 为表单字段添加.is-invalid样式
+   - 显示.invalid-feedback错误信息
+   - clearFormErrors()清除之前的错误显示
+
+**使用效果**: 用户提交重复name_cn时，表单字段会高亮显示错误，并在字段下方显示"中文名称已存在"的友好提示，无需再看到技术性的数据库错误信息。
+
+**适用范围**: 此方案可应用于所有需要表单验证的模块(Collection, User等)，确保统一的错误处理体验。

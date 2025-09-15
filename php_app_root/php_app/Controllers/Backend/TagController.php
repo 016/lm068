@@ -108,9 +108,14 @@ class TagController extends BackendController
             'status_id' => (int)($request->post('status_id') ?? 0)
         ];
 
-        // 验证必填字段
-        if (empty($data['name_cn']) || empty($data['name_en'])) {
-            $this->jsonResponse(['success' => false, 'message' => '标签名称不能为空']);
+        // 使用模型验证，传入当前ID以排除自身
+        $errors = $this->tagModel->validate($data, true, $id);
+        if (!empty($errors)) {
+            $this->jsonResponse([
+                'success' => false, 
+                'message' => '表单验证失败',
+                'errors' => $errors
+            ]);
             return;
         }
 
@@ -168,8 +173,14 @@ class TagController extends BackendController
             'content_cnt' => 0
         ];
 
-        if (empty($data['name_cn']) || empty($data['name_en'])) {
-            $this->jsonResponse(['success' => false, 'message' => '标签名称不能为空']);
+        // 使用模型验证
+        $errors = $this->tagModel->validate($data, false);
+        if (!empty($errors)) {
+            $this->jsonResponse([
+                'success' => false, 
+                'message' => '表单验证失败',
+                'errors' => $errors
+            ]);
             return;
         }
 

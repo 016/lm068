@@ -178,8 +178,92 @@ class FormUtils {
         if (!confirm(confirmMessage)) {
             return;
         }
+        
+        // 如果有URL属性，进行真实的AJAX提交
+        const formAction = this.form.action;
+        const formMethod = this.form.method || 'POST';
+        
+        if (formAction) {
+            this.performRealSubmit(formAction, formMethod, formData, selectedVideos, loadingText, successMessage);
+        } else {
+            // 原有的模拟提交逻辑
+            this.performMockSubmit(formData, selectedVideos, loadingText, successMessage, submitDelay);
+        }
+    }
 
-        // 模拟提交过程
+    /**
+     * 执行真实的AJAX表单提交
+     */
+    performRealSubmit(actionUrl, method, formData, selectedVideos, loadingText, successMessage) {
+        const submitBtn = this.form.querySelector('button[type="submit"]');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        
+        // 显示加载状态
+        if (submitBtn) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${loadingText}`;
+        }
+
+        // 清除之前的错误显示
+        this.clearFormErrors();
+
+        // 准备提交数据
+        const submitData = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                submitData.append(key, value);
+            }
+        });
+
+        // 提交AJAX请求
+        fetch(actionUrl, {
+            method: method,
+            body: submitData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification(data.message || successMessage, 'success');
+                this.markAsClean();
+                
+                // 可选的页面跳转
+                if (data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1500);
+                }
+            } else {
+                // 处理验证错误
+                if (data.errors) {
+                    this.displayFormErrors(data.errors);
+                    this.showNotification(data.message || '表单验证失败，请检查错误信息', 'error');
+                } else {
+                    this.showNotification(data.message || '操作失败', 'error');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('提交失败:', error);
+            this.showNotification('网络错误，请稍后重试', 'error');
+        })
+        .finally(() => {
+            // 恢复按钮状态
+            if (submitBtn) {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    }
+
+    /**
+     * 执行模拟的表单提交（保持向后兼容）
+     */
+    performMockSubmit(formData, selectedVideos, loadingText, successMessage, submitDelay) {
         const submitBtn = this.form.querySelector('button[type="submit"]');
         const originalText = submitBtn ? submitBtn.innerHTML : '';
         
@@ -206,6 +290,49 @@ class FormUtils {
                 selectedVideos: selectedVideos.length
             });
         }, submitDelay);
+    }
+
+    /**
+     * 显示表单验证错误
+     * @param {Object} errors - 错误对象，键为字段名，值为错误消息
+     */
+    displayFormErrors(errors) {
+        Object.entries(errors).forEach(([fieldName, errorMessage]) => {
+            const field = this.form.querySelector(`[name="${fieldName}"]`);
+            if (field) {
+                // 添加错误样式
+                field.classList.add('is-invalid');
+                
+                // 移除现有的错误消息
+                const existingError = field.parentNode.querySelector('.invalid-feedback');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // 添加新的错误消息
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                errorDiv.textContent = errorMessage;
+                field.parentNode.appendChild(errorDiv);
+            }
+        });
+    }
+
+    /**
+     * 清除表单错误显示
+     */
+    clearFormErrors() {
+        // 移除错误样式
+        const invalidFields = this.form.querySelectorAll('.is-invalid');
+        invalidFields.forEach(field => {
+            field.classList.remove('is-invalid');
+        });
+
+        // 移除错误消息
+        const errorMessages = this.form.querySelectorAll('.invalid-feedback');
+        errorMessages.forEach(error => {
+            error.remove();
+        });
     }
 
     /**
