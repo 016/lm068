@@ -63,7 +63,6 @@ class TagController extends BackendController
             ]);
             return;
         }
-
         $this->render('tags.index', [
             'title' => '标签管理',
             'tags' => $tags,

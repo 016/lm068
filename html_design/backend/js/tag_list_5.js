@@ -6,16 +6,16 @@
 // ========== PAGE SPECIFIC DATA ========== 
 // Sample data for the table (simulate more data than shown)
 const allTableData = [
-    { id: '#001', name: '搞笑视频', videos: 1234, status: 'active', statusText: '显示' },
-    { id: '#002', name: '音乐MV', videos: 567, status: 'active', statusText: '显示' },
-    { id: '#003', name: '游戏解说', videos: 890, status: 'inactive', statusText: '隐藏' },
-    { id: '#004', name: '美食教程', videos: 345, status: 'active', statusText: '显示' },
-    { id: '#005', name: '科技数码', videos: 678, status: 'active', statusText: '显示' },
-    { id: '#006', name: '旅行记录', videos: 234, status: 'active', statusText: '显示' },
-    { id: '#007', name: '运动健身', videos: 456, status: 'inactive', statusText: '隐藏' },
-    { id: '#008', name: '时尚美容', videos: 789, status: 'active', statusText: '显示' },
-    { id: '#009', name: '教育学习', videos: 654, status: 'active', statusText: '显示' },
-    { id: '#010', name: '动漫二次元', videos: 987, status: 'active', statusText: '显示' }
+    { id: '1', name: '搞笑视频', videos: 1234, status: 'active', statusText: '显示' },
+    { id: '2', name: '音乐MV', videos: 567, status: 'active', statusText: '显示' },
+    { id: '3', name: '游戏解说', videos: 890, status: 'inactive', statusText: '隐藏' },
+    { id: '4', name: '美食教程', videos: 345, status: 'active', statusText: '显示' },
+    { id: '5', name: '科技数码', videos: 678, status: 'active', statusText: '显示' },
+    { id: '6', name: '旅行记录', videos: 234, status: 'active', statusText: '显示' },
+    { id: '7', name: '运动健身', videos: 456, status: 'inactive', statusText: '隐藏' },
+    { id: '8', name: '时尚美容', videos: 789, status: 'active', statusText: '显示' },
+    { id: '9', name: '教育学习', videos: 654, status: 'active', statusText: '显示' },
+    { id: '10', name: '动漫二次元', videos: 987, status: 'active', statusText: '显示' }
 ];
 
 let currentPage = 1;
