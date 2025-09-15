@@ -48,5 +48,7 @@
 - php技术使用传统的页面刷新的方式呈现数据
 - 使用单入口模式。为用户前端和管理后端各配置一个入口。
 - 使用 MVC架构
+- 关于View部分，布局内容存放在 对应 layouts 文件夹内, 在可以使用的时候使用layouts内的布局文件
+  - layouts/main.php 为公共布局文件, 无特殊指定时使用该布局
 - use namespace auto load
 - 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了，正确的写法应该是。 "?int $limit = null"
