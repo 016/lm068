@@ -33,16 +33,23 @@ function initializeCommonElements() {
 function setupSidebarFunctionality() {
     if (!sidebar || !toggleBtn) return;
     
+    // Fixed toggle function with proper state management
     toggleBtn.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
+            // Mobile: show full sidebar with overlay
             sidebar.classList.toggle('show');
             mobileOverlay.classList.toggle('active');
         } else {
+            // Desktop: collapse/expand sidebar
             sidebar.classList.toggle('collapsed');
+
+            // Debug log to check state
             console.log('Sidebar collapsed state:', sidebar.classList.contains('collapsed'));
+            console.log('Sidebar width after toggle:', getComputedStyle(sidebar).width);
         }
     });
     
+    // Close mobile menu when overlay is clicked
     if (mobileOverlay) {
         mobileOverlay.addEventListener('click', () => {
             sidebar.classList.remove('show');
@@ -66,12 +73,14 @@ function setupDropdown(triggerId, dropdownId) {
     
     trigger.addEventListener('click', (e) => {
         e.stopPropagation();
+        // Close other dropdowns
         document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
             if (menu !== dropdown) menu.classList.remove('show');
         });
         dropdown.classList.toggle('show');
     });
     
+    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove('show');
@@ -87,6 +96,8 @@ function setupThemeFunctionality() {
     
     function updateThemeDisplay() {
         const activeTheme = html.getAttribute('data-theme');
+
+        // Update icon to reflect CURRENT active theme
         if (themeIcon) {
             themeIcon.className = activeTheme === 'dark' 
                 ? 'bi bi-moon theme-icon' 
@@ -95,6 +106,7 @@ function setupThemeFunctionality() {
     }
     
     function updateThemeDropdown() {
+        // Update dropdown to show currently selected preference
         document.querySelectorAll('.theme-option').forEach(option => {
             option.classList.toggle('active', option.dataset.theme === currentTheme);
         });
@@ -102,6 +114,7 @@ function setupThemeFunctionality() {
     
     function setTheme(theme) {
         let actualTheme = theme;
+
         if (theme === 'auto') {
             actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
@@ -110,10 +123,12 @@ function setupThemeFunctionality() {
         localStorage.setItem('theme', theme);
         currentTheme = theme;
         
+        // Update both display and dropdown
         updateThemeDisplay();
         updateThemeDropdown();
     }
     
+    // Theme option clicks
     document.querySelectorAll('.theme-option').forEach(option => {
         option.addEventListener('click', () => {
             setTheme(option.dataset.theme);
@@ -121,19 +136,24 @@ function setupThemeFunctionality() {
         });
     });
     
+    // System theme change listener for auto mode
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (currentTheme === 'auto') {
             setTheme('auto');
         }
     });
     
+    // Initialize theme
     setTheme(currentTheme);
+
+    // Make theme functions globally accessible
     window.setTheme = setTheme;
     window.updateThemeDisplay = updateThemeDisplay;
 }
 
 // ========== RESPONSIVE HANDLERS ========== 
 function setupResponsiveHandlers() {
+    // Handle window resize
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768 && sidebar) {
             sidebar.classList.remove('show');
@@ -143,7 +163,9 @@ function setupResponsiveHandlers() {
 }
 
 // ========== Toast FUNCTIONALITY ========== 
+// 显示Toast消息
 function showToast(message, type = '') {
+    // 创建toast容器（如果不存在）
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
@@ -152,6 +174,7 @@ function showToast(message, type = '') {
         document.body.appendChild(toastContainer);
     }
     
+    // 创建toast元素
     const toastId = 'toast-' + Date.now();
     const toast = document.createElement('div');
     const typeClass = type ? `text-bg-${type}` : '';
@@ -166,10 +189,12 @@ function showToast(message, type = '') {
     `;
     
     toastContainer.appendChild(toast);
-    
+
+    // 显示toast
     const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
     bsToast.show();
     
+    // 自动移除
     toast.addEventListener('hidden.bs.toast', function() {
         toast.remove();
     });
@@ -183,6 +208,7 @@ function showModal(modalId) {
 
 // ========== NOTIFICATION FUNCTIONALITY ========== 
 function setupNotificationBlink() {
+    // Simulate real-time updates
     const badge = document.querySelector('.notification-badge');
     if (badge) {
         setInterval(() => {
@@ -191,7 +217,8 @@ function setupNotificationBlink() {
     }
 }
 
-// ========== CHARACTER COUNTER ========== 
+// ========== CHARACTER COUNTER ==========
+// 初始化字符计数器
 function initializeCharacterCounters(input_form) {
     const textareas = input_form.querySelectorAll('textarea[maxlength], input[maxlength]');
     textareas.forEach(textarea => {
@@ -202,6 +229,7 @@ function initializeCharacterCounters(input_form) {
     });
 }
 
+// 更新字符计数器
 function updateCharacterCounter(field) {
     const maxLength = parseInt(field.getAttribute('maxlength'));
     const currentLength = field.value.length;
@@ -213,6 +241,7 @@ function updateCharacterCounter(field) {
         
         formText.textContent = `${originalText}(${currentLength}/${maxLength})`;
         
+        // 更新样式
         formText.classList.remove('warning', 'danger');
         if (percentage > 90) {
             formText.classList.add('danger');
@@ -285,16 +314,27 @@ function validateField(e) {
 }
 
 /* ========== COMMON SWITCH FUNCTIONALITY ========== */
+/* 通用的开关控件功能，适用于标签编辑等页面 */
+
+/**
+ * Initialize switches by reading their HTML checkbox attributes
+ * This allows server-side templates to set initial states
+ */
 function initializeSwitches() {
     console.log('Initializing switches by reading HTML checkbox attributes...');
     
+    // Find all custom switches on the page
     const switches = document.querySelectorAll('.custom-switch input[type="checkbox"]');
     
     switches.forEach(checkbox => {
         const switchId = checkbox.id;
         if (switchId) {
+            // Read the current checked state from the HTML attribute
             const isChecked = checkbox.checked;
+
             console.log(`Switch ${switchId}: HTML checkbox checked = ${isChecked}`);
+
+            // Set the visual state based on the checkbox state
             setSwitchVisualState(switchId, isChecked);
         }
     });
@@ -302,6 +342,10 @@ function initializeSwitches() {
     console.log('All switches initialized from HTML checkbox attributes');
 }
 
+/**
+ * Set switch visual state based on checkbox value
+ * This function only updates the visual appearance, not the checkbox state
+ */
 function setSwitchVisualState(switchId, isChecked) {
     const checkbox = document.getElementById(switchId);
     if (!checkbox) return;
@@ -309,6 +353,7 @@ function setSwitchVisualState(switchId, isChecked) {
     const switchElement = checkbox.closest('.custom-switch');
     const slider = switchElement.querySelector('.switch-slider');
 
+    // Update visual appearance based on checkbox state
     if (isChecked) {
         slider.style.backgroundColor = 'var(--accent-primary)';
         slider.style.setProperty('--switch-translate', 'translateX(24px)');
@@ -320,34 +365,51 @@ function setSwitchVisualState(switchId, isChecked) {
     console.log(`Switch ${switchId} visual state set to: ${isChecked ? 'ON' : 'OFF'}`);
 }
 
+/**
+ * Set switch value (both checkbox and visual state)
+ * This function updates both the checkbox checked property and visual state
+ */
 function setSwitchValue(switchId, value) {
     const checkbox = document.getElementById(switchId);
     if (!checkbox) return;
     
+    // Set checkbox state
     checkbox.checked = value;
+
+    // Update visual state
     setSwitchVisualState(switchId, value);
+
     console.log(`Switch ${switchId} value set to: ${value ? 'ON' : 'OFF'}`);
 }
 
+/**
+ * Toggle switch value
+ */
 function toggleSwitch(switchId) {
     const checkbox = document.getElementById(switchId);
     if (!checkbox) return false;
     
     const switchGroup = checkbox.closest('.switch-group');
     
+    // Check if switch is disabled
     if (checkbox.disabled || switchGroup.classList.contains('disabled')) {
         console.log(`Switch ${switchId} is disabled, cannot toggle`);
         return false;
     }
 
+    // Toggle the value
     const newValue = !checkbox.checked;
     setSwitchValue(switchId, newValue);
     
+    // Trigger change event for form validation/handling
     checkbox.dispatchEvent(new Event('change', { bubbles: true }));
     console.log(`Switch ${switchId} toggled to: ${newValue ? 'ON' : 'OFF'}`);
     return true;
 }
 
+/**
+ * Setup switch click handlers
+ */
 function setupSwitchInteraction(switchId) {
     const checkbox = document.getElementById(switchId);
     if (!checkbox) return;
@@ -357,6 +419,7 @@ function setupSwitchInteraction(switchId) {
     const slider = switchElement.querySelector('.switch-slider');
     const label = switchGroup.querySelector('.switch-label');
 
+    // Handle click on slider
     if (slider) {
         slider.addEventListener('click', function(e) {
             e.preventDefault();
@@ -365,6 +428,7 @@ function setupSwitchInteraction(switchId) {
         });
     }
 
+    // Handle click on label
     if (label) {
         label.addEventListener('click', function(e) {
             e.preventDefault();
@@ -373,6 +437,7 @@ function setupSwitchInteraction(switchId) {
         });
     }
 
+    // Handle direct checkbox change (for programmatic changes or accessibility)
     checkbox.addEventListener('change', function() {
         setSwitchVisualState(switchId, this.checked);
     });
@@ -380,6 +445,9 @@ function setupSwitchInteraction(switchId) {
     console.log(`Switch interaction setup completed for: ${switchId}`);
 }
 
+/**
+ * API for external control of switches
+ */
 const switchAPI = {
     setValue: (switchId, value) => setSwitchValue(switchId, value),
     getValue: (switchId) => {
@@ -412,6 +480,9 @@ const switchAPI = {
     }
 };
 
+/**
+ * Alert message function for forms
+ */
 function showAlert(type, message) {
     const alertContainer = document.getElementById('alertContainer');
     if (!alertContainer) return;
@@ -425,16 +496,23 @@ function showAlert(type, message) {
     
     alertContainer.appendChild(alertDiv);
     
+    // Auto remove after 5 seconds
     setTimeout(() => {
         if (alertDiv && alertDiv.parentNode) {
             alertDiv.parentNode.removeChild(alertDiv);
         }
     }, 5000);
 
+    // Scroll to top to show alert
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ========== TAG VIEW PAGE SPECIFIC COMMON FUNCTIONS ========== */
+/* 标注：新增 - 标签查看页面的公共功能 */
+
+/**
+ * Setup info card hover effects
+ */
 function setupInfoCardEffects() {
     document.querySelectorAll('.info-card').forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -447,6 +525,9 @@ function setupInfoCardEffects() {
     });
 }
 
+/**
+ * Setup analytics hover effects
+ */
 function setupAnalyticsEffects() {
     document.querySelectorAll('.analytics-item').forEach(item => {
         item.addEventListener('mouseenter', () => {
@@ -461,11 +542,17 @@ function setupAnalyticsEffects() {
     });
 }
 
+/**
+ * Initialize tag view page specific effects
+ */
 function initializeTagViewEffects() {
     setupInfoCardEffects();
     setupAnalyticsEffects();
 }
 
+/**
+ * Update tag statistics display
+ */
 function updateTagStats(videoCount, viewCount, likeCount, commentCount) {
     const statsElements = {
         videoCount: document.querySelector('.analytics-item:nth-child(1) .analytics-value'),
@@ -488,6 +575,9 @@ function updateTagStats(videoCount, viewCount, likeCount, commentCount) {
     }
 }
 
+/**
+ * Animate number counting effect
+ */
 function animateNumber(element, start, end, duration = 1000) {
     const range = end - start;
     const minTimer = 50;
@@ -512,6 +602,9 @@ function animateNumber(element, start, end, duration = 1000) {
     run();
 }
 
+/**
+ * Initialize animated counters for tag view page
+ */
 function initializeAnimatedCounters() {
     const animatedElements = document.querySelectorAll('.analytics-value, .quick-stat-value');
     
@@ -519,6 +612,7 @@ function initializeAnimatedCounters() {
         const text = element.textContent.trim();
         let targetValue = 0;
         
+        // Parse text to get numeric value
         if (text.includes('M')) {
             targetValue = parseFloat(text) * 1000000;
         } else if (text.includes('K')) {
@@ -542,6 +636,10 @@ const TableOperations = {
     
     /**
      * 从HTML表格中读取数据并解析列配置
+     * 支持任意列结构的表格，自动识别列类型和数据
+     * @param {string} tableSelector - 表格选择器，默认为 '#dataTable'
+     * @param {string} bodySelector - 表格body选择器，默认为 'tbody'
+     * @returns {Object} 包含 columns 和 data 的对象
      */
     loadDataFromHTML: function(tableSelector = '#dataTable', bodySelector = 'tbody') {
         const table = document.querySelector(tableSelector);
@@ -550,12 +648,13 @@ const TableOperations = {
             return { columns: [], data: [] };
         }
 
+        // 获取表头信息
         const headerCells = table.querySelectorAll('thead .table-header th[data-column]');
         const columns = [];
         
         headerCells.forEach(headerCell => {
             const columnId = headerCell.getAttribute('data-column');
-            if (columnId === 'checkbox') return;
+            if (columnId === 'checkbox') return; // 跳过checkbox列
             
             const columnName = this.extractColumnName(headerCell, columnId);
             const isSortable = headerCell.querySelector('.sort-icon') !== null;
@@ -568,6 +667,7 @@ const TableOperations = {
             });
         });
 
+        // 获取数据行
         const dataRows = table.querySelectorAll(`${bodySelector} tr.table-row`);
         const data = [];
         
@@ -590,19 +690,24 @@ const TableOperations = {
     
     /**
      * 从header cell中提取列名称
+     * @param {Element} headerCell - header cell元素
+     * @param {string} columnId - 列ID
+     * @returns {string} 列名称
      */
     extractColumnName: function(headerCell, columnId) {
         if (columnId === 'actions') {
             return '操作';
         }
         
+        // 优先从flexDiv中提取第一个文本内容
         const flexDiv = headerCell.querySelector('.d-flex');
         if (flexDiv) {
             const textContent = flexDiv.textContent.trim();
             return textContent.split('\n')[0].trim();
         }
         
-        const textNodes = Array.from(headerCell.childNodes).filter(node => 
+        // 直接获取文本内容，过滤掉图标等元素
+        const textNodes = Array.from(headerCell.childNodes).filter(node =>
             node.nodeType === Node.TEXT_NODE && node.textContent.trim()
         );
         
@@ -610,11 +715,14 @@ const TableOperations = {
             return textNodes[0].textContent.trim();
         }
         
-        return columnId;
+        return columnId; // 备用方案
     },
     
     /**
      * 检测列的数据类型
+     * @param {string} columnId - 列ID
+     * @param {Element} headerCell - header元素
+     * @returns {string} 数据类型：'number', 'text', 'status', 'actions'
      */
     detectColumnType: function(columnId, headerCell) {
         const typeMapping = {
@@ -631,6 +739,9 @@ const TableOperations = {
     
     /**
      * 从表格单元格中提取数据
+     * @param {Element} cell - 单元格元素
+     * @param {Object} column - 列配置信息
+     * @returns {any} 提取的数据
      */
     extractCellData: function(cell, column) {
         const cellType = column.type;
@@ -638,6 +749,7 @@ const TableOperations = {
         
         switch (cellType) {
             case 'number':
+                // 处理带逗号的数字，如 "1,234"
                 const numberMatch = cellContent.match(/[\d,]+/);
                 if (numberMatch) {
                     return parseInt(numberMatch[0].replace(/,/g, ''));
@@ -645,6 +757,7 @@ const TableOperations = {
                 return 0;
                 
             case 'status':
+                // 提取状态信息
                 const badge = cell.querySelector('.badge');
                 if (badge) {
                     const statusText = badge.textContent.trim().split(' ').pop();
@@ -658,6 +771,7 @@ const TableOperations = {
                 return { text: cellContent, value: 'unknown', isActive: false };
                 
             case 'actions':
+                // 对于操作列，返回原始HTML
                 return cell.innerHTML;
                 
             default:
@@ -667,6 +781,11 @@ const TableOperations = {
     
     /**
      * 排序功能
+     * @param {Array} data - 要排序的数据数组
+     * @param {string} field - 排序字段
+     * @param {string} direction - 排序方向：'asc' 或 'desc'
+     * @param {Object} columns - 列配置信息
+     * @returns {Array} 排序后的数据
      */
     sortData: function(data, field, direction, columns) {
         const column = columns.find(col => col.id === field);
@@ -676,6 +795,7 @@ const TableOperations = {
             let aVal = a[field];
             let bVal = b[field];
             
+            // 根据列类型进行不同的比较
             switch (column.type) {
                 case 'number':
                     aVal = typeof aVal === 'number' ? aVal : 0;
@@ -692,6 +812,7 @@ const TableOperations = {
                     bVal = String(bVal || '').toLowerCase();
             }
             
+            // 文本比较
             if (aVal < bVal) return direction === 'asc' ? -1 : 1;
             if (aVal > bVal) return direction === 'asc' ? 1 : -1;
             return 0;
@@ -726,6 +847,9 @@ const TableOperations = {
     
     /**
      * 渲染表格数据
+     * @param {Array} data - 要渲染的数据
+     * @param {Array} columns - 列配置
+     * @param {string} tbodySelector - tbody选择器
      */
     renderTableData: function(data, columns, tbodySelector = '#tagTableBody') {
         const tbody = document.querySelector(tbodySelector);
@@ -754,6 +878,7 @@ const TableOperations = {
                 td.className = 'table-cell';
                 td.setAttribute('data-column', column.id);
                 
+                // 根据列类型渲染不同的内容
                 switch (column.type) {
                     case 'status':
                         const statusData = row[column.id];
@@ -795,6 +920,10 @@ const TableOperations = {
     
     /**
      * 导出数据
+     * @param {Array} data - 要导出的数据
+     * @param {Array} columns - 列配置
+     * @param {string} format - 导出格式：'json' 或 'csv'
+     * @param {string} filename - 文件名前缀
      */
     exportData: function(data, columns, format = 'json', filename = 'table_data') {
         const timestamp = new Date().toISOString().split('T')[0];
@@ -806,10 +935,11 @@ const TableOperations = {
                 columns.forEach(column => {
                     let value = row[column.id];
                     
+                    // 根据列类型处理导出值
                     if (column.type === 'status' && value?.text) {
                         value = value.text;
                     } else if (column.type === 'actions') {
-                        value = '操作';
+                        value = '操作'; // 操作列不导出具体内容
                     }
                     
                     exportRow[column.name] = value;
@@ -822,18 +952,21 @@ const TableOperations = {
             this.downloadFile(blob, fullFilename);
             
         } else if (format === 'csv') {
+            // CSV header
             const csvHeader = columns.map(col => `"${col.name}"`).join(',') + '\n';
             
+            // CSV data
             const csvData = data.map(row => {
                 return columns.map(column => {
                     let value = row[column.id];
                     
+                    // 根据列类型处理CSV值
                     if (column.type === 'status' && value?.text) {
                         value = value.text;
                     } else if (column.type === 'actions') {
                         value = '操作';
                     } else if (typeof value === 'number') {
-                        return value;
+                        return value; // 数字不加引号
                     }
                     
                     return `"${String(value || '').replace(/"/g, '""')}"`;
@@ -848,6 +981,8 @@ const TableOperations = {
     
     /**
      * 下载文件
+     * @param {Blob} blob - 文件blob
+     * @param {string} filename - 文件名
      */
     downloadFile: function(blob, filename) {
         const url = URL.createObjectURL(blob);
@@ -1124,10 +1259,12 @@ class TableManager {
      * 获取下一个排序方向
      */
     getNextSortDirection(columnId) {
+        // 如果当前排序的列不是这一列，重新开始排序
         if (this.currentSort.field !== columnId) {
             return 'asc';
         }
         
+        // 如果是同一列，循环切换方向
         switch (this.currentSort.direction) {
             case '':
             case 'asc':
@@ -1145,11 +1282,17 @@ class TableManager {
     performSort(columnId, direction) {
         console.log(`执行排序: ${columnId} ${direction}`);
         
+        // 更新排序状态
         this.currentSort = { field: columnId, direction };
+
+        // 对过滤后的数据进行排序
         this.filteredData = TableOperations.sortData(this.filteredData, columnId, direction, this.tableColumns);
         
+        // 重置到第一页并更新显示
         this.currentPage = 1;
         this.updateDisplay();
+
+        // 更新排序图标状态
         this.updateSortIcons(columnId, direction);
     }
     
@@ -1157,10 +1300,12 @@ class TableManager {
      * 更新排序图标状态
      */
     updateSortIcons(activeField, direction) {
+        // 清除所有排序图标的激活状态
         document.querySelectorAll('.sort-icon').forEach(icon => {
             icon.classList.remove('active');
         });
         
+        // 激活当前排序的图标
         const activeIcon = document.querySelector(`.sort-icon[data-sort="${activeField}"][data-direction="${direction}"]`);
         if (activeIcon) {
             activeIcon.classList.add('active');
@@ -1176,6 +1321,7 @@ class TableManager {
         const itemsPerPageSelect = document.querySelector(this.config.itemsPerPageSelector);
         if (!itemsPerPageSelect) return;
         
+        // 设置默认值
         itemsPerPageSelect.value = this.itemsPerPage;
         
         itemsPerPageSelect.addEventListener('change', (e) => {
@@ -1183,7 +1329,7 @@ class TableManager {
             console.log(`每页条数变更: ${this.itemsPerPage} -> ${newItemsPerPage}`);
             
             this.itemsPerPage = newItemsPerPage;
-            this.currentPage = 1;
+            this.currentPage = 1; // 重置到第一页
             this.updateDisplay();
         });
         
@@ -1242,6 +1388,7 @@ class TableManager {
     updateDisplay() {
         console.log('=== TableManager 更新显示 ===');
         
+        // 1. 获取当前页数据
         const paginationResult = TableOperations.getPaginatedData(
             this.filteredData, 
             this.currentPage, 
@@ -1252,13 +1399,17 @@ class TableManager {
         
         console.log(`当前页: ${pagination.currentPage}/${pagination.totalPages}, 显示: ${pagination.startIndex}-${pagination.endIndex}/${pagination.totalItems}`);
         
+        // 2. 渲染表格数据
         TableOperations.renderTableData(this.displayData, this.tableColumns, this.config.tbodySelector);
         
         if (this.config.enablePagination) {
             this.setupPagination(pagination);
         }
         
+        // 5. 更新汇总信息
         this.updateSummaryInfo(pagination);
+
+        // 6. 重新应用列显示设置
         this.reapplyColumnVisibility();
         
         console.log('=== TableManager 显示更新完成 ===');
@@ -1329,6 +1480,7 @@ class TableManager {
      * 更新汇总信息
      */
     updateSummaryInfo(pagination) {
+        // 更新当前显示范围
         const currentDisplay = document.querySelector(this.config.currentDisplaySelector);
         if (currentDisplay) {
             currentDisplay.textContent = `${pagination.startIndex}-${pagination.endIndex}/${pagination.totalItems}`;
@@ -1341,6 +1493,7 @@ class TableManager {
      * 重新应用列显示设置
      */
     reapplyColumnVisibility() {
+        // 重新应用所有列的显示状态
         document.querySelectorAll(`${this.config.columnSettingsPopupSelector} input[type="checkbox"]`).forEach(checkbox => {
             const columnId = checkbox.id.replace('col-', '');
             this.toggleColumnVisibility(columnId, checkbox.checked);
@@ -1481,6 +1634,7 @@ class CommonTableActions {
      * 处理批量操作 - 可在子类中重写
      */
     handleBulkAction(action, selectedIds) {
+        // 默认的批量操作处理逻辑
         switch(action) {
             case 'enable':
                 alert(`启用了 ${selectedIds.length} 个项目`);
@@ -1503,6 +1657,7 @@ class CommonTableActions {
         console.log(`导出数据，格式: ${format}`);
         this.tableManager.exportData(format);
         
+        // 关闭导出菜单
         const exportPopup = document.querySelector(this.config.exportPopupSelector);
         if (exportPopup) {
             exportPopup.classList.remove('show');

@@ -196,7 +196,7 @@ function showToast(message, type = '') {
     `;
     
     toastContainer.appendChild(toast);
-    
+
     // 显示toast
     const bsToast = new bootstrap.Toast(toast, {
         delay: 3000
