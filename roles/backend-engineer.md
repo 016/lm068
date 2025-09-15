@@ -58,5 +58,8 @@
   - 禁止使用同名占位符, 例如 update tableA set cnt = (select count(*) from tableB where ta_id=:ta_id) where id =:ta_id; 这里出现了2个:ta_id 分别改成:ta_id1, ta_id2. 
 - use namespace auto load
 
+### 关于 form 操作
+- 根据 model 层定义的 rule 扫描输入的数据，确定输入没有问题后, 再到数据库执行，如果有问题，则返回 UI 向用户提示, 要求用户修改
+
 ### 其他要点
 - 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了，正确的写法应该是。 "?int $limit = null"
