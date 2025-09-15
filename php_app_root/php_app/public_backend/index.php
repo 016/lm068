@@ -25,7 +25,7 @@ session_start();
 // 自动加载
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
-    $base_dir = __DIR__ . '/../app/';
+    $base_dir = __DIR__ . '/../';
     
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -67,6 +67,12 @@ $router->post('/users/{id}/ban', 'Backend\\UserController@ban');
 $router->get('/tags', 'Backend\\TagController@index');
 $router->get('/tags/create', 'Backend\\TagController@create');
 $router->post('/tags', 'Backend\\TagController@store');
+$router->get('/tags/{id}/edit', 'Backend\\TagController@edit');
+$router->post('/tags/{id}/update', 'Backend\\TagController@update');
+$router->get('/tags/{id}', 'Backend\\TagController@show');
+$router->post('/tags/{id}/delete', 'Backend\\TagController@delete');
+$router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
+$router->get('/tags/export', 'Backend\\TagController@export');
 
 // 合集管理
 $router->get('/collections', 'Backend\\CollectionController@index');

@@ -113,6 +113,21 @@ class Database
         return $stmt->rowCount();
     }
 
+    public function beginTransaction(): bool
+    {
+        return $this->connection->beginTransaction();
+    }
+
+    public function commit(): bool
+    {
+        return $this->connection->commit();
+    }
+
+    public function rollback(): bool
+    {
+        return $this->connection->rollback();
+    }
+
     private function __clone() {}
     public function __wakeup() {}
 }

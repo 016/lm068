@@ -17,6 +17,12 @@
     <!-- Main CSS - Common Styles -->
     <link rel="stylesheet" href="/assets/css/main_3.css">
     
+    <?php if (isset($css_files)): ?>
+        <?php foreach ($css_files as $css_file): ?>
+            <link rel="stylesheet" href="/assets/css/<?= $css_file ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
     <!-- Dashboard Specific CSS -->
     <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
@@ -245,6 +251,12 @@
     
     <!-- Main JS - Common Functions -->
     <script src="/assets/js/main_3.js"></script>
+    
+    <?php if (isset($js_files)): ?>
+        <?php foreach ($js_files as $js_file): ?>
+            <script src="/assets/js/<?= $js_file ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
     
     <!-- Dashboard Specific JS -->
     <script src="/assets/js/dashboard.js"></script>
