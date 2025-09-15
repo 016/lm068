@@ -27,8 +27,10 @@
     - b-admin-login: 后端管理员登录 
     - b-dashboard: 后端dashboard的页面
     - b-content-management: 内容管理模块
-    - b-tag-management: tag管理模块
-    - b-collection-management: collection管理模块
+    - b-tag-index: tag index page
+    - b-tag-edit: tag edit form page
+    - b-collection-index: collection index page
+    - b-collection-edit: collection edit form page
     - b-user-management: 用户管理模块
     - b-comment-management: 评论管理模块
     - b-subscription-management: 订阅邮件管理模块
