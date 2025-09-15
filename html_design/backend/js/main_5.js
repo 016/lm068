@@ -741,7 +741,7 @@ const TableOperations = {
     detectColumnType: function(columnId, headerCell) {
         const typeMapping = {
             'id': 'number',
-            'videos': 'number', 
+            'content_cnt': 'number',
             'views': 'number',
             'count': 'number',
             'status': 'status',
@@ -1051,10 +1051,10 @@ const TableOperations = {
                         break;
                         
                     case 'number':
-                        if (column.id === 'videos') {
+                        if (column.id === 'content_cnt') {
                             td.innerHTML = `
-                                <span class="table-count-primary">${row[column.id]?.toLocaleString() || '0'}</span>
-                                <span class="table-count-muted">关联</span>
+                                <a href="/videos/index?tag_id=${row["id"]}" target="_blank">${row[column.id]?.toLocaleString() || '0'}</a>
+                                
                             `;
                         } else {
                             td.textContent = row[column.id]?.toLocaleString() || '0';

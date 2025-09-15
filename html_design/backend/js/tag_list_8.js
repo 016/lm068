@@ -42,6 +42,9 @@ function initTagListPage() {
     
     // 2. 动态生成列设置选项
     TableOps.generateColumnSettingsFromHeader('#dataTable', '#columnSettingsPopup');
+
+    // 使用共享工具设置搜索功能
+    TableOps.setupSearchFunctionality('table');
     
     // 3. 设置各种功能
     setupColumnSettings();
@@ -193,28 +196,7 @@ function updateSummaryInfo(pagination) {
         currentDisplay.textContent = `${pagination.startIndex}-${pagination.endIndex}/${pagination.totalItems}`;
     }
     
-    // 计算统计信息
-    const totalVideos = filteredData.reduce((sum, row) => {
-        const videoCount = row.videos || 0;
-        return sum + (typeof videoCount === 'number' ? videoCount : 0);
-    }, 0);
-    
-    const avgVideos = filteredData.length > 0 ? (totalVideos / filteredData.length).toFixed(1) : '0.0';
-    
-    // 更新汇总信息显示
-    const summaryElements = {
-        totalVideos: document.querySelector('.summary-text .summary-highlight:nth-child(2)'),
-        avgVideos: document.querySelector('.summary-text .summary-highlight:nth-child(3)')
-    };
-    
-    if (summaryElements.totalVideos) {
-        summaryElements.totalVideos.textContent = totalVideos.toLocaleString();
-    }
-    if (summaryElements.avgVideos) {
-        summaryElements.avgVideos.textContent = avgVideos;
-    }
-    
-    console.log(`汇总信息更新: 总视频 ${totalVideos}, 平均 ${avgVideos}`);
+    console.log(`汇总信息更新: ${currentDisplay.textContent}`);
 }
 
 /**
@@ -392,37 +374,6 @@ function setupBulkActions() {
     console.log('批量操作功能已设置');
 }
 
-// ========== SEARCH FUNCTIONALITY ========== 
-/**
- * 设置搜索功能（预留接口，当前版本使用JS级处理）
- * 注：原版本使用URL参数传递到后端处理，这里可以扩展为JS级搜索
- */
-function setupSearchFunctionality() {
-    const TableOps = window.AdminCommon.TableOperations;
-    
-    // 可以选择使用TableOps.setupSearchFunctionality进行URL参数传递
-    // 或者实现JS级的本地搜索功能
-    
-    console.log('搜索功能预留接口已设置');
-}
-
-// ========== DEBUG AND UTILITIES ========== 
-/**
- * 调试信息输出
- */
-function debugInfo() {
-    console.log('=== 调试信息 ===');
-    console.log('原始数据量:', originalData.length);
-    console.log('过滤数据量:', filteredData.length);
-    console.log('当前页数据量:', displayData.length);
-    console.log('表格列数:', tableColumns.length);
-    console.log('当前页码:', currentPage);
-    console.log('每页条数:', itemsPerPage);
-    console.log('当前排序:', currentSort);
-    console.log('列配置:', tableColumns);
-}
-
 // ========== GLOBAL FUNCTIONS FOR HTML ONCLICK ========== 
 // Make functions globally accessible for onclick handlers in HTML
 window.exportData = exportData;
-window.debugInfo = debugInfo;
