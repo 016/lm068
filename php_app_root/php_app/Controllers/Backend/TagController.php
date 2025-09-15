@@ -37,7 +37,7 @@ class TagController extends BackendController
 
         $totalPages = ceil($totalCount / $perPage);
 
-        $this->render('backend/tags/index', [
+        $this->render('tags/index', [
             'tags' => $tags,
             'page' => $page,
             'perPage' => $perPage,
@@ -77,7 +77,7 @@ class TagController extends BackendController
             ];
         }
 
-        $this->render('backend/tags/edit', [
+        $this->render('tags/edit', [
             'tag' => $tag,
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions
@@ -143,7 +143,7 @@ class TagController extends BackendController
             ];
         }
 
-        $this->render('backend/tags/edit', [
+        $this->render('tags/edit', [
             'tag' => null,
             'relatedContent' => [],
             'contentOptions' => $contentOptions
@@ -313,7 +313,7 @@ class TagController extends BackendController
 
         $relatedContent = $this->tagModel->getRelatedContent($id);
 
-        $this->render('backend/tags/show', [
+        $this->render('tags/show', [
             'tag' => $tag,
             'relatedContent' => $relatedContent
         ]);
