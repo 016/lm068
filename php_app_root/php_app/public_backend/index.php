@@ -68,11 +68,11 @@ $router->get('/tags', 'Backend\\TagController@index');
 $router->get('/tags/create', 'Backend\\TagController@create');
 $router->post('/tags', 'Backend\\TagController@store');
 $router->get('/tags/{id}/edit', 'Backend\\TagController@edit');
-$router->post('/tags/{id}/update', 'Backend\\TagController@update');
+$router->post('/tags/{id}', 'Backend\\TagController@update');
 $router->get('/tags/{id}', 'Backend\\TagController@show');
-$router->post('/tags/{id}/delete', 'Backend\\TagController@delete');
+$router->delete('/tags/{id}', 'Backend\\TagController@destroy');
 $router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
-$router->get('/tags/export', 'Backend\\TagController@export');
+$router->get('/tags/export', 'Backend\\TagController@exportData');
 
 // 合集管理
 $router->get('/collections', 'Backend\\CollectionController@index');

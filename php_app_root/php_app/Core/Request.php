@@ -105,6 +105,16 @@ class Request
         return strtolower($this->getHeader('X-Requested-With') ?? '') === 'xmlhttprequest';
     }
 
+    public function get(?string $key = null, $default = null)
+    {
+        return $this->getQuery($key, $default);
+    }
+
+    public function post(?string $key = null, $default = null)
+    {
+        return $this->getBody($key, $default);
+    }
+
     public function getIp(): string
     {
         // 优先检查代理头

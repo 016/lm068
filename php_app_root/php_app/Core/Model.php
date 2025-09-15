@@ -23,6 +23,11 @@ abstract class Model
         return $this->db->fetch($sql, ['id' => $id]);
     }
 
+    public function findById(int $id): ?array
+    {
+        return $this->find($id);
+    }
+
     public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
     {
         $sql = "SELECT * FROM {$this->table}";
@@ -31,8 +36,14 @@ abstract class Model
         if (!empty($conditions)) {
             $whereClause = [];
             foreach ($conditions as $field => $value) {
-                $whereClause[] = "{$field} = :{$field}";
-                $params[$field] = $value;
+                if (is_array($value)) {
+                    $placeholders = implode(',', array_fill(0, count($value), '?'));
+                    $whereClause[] = "{$field} IN ({$placeholders})";
+                    $params = array_merge($params, $value);
+                } else {
+                    $whereClause[] = "{$field} = :{$field}";
+                    $params[$field] = $value;
+                }
             }
             $sql .= " WHERE " . implode(" AND ", $whereClause);
         }
