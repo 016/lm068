@@ -1,4 +1,6 @@
-
+<?php
+    var_dump($tag);
+?>
             <!-- Tag Edit Form Content -->
             <main class="dashboard-content">
                 <!-- Breadcrumb and Page Title -->
@@ -46,7 +48,7 @@
                                     </ul>
                                 </div>
                                 <?php endif; ?>
-                                
+
                                 <form id="tagEditForm" action="<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>" method="POST">
                                     <?php if ($tag): ?>
                                         <input type="hidden" name="_method" value="PUT">

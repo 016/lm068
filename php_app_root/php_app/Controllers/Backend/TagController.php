@@ -84,7 +84,8 @@ class TagController extends BackendController
             'tag' => $tag,
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
-            'pageTitle' => ($tag ? '编辑标签' : '创建标签') . ' - 视频分享网站管理后台',
+            'isCreateMode' => false,
+            'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
@@ -145,6 +146,7 @@ class TagController extends BackendController
                 'relatedContent' => $relatedContent,
                 'contentOptions' => $contentOptions,
                 'errors' => $errors,
+                'isCreateMode' => false,
                 'pageTitle' => '编辑标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -198,6 +200,7 @@ class TagController extends BackendController
                 'relatedContent' => $relatedContent,
                 'contentOptions' => $contentOptions,
                 'errors' => ['general' => '更新失败: ' . $e->getMessage()],
+                'isCreateMode' => false,
                 'pageTitle' => '编辑标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -223,7 +226,11 @@ class TagController extends BackendController
         $this->render('tags/edit', [
             'tag' => null,
             'relatedContent' => [],
-            'contentOptions' => $contentOptions
+            'contentOptions' => $contentOptions,
+            'isCreateMode' => true,
+            'pageTitle' => '创建标签 - 视频分享网站管理后台',
+            'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
+            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
     }
 
@@ -264,6 +271,7 @@ class TagController extends BackendController
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
                 'errors' => $errors,
+                'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -304,6 +312,7 @@ class TagController extends BackendController
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
                 'errors' => ['general' => '创建失败: ' . $e->getMessage()],
+                'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']

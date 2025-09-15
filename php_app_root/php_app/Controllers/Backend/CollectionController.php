@@ -84,6 +84,7 @@ class CollectionController extends BackendController
             'collection' => $collection,
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
+            'isCreateMode' => false,
             'title' => '编辑合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -95,7 +96,7 @@ class CollectionController extends BackendController
         $id = (int)($request->post('id') ?? 0);
         
         if (!$id) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid collection ID']);
+            $this->redirect('/collections');
             return;
         }
 
@@ -112,8 +113,51 @@ class CollectionController extends BackendController
         ];
 
         // 验证必填字段
-        if (empty($data['name_cn']) || empty($data['name_en'])) {
-            $this->jsonResponse(['success' => false, 'message' => '合集名称不能为空']);
+        $errors = [];
+        if (empty($data['name_cn'])) {
+            $errors['name_cn'] = '中文名称不能为空';
+        }
+        if (empty($data['name_en'])) {
+            $errors['name_en'] = '英文名称不能为空';
+        }
+
+        if (!empty($errors)) {
+            // 验证失败，返回编辑页面并显示错误
+            $collection = $this->collectionModel->findById($id);
+            if (!$collection) {
+                $this->redirect('/collections');
+                return;
+            }
+            
+            // 合并用户输入的数据到collection数据中
+            $collection = array_merge($collection, $data);
+            
+            $relatedContent = $this->collectionModel->getRelatedContent($id);
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            $selectedContentIds = array_column($relatedContent, 'id');
+            
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => in_array($content['id'], $selectedContentIds)
+                ];
+            }
+            
+            $this->render('collections/edit', [
+                'collection' => $collection,
+                'relatedContent' => $relatedContent,
+                'contentOptions' => $contentOptions,
+                'errors' => $errors,
+                'isCreateMode' => false,
+                'title' => '编辑合集 - 视频分享网站管理后台',
+                'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
+            ]);
             return;
         }
 
@@ -127,10 +171,47 @@ class CollectionController extends BackendController
                 $this->collectionModel->syncContentAssociations($id, $contentIds);
             }
 
-            $this->jsonResponse(['success' => true, 'message' => '合集更新成功']);
+            // 成功后跳转到列表页面
+            $this->redirect('/collections');
         } catch (\Exception $e) {
             error_log("Collection update error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '更新失败: ' . $e->getMessage()]);
+            
+            // 出错时返回编辑页面并显示错误
+            $collection = $this->collectionModel->findById($id);
+            if (!$collection) {
+                $this->redirect('/collections');
+                return;
+            }
+            
+            // 合并用户输入的数据到collection数据中
+            $collection = array_merge($collection, $data);
+            
+            $relatedContent = $this->collectionModel->getRelatedContent($id);
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            $selectedContentIds = array_column($relatedContent, 'id');
+            
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => in_array($content['id'], $selectedContentIds)
+                ];
+            }
+            
+            $this->render('collections/edit', [
+                'collection' => $collection,
+                'relatedContent' => $relatedContent,
+                'contentOptions' => $contentOptions,
+                'errors' => ['general' => '更新失败: ' . $e->getMessage()],
+                'isCreateMode' => false,
+                'title' => '编辑合集 - 视频分享网站管理后台',
+                'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
+            ]);
         }
     }
 
@@ -153,6 +234,7 @@ class CollectionController extends BackendController
             'collection' => null,
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
+            'isCreateMode' => true,
             'title' => '创建合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -174,8 +256,40 @@ class CollectionController extends BackendController
             'content_cnt' => 0
         ];
 
-        if (empty($data['name_cn']) || empty($data['name_en'])) {
-            $this->jsonResponse(['success' => false, 'message' => '合集名称不能为空']);
+        // 验证必填字段
+        $errors = [];
+        if (empty($data['name_cn'])) {
+            $errors['name_cn'] = '中文名称不能为空';
+        }
+        if (empty($data['name_en'])) {
+            $errors['name_en'] = '英文名称不能为空';
+        }
+
+        if (!empty($errors)) {
+            // 验证失败，返回创建页面并显示错误
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => false
+                ];
+            }
+            
+            $this->render('collections/edit', [
+                'collection' => $data, // 传递用户输入的数据
+                'relatedContent' => [],
+                'contentOptions' => $contentOptions,
+                'errors' => $errors,
+                'isCreateMode' => true,
+                'title' => '创建合集 - 视频分享网站管理后台',
+                'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
+            ]);
             return;
         }
 
@@ -188,10 +302,35 @@ class CollectionController extends BackendController
                 $this->collectionModel->syncContentAssociations($collectionId, $contentIds);
             }
 
-            $this->jsonResponse(['success' => true, 'message' => '合集创建成功', 'collection_id' => $collectionId]);
+            // 成功后跳转到列表页面
+            $this->redirect('/collections');
         } catch (\Exception $e) {
             error_log("Collection creation error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '创建失败: ' . $e->getMessage()]);
+            
+            // 出错时返回创建页面并显示错误
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => false
+                ];
+            }
+            
+            $this->render('collections/edit', [
+                'collection' => $data, // 传递用户输入的数据
+                'relatedContent' => [],
+                'contentOptions' => $contentOptions,
+                'errors' => ['general' => '创建失败: ' . $e->getMessage()],
+                'isCreateMode' => true,
+                'title' => '创建合集 - 视频分享网站管理后台',
+                'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
+            ]);
         }
     }
 
