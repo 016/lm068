@@ -51,5 +51,10 @@
 - 关于View部分，布局内容存放在 对应 layouts 文件夹内, 在可以使用的时候使用layouts内的布局文件
   - layouts/main.php 为公共布局文件, 无特殊指定时使用该布局
   - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容不需要重复渲染
+- 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
+  - www.a.com 已指向 php_app_root/php_app/public_frontend
+  - admin.a.com 已指向 php_app_root/php_app/public_backend
 - use namespace auto load
+
+### 其他要点
 - 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了，正确的写法应该是。 "?int $limit = null"
