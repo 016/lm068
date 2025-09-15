@@ -123,7 +123,7 @@ $pageTitle = '标签管理 - 视频分享网站管理后台';
         <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="/backend/tags/create" class="btn btn-primary d-flex align-items-center gap-2">
+                    <a href="/tags/create" class="btn btn-primary d-flex align-items-center gap-2">
                         <i class="bi bi-plus-lg"></i>
                         创建新标签
                     </a>
@@ -318,7 +318,7 @@ $pageTitle = '标签管理 - 视频分享网站管理后台';
                                     <div class="empty-state">
                                         <i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d;"></i>
                                         <p class="mt-2 text-muted">暂无标签数据</p>
-                                        <a href="/backend/tags/create" class="btn btn-primary">创建第一个标签</a>
+                                        <a href="/tags/create" class="btn btn-primary">创建第一个标签</a>
                                     </div>
                                 </td>
                             </tr>

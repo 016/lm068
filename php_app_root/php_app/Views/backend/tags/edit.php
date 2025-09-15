@@ -25,7 +25,7 @@ $jsFiles = [
                                 <p class="page-subtitle"><?= $tag ? 'Edit Tag Information' : 'Create New Tag' ?></p>
                             </div>
                         </div>
-                        <a href="/backend/tags" class="back-link">
+                        <a href="/tags" class="back-link">
                             <i class="bi bi-arrow-left"></i>
                             返回标签列表
                         </a>
@@ -34,7 +34,7 @@ $jsFiles = [
                         <ol class="breadcrumb breadcrumb-custom">
                             <li class="breadcrumb-item"><a href="/backend" class="breadcrumb-link">首页</a></li>
                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">内容管理</a></li>
-                            <li class="breadcrumb-item"><a href="/backend/tags" class="breadcrumb-link">标签管理</a></li>
+                            <li class="breadcrumb-item"><a href="/tags" class="breadcrumb-link">标签管理</a></li>
                             <li class="breadcrumb-item active breadcrumb-active" aria-current="page"><?= $tag ? '编辑标签' : '创建标签' ?></li>
                         </ol>
                     </nav>
@@ -50,7 +50,7 @@ $jsFiles = [
                             </div>
                             
                             <div class="form-body">
-                                <form id="tagEditForm" action="<?= $tag ? '/backend/tags/' . $tag['id'] : '/backend/tags' ?>" method="POST">
+                                <form id="tagEditForm" action="<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>" method="POST">
                                     <?php if ($tag): ?>
                                         <input type="hidden" name="_method" value="PUT">
                                         <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($tag['id']) ?>">
@@ -283,7 +283,7 @@ $jsFiles = [
 
                                     <!-- 表单操作按钮 -->
                                     <div class="form-actions">
-                                        <a href="/backend/tags" class="btn btn-outline-secondary">
+                                        <a href="/tags" class="btn btn-outline-secondary">
                                             <i class="bi bi-x-lg"></i>
                                             取消
                                         </a>
@@ -304,97 +304,5 @@ $jsFiles = [
             </main>
 
 <script>
-    // 页面配置
-    window.TagEditConfig = {
-        isEdit: <?= $tag ? 'true' : 'false' ?>,
-        tagId: <?= $tag ? $tag['id'] : 'null' ?>,
-        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>,
-        submitUrl: '<?= $tag ? '/backend/tags/' . $tag['id'] : '/backend/tags' ?>',
-        method: '<?= $tag ? 'PUT' : 'POST' ?>'
-    };
 
-    // 表单提交处理
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('tagEditForm');
-        const nameInput = document.getElementById('name_cn');
-        const iconInput = document.getElementById('icon_class');
-        const colorSelect = document.getElementById('color_class');
-        const previewBtn = document.getElementById('tagPreviewBtn');
-        const previewIcon = document.getElementById('previewIcon');
-        const previewText = document.getElementById('previewText');
-
-        // 实时预览更新
-        function updatePreview() {
-            const name = nameInput.value || '新标签';
-            const icon = iconInput.value || 'bi-star';
-            const color = colorSelect.value || 'btn-outline-primary';
-
-            previewText.textContent = name;
-            previewIcon.className = 'bi ' + icon;
-            previewBtn.className = 'btn ' + color;
-        }
-
-        nameInput.addEventListener('input', updatePreview);
-        iconInput.addEventListener('input', updatePreview);
-        colorSelect.addEventListener('change', updatePreview);
-
-        // 表单提交
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-
-            // 处理checkbox状态
-            if (!document.getElementById('status_id').checked) {
-                formData.set('status_id', '0');
-            }
-
-            // 获取选中的关联视频
-            const selectedVideos = [];
-            document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
-                selectedVideos.push(checkbox.value);
-            });
-            formData.set('related_videos', JSON.stringify(selectedVideos));
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
-            submitBtn.disabled = true;
-
-            fetch(window.TagEditConfig.submitUrl, {
-                method: window.TagEditConfig.method === 'PUT' ? 'POST' : 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message || '操作成功');
-                    window.location.href = '/backend/tags';
-                } else {
-                    alert(data.message || '操作失败');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('操作失败，请重试');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-
-        // 初始化多选组件
-        if (typeof MultiSelectDropdown !== 'undefined' && window.TagEditConfig.contentOptions) {
-            new MultiSelectDropdown({
-                container: '#videoMultiSelect',
-                options: window.TagEditConfig.contentOptions,
-                placeholder: '选择关联视频...',
-                searchPlaceholder: '搜索视频...'
-            });
-        }
-    });
 </script>

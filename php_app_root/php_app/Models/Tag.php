@@ -112,11 +112,11 @@ class Tag extends Model
                 SET content_cnt = (
                     SELECT COUNT(*) 
                     FROM content_tag 
-                    WHERE tag_id = :tag_id
+                    WHERE tag_id = :tag_id1
                 )
-                WHERE id = :tag_id";
-        
-        $this->db->query($sql, ['tag_id' => $tagId]);
+                WHERE id = :tag_id2";
+
+        $this->db->query($sql, ['tag_id1' => $tagId, 'tag_id2' => $tagId]);
         return true;
     }
 
@@ -151,7 +151,7 @@ class Tag extends Model
                     ['tag_id' => $tagId, 'content_id' => $contentId]
                 );
             }
-            
+
             $this->updateContentCount($tagId);
             $this->db->commit();
             
