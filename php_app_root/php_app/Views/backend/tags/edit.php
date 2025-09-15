@@ -36,6 +36,17 @@
                             </div>
                             
                             <div class="form-body">
+                                <?php if (!empty($errors)): ?>
+                                <div class="alert alert-danger mb-4">
+                                    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> 表单验证失败</h6>
+                                    <ul class="mb-0">
+                                        <?php foreach ($errors as $field => $error): ?>
+                                            <li><?= htmlspecialchars($error) ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <?php endif; ?>
+                                
                                 <form id="tagEditForm" action="<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>" method="POST">
                                     <?php if ($tag): ?>
                                         <input type="hidden" name="_method" value="PUT">
@@ -77,16 +88,22 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_cn" class="form-label required">中文标题</label>
-                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" 
+                                                    <input type="text" class="form-control <?= !empty($errors['name_cn']) ? 'is-invalid' : '' ?>" id="name_cn" name="name_cn" 
                                                            value="<?= htmlspecialchars($tag['name_cn'] ?? '') ?>" required>
+                                                    <?php if (!empty($errors['name_cn'])): ?>
+                                                        <div class="invalid-feedback"><?= htmlspecialchars($errors['name_cn']) ?></div>
+                                                    <?php endif; ?>
                                                     <div class="form-text">标签的中文显示名称</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_en" class="form-label required">英文标题</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" 
+                                                    <input type="text" class="form-control <?= !empty($errors['name_en']) ? 'is-invalid' : '' ?>" id="name_en" name="name_en" 
                                                            value="<?= htmlspecialchars($tag['name_en'] ?? '') ?>" required>
+                                                    <?php if (!empty($errors['name_en'])): ?>
+                                                        <div class="invalid-feedback"><?= htmlspecialchars($errors['name_en']) ?></div>
+                                                    <?php endif; ?>
                                                     <div class="form-text">标签的英文显示名称</div>
                                                 </div>
                                             </div>
@@ -142,16 +159,22 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="short_desc_cn" class="form-label">中文简介</label>
-                                                    <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" 
+                                                    <input type="text" class="form-control <?= !empty($errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" 
                                                            value="<?= htmlspecialchars($tag['short_desc_cn'] ?? '') ?>" maxlength="100">
+                                                    <?php if (!empty($errors['short_desc_cn'])): ?>
+                                                        <div class="invalid-feedback"><?= htmlspecialchars($errors['short_desc_cn']) ?></div>
+                                                    <?php endif; ?>
                                                     <div class="form-text">标签的简短中文描述（最多100字符）</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="short_desc_en" class="form-label">英文简介</label>
-                                                    <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" 
+                                                    <input type="text" class="form-control <?= !empty($errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" 
                                                            value="<?= htmlspecialchars($tag['short_desc_en'] ?? '') ?>" maxlength="100">
+                                                    <?php if (!empty($errors['short_desc_en'])): ?>
+                                                        <div class="invalid-feedback"><?= htmlspecialchars($errors['short_desc_en']) ?></div>
+                                                    <?php endif; ?>
                                                     <div class="form-text">标签的简短英文描述（最多100字符）</div>
                                                 </div>
                                             </div>
@@ -292,14 +315,12 @@
 <script>
     // 页面配置
     window.TagEditConfig = {
-        isEdit: <?= $tag ? 'true' : 'false' ?>,
-        tagId: <?= $tag ? $tag['id'] : 'null' ?>,
-        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>,
-        submitUrl: '<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>',
-        method: '<?= $tag ? 'PUT' : 'POST' ?>'
+        isEdit: <?= $tag && !empty($tag['id']) ? 'true' : 'false' ?>,
+        tagId: <?= $tag && !empty($tag['id']) ? $tag['id'] : 'null' ?>,
+        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>
     };
 
-    // 表单提交处理
+    // 表单处理（传统提交方式）
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('tagEditForm');
         const nameInput = document.getElementById('name_cn');
@@ -324,15 +345,17 @@
         iconInput.addEventListener('input', updatePreview);
         colorSelect.addEventListener('change', updatePreview);
 
-        // 表单提交
+        // 表单提交（传统方式，不使用AJAX）
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-
             // 处理checkbox状态
-            if (!document.getElementById('status_id').checked) {
-                formData.set('status_id', '0');
+            const statusCheckbox = document.getElementById('status_id');
+            if (!statusCheckbox.checked) {
+                // 如果没有选中，则添加一个隐藏字段设置为0
+                const hiddenStatus = document.createElement('input');
+                hiddenStatus.type = 'hidden';
+                hiddenStatus.name = 'status_id';
+                hiddenStatus.value = '0';
+                form.appendChild(hiddenStatus);
             }
 
             // 获取选中的关联视频
@@ -340,38 +363,24 @@
             document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
                 selectedVideos.push(checkbox.value);
             });
-            formData.set('related_videos', JSON.stringify(selectedVideos));
+            
+            // 添加关联视频数据到表单
+            selectedVideos.forEach(function(videoId, index) {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'related_videos[' + index + ']';
+                hiddenInput.value = videoId;
+                form.appendChild(hiddenInput);
+            });
 
+            // 显示加载状态
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
             submitBtn.disabled = true;
-
-            fetch(window.TagEditConfig.submitUrl, {
-                method: window.TagEditConfig.method === 'PUT' ? 'POST' : 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message || '操作成功');
-                    window.location.href = '/tags';
-                } else {
-                    alert(data.message || '操作失败');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('操作失败，请重试');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
+            
+            // 表单将会自动提交到后端，不需要阻止默认行为
+            // 后端将处理成功/失败情况并进行相应的跳转或渲染
         });
-
     });
 </script>

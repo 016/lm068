@@ -95,7 +95,7 @@ class TagController extends BackendController
         $id = (int)($request->post('id') ?? 0);
         
         if (!$id) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
+            $this->redirect('/tags');
             return;
         }
 
@@ -114,10 +114,40 @@ class TagController extends BackendController
         // 使用模型验证，传入当前ID以排除自身
         $errors = $this->tagModel->validate($data, true, $id);
         if (!empty($errors)) {
-            $this->jsonResponse([
-                'success' => false, 
-                'message' => '表单验证失败',
-                'errors' => $errors
+            // 验证失败，返回编辑页面并显示错误
+            $tag = $this->tagModel->findById($id);
+            if (!$tag) {
+                $this->redirect('/tags');
+                return;
+            }
+            
+            // 合并用户输入的数据到tag数据中
+            $tag = array_merge($tag, $data);
+            
+            $relatedContent = $this->tagModel->getRelatedContent($id);
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            $selectedContentIds = array_column($relatedContent, 'id');
+            
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => in_array($content['id'], $selectedContentIds)
+                ];
+            }
+            
+            $this->render('tags/edit', [
+                'tag' => $tag,
+                'relatedContent' => $relatedContent,
+                'contentOptions' => $contentOptions,
+                'errors' => $errors,
+                'pageTitle' => '编辑标签 - 视频分享网站管理后台',
+                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
             ]);
             return;
         }
@@ -132,10 +162,46 @@ class TagController extends BackendController
                 $this->tagModel->syncContentAssociations($id, $contentIds);
             }
 
-            $this->jsonResponse(['success' => true, 'message' => '标签更新成功']);
+            // 成功后跳转到列表页面
+            $this->redirect('/tags');
         } catch (\Exception $e) {
             error_log("Tag update error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '更新失败: ' . $e->getMessage()]);
+            
+            // 出错时返回编辑页面并显示错误
+            $tag = $this->tagModel->findById($id);
+            if (!$tag) {
+                $this->redirect('/tags');
+                return;
+            }
+            
+            // 合并用户输入的数据到tag数据中
+            $tag = array_merge($tag, $data);
+            
+            $relatedContent = $this->tagModel->getRelatedContent($id);
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            $selectedContentIds = array_column($relatedContent, 'id');
+            
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => in_array($content['id'], $selectedContentIds)
+                ];
+            }
+            
+            $this->render('tags/edit', [
+                'tag' => $tag,
+                'relatedContent' => $relatedContent,
+                'contentOptions' => $contentOptions,
+                'errors' => ['general' => '更新失败: ' . $e->getMessage()],
+                'pageTitle' => '编辑标签 - 视频分享网站管理后台',
+                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            ]);
         }
     }
 
@@ -179,10 +245,28 @@ class TagController extends BackendController
         // 使用模型验证
         $errors = $this->tagModel->validate($data, false);
         if (!empty($errors)) {
-            $this->jsonResponse([
-                'success' => false, 
-                'message' => '表单验证失败',
-                'errors' => $errors
+            // 验证失败，返回创建页面并显示错误
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => false
+                ];
+            }
+            
+            $this->render('tags/edit', [
+                'tag' => $data, // 传递用户输入的数据
+                'relatedContent' => [],
+                'contentOptions' => $contentOptions,
+                'errors' => $errors,
+                'pageTitle' => '创建标签 - 视频分享网站管理后台',
+                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
             ]);
             return;
         }
@@ -196,10 +280,34 @@ class TagController extends BackendController
                 $this->tagModel->syncContentAssociations($tagId, $contentIds);
             }
 
-            $this->jsonResponse(['success' => true, 'message' => '标签创建成功', 'tag_id' => $tagId]);
+            // 成功后跳转到列表页面
+            $this->redirect('/tags');
         } catch (\Exception $e) {
             error_log("Tag creation error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '创建失败: ' . $e->getMessage()]);
+            
+            // 出错时返回创建页面并显示错误
+            $allContent = $this->contentModel->findAll([
+                'status_id' => [21, 29, 31, 39, 91, 99]
+            ]);
+            
+            $contentOptions = [];
+            foreach ($allContent as $content) {
+                $contentOptions[] = [
+                    'id' => $content['id'],
+                    'title' => $content['title_cn'] ?: $content['title_en'],
+                    'selected' => false
+                ];
+            }
+            
+            $this->render('tags/edit', [
+                'tag' => $data, // 传递用户输入的数据
+                'relatedContent' => [],
+                'contentOptions' => $contentOptions,
+                'errors' => ['general' => '创建失败: ' . $e->getMessage()],
+                'pageTitle' => '创建标签 - 视频分享网站管理后台',
+                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            ]);
         }
     }
 

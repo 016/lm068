@@ -144,3 +144,50 @@ php_app/
 **使用效果**: 用户提交重复name_cn时，表单字段会高亮显示错误，并在字段下方显示"中文名称已存在"的友好提示，无需再看到技术性的数据库错误信息。
 
 **适用范围**: 此方案可应用于所有需要表单验证的模块(Collection, User等)，确保统一的错误处理体验。
+
+### 传统POST表单提交方案 (b-tag-edit传统表单修复)
+**问题**: b-tag-edit模块使用AJAX提交表单，不符合传统POST表单提交的要求，需要改为传统的服务器端页面刷新方式。
+
+**解决方案**: 
+1. **控制器层修改**: 在TagController.php中修改store()和update()方法
+   - **成功场景**: 使用`$this->redirect('/tags')`跳转到列表页面
+   - **失败场景**: 重新渲染编辑页面，传递错误信息和用户输入数据
+   - **数据保持**: 将用户输入的数据与tag数据合并，便于用户修改
+
+2. **视图层修改**: 在Views/backend/tags/edit.php中
+   - **错误显示**: 在表单顶部添加alert错误提示区域
+   - **字段错误**: 为每个输入字段添加`.is-invalid`样式和`.invalid-feedback`错误消息
+   - **表单提交**: 移除AJAX代码，使用传统form提交方式
+   - **数据处理**: JavaScript仅处理checkbox和关联视频数据的格式化
+
+3. **核心代码变更**:
+   ```php
+   // 验证失败时返回编辑页面
+   if (!empty($errors)) {
+       $tag = array_merge($tag, $data); // 保持用户输入
+       $this->render('tags/edit', [
+           'tag' => $tag,
+           'errors' => $errors,
+           // 其他数据...
+       ]);
+       return;
+   }
+   
+   // 成功时跳转到列表页
+   $this->redirect('/tags');
+   ```
+
+4. **前端处理**:
+   ```html
+   <?php if (!empty($errors['name_cn'])): ?>
+       <div class="invalid-feedback"><?= htmlspecialchars($errors['name_cn']) ?></div>
+   <?php endif; ?>
+   ```
+
+**使用效果**: 
+- 成功提交: 自动跳转到`/tags`标签列表页面
+- 验证失败: 停留在当前页面，显示用户填写的数据和具体的错误信息
+- 服务器错误: 显示错误信息，保持用户数据不丢失
+- 完全遵循传统POST表单提交模式，无AJAX依赖
+
+**适用范围**: 此方案作为标准模式可应用于所有需要传统POST表单处理的模块，确保一致的用户体验和错误处理流程。
