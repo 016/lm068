@@ -1053,7 +1053,7 @@ const TableOperations = {
                     case 'number':
                         if (column.id === 'content_cnt') {
                             td.innerHTML = `
-                                <a href="/videos/index?tag_id=${row["id"]}" target="_blank">${row[column.id]?.toLocaleString() || '0'}</a>
+                                <a href="/videos/index?tag_id=${row["id"]}"  class="content-link" target="_blank">${row[column.id]?.toLocaleString() || '0'}</a>
                                 
                             `;
                         } else {
