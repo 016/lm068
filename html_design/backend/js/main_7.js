@@ -730,6 +730,7 @@ const TableOperations = {
             'content_cnt': 'number',
             'views': 'number',
             'count': 'number',
+            'icon_class': 'icon_class',
             'status': 'status',
             'actions': 'actions'
         };
@@ -877,7 +878,7 @@ const TableOperations = {
                 const td = document.createElement('td');
                 td.className = 'table-cell';
                 td.setAttribute('data-column', column.id);
-                
+
                 // 根据列类型渲染不同的内容
                 switch (column.type) {
                     case 'status':
@@ -887,6 +888,13 @@ const TableOperations = {
                             <span class="badge rounded-pill ${badgeClass}">
                                 <i class="bi bi-circle-fill badge-icon"></i> ${statusData?.text || '未知'}
                             </span>
+                        `;
+                        break;
+
+                    case 'icon_class':
+                        const iconClassString = row[column.id];
+                        td.innerHTML = `
+                            <div class="icon-class-display"><span class="bi ${iconClassString}"></span> ${iconClassString}</div>
                         `;
                         break;
                         
