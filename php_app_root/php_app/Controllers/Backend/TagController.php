@@ -46,7 +46,10 @@ class TagController extends BackendController
             'search' => $search,
             'statusFilter' => $statusFilter,
             'orderBy' => $orderBy,
-            'stats' => $stats
+            'stats' => $stats,
+            'pageTitle' => '标签管理 - 视频分享网站管理后台',
+            'css_files' => ['tag_list_8.css'],
+            'js_files' => ['tag_list_11.js']
         ]);
     }
 

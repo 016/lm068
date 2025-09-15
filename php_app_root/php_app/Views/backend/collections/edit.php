@@ -1,5 +1,3 @@
-<?php $content = ob_start(); ?>
-
 <!-- Collection Edit Form Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -335,10 +333,3 @@ document.getElementById('collectionEditForm').addEventListener('submit', functio
     });
 });
 </script>
-
-<?php $content = ob_get_clean(); ?>
-
-<?php 
-// 渲染布局
-include __DIR__ . '/../layouts/main.php'; 
-?>

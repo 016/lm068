@@ -1,5 +1,3 @@
-<?php $content = ob_start(); ?>
-
 <!-- Collection Show Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -227,10 +225,3 @@
         </div>
     </div>
 </main>
-
-<?php $content = ob_get_clean(); ?>
-
-<?php 
-// 渲染布局
-include __DIR__ . '/../layouts/main.php'; 
-?>

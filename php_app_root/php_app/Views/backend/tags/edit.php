@@ -13,201 +13,6 @@ $jsFiles = [
 ];
 ?>
 
-<!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle) ?></title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <?php foreach ($cssFiles as $cssFile): ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>">
-    <?php endforeach; ?>
-</head>
-<body>
-    <div class="admin-layout">
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a href="/backend" class="logo">
-                    <span class="logo-icon">📺</span>
-                    <span class="logo-text">VideoHub Admin</span>
-                </a>
-            </div>
-            
-            <div class="nav-menu">
-                <div class="nav-section">
-                    <a href="/backend" class="nav-item">
-                        <i class="bi bi-grid nav-icon"></i>
-                        <span class="nav-text">仪表板</span>
-                        <span class="tooltip">仪表板</span>
-                    </a>
-                    <a href="/backend/content" class="nav-item">
-                        <i class="bi bi-camera-video nav-icon"></i>
-                        <span class="nav-text">视频管理</span>
-                        <span class="tooltip">视频管理</span>
-                    </a>
-                    <a href="/backend/tags" class="nav-item active">
-                        <i class="bi bi-tags nav-icon"></i>
-                        <span class="nav-text">标签管理</span>
-                        <span class="tooltip">标签管理</span>
-                    </a>
-                    <a href="/backend/users" class="nav-item">
-                        <i class="bi bi-people nav-icon"></i>
-                        <span class="nav-text">用户管理</span>
-                        <span class="tooltip">用户管理</span>
-                    </a>
-                    <a href="/backend/comments" class="nav-item">
-                        <i class="bi bi-chat-left nav-icon"></i>
-                        <span class="nav-text">评论管理</span>
-                        <span class="tooltip">评论管理</span>
-                    </a>
-                    <a href="/backend/analytics" class="nav-item">
-                        <i class="bi bi-bar-chart nav-icon"></i>
-                        <span class="nav-text">数据分析</span>
-                        <span class="tooltip">数据分析</span>
-                    </a>
-                    <a href="/backend/subscriptions" class="nav-item">
-                        <i class="bi bi-envelope nav-icon"></i>
-                        <span class="nav-text">订阅管理</span>
-                        <span class="tooltip">订阅管理</span>
-                    </a>
-                    <a href="/backend/moderation" class="nav-item">
-                        <i class="bi bi-shield-check nav-icon"></i>
-                        <span class="nav-text">内容审核</span>
-                        <span class="tooltip">内容审核</span>
-                    </a>
-                    <a href="/backend/settings" class="nav-item">
-                        <i class="bi bi-gear nav-icon"></i>
-                        <span class="nav-text">系统设置</span>
-                        <span class="tooltip">系统设置</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <button class="toggle-sidebar" id="toggleSidebar">
-                        <i class="bi bi-list sidebar-toggle-icon"></i>
-                    </button>
-                    
-                    <!-- Navigation Tabs -->
-                    <nav class="topbar-nav">
-                        <a href="/backend/content" class="nav-tab">视频</a>
-                        <a href="/backend/tags" class="nav-tab active">标签</a>
-                        <a href="/backend/collections" class="nav-tab">合集</a>
-                        <a href="/backend/users" class="nav-tab">用户</a>
-                    </nav>
-                </div>
-                
-                <div class="header-actions">
-                    <!-- Search Box -->
-                    <div class="header-search">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="搜索标签、关联视频...">
-                    </div>
-                    
-                    <div class="dropdown-container">
-                        <button class="header-btn" id="notificationBtn">
-                            <i class="bi bi-bell header-icon"></i>
-                            <span class="notification-badge"></span>
-                        </button>
-                        <div class="dropdown-menu" id="notificationDropdown">
-                            <div class="dropdown-header">
-                                <h6>通知中心</h6>
-                                <button class="mark-all-read">全部标记已读</button>
-                            </div>
-                            <div class="dropdown-body">
-                                <div class="notification-item">
-                                    <div class="notification-icon new-user">
-                                        <i class="bi bi-tag notification-icon-style"></i>
-                                    </div>
-                                    <div class="notification-content">
-                                        <div class="notification-title">新标签创建</div>
-                                        <div class="notification-text">用户创建了"科技前沿"标签</div>
-                                        <div class="notification-time">5分钟前</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dropdown-footer">
-                                <button class="view-all-btn">查看全部通知</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dropdown-container">
-                        <button class="header-btn" id="userBtn">
-                            <i class="bi bi-person header-icon"></i>
-                        </button>
-                        <div class="dropdown-menu" id="userDropdown">
-                            <div class="dropdown-body">
-                                <div class="user-info">
-                                    <div class="user-avatar">
-                                        <i class="bi bi-person" style="font-size: 24px;"></i>
-                                    </div>
-                                    <div class="user-details">
-                                        <div class="user-name">管理员</div>
-                                        <div class="user-email">admin@videohub.com</div>
-                                    </div>
-                                </div>
-                                <div class="dropdown-item">
-                                    <i class="bi bi-person notification-icon-style"></i>
-                                    个人资料
-                                </div>
-                                <div class="dropdown-item">
-                                    <i class="bi bi-gear notification-icon-style"></i>
-                                    账户设置
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="dropdown-item text-danger">
-                                    <i class="bi bi-box-arrow-right notification-icon-style"></i>
-                                    退出登录
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Theme Toggle Button -->
-                    <div class="dropdown-container">
-                        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
-                            <i class="bi bi-sun theme-icon theme-toggle-icon" id="themeIcon"></i>
-                        </button>
-                        <div class="dropdown-menu" id="themeDropdown">
-                            <div class="dropdown-body">
-                                <div class="theme-option active" data-theme="light">
-                                    <i class="bi bi-sun notification-icon-style"></i>
-                                    <span>浅色模式</span>
-                                    <i class="bi bi-check check-icon notification-icon-style"></i>
-                                </div>
-                                <div class="theme-option" data-theme="dark">
-                                    <i class="bi bi-moon notification-icon-style"></i>
-                                    <span>深色模式</span>
-                                    <i class="bi bi-check check-icon notification-icon-style"></i>
-                                </div>
-                                <div class="theme-option" data-theme="auto">
-                                    <i class="bi bi-display notification-icon-style"></i>
-                                    <span>跟随系统</span>
-                                    <i class="bi bi-check check-icon notification-icon-style"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
             <!-- Tag Edit Form Content -->
             <main class="dashboard-content">
                 <!-- Breadcrumb and Page Title -->
@@ -498,121 +303,98 @@ $jsFiles = [
                 </div>
             </main>
 
-            <!-- Footer -->
-            <footer class="footer">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>© 2024 VideoHub | 最后更新: 2分钟前</div>
-                    <div>在线管理员: <span class="summary-highlight">3人</span></div>
-                    <div>系统状态: <span style="color: var(--success);">🟢正常</span></div>
-                </div>
-            </footer>
-        </div>
-    </div>
+<script>
+    // 页面配置
+    window.TagEditConfig = {
+        isEdit: <?= $tag ? 'true' : 'false' ?>,
+        tagId: <?= $tag ? $tag['id'] : 'null' ?>,
+        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        submitUrl: '<?= $tag ? '/backend/tags/' . $tag['id'] : '/backend/tags' ?>',
+        method: '<?= $tag ? 'PUT' : 'POST' ?>'
+    };
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay"></div>
+    // 表单提交处理
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('tagEditForm');
+        const nameInput = document.getElementById('name_cn');
+        const iconInput = document.getElementById('icon_class');
+        const colorSelect = document.getElementById('color_class');
+        const previewBtn = document.getElementById('tagPreviewBtn');
+        const previewIcon = document.getElementById('previewIcon');
+        const previewText = document.getElementById('previewText');
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <?php foreach ($jsFiles as $jsFile): ?>
-        <script src="<?= htmlspecialchars($jsFile) ?>"></script>
-    <?php endforeach; ?>
+        // 实时预览更新
+        function updatePreview() {
+            const name = nameInput.value || '新标签';
+            const icon = iconInput.value || 'bi-star';
+            const color = colorSelect.value || 'btn-outline-primary';
 
-    <script>
-        // 页面配置
-        window.TagEditConfig = {
-            isEdit: <?= $tag ? 'true' : 'false' ?>,
-            tagId: <?= $tag ? $tag['id'] : 'null' ?>,
-            contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>,
-            submitUrl: '<?= $tag ? '/backend/tags/' . $tag['id'] : '/backend/tags' ?>',
-            method: '<?= $tag ? 'PUT' : 'POST' ?>'
-        };
+            previewText.textContent = name;
+            previewIcon.className = 'bi ' + icon;
+            previewBtn.className = 'btn ' + color;
+        }
 
-        // 表单提交处理
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('tagEditForm');
-            const nameInput = document.getElementById('name_cn');
-            const iconInput = document.getElementById('icon_class');
-            const colorSelect = document.getElementById('color_class');
-            const previewBtn = document.getElementById('tagPreviewBtn');
-            const previewIcon = document.getElementById('previewIcon');
-            const previewText = document.getElementById('previewText');
+        nameInput.addEventListener('input', updatePreview);
+        iconInput.addEventListener('input', updatePreview);
+        colorSelect.addEventListener('change', updatePreview);
 
-            // 实时预览更新
-            function updatePreview() {
-                const name = nameInput.value || '新标签';
-                const icon = iconInput.value || 'bi-star';
-                const color = colorSelect.value || 'btn-outline-primary';
-                
-                previewText.textContent = name;
-                previewIcon.className = 'bi ' + icon;
-                previewBtn.className = 'btn ' + color;
+        // 表单提交
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            // 处理checkbox状态
+            if (!document.getElementById('status_id').checked) {
+                formData.set('status_id', '0');
             }
 
-            nameInput.addEventListener('input', updatePreview);
-            iconInput.addEventListener('input', updatePreview);
-            colorSelect.addEventListener('change', updatePreview);
-
-            // 表单提交
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(form);
-                
-                // 处理checkbox状态
-                if (!document.getElementById('status_id').checked) {
-                    formData.set('status_id', '0');
-                }
-
-                // 获取选中的关联视频
-                const selectedVideos = [];
-                document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
-                    selectedVideos.push(checkbox.value);
-                });
-                formData.set('related_videos', JSON.stringify(selectedVideos));
-
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
-                submitBtn.disabled = true;
-
-                fetch(window.TagEditConfig.submitUrl, {
-                    method: window.TagEditConfig.method === 'PUT' ? 'POST' : 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message || '操作成功');
-                        window.location.href = '/backend/tags';
-                    } else {
-                        alert(data.message || '操作失败');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('操作失败，请重试');
-                })
-                .finally(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                });
+            // 获取选中的关联视频
+            const selectedVideos = [];
+            document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
+                selectedVideos.push(checkbox.value);
             });
+            formData.set('related_videos', JSON.stringify(selectedVideos));
 
-            // 初始化多选组件
-            if (typeof MultiSelectDropdown !== 'undefined' && window.TagEditConfig.contentOptions) {
-                new MultiSelectDropdown({
-                    container: '#videoMultiSelect',
-                    options: window.TagEditConfig.contentOptions,
-                    placeholder: '选择关联视频...',
-                    searchPlaceholder: '搜索视频...'
-                });
-            }
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+            submitBtn.disabled = true;
+
+            fetch(window.TagEditConfig.submitUrl, {
+                method: window.TagEditConfig.method === 'PUT' ? 'POST' : 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message || '操作成功');
+                    window.location.href = '/backend/tags';
+                } else {
+                    alert(data.message || '操作失败');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败，请重试');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
         });
-    </script>
-</body>
-</html>
+
+        // 初始化多选组件
+        if (typeof MultiSelectDropdown !== 'undefined' && window.TagEditConfig.contentOptions) {
+            new MultiSelectDropdown({
+                container: '#videoMultiSelect',
+                options: window.TagEditConfig.contentOptions,
+                placeholder: '选择关联视频...',
+                searchPlaceholder: '搜索视频...'
+            });
+        }
+    });
+</script>
