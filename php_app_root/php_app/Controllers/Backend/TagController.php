@@ -87,7 +87,7 @@ class TagController extends BackendController
             'isCreateMode' => false,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            'js_files' => ['multi_select_dropdown_2.js']
         ]);
     }
 
@@ -149,7 +149,7 @@ class TagController extends BackendController
                 'isCreateMode' => false,
                 'pageTitle' => '编辑标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+                'js_files' => ['multi_select_dropdown_2.js']
             ]);
             return;
         }
@@ -203,7 +203,7 @@ class TagController extends BackendController
                 'isCreateMode' => false,
                 'pageTitle' => '编辑标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+                'js_files' => ['multi_select_dropdown_2.js']
             ]);
         }
     }
@@ -230,7 +230,7 @@ class TagController extends BackendController
             'isCreateMode' => true,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            'js_files' => ['multi_select_dropdown_2.js']
         ]);
     }
 
@@ -274,7 +274,7 @@ class TagController extends BackendController
                 'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+                'js_files' => ['multi_select_dropdown_2.js']
             ]);
             return;
         }
@@ -315,7 +315,7 @@ class TagController extends BackendController
                 'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+                'js_files' => ['multi_select_dropdown_2.js']
             ]);
         }
     }

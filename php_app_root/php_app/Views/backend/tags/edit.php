@@ -1,6 +1,3 @@
-<?php
-    var_dump($tag);
-?>
             <!-- Tag Edit Form Content -->
             <main class="dashboard-content">
                 <!-- Breadcrumb and Page Title -->
@@ -315,14 +312,7 @@
             </main>
 
 <script>
-    // 页面配置
-    window.TagEditConfig = {
-        isEdit: <?= $tag && !empty($tag['id']) ? 'true' : 'false' ?>,
-        tagId: <?= $tag && !empty($tag['id']) ? $tag['id'] : 'null' ?>,
-        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>
-    };
-
-    // 表单处理（传统提交方式）
+    // 简化的表单处理（传统POST提交方式）
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('tagEditForm');
         const nameInput = document.getElementById('name_cn');
@@ -343,16 +333,51 @@
             previewBtn.className = 'btn ' + color;
         }
 
-        nameInput.addEventListener('input', updatePreview);
-        iconInput.addEventListener('input', updatePreview);
-        colorSelect.addEventListener('change', updatePreview);
+        // 绑定预览更新事件
+        if (nameInput) nameInput.addEventListener('input', updatePreview);
+        if (iconInput) iconInput.addEventListener('input', updatePreview);
+        if (colorSelect) colorSelect.addEventListener('change', updatePreview);
 
-        // 表单提交（传统方式，不使用AJAX）
+        // 初始化多选组件（如果存在）
+        if (window.MultiSelectDropdown && document.getElementById('videoMultiSelect')) {
+            const contentOptions = <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>;
+            
+            // 转换数据格式
+            const videoData = contentOptions.map(function(option) {
+                return {
+                    id: option.id.toString(),
+                    text: option.title
+                };
+            });
+
+            const selectedData = contentOptions.filter(function(option) {
+                return option.selected;
+            }).map(function(option) {
+                return {
+                    id: option.id.toString(),
+                    text: option.title
+                };
+            });
+
+            // 创建多选组件
+            new MultiSelectDropdown(document.getElementById('videoMultiSelect'), {
+                placeholder: '选择关联视频...',
+                searchPlaceholder: '搜索视频标题...',
+                hiddenInputName: 'related_videos',
+                maxDisplayItems: 7,
+                columns: 4,
+                data: videoData,
+                selected: selectedData,
+                allowClear: true
+            });
+        }
+
+        // 表单提交处理（传统POST方式）
         form.addEventListener('submit', function(e) {
             // 处理checkbox状态
             const statusCheckbox = document.getElementById('status_id');
             if (!statusCheckbox.checked) {
-                // 如果没有选中，则添加一个隐藏字段设置为0
+                // 如果没有选中，添加隐藏字段设置为0
                 const hiddenStatus = document.createElement('input');
                 hiddenStatus.type = 'hidden';
                 hiddenStatus.name = 'status_id';
@@ -360,29 +385,22 @@
                 form.appendChild(hiddenStatus);
             }
 
-            // 获取选中的关联视频
-            const selectedVideos = [];
-            document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
-                selectedVideos.push(checkbox.value);
-            });
-            
-            // 添加关联视频数据到表单
-            selectedVideos.forEach(function(videoId, index) {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'related_videos[' + index + ']';
-                hiddenInput.value = videoId;
-                form.appendChild(hiddenInput);
-            });
-
             // 显示加载状态
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
-            submitBtn.disabled = true;
+            if (submitBtn) {
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+                submitBtn.disabled = true;
+                
+                // 如果用户刷新页面或返回，恢复按钮状态
+                setTimeout(function() {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 5000);
+            }
             
-            // 表单将会自动提交到后端，不需要阻止默认行为
-            // 后端将处理成功/失败情况并进行相应的跳转或渲染
+            // 表单将会自动提交到后端（传统POST方式）
+            // 不阻止默认行为，让浏览器执行正常的表单提交
         });
     });
 </script>
