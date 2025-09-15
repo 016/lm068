@@ -54,6 +54,8 @@
 - 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
   - www.a.com 已指向 php_app_root/php_app/public_frontend
   - admin.a.com 已指向 php_app_root/php_app/public_backend
+- MySQL
+  - 禁止使用同名占位符, 例如 update tableA set cnt = (select count(*) from tableB where ta_id=:ta_id) where id =:ta_id; 这里出现了2个:ta_id 分别改成:ta_id1, ta_id2. 
 - use namespace auto load
 
 ### 其他要点
