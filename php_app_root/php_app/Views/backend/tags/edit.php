@@ -1,17 +1,3 @@
-<?php
-$pageTitle = ($tag ? '编辑标签' : '创建标签') . ' - 视频分享网站管理后台';
-$cssFiles = [
-    '/assets/css/main_3.css',
-    '/assets/css/tag_edit_8.css',
-    '/assets/css/multi_select_dropdown_1.css'
-];
-$jsFiles = [
-    '/assets/js/main_7.js',
-    '/assets/js/multi_select_dropdown_2.js',
-    '/assets/js/form_utils_2.js',
-    '/assets/js/tag_edit_12.js'
-];
-?>
 
             <!-- Tag Edit Form Content -->
             <main class="dashboard-content">
@@ -304,5 +290,88 @@ $jsFiles = [
             </main>
 
 <script>
+    // 页面配置
+    window.TagEditConfig = {
+        isEdit: <?= $tag ? 'true' : 'false' ?>,
+        tagId: <?= $tag ? $tag['id'] : 'null' ?>,
+        contentOptions: <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        submitUrl: '<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>',
+        method: '<?= $tag ? 'PUT' : 'POST' ?>'
+    };
 
+    // 表单提交处理
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('tagEditForm');
+        const nameInput = document.getElementById('name_cn');
+        const iconInput = document.getElementById('icon_class');
+        const colorSelect = document.getElementById('color_class');
+        const previewBtn = document.getElementById('tagPreviewBtn');
+        const previewIcon = document.getElementById('previewIcon');
+        const previewText = document.getElementById('previewText');
+
+        // 实时预览更新
+        function updatePreview() {
+            const name = nameInput.value || '新标签';
+            const icon = iconInput.value || 'bi-star';
+            const color = colorSelect.value || 'btn-outline-primary';
+
+            previewText.textContent = name;
+            previewIcon.className = 'bi ' + icon;
+            previewBtn.className = 'btn ' + color;
+        }
+
+        nameInput.addEventListener('input', updatePreview);
+        iconInput.addEventListener('input', updatePreview);
+        colorSelect.addEventListener('change', updatePreview);
+
+        // 表单提交
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            // 处理checkbox状态
+            if (!document.getElementById('status_id').checked) {
+                formData.set('status_id', '0');
+            }
+
+            // 获取选中的关联视频
+            const selectedVideos = [];
+            document.querySelectorAll('#videoMultiSelect input[type="checkbox"]:checked').forEach(function(checkbox) {
+                selectedVideos.push(checkbox.value);
+            });
+            formData.set('related_videos', JSON.stringify(selectedVideos));
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+            submitBtn.disabled = true;
+
+            fetch(window.TagEditConfig.submitUrl, {
+                method: window.TagEditConfig.method === 'PUT' ? 'POST' : 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message || '操作成功');
+                    window.location.href = '/tags';
+                } else {
+                    alert(data.message || '操作失败');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败，请重试');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+
+    });
 </script>
