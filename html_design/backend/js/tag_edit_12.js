@@ -170,14 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.tagEditManager = new TagEditManager();
 });
 
-// 页面卸载前清理
-window.addEventListener('beforeunload', (e) => {
-    if (window.tagEditManager?.formUtils?.isModified) {
-        e.preventDefault();
-        e.returnValue = '您有未保存的更改，确定要离开吗？';
-    }
-});
-
 // 兼容性：暴露给外部使用的工具函数（保持向后兼容）
 window.TagEditForm = {
     updateVideoStats: (selectedVideos) => {
