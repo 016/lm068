@@ -343,7 +343,7 @@ class FormUtils {
      * @param {number} maxLimit - 最大视频数量限制
      * @param {string} limitMessage - 超出限制时的提示消息
      */
-    handleCommonVideosChange(detail, maxLimit = 50, limitMessage = '建议视频数量不超过{limit}个') {
+    handleCommonVideosChange(detail, maxLimit = 5000, limitMessage = '建议视频数量不超过{limit}个') {
         const { action, item, selected } = detail;
         
         switch (action) {
