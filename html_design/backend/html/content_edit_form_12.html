@@ -279,7 +279,7 @@
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="thumbnailSection" class="form-label">缩略图管理</label>
+                                                    <label for="thumbnailUpload" class="form-label">缩略图管理</label>
                                                     <div class="thumbnail-section">
                                                         <div class="thumbnail-upload-area">
                                                             <input type="file" class="form-control" id="thumbnailUpload" name="thumbnail_upload" accept="image/*">
@@ -298,14 +298,20 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_cn" class="form-label required">中文标题</label>
-                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" value="技术分享：前端开发实践"  maxlength="100" required>
+                                                    <input type="text" class="form-control is-valid" id="name_cn" name="name_cn" value="技术分享：前端开发实践"  maxlength="100" required>
+                                                    <div class="valid-feedback">
+                                                        check passed.
+                                                    </div>
                                                     <div class="form-text">内容的中文标题</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_en" class="form-label required">英文标题</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" value="Tech Sharing: Frontend Development Practice" maxlength="100" required>
+                                                    <input type="text" class="form-control is-invalid" id="name_en" name="name_en" value="Tech Sharing: Frontend Development Practice" maxlength="100" required>
+                                                    <div class="invalid-feedback">
+                                                        name_en exist.
+                                                    </div>
                                                     <div class="form-text">内容的英文标题</div>
                                                 </div>
                                             </div>
@@ -322,7 +328,7 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="author" class="form-label">内容作者</label>
-                                                    <input type="text" class="form-control" id="author" name="author" value="" placeholder="请输入内容作者名称">
+                                                    <input type="text" class="form-control" id="author" name="author" value="" maxlength="20" placeholder="请输入内容作者名称">
                                                     <div class="form-text">内容的创作者或制作者</div>
                                                 </div>
                                             </div>
@@ -340,14 +346,14 @@
                                         <div class="row">
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="videoTags" class="form-label">内容标签</label>
+                                                    <label for="videoTagsMultiSelect" class="form-label">内容标签</label>
                                                     <div id="videoTagsMultiSelect"></div>
                                                     <div class="form-text">为内容选择相关标签，便于用户查找和分类</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="videoCollections" class="form-label">内容合集</label>
+                                                    <label for="videoCollectionsMultiSelect" class="form-label">内容合集</label>
                                                     <div id="videoCollectionsMultiSelect"></div>
                                                     <div class="form-text">将内容加入到相关合集中，便于系列化管理</div>
                                                 </div>
@@ -526,10 +532,10 @@
     <script src="../js/multi_select_dropdown_2.js"></script>
     
     <!-- Main Common JS -->
-    <script src="../js/main_3.js"></script>
+    <script src="../js/main_8.js"></script>
     
     <!-- Form Utils JS - 通用表单功能 -->
-    <script src="../js/form_utils_1.js"></script>
+    <script src="../js/form_utils_2.js"></script>
     
     <!-- Page Specific JS -->
     <script src="../js/content_edit_11.js"></script>

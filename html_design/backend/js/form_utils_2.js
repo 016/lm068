@@ -56,7 +56,9 @@ class FormUtils {
      * });
      */
     init() {
+        console.log('f1')
         this.bindFormEvents();
+        console.log('f2')
         
         if (this.options.enableCharacterCounter) {
             this.initializeCharacterCounters();
@@ -125,6 +127,7 @@ class FormUtils {
 
         // 取消按钮
         const cancelBtn = this.form.querySelector('[data-cancel], #btn-cancel, .btn-cancel');
+
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => {
                 this.handleCancel();
@@ -661,12 +664,12 @@ class FormUtils {
         const fieldName = field.name || field.id;
         
         // 移除之前的错误状态
-        field.classList.remove('error');
+        field.classList.remove('is-invalid');
         this.clearFieldError(field.parentElement);
         
         // 必填字段验证
         if (field.hasAttribute('required') && !value) {
-            field.classList.add('error');
+            field.classList.add('is-invalid');
             this.setFieldError(field.parentElement, '此字段为必填项');
             return false;
         }
@@ -678,7 +681,7 @@ class FormUtils {
             case 'title_cn':
             case 'title_en':
                 if (value.length > 200) {
-                    field.classList.add('error');
+                    field.classList.add('is-invalid');
                     this.setFieldError(field.parentElement, '标题长度不能超过200字符');
                     return false;
                 }
@@ -686,7 +689,7 @@ class FormUtils {
                 
             case 'duration':
                 if (value && !this.isValidDuration(value)) {
-                    field.classList.add('error');
+                    field.classList.add('is-invalid');
                     this.setFieldError(field.parentElement, '请输入有效的时间格式(如: 12:35)');
                     return false;
                 }
@@ -694,7 +697,7 @@ class FormUtils {
                 
             case 'email':
                 if (value && !this.isValidEmail(value)) {
-                    field.classList.add('error');
+                    field.classList.add('is-invalid');
                     this.setFieldError(field.parentElement, '请输入有效的邮箱地址');
                     return false;
                 }
@@ -703,7 +706,7 @@ class FormUtils {
             case 'icon_class':
                 const iconValidation = this.validateIconClass(value);
                 if (!iconValidation.isValid) {
-                    field.classList.add('error');
+                    field.classList.add('is-invalid');
                     this.setFieldError(field.parentElement, iconValidation.message);
                     return false;
                 }
@@ -720,11 +723,8 @@ class FormUtils {
     setFieldError(container, message) {
         this.clearFieldError(container);
         const errorDiv = document.createElement('div');
-        errorDiv.className = 'validation-error';
+        errorDiv.className = 'invalid-feedback';
         errorDiv.innerHTML = `<i class="bi bi-exclamation-circle"></i> ${message}`;
-        errorDiv.style.color = 'var(--danger, #dc3545)';
-        errorDiv.style.fontSize = '0.75rem';
-        errorDiv.style.marginTop = '0.25rem';
         container.appendChild(errorDiv);
     }
 
@@ -732,7 +732,7 @@ class FormUtils {
      * 清除字段错误信息
      */
     clearFieldError(container) {
-        const existingError = container.querySelector('.validation-error');
+        const existingError = container.querySelector('.invalid-feedback');
         if (existingError) {
             existingError.remove();
         }
@@ -1061,11 +1061,11 @@ class FormUtils {
         });
         
         // 清除错误状态
-        this.form.querySelectorAll('.error').forEach(field => {
-            field.classList.remove('error');
+        this.form.querySelectorAll('.is-invalid').forEach(field => {
+            field.classList.remove('is-invalid');
         });
         
-        this.form.querySelectorAll('.validation-error').forEach(error => {
+        this.form.querySelectorAll('.invalid-feedback').forEach(error => {
             error.remove();
         });
         

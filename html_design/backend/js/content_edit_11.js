@@ -45,12 +45,44 @@ class ContentEditManager {
             enableFileUpload: true,
             enableNotification: true
         });
-
-        // 监听表单提交事件，添加页面特定的处理逻辑
-        this.form.addEventListener('formutils:submit', (e) => {
-            this.handlePageSpecificSubmit(e.detail);
-        });
     }
+    // 内容标签数据
+    tagsData = [
+        { id: '1', text: '前端开发' },
+        { id: '2', text: 'JavaScript' },
+        { id: '3', text: 'React' },
+        { id: '4', text: 'Vue.js' },
+        { id: '5', text: 'Angular' },
+        { id: '6', text: 'TypeScript' },
+        { id: '7', text: 'CSS3' },
+        { id: '8', text: 'HTML5' },
+        { id: '9', text: 'Node.js' },
+        { id: '10', text: '性能优化' },
+        { id: '11', text: '响应式设计' },
+        { id: '12', text: '移动端开发' },
+        { id: '13', text: 'webpack' },
+        { id: '14', text: 'ES6+' },
+        { id: '15', text: 'UI/UX' },
+        { id: '16', text: '工程化' },
+        { id: '17', text: '测试' },
+        { id: '18', text: '部署' }
+    ];
+    selectedTagIds = ['1', '4', '7', '15'];
+
+    // 内容合集数据
+    collectionsData = [
+        { id: '1', text: '前端基础教程' },
+        { id: '2', text: 'JavaScript进阶' },
+        { id: '3', text: 'React实战项目' },
+        { id: '4', text: 'Vue开发指南' },
+        { id: '5', text: '性能优化专题' },
+        { id: '6', text: '工具链使用' },
+        { id: '7', text: '设计模式' },
+        { id: '8', text: '算法与数据结构' },
+        { id: '9', text: '移动端开发' },
+        { id: '10', text: '全栈开发' }
+    ];
+    selectedCollectionIds = ['1', '4', '7', '10'];
 
     /**
      * 初始化页面特定的多选组件
@@ -62,42 +94,8 @@ class ContentEditManager {
             return;
         }
 
-        // 内容标签数据
-        const tagsData = [
-            { id: '1', text: '前端开发' },
-            { id: '2', text: 'JavaScript' },
-            { id: '3', text: 'React' },
-            { id: '4', text: 'Vue.js' },
-            { id: '5', text: 'Angular' },
-            { id: '6', text: 'TypeScript' },
-            { id: '7', text: 'CSS3' },
-            { id: '8', text: 'HTML5' },
-            { id: '9', text: 'Node.js' },
-            { id: '10', text: '性能优化' },
-            { id: '11', text: '响应式设计' },
-            { id: '12', text: '移动端开发' },
-            { id: '13', text: 'webpack' },
-            { id: '14', text: 'ES6+' },
-            { id: '15', text: 'UI/UX' },
-            { id: '16', text: '工程化' },
-            { id: '17', text: '测试' },
-            { id: '18', text: '部署' }
-        ];
 
-        // 内容合集数据
-        const collectionsData = [
-            { id: '1', text: '前端基础教程' },
-            { id: '2', text: 'JavaScript进阶' },
-            { id: '3', text: 'React实战项目' },
-            { id: '4', text: 'Vue开发指南' },
-            { id: '5', text: '性能优化专题' },
-            { id: '6', text: '工具链使用' },
-            { id: '7', text: '设计模式' },
-            { id: '8', text: '算法与数据结构' },
-            { id: '9', text: '移动端开发' },
-            { id: '10', text: '全栈开发' }
-        ];
-
+        const selectedTags = this.tagsData.filter(tag => this.selectedTagIds.includes(tag.id));
         // 初始化标签多选组件
         const tagsInstance = this.formUtils.initializeMultiSelect('tags', {
             container: '#videoTagsMultiSelect',
@@ -106,15 +104,12 @@ class ContentEditManager {
             hiddenInputName: 'tag_ids',
             maxDisplayItems: 3,
             columns: 2,
-            data: tagsData,
-            selected: [
-                { id: '1', text: '前端开发' },
-                { id: '2', text: 'JavaScript' },
-                { id: '7', text: 'CSS3' }
-            ],
+            data: this.tagsData,
+            selected: selectedTags,
             allowClear: true
         });
 
+        const selectedCollections = this.collectionsData.filter(collection => this.selectedCollectionIds.includes(collection.id));
         // 初始化合集多选组件
         const collectionsInstance = this.formUtils.initializeMultiSelect('collections', {
             container: '#videoCollectionsMultiSelect',
@@ -123,10 +118,8 @@ class ContentEditManager {
             hiddenInputName: 'collection_ids',
             maxDisplayItems: 2,
             columns: 1,
-            data: collectionsData,
-            selected: [
-                { id: '2', text: 'JavaScript进阶' }
-            ],
+            data: this.collectionsData,
+            selected: selectedCollections,
             allowClear: true
         });
 
@@ -263,53 +256,6 @@ class ContentEditManager {
     }
 
     /**
-     * 处理页面特定的表单提交逻辑
-     * 在通用表单提交基础上添加内容编辑页面的特殊处理
-     */
-    handlePageSpecificSubmit(detail) {
-        const { formData } = detail;
-        
-        // 验证内容特定的业务规则
-        if (this.validateContentRules(formData)) {
-            console.log('内容编辑页面提交验证通过:', formData);
-            
-            // 可以在这里添加特定的提交后处理
-            // 例如：跳转到列表页面、刷新相关数据等
-        } else {
-            // 阻止默认提交流程
-            detail.preventDefault?.();
-        }
-    }
-
-    /**
-     * 验证内容特定的业务规则
-     * 检查内容编辑页面的特殊验证逻辑
-     */
-    validateContentRules(formData) {
-        let isValid = true;
-
-        // 检查是否选择了内容类型
-        if (!formData.content_type_id) {
-            this.showNotification('请选择内容类型', 'error');
-            isValid = false;
-        }
-
-        // 视频类型必须有时长
-        if (formData.content_type_id === '21' && !formData.duration) {
-            this.showNotification('视频类型的内容必须填写时长', 'error');
-            isValid = false;
-        }
-
-        // 检查标题长度
-        if (formData.name_cn && formData.name_cn.length < 2) {
-            this.showNotification('中文标题至少需要2个字符', 'error');
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    /**
      * 显示通知消息
      * 使用 FormUtils 的通知功能
      */
@@ -317,29 +263,6 @@ class ContentEditManager {
         if (this.formUtils) {
             this.formUtils.showNotification(message, type);
         }
-    }
-
-    /**
-     * 获取页面数据摘要
-     * 返回当前页面的关键信息，用于调试和监控
-     */
-    getPageSummary() {
-        if (!this.formUtils) return null;
-
-        const formData = this.formUtils.collectFormData();
-        const tagsInstance = this.formUtils.getMultiSelectInstance('tags');
-        const collectionsInstance = this.formUtils.getMultiSelectInstance('collections');
-
-        return {
-            contentId: formData.id,
-            contentType: formData.content_type_id,
-            titleCn: formData.name_cn,
-            titleEn: formData.name_en,
-            status: formData.status_id,
-            tagsCount: tagsInstance ? tagsInstance.getSelected().length : 0,
-            collectionsCount: collectionsInstance ? collectionsInstance.getSelected().length : 0,
-            isModified: this.formUtils.isModified
-        };
     }
 
     /**
@@ -359,24 +282,3 @@ class ContentEditManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.contentEditManager = new ContentEditManager();
 });
-
-// 页面卸载前清理
-window.addEventListener('beforeunload', (e) => {
-    if (window.contentEditManager?.formUtils?.isModified) {
-        e.preventDefault();
-        e.returnValue = '您有未保存的更改，确定要离开吗？';
-    }
-});
-
-// 开发调试功能（仅在开发环境使用）
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    // 在控制台添加调试命令
-    window.debugContentEdit = {
-        getSummary: () => window.contentEditManager?.getPageSummary(),
-        getFormData: () => window.contentEditManager?.formUtils?.collectFormData(),
-        resetForm: () => window.contentEditManager?.formUtils?.resetForm(),
-        showTest: (msg, type) => window.contentEditManager?.showNotification(msg || '测试通知', type || 'info')
-    };
-    
-    console.log('内容编辑页面调试工具已加载，使用 debugContentEdit 对象进行调试');
-}

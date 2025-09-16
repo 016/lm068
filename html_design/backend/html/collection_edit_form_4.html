@@ -250,7 +250,7 @@
                             </div>
                             
                             <div class="form-body">
-                                <form id="collectionEditForm" action="/api/collections/update" method="POST">
+                                <form id="collectionEditForm" action="/collections/1/update" method="POST">
                                     <!-- CSRF Token for security -->
                                     <input type="hidden" name="_token" value="csrf_token_placeholder">
                                     <input type="hidden" name="id" id="id" value="1">
@@ -272,7 +272,7 @@
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <label for="collectionPreview" class="form-label">合集预览</label>
+                                                    <label for="collectionPreviewBtn" class="form-label">合集预览</label>
                                                     <div class="collection-preview-container">
                                                         <button type="button" id="collectionPreviewBtn" class="btn btn-outline-primary">
                                                             <i class="bi bi-star" id="previewIcon"></i>
@@ -288,14 +288,20 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_cn" class="form-label required">中文标题</label>
-                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" value="科技前沿系列" required>
+                                                    <input type="text" class="form-control is-valid" id="name_cn" name="name_cn" value="科技前沿系列" maxlength="20" required>
+                                                    <div class="valid-feedback">
+                                                        check passed.
+                                                    </div>
                                                     <div class="form-text">合集的中文显示名称</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_en" class="form-label required">英文标题</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" value="Tech Frontier Series" required>
+                                                    <input type="text" class="form-control is-invalid" id="name_en" name="name_en" value="Tech Frontier Series" maxlength="40" required>
+                                                    <div class="invalid-feedback">
+                                                        name_en exist.
+                                                    </div>
                                                     <div class="form-text">合集的英文显示名称</div>
                                                 </div>
                                             </div>
@@ -330,7 +336,7 @@
                                         <div class="row">
                                             <div class="col-md-12 pb-3">
                                                 <div class="form-group">
-                                                    <label for="related_videos" class="form-label">关联视频</label>
+                                                    <label for="videoMultiSelect" class="form-label">关联视频</label>
                                                     <div id="videoMultiSelect" class="multi-select-container"></div>
                                                     <div class="form-text">选择要关联到此合集的视频，可多选</div>
                                                 </div>
@@ -387,7 +393,10 @@
                                                 <div class="form-group">
                                                     <div class="switch-group" id="statusSwitchGroup">
                                                         <div class="custom-switch collection-edit-switch" id="statusSwitch">
-                                                            <input type="checkbox" id="status_id" name="status_id" value="1" checked>
+                                                            <!-- 隐藏字段确保总是提交status_id值，未选中时为0 -->
+                                                            <input class="ee_switch-value" type="hidden" name="status_id" value="1">
+                                                            <!-- checkbox字段，选中时会覆盖隐藏字段的值为1 -->
+                                                            <input type="checkbox" id="status_id" checked>
                                                             <span class="switch-slider"></span>
                                                         </div>
                                                         <label for="status_id" class="switch-label">显示状态</label>
@@ -492,15 +501,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Main Common JS -->
-    <script src="../js/main_3.js"></script>
+    <script src="../js/main_8.js"></script>
     
     <!-- Multi-Select Dropdown JS -->
     <script src="../js/multi_select_dropdown_2.js"></script>
     
     <!-- Form Utils JS - 通用表单功能 -->
-    <script src="../js/form_utils_1.js"></script>
+    <script src="../js/form_utils_2.js"></script>
     
     <!-- Page Specific JS -->
-    <script src="../js/collection_edit_4.js"></script>
+    <script src="../js/collection_edit_6.js"></script>
 </body>
 </html>

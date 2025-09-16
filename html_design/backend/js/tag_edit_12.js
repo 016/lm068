@@ -80,6 +80,8 @@ class TagEditManager {
         { id: '20', text: '【搞笑】科技产品使用囧事' }
     ];
 
+    selectedVideoIds = ['1', '4', '7', '9', '12', '15'];
+
     /**
      * 初始化页面特定的多选组件
      * 配置视频的多选下拉组件
@@ -90,9 +92,7 @@ class TagEditManager {
             return;
         }
 
-        // 模拟已选中的视频
-        const selectedVideoIds = ['1', '4', '7', '9', '12', '15'];
-        const selectedVideos = this.videoData.filter(video => selectedVideoIds.includes(video.id));
+        const selectedVideos = this.videoData.filter(video => this.selectedVideoIds.includes(video.id));
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
@@ -111,7 +111,7 @@ class TagEditManager {
         if (videosInstance) {
             document.getElementById('videoMultiSelect').addEventListener('multiselect:change', (e) => {
                 // 使用通用的视频变更处理方法，标签页面有更高的视频数量限制
-                this.formUtils.handleCommonVideosChange(e.detail, 100, '建议单个标签关联的视频数量不超过{limit}个');
+                this.formUtils.handleCommonVideosChange(e.detail);
             });
         }
     }
