@@ -57,6 +57,22 @@
 - 视频封面图片, 按1920x1080等比例缩放, 根据不同的使用场景，采用不同的宽高数值保持比例即可
 - 任何命令默认使用新建文件代替编辑文件。用来保持历史文件，方便对比。用户在命令中使用spec参数明确要求修改文件的遵守用户的要求。
 
+### bootstrap 内置 class/组件 使用规范
+- 以下内容默认使用 bootstrap 内置组件
+  - Breadcrumb
+  - card
+  - Modal
+  - List group
+  - 其他可以使用的bootstrap内置组件优先使用
+- form
+  - 默认使用 传统 POST 的方式提交表单, 不使用 AJAX。
+  - form 验证使用 bootstrap 内置 validation 相关的 class
+- 通知
+  - 默认使用 bootstrap 内置组件 toast
+- 按钮
+  - 默认使用 bootstrap 内置 btn btn-outline-*
+
+
 ### 静态资源
 - 封面图片使用 https://picsum.photos/400/225?random=2
 
