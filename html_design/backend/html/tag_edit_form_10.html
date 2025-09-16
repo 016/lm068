@@ -283,15 +283,23 @@
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_cn" class="form-label required">中文标题</label>
-                                                    <input type="text" class="form-control" id="name_cn" name="name_cn" value="搞笑视频" maxlength="20" required>
+                                                    <input type="text" class="form-control is-valid" id="name_cn" name="name_cn" value="搞笑视频" maxlength="20" required>
+                                                    <div class="valid-feedback">
+                                                        check passed.
+                                                    </div>
                                                     <div class="form-text">标签的中文显示名称</div>
+
                                                 </div>
                                             </div>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="name_en" class="form-label required">英文标题</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" value="Funny Videos" maxlength="20"  required>
+                                                    <input type="text" class="form-control is-invalid" id="name_en" name="name_en" value="Funny Videos" maxlength="20"  required>
+                                                    <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                                                        name_en exist.
+                                                    </div>
                                                     <div class="form-text">标签的英文显示名称</div>
+
                                                 </div>
                                             </div>
                                         </div>
