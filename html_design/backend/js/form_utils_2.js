@@ -24,6 +24,7 @@ class FormUtils {
         this.form = typeof formSelector === 'string' ? document.querySelector(formSelector) : formSelector;
         this.options = {
             enableAutoSave: options.enableAutoSave || false,
+            enableConfirmBeforeUnload: options.enableConfirmBeforeUnload || true,
             autoSaveInterval: options.autoSaveInterval || 30000, // 30秒
             enableCharacterCounter: options.enableCharacterCounter !== false,
             enableFileUpload: options.enableFileUpload !== false,
@@ -71,6 +72,10 @@ class FormUtils {
         
         if (this.options.enablePreview) {
             this.initializePreview();
+        }
+
+        if (this.options.enableConfirmBeforeUnload) {
+            this.initializeConfirmBeforeUnload();
         }
         
         console.log('FormUtils initialized for form:', this.form);
@@ -881,6 +886,20 @@ class FormUtils {
             }
         }, this.options.autoSaveInterval);
     }
+    /**
+     * 初始化自动保存功能
+     * 定期自动保存表单数据到本地存储
+     * 使用示例：
+     * formUtils.initializeConfirmBeforeUnload();
+     */
+    initializeConfirmBeforeUnload() {
+        window.addEventListener('beforeunload', (e) => {
+            if (this.isModified) {
+                e.preventDefault();
+                e.returnValue = '您有未保存的更改，确定要离开吗？';
+            }
+        });
+    }
 
     /**
      * 执行自动保存
@@ -961,13 +980,7 @@ class FormUtils {
      * 如果表单已修改，询问用户确认后返回上一页
      */
     handleCancel() {
-        if (this.isModified) {
-            if (confirm('您有未保存的更改，确定要离开吗？')) {
-                window.history.back();
-            }
-        } else {
-            window.history.back();
-        }
+        window.history.back();
     }
 
     /**
