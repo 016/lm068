@@ -37,6 +37,9 @@ class FormUtils {
         this.isModified = false;
         this.autoSaveInterval = null;
         this.previewConfig = this.options.previewConfig;
+
+        //for submit handle flag, for disable normal form submit for like ajax.
+        this.handleSubmit = false;
         
         if (this.form) {
             this.init();
@@ -82,8 +85,10 @@ class FormUtils {
 
         // 表单提交事件
         this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleFormSubmit(e);
+            if (this.handleSubmit){
+                e.preventDefault();
+                this.handleFormSubmit(e);
+            }
         });
 
         // 输入字段变化事件
