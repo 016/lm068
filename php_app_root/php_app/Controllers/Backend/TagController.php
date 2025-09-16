@@ -21,7 +21,7 @@ class TagController extends BackendController
     public function index(Request $request): void
     {
         $page = (int)($request->get('page') ?? 1);
-        $perPage = (int)($request->get('per_page') ?? 10);
+        $perPage = (int)($request->get('per_page') ?? 100);
         $search = $request->get('search');
         $statusFilter = $request->get('status');
         $orderBy = $request->get('order_by') ?? 'created_at DESC';
@@ -32,6 +32,7 @@ class TagController extends BackendController
         }
 
         $tags = $this->tagModel->findAllWithPagination($page, $perPage, $conditions, $search, $orderBy);
+
         $totalCount = $this->tagModel->countWithConditions($conditions, $search);
         $stats = $this->tagModel->getStats();
 

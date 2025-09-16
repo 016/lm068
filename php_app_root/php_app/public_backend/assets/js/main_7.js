@@ -1020,7 +1020,7 @@ class TableManager {
             rowCheckboxSelector: '.row-checkbox',
             columnSettingsPopupSelector: '#columnSettingsPopup',
             currentDisplaySelector: '#currentDisplay',
-            defaultItemsPerPage: 2,
+            defaultItemsPerPage: 3,
             enableSort: true,
             enablePagination: true,
             enableColumnSettings: true,

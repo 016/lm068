@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '标签管理 - 视频分享网站管理后台';
+
 ?>
 
 
@@ -355,7 +355,7 @@ $pageTitle = '标签管理 - 视频分享网站管理后台';
                                 </select>
                                 <span class="pagination-text">条</span>
                             </div>
-                            <?php if ($totalPages > 1): ?>
+                            <?php if ($totalPages > 1 || 1): ?>
                             <ul class="pagination pagination-sm mb-0" id="paginationNav">
                                 <?php if ($page > 1): ?>
                                     <li class="page-item">
@@ -368,6 +368,8 @@ $pageTitle = '标签管理 - 视频分享网站管理后台';
                                 <?php
                                 $startPage = max(1, $page - 2);
                                 $endPage = min($totalPages, $page + 2);
+                                $startPage = 1;
+                                $endPage = 4;
                                 ?>
 
                                 <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
@@ -397,52 +399,5 @@ $pageTitle = '标签管理 - 视频分享网站管理后台';
 
 
 <script>
-    // 页面特定的JavaScript配置
-    window.TagListConfig = {
-        currentPage: <?= $page ?>,
-        perPage: <?= $perPage ?>,
-        totalCount: <?= $totalCount ?>,
-        totalPages: <?= $totalPages ?>,
-        baseUrl: '/tags',
-        apiUrls: {
-            bulkAction: '/tags/bulk-action',
-            export: '/tags/export',
-            delete: '/tags/{id}'
-        }
-    };
 
-    // 删除标签功能
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.delete-tag').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const tagId = this.dataset.id;
-                if (confirm('确定要删除这个标签吗？此操作不可恢复。')) {
-                    fetch(`/tags/${tagId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert(data.message || '删除失败');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('操作失败，请重试');
-                    });
-                }
-            });
-        });
-    });
-
-    // 导出数据功能
-    function exportData(format) {
-        window.location.href = `/tags/export?format=${format}`;
-    }
 </script>

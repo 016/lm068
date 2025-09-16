@@ -6,8 +6,8 @@
                         <div class="d-flex align-items-center gap-2 mb-2">
                             <i class="bi bi-pencil-square page-title-icon"></i>
                             <div>
-                                <h1 class="page-title"><?= $tag ? '编辑标签' : '创建标签' ?></h1>
-                                <p class="page-subtitle"><?= $tag ? 'Edit Tag Information' : 'Create New Tag' ?></p>
+                                <h1 class="page-title"><?= !$isCreateMode ? '编辑标签' : '创建标签' ?></h1>
+                                <p class="page-subtitle"><?= !$isCreateMode ? 'Edit Tag Information' : 'Create New Tag' ?></p>
                             </div>
                         </div>
                         <a href="/tags" class="back-link">
@@ -20,7 +20,7 @@
                             <li class="breadcrumb-item"><a href="/backend" class="breadcrumb-link">首页</a></li>
                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">内容管理</a></li>
                             <li class="breadcrumb-item"><a href="/tags" class="breadcrumb-link">标签管理</a></li>
-                            <li class="breadcrumb-item active breadcrumb-active" aria-current="page"><?= $tag ? '编辑标签' : '创建标签' ?></li>
+                            <li class="breadcrumb-item active breadcrumb-active" aria-current="page"><?= !$isCreateMode ? '编辑标签' : '创建标签' ?></li>
                         </ol>
                     </nav>
                 </div>
@@ -46,8 +46,8 @@
                                 </div>
                                 <?php endif; ?>
 
-                                <form id="tagEditForm" action="<?= $tag ? '/tags/' . $tag['id'] : '/tags' ?>" method="POST">
-                                    <?php if ($tag): ?>
+                                <form id="tagEditForm" action="<?= !$isCreateMode ? '/tags/' . $tag['id'] : '/tags' ?>" method="POST">
+                                    <?php if (!$isCreateMode): ?>
                                         <input type="hidden" name="_method" value="PUT">
                                         <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($tag['id']) ?>">
                                     <?php endif; ?>
@@ -60,7 +60,7 @@
                                         </h4>
                                         
                                         <div class="row">
-                                            <?php if ($tag): ?>
+                                            <?php if (!$isCreateMode): ?>
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
                                                     <label for="tagId" class="form-label">标签ID</label>
@@ -218,7 +218,7 @@
                                         </div>
                                     </div>
 
-                                    <?php if ($tag): ?>
+                                    <?php if (!$isCreateMode): ?>
                                     <!-- 统计信息 -->
                                     <div class="form-section">
                                         <h4 class="form-section-title">
@@ -301,7 +301,7 @@
                                         </button>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-check-lg"></i>
-                                            <?= $tag ? '保存修改' : '创建标签' ?>
+                                            <?= !$isCreateMode ? '保存修改' : '创建标签' ?>
                                         </button>
                                     </div>
                                 </form>
