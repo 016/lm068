@@ -58,6 +58,7 @@
 - 任何命令默认使用新建文件代替编辑文件。用来保持历史文件，方便对比。用户在命令中使用spec参数明确要求修改文件的遵守用户的要求。
 
 ### bootstrap 内置 class/组件 使用规范
+- 当构建 html 元素时，优先考虑是否可以使用 bootstrap 内置组件或者 class 完成。
 - 以下内容默认使用 bootstrap 内置组件
   - Breadcrumb
   - card
