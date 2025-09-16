@@ -1,8 +1,14 @@
 /**
- * Backend Admin Main JavaScript v7 - 优化版表格管理
- * 基于 main_6.js 优化，合并重复功能，提高代码效率和可维护性
+ * Backend Admin Main JavaScript v8 - 优化版表格管理 + Switch交互修复
+ * 基于 main_7.js 优化，新增switch组件的完整交互功能
  * 
- * 主要优化：
+ * 主要更新：
+ * - 修复switch组件点击无效问题
+ * - 在initializeCommonElements中添加switch初始化调用
+ * - 新增setupAllSwitchInteractions函数，为所有switch设置交互
+ * - 确保switch组件的checkbox值能正确更新和提交
+ * 
+ * 其他功能保持与main_7.js相同：
  * - 重构 TableOperations：专注工具方法，移除状态管理
  * - 优化 TableManager：统一排序和事件管理，减少重复代码
  * - 简化 CommonTableActions：合并下拉菜单逻辑
@@ -1718,6 +1724,7 @@ window.AdminCommon = {
         setSwitchValue,
         toggleSwitch,
         setupSwitchInteraction,
+        setupAllSwitchInteractions,
         showAlert
     },
     TagViewUtils: {
