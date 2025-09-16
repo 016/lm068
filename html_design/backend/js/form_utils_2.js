@@ -893,8 +893,12 @@ class FormUtils {
      * formUtils.initializeConfirmBeforeUnload();
      */
     initializeConfirmBeforeUnload() {
+
         window.addEventListener('beforeunload', (e) => {
-            if (this.isModified) {
+            const activeElement = e.target.activeElement;
+            const isFormSubmit = activeElement && activeElement.type === 'submit';
+
+            if (this.isModified && !isFormSubmit) {
                 e.preventDefault();
                 e.returnValue = '您有未保存的更改，确定要离开吗？';
             }
