@@ -388,12 +388,12 @@
                                         <div class="row">
                                             <div class="col-md-6 pb-3">
                                                 <div class="form-group">
-                                                    <div class="switch-group" id="statusSwitchGroup">
-                                                        <div class="custom-switch tag-edit-switch" id="statusSwitch">
+                                                    <div class="switch-group">
+                                                        <div class="custom-switch tag-edit-switch">
                                                             <!-- 隐藏字段确保总是提交status_id值，未选中时为0 -->
-                                                            <input type="hidden" name="status_id" value="0">
+                                                            <input class="ee_switch-value" type="hidden" name="status_id" value="1">
                                                             <!-- checkbox字段，选中时会覆盖隐藏字段的值为1 -->
-                                                            <input type="checkbox" id="status_id" name="status_id" value="1" checked>
+                                                            <input type="checkbox" id="status_id" checked>
                                                             <span class="switch-slider"></span>
                                                         </div>
                                                         <label for="status_id" class="switch-label">显示状态</label>

@@ -382,9 +382,16 @@ function setSwitchVisualState(switchId, isChecked) {
 function setSwitchValue(switchId, value) {
     const checkbox = document.getElementById(switchId);
     if (!checkbox) return;
-    
+
     // Set checkbox state
     checkbox.checked = value;
+
+    //set hide input value for submit
+    // 通过 class 查找同级元素
+    const siblingsByClass = checkbox.parentElement.querySelectorAll('.ee_switch-value');
+    if (siblingsByClass[0]){
+        siblingsByClass[0].value= value?1:0;
+    }
 
     // Update visual state
     setSwitchVisualState(switchId, value);
