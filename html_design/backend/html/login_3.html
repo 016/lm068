@@ -72,7 +72,7 @@
                 <form class="login-form needs-validation" action="#" id="loginForm" method="post" novalidate>
                     <div class="form-group">
                         <label class="form-label" for="username">用户名或邮箱</label>
-                        <input type="text" id="username" name="username" class="form-input is-valid" placeholder="请输入用户名或邮箱" value="admin@example.com" required>
+                        <input type="text" id="username" name="username" class="form-control is-valid" placeholder="请输入用户名或邮箱" value="admin@example.com" required>
                         <div class="valid-feedback">
                             <i class="bi bi-check-circle me-1"></i>用户名格式正确
                         </div>
@@ -81,14 +81,16 @@
                     <div class="form-group">
                         <label class="form-label" for="password">密码</label>
                         <div class="password-field">
-                            <input type="password" id="password" name="password" class="form-input is-invalid" placeholder="请输入密码" value="123" required>
+                            <input type="password" id="password" name="password" class="form-control is-invalid" placeholder="请输入密码" value="123" required>
                             <button type="button" class="password-toggle" id="passwordToggle">
                                 <i class="bi bi-eye" id="passwordToggleIcon"></i>
                             </button>
+                            <div class="invalid-feedback">
+                                <i class="bi bi-exclamation-circle me-1"></i>密码长度必须至少8位，且包含字母和数字
+                            </div>
                         </div>
-                        <div class="invalid-feedback">
-                            <i class="bi bi-exclamation-circle me-1"></i>密码长度必须至少8位，且包含字母和数字
-                        </div>
+
+
                     </div>
                     
                     <div class="form-options">

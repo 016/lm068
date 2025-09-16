@@ -87,28 +87,6 @@ body {
     font-size: 0.875rem;
 }
 
-.form-input {
-    width: 100%;
-    background: var(--bg-secondary) !important;
-    border: 2px solid var(--border-light) !important;
-    border-radius: var(--radius) !important;
-    padding: 0.75rem 1rem !important;
-    color: var(--text-primary) !important;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-}
-
-.form-input:focus {
-    outline: none !important;
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1) !important;
-    background: var(--bg-primary) !important;
-}
-
-.form-input::placeholder {
-    color: var(--text-muted);
-}
-
 /* ========== PASSWORD FIELD ========== */
 .password-field {
     position: relative;
