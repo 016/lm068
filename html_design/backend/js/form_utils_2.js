@@ -103,6 +103,24 @@ class FormUtils {
                 this.markAsModified();
                 this.validateField(input);
             });
+
+            // 方法1：使用 MutationObserver 监听属性变化
+            if (input.type === 'hidden') {
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                            // console.log('hidden input value changed');
+                            this.markAsModified();
+                        }
+                    });
+                });
+
+                observer.observe(input, {
+                    attributes: true,
+                    attributeFilter: ['value']
+                });
+            }
+
         });
 
         // 取消按钮
