@@ -11,7 +11,24 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeLoginPage() {
     setupPasswordToggle();
     setupFormValidation();
-    setupPageAnimations();
+
+    //event config
+    // Focus first input after page load
+    window.addEventListener('load', () => {
+        setTimeout(focusFirstInput, 500);
+    });
+
+    // ========== KEYBOARD SHORTCUTS ==========
+    document.addEventListener('keydown', (e) => {
+        // Enter key submits form when not in textarea
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm && document.activeElement.form === loginForm) {
+                e.preventDefault();
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        }
+    });
 }
 
 // ========== PASSWORD TOGGLE FUNCTIONALITY ========== 
@@ -38,24 +55,6 @@ function setupFormValidation() {
     });
 }
 
-// ========== PAGE ANIMATIONS ========== 
-function setupPageAnimations() {
-    // Add subtle entrance animation to login card
-    window.addEventListener('load', () => {
-        const loginCard = document.querySelector('.login-card');
-        if (!loginCard) return;
-        
-        loginCard.style.opacity = '0';
-        loginCard.style.transform = 'translateY(20px)';
-        loginCard.style.transition = 'all 0.4s ease';
-        
-        setTimeout(() => {
-            loginCard.style.opacity = '1';
-            loginCard.style.transform = 'translateY(0)';
-        }, 100);
-    });
-}
-
 // ========== LOGIN UTILITIES ========== 
 function focusFirstInput() {
     const firstInput = document.querySelector('.form-input');
@@ -64,19 +63,3 @@ function focusFirstInput() {
     }
 }
 
-// Focus first input after page load
-window.addEventListener('load', () => {
-    setTimeout(focusFirstInput, 500);
-});
-
-// ========== KEYBOARD SHORTCUTS ========== 
-document.addEventListener('keydown', (e) => {
-    // Enter key submits form when not in textarea
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm && document.activeElement.form === loginForm) {
-            e.preventDefault();
-            loginForm.dispatchEvent(new Event('submit'));
-        }
-    }
-});
