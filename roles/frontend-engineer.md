@@ -63,6 +63,7 @@
   - card
   - Modal
   - List group
+  - input group
   - 其他可以使用的bootstrap内置组件优先使用
 - form
   - 默认使用 传统 POST 的方式提交表单, 不使用 AJAX。
