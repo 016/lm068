@@ -68,6 +68,7 @@
 - form
   - 默认使用 传统 POST 的方式提交表单, 不使用 AJAX。
   - form 验证使用 bootstrap 内置 validation 相关的 class
+  - form 优先使用符合bootstrap规范的html代码来实现
 - 通知
   - 默认使用 bootstrap 内置组件 toast
 - 按钮
