@@ -59,8 +59,24 @@
   - 禁止使用同名占位符, 例如 update tableA set cnt = (select count(*) from tableB where ta_id=:ta_id) where id =:ta_id; 这里出现了2个:ta_id 分别改成:ta_id1, ta_id2. 
 - use namespace auto load
 
+### URI页面流程规范
+- backend
+  - list page 使用 index关键词
+  - create page 使用 create关键词, 直接post到create 处理完以后跳转回index
+  - update page 使用 update关键词, 直接post到update 处理完以后跳转回index
+  - view page 使用 view关键词
+  - delete 行为使用 ajax完成，完成后删除list中的对应item, 使用定义的notification进行反馈
+- frontend
+  - list page 使用 index关键词
+  - detail page 使用 view关键词
+
 ### 关于 form 操作
-- 根据 model 层定义的 rule 扫描输入的数据，确定输入没有问题后, 再到数据库执行，如果有问题，则返回 UI 向用户提示, 要求用户修改
+- 数据验证规则
+  - JS 代码会有完成。实时数据验证在用户输入之后。校验合格后进入下一步
+  - form submit 使用 post模式， 后台由 PHP 完成验证。
+    - 如果出现问题，返回对应的 form 页面，向用户展示提交的数据和错误信息，错误展示方式，已通过 HTML 设计稿给出。
+    - 如果没有问题，则进入流程的下一步。
+- 根据 model 层定义的 rule 扫描form post的数据，确定输入没有问题后(可以通过读取数据库来做判断), 再到数据库执行，如果有问题，则返回 UI 向用户反馈, 要求用户修改
 
 ### 其他要点
 - 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了，正确的写法应该是。 "?int $limit = null"
