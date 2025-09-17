@@ -62,20 +62,16 @@ function initCollectionListPage() {
         
         switch(action) {
             case 'enable':
-                if (confirm(`确定要启用 ${selectedIds.length} 个合集吗？启用后这些合集将对用户可见。`)) {
-                    alert(`成功启用了 ${selectedIds.length} 个合集`);
-                    // 这里可以添加实际的启用逻辑
-                }
+                window.AdminCommon.showToast(`开发中-成功启用了 ${selectedIds.length} 个合集`, 'primary');
+                // 这里可以添加实际的启用逻辑
                 break;
             case 'disable':
-                if (confirm(`确定要禁用 ${selectedIds.length} 个合集吗？禁用后这些合集将不对用户显示。`)) {
-                    alert(`成功禁用了 ${selectedIds.length} 个合集`);
-                    // 这里可以添加实际的禁用逻辑
-                }
+                window.AdminCommon.showToast(`开发中-成功禁用了 ${selectedIds.length} 个合集`, 'info');
+                // 这里可以添加实际的禁用逻辑
                 break;
             case 'delete':
                 if (confirm(`确定要删除 ${selectedIds.length} 个合集吗？删除后将无法恢复，相关的内容关联也会被移除。`)) {
-                    alert(`成功删除了 ${selectedIds.length} 个合集`);
+                    window.AdminCommon.showToast(`开发中-成功删除了 ${selectedIds.length} 个合集`, 'danger');
                     // 这里可以添加实际的删除逻辑
                 }
                 break;

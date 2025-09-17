@@ -32,7 +32,7 @@ function initTagListPage() {
         rowCheckboxSelector: '.row-checkbox',
         columnSettingsPopupSelector: '#columnSettingsPopup',
         currentDisplaySelector: '#currentDisplay',
-        defaultItemsPerPage: 2, // 保持原有的测试设置
+        defaultItemsPerPage: 5, // 保持原有的测试设置
         enableSort: true,
         enablePagination: true,
         enableColumnSettings: true,
@@ -62,14 +62,14 @@ function initTagListPage() {
         
         switch(action) {
             case 'enable':
-                alert(`启用了 ${selectedIds.length} 个标签`);
+                window.AdminCommon.showToast(`开发中-启用了 ${selectedIds.length} 个标签`, 'primary');
                 break;
             case 'disable':
-                alert(`禁用了 ${selectedIds.length} 个标签`);
+                window.AdminCommon.showToast(`开发中-禁用了 ${selectedIds.length} 个标签`, 'info');
                 break;
             case 'delete':
                 if (confirm(`确定要删除 ${selectedIds.length} 个标签吗？`)) {
-                    alert(`删除了 ${selectedIds.length} 个标签`);
+                    window.AdminCommon.showToast(`开发中-删除了 ${selectedIds.length} 个标签`, 'danger');
                     // 这里可以添加实际的删除逻辑
                 }
                 break;

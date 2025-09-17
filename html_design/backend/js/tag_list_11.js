@@ -59,17 +59,17 @@ function initTagListPage() {
     // 5. 自定义批量操作处理逻辑 - 保持与原版一致
     tableActions.handleBulkAction = function(action, selectedIds) {
         console.log(`标签列表页面批量操作: ${action}，选中项目:`, selectedIds);
-        
+
         switch(action) {
             case 'enable':
-                alert(`启用了 ${selectedIds.length} 个标签`);
+                window.AdminCommon.showToast(`开发中-启用了 ${selectedIds.length} 个标签`, 'primary');
                 break;
             case 'disable':
-                alert(`禁用了 ${selectedIds.length} 个标签`);
+                window.AdminCommon.showToast(`开发中-禁用了 ${selectedIds.length} 个标签`, 'info');
                 break;
             case 'delete':
                 if (confirm(`确定要删除 ${selectedIds.length} 个标签吗？`)) {
-                    alert(`删除了 ${selectedIds.length} 个标签`);
+                    window.AdminCommon.showToast(`开发中-删除了 ${selectedIds.length} 个标签`, 'danger');
                     // 这里可以添加实际的删除逻辑
                 }
                 break;
