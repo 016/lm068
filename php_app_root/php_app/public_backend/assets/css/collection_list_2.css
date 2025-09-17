@@ -1,0 +1,602 @@
+/* Collection List Page Enhanced CSS Styles v2 */
+/* 合集列表页面增强版CSS样式 - 基于 tag_list_8.css 修改 */
+
+/* ========== TABLE COMPONENTS ========== */
+.table-header {
+  background: var(--bg-tertiary);
+}
+
+.table-cell {
+  padding: 1rem 0.75rem;
+}
+
+.table-filter-cell {
+  padding: 0.5rem 0.75rem;
+}
+
+.table-header-bg {
+  background: var(--bg-secondary);
+}
+
+.table-id {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.table-name {
+  font-weight: 500;
+}
+
+.table-count-primary {
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.table-count-muted {
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.badge-success {
+  background: var(--success);
+  color: white;
+}
+
+.badge-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.badge-icon {
+  font-size: 8px;
+}
+
+.table-actions {
+  text-align: center;
+}
+
+/* ========== ENHANCED SORTABLE HEADERS ========== */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sortable-header:hover {
+  background-color: var(--bg-quaternary);
+}
+
+.sortable-header .d-flex {
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  margin: 0;
+  gap: 4px;
+}
+
+/* ========== ENHANCED SORT ICONS CONTAINER ========== */
+.sort-icons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 4px;
+  gap: 0;
+}
+
+/* ========== ENHANCED SORT ICONS ========== */
+.sort-icon {
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.sort-icon-up {
+  margin-top: -2px;
+}
+
+.sort-icon:hover {
+  color: var(--accent-primary);
+  opacity: 1;
+}
+
+.sort-icon.active {
+  color: var(--accent-primary);
+  font-weight: bold;
+  opacity: 1;
+}
+
+/* 排序状态指示器 */
+.sort-indicator {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* ========== ENHANCED CONTENT LINKS ========== */
+.content-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: inline-block;
+  background: rgba(var(--accent-primary-rgb), 0.05);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.content-link:hover {
+  color: var(--accent-primary);
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  border-color: rgba(var(--accent-primary-rgb), 0.25);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.content-link:focus {
+  color: var(--accent-primary);
+  outline: 2px solid rgba(var(--accent-primary-rgb), 0.3);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+.content-link:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+/* ========== COLLECTION STYLE DISPLAY ========== */
+/* 新增 - 合集样式显示组件 */
+.collection-style {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.style-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.style-icon.tech {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.style-icon.music {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.style-icon.gaming {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.style-icon.food {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(190, 24, 93, 0.1));
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.style-icon.travel {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.style-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.collection-style:hover .style-icon {
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.collection-style:hover .style-color-indicator {
+  transform: scale(1.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== COLLECTION DESCRIPTION STYLES ========== */
+/* 新增 - 合集描述显示样式 */
+.collection-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+}
+
+.collection-description:hover {
+  color: var(--text-primary);
+  cursor: help;
+}
+
+/* 悬停时显示完整描述的tooltip */
+.collection-description::after {
+  content: attr(data-full-description);
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: var(--shadow-md);
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.collection-description:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ========== SUMMARY BOX ========== */
+.summary-box {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-light);
+}
+
+.summary-text {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.summary-highlight {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* ========== PAGINATION TEXT ========== */
+.pagination-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ========== ENHANCED PAGINATION ========== */
+.pagination .page-item.disabled .page-link {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.pagination .page-link {
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  border-color: var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+  color: var(--accent-primary);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-medium);
+}
+
+/* ========== POPUPS AND OVERLAYS ========== */
+.export-popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1050;
+  display: none;
+}
+
+.export-popup.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  display: block;
+}
+
+.column-settings-popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1050;
+  display: none;
+}
+
+.column-settings-popup.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  display: block;
+}
+
+.popup-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.popup-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.popup-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.popup-checkbox:hover {
+  background: var(--bg-tertiary);
+}
+
+/* ========== LOADING STATES ========== */
+.table-loading {
+  position: relative;
+}
+
+.table-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(var(--bg-primary), 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* ========== ENHANCED UX ========== */
+/* Placeholder on focus for better UX */
+.table-filter-cell input:focus::placeholder{
+    opacity: 0.5 !important;
+}
+.table-filter-cell input:focus::-webkit-input-placeholder{
+    opacity: 0.5 !important;
+}
+.table-filter-cell input:focus::-moz-placeholder{
+    opacity: 0.5 !important;
+}
+.table-filter-cell input:focus:-ms-input-placeholder {
+    opacity: 0.5 !important;
+}
+
+/* 表格行悬停效果增强 */
+.table-row:hover {
+  background-color: var(--bg-tertiary);
+  transition: background-color 0.2s ease;
+}
+
+/* 选中行样式 */
+.table-row.selected {
+  background-color: rgba(var(--accent-primary), 0.1);
+}
+
+/* ========== COLLECTION SPECIFIC ANIMATIONS ========== */
+/* 新增 - 合集特有的动画效果 */
+@keyframes collectionPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.collection-style:hover {
+  animation: collectionPulse 0.3s ease-in-out;
+}
+
+/* 合集图标渐变背景动画 */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.style-color-indicator {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* ========== RESPONSIVE ENHANCEMENTS ========== */
+@media (max-width: 768px) {
+  .table-cell {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .summary-box {
+    padding: 0.75rem;
+  }
+  
+  .summary-text {
+    font-size: 0.8rem;
+  }
+
+  .sortable-header {
+    font-size: 0.875rem;
+  }
+
+  .content-link {
+    font-size: 0.875rem;
+    padding: 3px 6px;
+  }
+
+  .sort-icons-container {
+    margin-left: 2px;
+  }
+
+  .sort-icon {
+    font-size: 8px;
+  }
+
+  /* 移动端合集样式调整 */
+  .collection-style {
+    gap: 0.5rem;
+  }
+
+  .style-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+  }
+
+  .style-color-indicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .collection-description {
+    max-width: 150px;
+    font-size: 0.8rem;
+  }
+
+  /* 移动端tooltip调整 */
+  .collection-description::after {
+    max-width: 250px;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+/* ========== COLLECTION THEME VARIATIONS ========== */
+/* 新增 - 合集主题变体 */
+.collection-theme-tech {
+  --collection-primary: #6366f1;
+  --collection-secondary: #8b5cf6;
+}
+
+.collection-theme-music {
+  --collection-primary: #10b981;
+  --collection-secondary: #059669;
+}
+
+.collection-theme-gaming {
+  --collection-primary: #f59e0b;
+  --collection-secondary: #d97706;
+}
+
+.collection-theme-food {
+  --collection-primary: #ec4899;
+  --collection-secondary: #be185d;
+}
+
+.collection-theme-travel {
+  --collection-primary: #3b82f6;
+  --collection-secondary: #1d4ed8;
+}
+
+/* ========== DARK MODE SUPPORT ========== */
+/* 新增 - 深色模式下的合集样式 */
+[data-theme="dark"] .collection-description {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .collection-description:hover {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .collection-description::after {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+[data-theme="dark"] .style-icon {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+}
+
+[data-theme="dark"] .style-color-indicator {
+  border-color: var(--border-light);
+}
+
+/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
+/* 新增 - 无障碍访问增强 */
+.collection-style:focus-within {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+.style-icon:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .collection-style {
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius);
+    padding: 0.25rem;
+  }
+  
+  .style-color-indicator {
+    border-width: 3px;
+  }
+}
