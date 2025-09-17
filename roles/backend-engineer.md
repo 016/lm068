@@ -47,15 +47,19 @@
 - 这是一个中文项目, 默认使用中文显示
 - 用户前端支持i18n切换，目前支持中文和英文两个语言
 - php技术使用传统的页面刷新的方式呈现数据
-- 使用单入口模式。为用户前端和管理后端各配置一个入口。
-- 使用 MVC架构
-- 关于View部分，布局内容存放在 对应 layouts 文件夹内, 在可以使用的时候使用layouts内的布局文件
-  - layouts/main.php 为公共布局文件, 无特殊指定时使用该布局
-  - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容不需要重复渲染
-- 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
-  - www.a.com 已指向 php_app_root/php_app/public_frontend
-  - admin.a.com 已指向 php_app_root/php_app/public_backend
 - use namespace auto load
+- 使用单入口模式。为用户前端和管理后端各配置一个入口。
+
+
+### MVC架构规则
+- 使用 MVC架构
+- View
+  - view 文件存放在 php_app_root/php_app/Views 文件夹下
+    - 管理后端存放在 php_app_root/php_app/Views/backend
+    - 用户前端存放在 php_app_root/php_app/Views/frontend 
+  - 布局内容存放在 对应 layouts 文件夹内, 在无约定的情况下，优先使用layouts内的布局文件
+    - layouts/main.php 为默认布局文件, 无特殊指定时优先使用该布局
+    - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容已存放在布局文件内, 不需要重复渲染
 
 ### MySQL 数据库
 - 因为使用了 PDO::ATTR_EMULATE_PREPARES => false，所以SQL语句中不允许出现同名占位符, 就算对应同一个参数, 也要严格使用不同的占位符
@@ -63,6 +67,9 @@
   - 错误做法 SELECT * FROM tag WHERE id = :id AND (name_cn LIKE :name OR name_en LIKE :name) ORDER BY created_at DESC
 
 ### URI页面流程规范
+- 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
+  - www.a.com 已指向 php_app_root/php_app/public_frontend
+  - admin.a.com 已指向 php_app_root/php_app/public_backend
 - backend
   - list page 使用 index关键词
   - create page 使用 create关键词, 直接post到create 处理完以后跳转回index
