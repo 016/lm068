@@ -88,7 +88,7 @@ function initTagListPage() {
         
         // 发送AJAX请求
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/tags/bulkAction', true);
+        xhr.open('POST', '/tags/bulk-action', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         
         xhr.onreadystatechange = function() {
