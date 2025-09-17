@@ -55,9 +55,12 @@
 - 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
   - www.a.com 已指向 php_app_root/php_app/public_frontend
   - admin.a.com 已指向 php_app_root/php_app/public_backend
-- MySQL
-  - 禁止使用同名占位符, 例如 update tableA set cnt = (select count(*) from tableB where ta_id=:ta_id) where id =:ta_id; 这里出现了2个:ta_id 分别改成:ta_id1, ta_id2. 
 - use namespace auto load
+
+### MySQL 数据库
+- 因为使用了 PDO::ATTR_EMULATE_PREPARES => false，所以SQL语句中不允许出现同名占位符, 就算对应同一个参数, 也要严格使用不同的占位符
+  - 正确做法 SELECT * FROM tag WHERE id = :id AND (name_cn LIKE :name_cn OR name_en LIKE :name_en) ORDER BY created_at DESC
+  - 错误做法 SELECT * FROM tag WHERE id = :id AND (name_cn LIKE :name OR name_en LIKE :name) ORDER BY created_at DESC
 
 ### URI页面流程规范
 - backend
