@@ -3,6 +3,7 @@
 namespace App\Controllers\Backend;
 
 use App\Core\Controller;
+use App\Core\Request;
 
 class BackendController extends Controller
 {
@@ -42,5 +43,19 @@ class BackendController extends Controller
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         exit;
+    }
+
+    /**
+     * 从请求中提取搜索过滤条件
+     */
+    protected function getSearchFilters(array $indexList, Request $request): array
+    {
+
+        $filters = [];
+        foreach ($indexList as $index) {
+            $filters[$index] = $request->get($index);
+        }
+
+        return $filters;
     }
 }

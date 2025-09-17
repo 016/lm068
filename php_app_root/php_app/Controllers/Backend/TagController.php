@@ -21,7 +21,7 @@ class TagController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters($request);
+        $filters = $this->getSearchFilters(['id','name','content_cnt','icon_class','status','order_by'], $request);
         
         // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
         $tags = $this->tagModel->findAllWithFilters($filters);
@@ -35,21 +35,6 @@ class TagController extends BackendController
             'css_files' => ['tag_list_8.css'],
             'js_files' => ['tag_list_11.js']
         ]);
-    }
-
-    /**
-     * 从请求中提取搜索过滤条件
-     */
-    private function getSearchFilters(Request $request): array
-    {
-        return [
-            'id' => $request->get('id'),
-            'name' => $request->get('name'),
-            'content_cnt' => $request->get('content_cnt'),
-            'icon_class' => $request->get('icon_class'),
-            'status' => $request->get('status'),
-            'order_by' => $request->get('order_by') ?? 'created_at DESC'
-        ];
     }
 
     public function edit(Request $request): void
