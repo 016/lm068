@@ -122,7 +122,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Main JS - Common Functions -->
-    <script src="/assets/js/main_3.js"></script>
+    <script src="/assets/js/main_8.js"></script>
     
     <!-- Dashboard Specific JS -->
     <script src="/assets/js/login.js"></script>

@@ -63,27 +63,27 @@ $router->get('/users', 'Backend\\UserController@index');
 $router->get('/users/{id}', 'Backend\\UserController@show');
 $router->post('/users/{id}/ban', 'Backend\\UserController@ban');
 
-// 标签管理
+// 标签管理 - 具体路径在参数路径之前
 $router->get('/tags', 'Backend\\TagController@index');
 $router->get('/tags/create', 'Backend\\TagController@create');
 $router->post('/tags', 'Backend\\TagController@store');
+$router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
+$router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');
 $router->get('/tags/{id}/edit', 'Backend\\TagController@edit');
 $router->post('/tags/{id}', 'Backend\\TagController@update');
 $router->get('/tags/{id}', 'Backend\\TagController@show');
 $router->delete('/tags/{id}', 'Backend\\TagController@destroy');
-$router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
-$router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');
 
-// 合集管理
+// 合集管理 - 具体路径在参数路径之前
 $router->get('/collections', 'Backend\\CollectionController@index');
 $router->get('/collections/create', 'Backend\\CollectionController@create');
 $router->post('/collections', 'Backend\\CollectionController@store');
+$router->post('/collections/bulk-action', 'Backend\\CollectionController@bulkAction');
+$router->get('/collections/export', 'Backend\\CollectionController@exportData');
 $router->get('/collections/{id}/edit', 'Backend\\CollectionController@edit');
 $router->post('/collections/{id}', 'Backend\\CollectionController@update');
 $router->get('/collections/{id}', 'Backend\\CollectionController@show');
 $router->delete('/collections/{id}', 'Backend\\CollectionController@destroy');
-$router->post('/collections/bulk-action', 'Backend\\CollectionController@bulkAction');
-$router->get('/collections/export', 'Backend\\CollectionController@exportData');
 
 // 404页面
 $router->notFound(function() {

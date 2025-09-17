@@ -339,6 +339,8 @@ class TagController extends BackendController
 
     public function bulkAction(Request $request): void
     {
+        echo '123';
+        exit;
         $action = $request->post('action');
         $tagIds = $request->post('tag_ids');
 
