@@ -66,6 +66,7 @@ $router->post('/users/{id}/ban', 'Backend\\UserController@ban');
 // 标签管理 - 具体路径在参数路径之前
 $router->get('/tags', 'Backend\\TagController@index');
 $router->get('/tags/create', 'Backend\\TagController@create');
+$router->post('/tag/create', 'Backend\\TagController@store');  // 特定的创建路由
 $router->post('/tags', 'Backend\\TagController@store');
 $router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
 $router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');

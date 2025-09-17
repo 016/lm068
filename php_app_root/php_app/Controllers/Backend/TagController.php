@@ -14,6 +14,9 @@ class TagController extends BackendController
     public function __construct()
     {
         parent::__construct();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->tagModel = new Tag();
         $this->contentModel = new Content();
     }
@@ -27,10 +30,19 @@ class TagController extends BackendController
         $tags = $this->tagModel->findAllWithFilters($filters);
         $stats = $this->tagModel->getStats();
 
+        // 处理 Toast 消息
+        $toastMessage = $_SESSION['toast_message'] ?? null;
+        $toastType = $_SESSION['toast_type'] ?? null;
+        if ($toastMessage) {
+            unset($_SESSION['toast_message'], $_SESSION['toast_type']);
+        }
+
         $this->render('tags/index', [
             'tags' => $tags,
             'filters' => $filters,
             'stats' => $stats,
+            'toastMessage' => $toastMessage,
+            'toastType' => $toastType,
             'pageTitle' => '标签管理 - 视频分享网站管理后台',
             'css_files' => ['tag_list_8.css'],
             'js_files' => ['tag_list_11.js']
@@ -207,14 +219,25 @@ class TagController extends BackendController
             ];
         }
 
-        $this->render('tags/edit', [
+        // 准备视频数据用于JS
+        $videoData = [];
+        foreach ($allContent as $content) {
+            $videoData[] = [
+                'id' => (string)$content['id'],
+                'text' => $content['title_cn'] ?: $content['title_en']
+            ];
+        }
+
+        $this->render('tags/create', [
             'tag' => null,
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
+            'videoData' => $videoData,
+            'selectedVideoIds' => [],
             'isCreateMode' => true,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js']
+            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
     }
 
@@ -250,15 +273,26 @@ class TagController extends BackendController
                 ];
             }
             
-            $this->render('tags/edit', [
+            // 准备视频数据用于JS
+            $videoData = [];
+            foreach ($allContent as $content) {
+                $videoData[] = [
+                    'id' => (string)$content['id'],
+                    'text' => $content['title_cn'] ?: $content['title_en']
+                ];
+            }
+
+            $this->render('tags/create', [
                 'tag' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
+                'videoData' => $videoData,
+                'selectedVideoIds' => [],
                 'errors' => $errors,
                 'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js']
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
             ]);
             return;
         }
@@ -272,7 +306,9 @@ class TagController extends BackendController
                 $this->tagModel->syncContentAssociations($tagId, $contentIds);
             }
 
-            // 成功后跳转到列表页面
+            // 成功后跳转到列表页面，添加Toast消息到session
+            $_SESSION['toast_message'] = '标签创建成功';
+            $_SESSION['toast_type'] = 'success';
             $this->redirect('/tags');
         } catch (\Exception $e) {
             error_log("Tag creation error: " . $e->getMessage());
@@ -291,15 +327,26 @@ class TagController extends BackendController
                 ];
             }
             
-            $this->render('tags/edit', [
+            // 准备视频数据用于JS
+            $videoData = [];
+            foreach ($allContent as $content) {
+                $videoData[] = [
+                    'id' => (string)$content['id'],
+                    'text' => $content['title_cn'] ?: $content['title_en']
+                ];
+            }
+
+            $this->render('tags/create', [
                 'tag' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
+                'videoData' => $videoData,
+                'selectedVideoIds' => [],
                 'errors' => ['general' => '创建失败: ' . $e->getMessage()],
                 'isCreateMode' => true,
                 'pageTitle' => '创建标签 - 视频分享网站管理后台',
                 'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js']
+                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
             ]);
         }
     }

@@ -402,5 +402,12 @@
 </div>
 
 <script>
-
+    // 显示Toast消息
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if ($toastMessage): ?>
+            if (window.AdminCommon && window.AdminCommon.showToast) {
+                window.AdminCommon.showToast('<?= addslashes($toastMessage) ?>', '<?= addslashes($toastType ?? 'info') ?>');
+            }
+        <?php endif; ?>
+    });
 </script>
