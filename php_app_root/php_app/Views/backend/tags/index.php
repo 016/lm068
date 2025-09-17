@@ -248,7 +248,7 @@
                                 <input type="text" name="name" class="form-control form-control-sm" placeholder="搜索标签名" value="<?= htmlspecialchars($filters['name'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="content_cnt">
-                                <input type="text" name="content_cnt" class="form-control form-control-sm" placeholder="数量范围" value="<?= htmlspecialchars($filters['content_cnt'] ?? '') ?>">
+                                <input type="text" name="content_cnt" class="form-control form-control-sm" placeholder="数量范围 1-10" value="<?= htmlspecialchars($filters['content_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="icon_class">
                                 <input type="text" name="icon_class" class="form-control form-control-sm" placeholder="搜索icon" value="<?= htmlspecialchars($filters['icon_class'] ?? '') ?>">
