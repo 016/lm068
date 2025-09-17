@@ -56,24 +56,73 @@ function initTagListPage() {
     // 4. 初始化操作功能
     tableActions.init();
     
-    // 5. 自定义批量操作处理逻辑 - 保持与原版一致
+    // 5. 自定义批量操作处理逻辑 - 实现真实的AJAX批量操作
     tableActions.handleBulkAction = function(action, selectedIds) {
         console.log(`标签列表页面批量操作: ${action}，选中项目:`, selectedIds);
         
+        if (selectedIds.length === 0) {
+            alert('请先选择要操作的标签');
+            return;
+        }
+        
+        let actionText = '';
         switch(action) {
             case 'enable':
-                window.AdminCommon.showToast(`开发中-启用了 ${selectedIds.length} 个标签`, 'primary');
+                actionText = '启用';
                 break;
             case 'disable':
-                window.AdminCommon.showToast(`开发中-禁用了 ${selectedIds.length} 个标签`, 'info');
+                actionText = '禁用';
                 break;
             case 'delete':
-                if (confirm(`确定要删除 ${selectedIds.length} 个标签吗？`)) {
-                    window.AdminCommon.showToast(`开发中-删除了 ${selectedIds.length} 个标签`, 'danger');
-                    // 这里可以添加实际的删除逻辑
-                }
+                actionText = '删除';
                 break;
+            default:
+                alert('不支持的操作');
+                return;
         }
+        
+        // 删除操作需要确认
+        if (action === 'delete' && !confirm(`确定要删除 ${selectedIds.length} 个标签吗？此操作不可撤销。`)) {
+            return;
+        }
+        
+        // 发送AJAX请求
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/tags/bulkAction', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (response.success) {
+                        // 成功处理
+                        const message = response.success_count !== undefined && response.error_count !== undefined 
+                            ? `成功${response.success_count}条，失败${response.error_count}条，点击确认后将自动刷新数据。`
+                            : `${actionText}操作完成，点击确认后将自动刷新数据。`;
+                        
+                        alert(message);
+                        
+                        // 刷新页面保持当前URL格式
+                        window.location.reload();
+                    } else {
+                        alert(`操作失败: ${response.message || '未知错误'}`);
+                    }
+                } catch (e) {
+                    console.error('响应解析错误:', e);
+                    alert('操作失败，服务器响应格式错误');
+                }
+            }
+        };
+        
+        xhr.onerror = function() {
+            alert('网络错误，请稍后重试');
+        };
+        
+        // 发送请求数据
+        const formData = `action=${encodeURIComponent(action)}&tag_ids=${encodeURIComponent(JSON.stringify(selectedIds))}`;
+        xhr.send(formData);
     };
     
     // 6. 初始化批量导入功能

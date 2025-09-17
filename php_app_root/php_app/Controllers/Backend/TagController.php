@@ -340,39 +340,128 @@ class TagController extends BackendController
     public function bulkAction(Request $request): void
     {
         $action = $request->post('action');
-        $tagIds = $request->post('tag_ids');
+        $tagIdsRaw = $request->post('tag_ids');
 
-        if (!$action || !$tagIds || !is_array($tagIds)) {
+        if (!$action || !$tagIdsRaw) {
             $this->jsonResponse(['success' => false, 'message' => '参数错误']);
             return;
         }
 
+        // 处理可能的JSON字符串格式
+        if (is_string($tagIdsRaw)) {
+            $tagIds = json_decode($tagIdsRaw, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->jsonResponse(['success' => false, 'message' => 'tag_ids 格式错误']);
+                return;
+            }
+        } else if (is_array($tagIdsRaw)) {
+            $tagIds = $tagIdsRaw;
+        } else {
+            $this->jsonResponse(['success' => false, 'message' => 'tag_ids 参数类型错误']);
+            return;
+        }
+
+        if (empty($tagIds) || !is_array($tagIds)) {
+            $this->jsonResponse(['success' => false, 'message' => '请选择要操作的标签']);
+            return;
+        }
+
         $tagIds = array_map('intval', $tagIds);
+        $successCount = 0;
+        $errorCount = 0;
+        $totalCount = count($tagIds);
 
         try {
             switch ($action) {
                 case 'enable':
-                    $this->tagModel->bulkUpdateStatus($tagIds, 1);
-                    $message = '批量启用成功';
+                    $result = $this->performBulkUpdateStatus($tagIds, 1);
+                    $successCount = $result['success'];
+                    $errorCount = $result['error'];
                     break;
                 case 'disable':
-                    $this->tagModel->bulkUpdateStatus($tagIds, 0);
-                    $message = '批量禁用成功';
+                    $result = $this->performBulkUpdateStatus($tagIds, 0);
+                    $successCount = $result['success'];
+                    $errorCount = $result['error'];
                     break;
                 case 'delete':
-                    $this->tagModel->bulkDelete($tagIds);
-                    $message = '批量删除成功';
+                    $result = $this->performBulkDelete($tagIds);
+                    $successCount = $result['success'];
+                    $errorCount = $result['error'];
                     break;
                 default:
                     $this->jsonResponse(['success' => false, 'message' => '不支持的操作']);
                     return;
             }
 
-            $this->jsonResponse(['success' => true, 'message' => $message]);
+            $this->jsonResponse([
+                'success' => true,
+                'success_count' => $successCount,
+                'error_count' => $errorCount,
+                'total_count' => $totalCount,
+                'message' => "操作完成：成功{$successCount}条，失败{$errorCount}条"
+            ]);
         } catch (\Exception $e) {
             error_log("Bulk action error: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'message' => '操作失败: ' . $e->getMessage()]);
         }
+    }
+
+    /**
+     * 执行批量状态更新
+     */
+    private function performBulkUpdateStatus(array $tagIds, int $status): array
+    {
+        $successCount = 0;
+        $errorCount = 0;
+
+        foreach ($tagIds as $tagId) {
+            try {
+                // 检查标签是否存在
+                $tag = $this->tagModel->findById($tagId);
+                if (!$tag) {
+                    $errorCount++;
+                    continue;
+                }
+
+                // 更新状态
+                $this->tagModel->update($tagId, ['status_id' => $status]);
+                $successCount++;
+            } catch (\Exception $e) {
+                error_log("Failed to update tag {$tagId}: " . $e->getMessage());
+                $errorCount++;
+            }
+        }
+
+        return ['success' => $successCount, 'error' => $errorCount];
+    }
+
+    /**
+     * 执行批量删除
+     */
+    private function performBulkDelete(array $tagIds): array
+    {
+        $successCount = 0;
+        $errorCount = 0;
+
+        foreach ($tagIds as $tagId) {
+            try {
+                // 检查标签是否存在
+                $tag = $this->tagModel->findById($tagId);
+                if (!$tag) {
+                    $errorCount++;
+                    continue;
+                }
+
+                // 删除标签（包括相关联的内容关系）
+                $this->tagModel->delete($tagId);
+                $successCount++;
+            } catch (\Exception $e) {
+                error_log("Failed to delete tag {$tagId}: " . $e->getMessage());
+                $errorCount++;
+            }
+        }
+
+        return ['success' => $successCount, 'error' => $errorCount];
     }
 
     /**
