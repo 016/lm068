@@ -13,14 +13,8 @@ class Request
 
     public function __construct()
     {
-//        var_dump($_SERVER['REQUEST_URI']);
-//        var_dump(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-//        var_dump($this->uri);
-//        echo 'ee11';
         $this->method = $_SERVER['REQUEST_METHOD'];
-//        var_dump($this->method);
-//        exit;
         $this->params = [];
         $this->query = $_GET;
         $this->body = $_POST;
@@ -30,7 +24,6 @@ class Request
     public function getUri(): string
     {
         $scriptPath = $_SERVER['SCRIPT_NAME'];
-        var_dump($scriptPath);
 
         // 从请求路径中移除脚本路径部分
         if (str_starts_with($this->uri, $scriptPath)) {

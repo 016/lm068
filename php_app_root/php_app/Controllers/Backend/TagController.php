@@ -339,8 +339,6 @@ class TagController extends BackendController
 
     public function bulkAction(Request $request): void
     {
-        echo '123';
-        exit;
         $action = $request->post('action');
         $tagIds = $request->post('tag_ids');
 
@@ -477,7 +475,7 @@ class TagController extends BackendController
         $errors = [];
 
         try {
-            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+            while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) !== false) {
                 $lineNumber++;
                 
                 // 跳过空行
