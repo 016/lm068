@@ -248,7 +248,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
     <!-- Main JS - Common Functions -->
-    <script src="/assets/js/main_7.js"></script>
+    <script src="/assets/js/main_8.js"></script>
     
     <?php if (isset($js_files)): ?>
         <?php foreach ($js_files as $js_file): ?>

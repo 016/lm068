@@ -72,8 +72,9 @@ class Tag extends Model
 
         // 名称搜索（中文或英文）
         if (!empty($filters['name'])) {
-            $whereConditions[] = "(name_cn LIKE :name OR name_en LIKE :name)";
-            $params['name'] = "%" . $filters['name'] . "%";
+            $whereConditions[] = "(name_cn LIKE :name_cn OR name_en LIKE :name_en)";
+            $params['name_cn'] = "%" . $filters['name'] . "%";
+            $params['name_en'] = "%" . $filters['name'] . "%";
         }
 
         // 关联内容数量范围搜索

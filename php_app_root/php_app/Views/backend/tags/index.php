@@ -1,9 +1,3 @@
-<?php
-
-?>
-
-
-
 <!-- Tag Management Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
