@@ -95,7 +95,7 @@ class TagController extends BackendController
         $id = (int)($request->post('id') ?? 0);
         
         if (!$id) {
-            $this->redirect('/tags');
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
             return;
         }
 
