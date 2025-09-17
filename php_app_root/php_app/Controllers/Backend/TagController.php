@@ -375,8 +375,11 @@ class TagController extends BackendController
         }
     }
 
-    // 导出功能已移至JS处理，删除相关PHP代码
-
+    /**
+     * for tag detail view page.
+     * @param Request $request
+     * @return void
+     */
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
@@ -410,6 +413,171 @@ class TagController extends BackendController
         } catch (\Exception $e) {
             error_log("Get content error: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'message' => '获取内容失败']);
+        }
+    }
+
+    public function bulkImport(Request $request): void
+    {
+        // 验证请求方法
+        if (!$request->isPost()) {
+            $this->jsonResponse(['success' => false, 'message' => '请求方法错误']);
+            return;
+        }
+
+        // 检查是否有文件上传
+        if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+            $this->jsonResponse(['success' => false, 'message' => '文件上传失败']);
+            return;
+        }
+
+        $uploadedFile = $_FILES['csv_file'];
+        
+        // 验证文件类型
+        $fileExtension = strtolower(pathinfo($uploadedFile['name'], PATHINFO_EXTENSION));
+        if ($fileExtension !== 'csv') {
+            $this->jsonResponse(['success' => false, 'message' => '请上传CSV文件']);
+            return;
+        }
+
+        // 验证文件大小 (10MB)
+        if ($uploadedFile['size'] > 10 * 1024 * 1024) {
+            $this->jsonResponse(['success' => false, 'message' => '文件大小不能超过10MB']);
+            return;
+        }
+
+        try {
+            $result = $this->processCSVFile($uploadedFile['tmp_name']);
+            $this->jsonResponse($result);
+        } catch (\Exception $e) {
+            error_log("CSV import error: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'message' => '导入过程中发生错误: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 处理CSV文件导入
+     */
+    private function processCSVFile(string $filePath): array
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            return ['success' => false, 'message' => '无法读取上传的文件'];
+        }
+
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            return ['success' => false, 'message' => '无法打开CSV文件'];
+        }
+
+        $successCount = 0;
+        $errorCount = 0;
+        $lineNumber = 0;
+        $headers = [];
+        $errors = [];
+
+        try {
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $lineNumber++;
+                
+                // 跳过空行
+                if (empty(array_filter($data))) {
+                    continue;
+                }
+
+                // 第一行作为表头
+                if ($lineNumber === 1) {
+                    $headers = array_map('trim', $data);
+                    
+                    // 验证必需的字段
+                    $requiredFields = ['name_cn', 'name_en'];
+                    $missingFields = array_diff($requiredFields, $headers);
+                    if (!empty($missingFields)) {
+                        return [
+                            'success' => false, 
+                            'message' => 'CSV文件缺少必需的字段: ' . implode(', ', $missingFields)
+                        ];
+                    }
+                    continue;
+                }
+
+                // 处理数据行
+                try {
+                    $rowData = $this->parseCSVRow($headers, $data);
+                    if ($this->importSingleTag($rowData)) {
+                        $successCount++;
+                    } else {
+                        $errorCount++;
+                        $errors[] = "第{$lineNumber}行：数据验证失败";
+                    }
+                } catch (\Exception $e) {
+                    $errorCount++;
+                    $errors[] = "第{$lineNumber}行：" . $e->getMessage();
+                }
+            }
+
+            return [
+                'success' => true,
+                'success_count' => $successCount,
+                'error_count' => $errorCount,
+                'errors' => $errors
+            ];
+
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    /**
+     * 解析CSV行数据
+     */
+    private function parseCSVRow(array $headers, array $data): array
+    {
+        $rowData = [];
+        
+        foreach ($headers as $index => $header) {
+            $value = isset($data[$index]) ? trim($data[$index]) : '';
+            $rowData[$header] = $value;
+        }
+
+        return $rowData;
+    }
+
+    /**
+     * 导入单个标签
+     */
+    private function importSingleTag(array $data): bool
+    {
+        // 构建标签数据
+        $tagData = [
+            'name_cn' => $data['name_cn'] ?? '',
+            'name_en' => $data['name_en'] ?? '',
+            'short_desc_cn' => $data['short_desc_cn'] ?? '',
+            'short_desc_en' => $data['short_desc_en'] ?? '',
+            'desc_cn' => $data['desc_cn'] ?? '',
+            'desc_en' => $data['desc_en'] ?? '',
+            'color_class' => $data['color_class'] ?? 'btn-outline-primary',
+            'icon_class' => $data['icon_class'] ?? 'bi-tag',
+            'status_id' => isset($data['status_id']) ? (int)$data['status_id'] : 1,
+            'content_cnt' => 0
+        ];
+
+        // 验证数据
+        $errors = $this->tagModel->validate($tagData, false);
+        if (!empty($errors)) {
+            return false;
+        }
+
+        // 检查是否已存在同名标签
+        if ($this->tagModel->findByName($tagData['name_cn'], $tagData['name_en'])) {
+            return false; // 跳过重复标签
+        }
+
+        // 创建标签
+        try {
+            $this->tagModel->create($tagData);
+            return true;
+        } catch (\Exception $e) {
+            error_log("Failed to create tag: " . $e->getMessage());
+            return false;
         }
     }
 }

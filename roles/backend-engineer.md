@@ -75,7 +75,7 @@
   - create page 使用 create关键词, 直接post到create 处理完以后跳转回index
   - update page 使用 update关键词, 直接post到update 处理完以后跳转回index
   - view page 使用 view关键词
-  - delete 行为使用 ajax完成，完成后删除list中的对应item, 使用定义的notification进行反馈
+  - delete 行为使用 delete关键词, ajax完成，完成后删除list中的对应item, 使用定义的notification进行反馈
 - frontend
   - list page 使用 index关键词
   - detail page 使用 view关键词

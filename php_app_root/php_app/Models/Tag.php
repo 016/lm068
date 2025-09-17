@@ -302,4 +302,22 @@ class Tag extends Model
             throw $e;
         }
     }
+
+    /**
+     * 根据中文名或英文名查找标签
+     * @param string $nameCn 中文名称
+     * @param string $nameEn 英文名称
+     * @return array|null 标签数据或null
+     */
+    public function findByName(string $nameCn, string $nameEn): ?array
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
+        $params = [
+            'name_cn' => $nameCn,
+            'name_en' => $nameEn
+        ];
+        
+        $result = $this->db->fetch($sql, $params);
+        return $result ?: null;
+    }
 }

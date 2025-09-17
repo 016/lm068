@@ -72,7 +72,7 @@ $router->post('/tags/{id}', 'Backend\\TagController@update');
 $router->get('/tags/{id}', 'Backend\\TagController@show');
 $router->delete('/tags/{id}', 'Backend\\TagController@destroy');
 $router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
-$router->get('/tags/export', 'Backend\\TagController@exportData');
+$router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');
 
 // 合集管理
 $router->get('/collections', 'Backend\\CollectionController@index');

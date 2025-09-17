@@ -76,7 +76,13 @@ function initTagListPage() {
         }
     };
     
-    // 6. 将实例保存到全局，方便调试和扩展
+    // 6. 初始化批量导入功能
+    if (window.AdminCommon.BulkImportUtils) {
+        window.AdminCommon.BulkImportUtils.setupBulkImport();
+        console.log('批量导入功能已初始化');
+    }
+    
+    // 7. 将实例保存到全局，方便调试和扩展
     window.tagListManager = {
         tableManager: tableManager,
         tableActions: tableActions
