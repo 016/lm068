@@ -71,6 +71,7 @@ $router->post('/tags', 'Backend\\TagController@store');
 $router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
 $router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');
 $router->get('/tags/{id}/edit', 'Backend\\TagController@edit');
+$router->post('/tag/{id}/edit', 'Backend\\TagController@update');  // 新的编辑路由
 $router->post('/tags/{id}', 'Backend\\TagController@update');
 $router->get('/tags/{id}', 'Backend\\TagController@show');
 $router->delete('/tags/{id}', 'Backend\\TagController@destroy');
