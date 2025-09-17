@@ -20,38 +20,36 @@ class TagController extends BackendController
 
     public function index(Request $request): void
     {
-        $page = (int)($request->get('page') ?? 1);
-        $perPage = (int)($request->get('per_page') ?? 100);
-        $search = $request->get('search');
-        $statusFilter = $request->get('status');
-        $orderBy = $request->get('order_by') ?? 'created_at DESC';
-
-        $conditions = [];
-        if ($statusFilter !== null && $statusFilter !== '') {
-            $conditions['status_id'] = (int)$statusFilter;
-        }
-
-        $tags = $this->tagModel->findAllWithPagination($page, $perPage, $conditions, $search, $orderBy);
-
-        $totalCount = $this->tagModel->countWithConditions($conditions, $search);
+        // 获取搜索过滤条件，支持所有搜索表单字段
+        $filters = $this->getSearchFilters($request);
+        
+        // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
+        $tags = $this->tagModel->findAllWithFilters($filters);
         $stats = $this->tagModel->getStats();
-
-        $totalPages = ceil($totalCount / $perPage);
 
         $this->render('tags/index', [
             'tags' => $tags,
-            'page' => $page,
-            'perPage' => $perPage,
-            'totalCount' => $totalCount,
-            'totalPages' => $totalPages,
-            'search' => $search,
-            'statusFilter' => $statusFilter,
-            'orderBy' => $orderBy,
+            'filters' => $filters,
             'stats' => $stats,
             'pageTitle' => '标签管理 - 视频分享网站管理后台',
             'css_files' => ['tag_list_8.css'],
             'js_files' => ['tag_list_11.js']
         ]);
+    }
+
+    /**
+     * 从请求中提取搜索过滤条件
+     */
+    private function getSearchFilters(Request $request): array
+    {
+        return [
+            'id' => $request->get('id'),
+            'name' => $request->get('name'),
+            'content_cnt' => $request->get('content_cnt'),
+            'icon_class' => $request->get('icon_class'),
+            'status' => $request->get('status'),
+            'order_by' => $request->get('order_by') ?? 'created_at DESC'
+        ];
     }
 
     public function edit(Request $request): void
@@ -377,64 +375,7 @@ class TagController extends BackendController
         }
     }
 
-    public function exportData(Request $request): void
-    {
-        $format = $request->get('format') ?? 'json';
-        
-        try {
-            $tags = $this->tagModel->findAll();
-            
-            if ($format === 'csv') {
-                $this->exportCsv($tags);
-            } else {
-                $this->exportJson($tags);
-            }
-        } catch (\Exception $e) {
-            error_log("Export error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '导出失败: ' . $e->getMessage()]);
-        }
-    }
-
-    private function exportCsv(array $tags): void
-    {
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="tags_' . date('Y-m-d_H-i-s') . '.csv"');
-        
-        $output = fopen('php://output', 'w');
-        
-        // 添加BOM以支持中文
-        fwrite($output, "\xEF\xBB\xBF");
-        
-        // CSV头
-        fputcsv($output, ['ID', '中文名称', '英文名称', '中文简介', '英文简介', '状态', '关联内容数', '创建时间']);
-        
-        foreach ($tags as $tag) {
-            fputcsv($output, [
-                $tag['id'],
-                $tag['name_cn'],
-                $tag['name_en'], 
-                $tag['short_desc_cn'],
-                $tag['short_desc_en'],
-                $tag['status_id'] ? '启用' : '禁用',
-                $tag['content_cnt'],
-                $tag['created_at']
-            ]);
-        }
-        
-        fclose($output);
-    }
-
-    private function exportJson(array $tags): void
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        header('Content-Disposition: attachment; filename="tags_' . date('Y-m-d_H-i-s') . '.json"');
-        
-        echo json_encode([
-            'export_time' => date('Y-m-d H:i:s'),
-            'total_count' => count($tags),
-            'tags' => $tags
-        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    }
+    // 导出功能已移至JS处理，删除相关PHP代码
 
     public function show(Request $request): void
     {

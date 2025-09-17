@@ -54,6 +54,69 @@ class Tag extends Model
         ];
     }
 
+    /**
+     * 根据过滤条件获取所有标签数据（不分页，用于JS处理）
+     * 支持多字段搜索过滤
+     */
+    public function findAllWithFilters(array $filters = []): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+        $whereConditions = [];
+
+        // ID 搜索
+        if (!empty($filters['id'])) {
+            $whereConditions[] = "id = :id";
+            $params['id'] = (int)$filters['id'];
+        }
+
+        // 名称搜索（中文或英文）
+        if (!empty($filters['name'])) {
+            $whereConditions[] = "(name_cn LIKE :name OR name_en LIKE :name)";
+            $params['name'] = "%" . $filters['name'] . "%";
+        }
+
+        // 关联内容数量范围搜索
+        if (!empty($filters['content_cnt'])) {
+            // 支持范围搜索，如 "10-50" 或单个数字
+            $contentCnt = $filters['content_cnt'];
+            if (strpos($contentCnt, '-') !== false) {
+                $range = explode('-', $contentCnt);
+                if (count($range) == 2) {
+                    $whereConditions[] = "content_cnt BETWEEN :content_cnt_min AND :content_cnt_max";
+                    $params['content_cnt_min'] = (int)trim($range[0]);
+                    $params['content_cnt_max'] = (int)trim($range[1]);
+                }
+            } else {
+                $whereConditions[] = "content_cnt = :content_cnt";
+                $params['content_cnt'] = (int)$contentCnt;
+            }
+        }
+
+        // 图标class搜索
+        if (!empty($filters['icon_class'])) {
+            $whereConditions[] = "icon_class LIKE :icon_class";
+            $params['icon_class'] = "%" . $filters['icon_class'] . "%";
+        }
+
+        // 状态过滤
+        if ($filters['status'] !== null && $filters['status'] !== '') {
+            $whereConditions[] = "status_id = :status";
+            $params['status'] = (int)$filters['status'];
+        }
+
+        if (!empty($whereConditions)) {
+            $sql .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
+        // 排序
+        $orderBy = $filters['order_by'] ?? 'created_at DESC';
+        $sql .= " ORDER BY {$orderBy}";
+
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    // 保留原有方法以向后兼容
     public function findAllWithPagination(int $page = 1, int $perPage = 10, array $conditions = [], ?string $search = null, ?string $orderBy = null): array
     {
         $offset = ($page - 1) * $perPage;

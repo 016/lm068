@@ -248,22 +248,22 @@
                         <tr class="table-header-bg">
                             <th class="table-filter-cell" data-column="checkbox"></th>
                             <th class="table-filter-cell" data-column="id">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索ID">
+                                <input type="text" name="id" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="name">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索标签名">
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="搜索标签名" value="<?= htmlspecialchars($filters['name'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="content_cnt">
-                                <input type="text" class="form-control form-control-sm" placeholder="数量范围">
+                                <input type="text" name="content_cnt" class="form-control form-control-sm" placeholder="数量范围" value="<?= htmlspecialchars($filters['content_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="icon_class">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索icon">
+                                <input type="text" name="icon_class" class="form-control form-control-sm" placeholder="搜索icon" value="<?= htmlspecialchars($filters['icon_class'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status">
-                                <select class="form-control form-select form-select-sm">
+                                <select name="status" class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
-                                    <option value="1" <?= ($statusFilter === '1') ? 'selected' : '' ?>>显示</option>
-                                    <option value="0" <?= ($statusFilter === '0') ? 'selected' : '' ?>>隐藏</option>
+                                    <option value="1" <?= ($filters['status'] === '1') ? 'selected' : '' ?>>显示</option>
+                                    <option value="0" <?= ($filters['status'] === '0') ? 'selected' : '' ?>>隐藏</option>
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="actions"></th>
@@ -327,14 +327,14 @@
                 </table>
             </div>
 
-            <!-- Table Summary and Pagination -->
+            <!-- Table Summary - 由JS动态更新 -->
             <div class="row align-items-center mt-4">
                 <div class="col-md-6">
                     <div class="summary-box">
                         <div class="summary-text">
                             📊 <strong>汇总信息:</strong> 当前显示
                             <span class="summary-highlight" id="currentDisplay">
-                                <?= ($page - 1) * $perPage + 1 ?>-<?= min($page * $perPage, $totalCount) ?>/<?= number_format($totalCount) ?>
+                                <!-- 由JS动态更新 -->
                             </span> 条 |
                             关联视频总计: <span class="summary-highlight"><?= number_format($stats['total_content_associations'] ?? 0) ?></span> 个 |
                             平均每标签: <span class="summary-highlight"><?= $stats['total_tags'] > 0 ? number_format(($stats['total_content_associations'] ?? 0) / $stats['total_tags'], 1) : '0' ?></span> 个
@@ -347,48 +347,18 @@
                             <div class="d-flex align-items-center gap-2">
                                 <span class="pagination-text">每页</span>
                                 <select class="form-select form-select-sm" id="itemsPerPage" style="width: auto;">
-                                    <option value="5" <?= $perPage == 5 ? 'selected' : '' ?>>5</option>
-                                    <option value="10" <?= $perPage == 10 ? 'selected' : '' ?>>10</option>
-                                    <option value="20" <?= $perPage == 20 ? 'selected' : '' ?>>20</option>
-                                    <option value="50" <?= $perPage == 50 ? 'selected' : '' ?>>50</option>
-                                    <option value="100" <?= $perPage == 100 ? 'selected' : '' ?>>100</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100" selected>100</option>
                                 </select>
                                 <span class="pagination-text">条</span>
                             </div>
-                            <?php if ($totalPages > 1 || 1): ?>
+                            <!-- 分页导航由JS动态生成 -->
                             <ul class="pagination pagination-sm mb-0" id="paginationNav">
-                                <?php if ($page > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page - 1 ?>&per_page=<?= $perPage ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $statusFilter !== null ? '&status=' . urlencode($statusFilter) : '' ?>">
-                                            <i class="bi bi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-
-                                <?php
-                                $startPage = max(1, $page - 2);
-                                $endPage = min($totalPages, $page + 2);
-                                $startPage = 1;
-                                $endPage = 4;
-                                ?>
-
-                                <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
-                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $perPage ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $statusFilter !== null ? '&status=' . urlencode($statusFilter) : '' ?>">
-                                            <?= $i ?>
-                                        </a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <?php if ($page < $totalPages): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page + 1 ?>&per_page=<?= $perPage ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $statusFilter !== null ? '&status=' . urlencode($statusFilter) : '' ?>">
-                                            <i class="bi bi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
+                                <!-- 由JS动态生成 -->
                             </ul>
-                            <?php endif; ?>
                         </div>
                     </nav>
                 </div>
