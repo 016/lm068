@@ -108,3 +108,12 @@ php_app/
 ├── .gitignore                # Git 忽略配置
 ├── composer.json             # Composer 依赖管理文件
 └── README.md                 # 项目说明文件
+
+
+## 技术规范
+
+### 已定义 js 可用组件
+- 当需求符合时，优先使用本列表中定义的内容
+- backend
+  - 向用户展示提示信息。 main.js showToast() 
+- frontend
