@@ -374,7 +374,7 @@ class FormUtils {
      * @param {number} maxLimit - 最大视频数量限制
      * @param {string} limitMessage - 超出限制时的提示消息
      */
-    handleCommonVideosChange(detail, maxLimit = 5000, limitMessage = '建议视频数量不超过{limit}个') {
+    handleCommonContentsChange(detail, maxLimit = 5000, limitMessage = '建议视频数量不超过{limit}个') {
         const { action, item, selected } = detail;
         
         switch (action) {
@@ -390,7 +390,7 @@ class FormUtils {
         }
 
         // 更新视频统计信息
-        this.updateCommonVideoStats(selected);
+        this.updateCommonContentStats(selected);
 
         // 视频数量限制提示
         if (selected.length > maxLimit) {
@@ -407,7 +407,7 @@ class FormUtils {
      * @param {string} selector - 统计数量元素的选择器
      * @param {boolean} formatLargeNumbers - 是否格式化大数字(如1000 -> 1K)
      */
-    updateCommonVideoStats(selectedVideos, selector = '.stats-row .stat-item .stat-value', formatLargeNumbers = false) {
+    updateCommonContentStats(selectedVideos, selector = '.stats-row .stat-item .stat-value', formatLargeNumbers = false) {
         const statValueElement = document.querySelector(selector);
         if (statValueElement && selectedVideos) {
             const count = selectedVideos.length;

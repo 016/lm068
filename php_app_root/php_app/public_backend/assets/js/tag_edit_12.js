@@ -89,7 +89,7 @@ class TagEditManager {
         if (videosInstance) {
             document.getElementById('videoMultiSelect').addEventListener('multiselect:change', (e) => {
                 // 使用通用的视频变更处理方法，标签页面有更高的视频数量限制
-                this.formUtils.handleCommonVideosChange(e.detail);
+                this.formUtils.handleCommonContentsChange(e.detail);
             });
         }
     }
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.TagEditForm = {
     updateVideoStats: (selectedVideos) => {
         // 使用通用的统计更新方法，支持大数字格式化
-        window.tagEditManager?.formUtils?.updateCommonVideoStats(selectedVideos, '.stats-row .stat-item .stat-value', true);
+        window.tagEditManager?.formUtils?.updateCommonContentStats(selectedVideos, '.stats-row .stat-item .stat-value', true);
     },
     getSelectedVideos: () => {
         return window.tagEditManager?.getSelectedVideos() || [];

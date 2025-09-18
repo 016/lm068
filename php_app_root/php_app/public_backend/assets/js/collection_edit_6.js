@@ -108,7 +108,7 @@ class CollectionEditManager {
         if (videosInstance) {
             document.getElementById('videoMultiSelect').addEventListener('multiselect:change', (e) => {
                 // 使用通用的视频变更处理方法
-                this.formUtils.handleCommonVideosChange(e.detail);
+                this.formUtils.handleCommonContentsChange(e.detail);
             });
         }
     }
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.CollectionEditForm = {
     updateVideoStats: (selectedVideos) => {
         // 使用通用的统计更新方法
-        window.collectionEditManager?.formUtils?.updateCommonVideoStats(selectedVideos);
+        window.collectionEditManager?.formUtils?.updateCommonContentStats(selectedVideos);
     },
     getSelectedVideos: () => {
         return window.collectionEditManager?.getSelectedVideos() || [];
