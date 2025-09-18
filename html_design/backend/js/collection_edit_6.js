@@ -71,7 +71,7 @@ class CollectionEditManager {
         }
 
 
-        const selectedVideos = this.contentList.filter(video => this.selectedContentIds.includes(video.id));
+        const selectedContentIds = this.contentList.filter(video => this.selectedContentIds.includes(video.id));
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
@@ -82,7 +82,7 @@ class CollectionEditManager {
             maxDisplayItems: 7,
             columns: 4,
             data: this.contentList,
-            selected: selectedVideos,
+            selected: selectedContentIds,
             allowClear: true
         });
 
@@ -149,9 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 兼容性：暴露给外部使用的工具函数（保持向后兼容）
 window.CollectionEditForm = {
-    updateVideoStats: (selectedVideos) => {
+    updateVideoStats: (selectedContentIds) => {
         // 使用通用的统计更新方法
-        window.collectionEditManager?.formUtils?.updateCommonVideoStats(selectedVideos);
+        window.collectionEditManager?.formUtils?.updateCommonVideoStats(selectedContentIds);
     },
     getSelectedVideos: () => {
         return window.collectionEditManager?.getSelectedVideos() || [];
