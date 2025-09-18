@@ -56,27 +56,9 @@ class CollectionEditManager {
 
     }
 
-    // 模拟视频数据
-    videoData = [
-        { id: '1', text: '【科技】AI人工智能未来发展趋势解析' },
-        { id: '2', text: '【科技】量子计算机的工作原理详解' },
-        { id: '3', text: '【科技】新能源汽车技术革命' },
-        { id: '4', text: '【科技】5G网络如何改变我们的生活' },
-        { id: '5', text: '【科技】虚拟现实VR技术应用前景' },
-        { id: '6', text: '【科技】区块链技术深度解析' },
-        { id: '7', text: '【科技】机器学习算法入门教程' },
-        { id: '8', text: '【科技】物联网IoT设备连接原理' },
-        { id: '9', text: '【科技】云计算服务架构详解' },
-        { id: '10', text: '【科技】大数据分析技术应用' },
-        { id: '11', text: '【科技】人脸识别技术发展历程' },
-        { id: '12', text: '【科技】自动驾驶汽车技术原理' },
-        { id: '13', text: '【科技】智能家居系统搭建指南' },
-        { id: '14', text: '【科技】生物识别技术应用场景' },
-        { id: '15', text: '【科技】3D打印技术发展现状' }
-    ];
-
-    // 模拟已选中的视频
-    selectedVideoIds = ['1', '3', '7', '10'];
+    // 读取 PHP 填充数据。
+    contentList = window.inputData.contentList;
+    selectedContentIds = window.inputData.selectedContentIds;
 
     /**
      * 初始化页面特定的多选组件
@@ -89,7 +71,7 @@ class CollectionEditManager {
         }
 
 
-        const selectedVideos = this.videoData.filter(video => this.selectedVideoIds.includes(video.id));
+        const selectedVideos = this.contentList.filter(video => this.selectedContentIds.includes(video.id));
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
@@ -99,7 +81,7 @@ class CollectionEditManager {
             hiddenInputName: 'related_videos',
             maxDisplayItems: 7,
             columns: 4,
-            data: this.videoData,
+            data: this.contentList,
             selected: selectedVideos,
             allowClear: true
         });
