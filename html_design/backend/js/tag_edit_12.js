@@ -56,31 +56,9 @@ class TagEditManager {
     }
 
 
-    // 模拟视频数据
-    videoData = [
-        { id: '1', text: '【搞笑1】动物搞笑合集第一期【搞笑】动物搞笑合集第一期【搞笑】动物搞笑合集第一期' },
-        { id: '2', text: '【搞笑】网络热门段子精选' },
-        { id: '3', text: '【搞笑】街头恶搞大合集' },
-        { id: '4', text: '【搞笑】宠物萌宠搞怪瞬间' },
-        { id: '5', text: '【搞笑】校园趣事分享' },
-        { id: '6', text: '【搞笑】办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑办公室日常爆笑' },
-        { id: '7', text: '【搞笑】生活中的尴尬时刻' },
-        { id: '8', text: '【搞笑】网红模仿秀合集' },
-        { id: '9', text: '【搞笑】儿童童言无忌' },
-        { id: '10', text: '【搞笑】运动失误搞笑瞬间' },
-        { id: '11', text: '【搞笑】厨房烹饪意外合集' },
-        { id: '12', text: '【搞笑】旅游途中趣事分享' },
-        { id: '13', text: '【搞笑】家庭聚会爆笑时刻' },
-        { id: '14', text: '【搞笑】公共场所尴尬瞬间' },
-        { id: '15', text: '【搞笑】网络直播搞笑片段' },
-        { id: '16', text: '【搞笑】老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集老人爆笑语录合集' },
-        { id: '17', text: '【搞笑】交通工具趣事' },
-        { id: '18', text: '【搞笑】购物时的奇遇记' },
-        { id: '19', text: '【搞笑】节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻节日庆典搞怪时刻' },
-        { id: '20', text: '【搞笑】科技产品使用囧事' }
-    ];
-
-    selectedVideoIds = ['1', '4', '7', '9', '12', '15'];
+    // 读取 PHP 填充数据。
+    contentList = window.inputData.contentList;
+    selectedContentIds = window.inputData.selectedContentIds;
 
     /**
      * 初始化页面特定的多选组件
@@ -92,7 +70,7 @@ class TagEditManager {
             return;
         }
 
-        const selectedVideos = this.videoData.filter(video => this.selectedVideoIds.includes(video.id));
+        const selectedVideos = this.contentList.filter(video => this.selectedContentIds.includes(video.id));
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
@@ -102,7 +80,7 @@ class TagEditManager {
             hiddenInputName: 'related_videos',
             maxDisplayItems: 7,
             columns: 4,
-            data: this.videoData,
+            data: this.contentList,
             selected: selectedVideos,
             allowClear: true
         });
