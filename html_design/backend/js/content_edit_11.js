@@ -46,43 +46,12 @@ class ContentEditManager {
             enableNotification: true
         });
     }
-    // 内容标签数据
-    tagsData = [
-        { id: '1', text: '前端开发' },
-        { id: '2', text: 'JavaScript' },
-        { id: '3', text: 'React' },
-        { id: '4', text: 'Vue.js' },
-        { id: '5', text: 'Angular' },
-        { id: '6', text: 'TypeScript' },
-        { id: '7', text: 'CSS3' },
-        { id: '8', text: 'HTML5' },
-        { id: '9', text: 'Node.js' },
-        { id: '10', text: '性能优化' },
-        { id: '11', text: '响应式设计' },
-        { id: '12', text: '移动端开发' },
-        { id: '13', text: 'webpack' },
-        { id: '14', text: 'ES6+' },
-        { id: '15', text: 'UI/UX' },
-        { id: '16', text: '工程化' },
-        { id: '17', text: '测试' },
-        { id: '18', text: '部署' }
-    ];
-    selectedTagIds = ['1', '4', '7', '15'];
 
-    // 内容合集数据
-    collectionsData = [
-        { id: '1', text: '前端基础教程' },
-        { id: '2', text: 'JavaScript进阶' },
-        { id: '3', text: 'React实战项目' },
-        { id: '4', text: 'Vue开发指南' },
-        { id: '5', text: '性能优化专题' },
-        { id: '6', text: '工具链使用' },
-        { id: '7', text: '设计模式' },
-        { id: '8', text: '算法与数据结构' },
-        { id: '9', text: '移动端开发' },
-        { id: '10', text: '全栈开发' }
-    ];
-    selectedCollectionIds = ['1', '4', '7', '10'];
+    // 读取 PHP 填充数据。
+    tagsList = window.inputData.tagsList;
+    selectedTagIds = window.inputData.selectedTagIds;
+    collectionsList = window.inputData.collectionsList;
+    selectedCollectionIds = window.inputData.selectedCollectionIds;
 
     /**
      * 初始化页面特定的多选组件
@@ -95,7 +64,7 @@ class ContentEditManager {
         }
 
 
-        const selectedTags = this.tagsData.filter(tag => this.selectedTagIds.includes(tag.id));
+        const selectedTags = this.tagsList.filter(tag => this.selectedTagIds.includes(tag.id));
         // 初始化标签多选组件
         const tagsInstance = this.formUtils.initializeMultiSelect('tags', {
             container: '#videoTagsMultiSelect',
@@ -104,12 +73,12 @@ class ContentEditManager {
             hiddenInputName: 'tag_ids',
             maxDisplayItems: 3,
             columns: 2,
-            data: this.tagsData,
+            data: this.tagsList,
             selected: selectedTags,
             allowClear: true
         });
 
-        const selectedCollections = this.collectionsData.filter(collection => this.selectedCollectionIds.includes(collection.id));
+        const selectedCollections = this.collectionsList.filter(collection => this.selectedCollectionIds.includes(collection.id));
         // 初始化合集多选组件
         const collectionsInstance = this.formUtils.initializeMultiSelect('collections', {
             container: '#videoCollectionsMultiSelect',
@@ -118,7 +87,7 @@ class ContentEditManager {
             hiddenInputName: 'collection_ids',
             maxDisplayItems: 2,
             columns: 1,
-            data: this.collectionsData,
+            data: this.collectionsList,
             selected: selectedCollections,
             allowClear: true
         });
