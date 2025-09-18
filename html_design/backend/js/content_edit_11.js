@@ -108,27 +108,6 @@ class ContentEditManager {
     }
 
     /**
-     * 绑定页面特定事件
-     */
-    bindPageEvents() {
-        // 监听内容类型变更，动态调整表单显示
-        const contentTypeSelect = document.getElementById('content_type_id');
-        if (contentTypeSelect) {
-            contentTypeSelect.addEventListener('change', (e) => {
-                this.handleContentTypeChange(e.target.value);
-            });
-        }
-
-        // 监听状态变更，显示相应的提示信息
-        const statusSelect = document.getElementById('status_id');
-        if (statusSelect) {
-            statusSelect.addEventListener('change', (e) => {
-                this.handleStatusChange(e.target.value);
-            });
-        }
-    }
-
-    /**
      * 处理标签选择变更
      * 在标签选择变化时显示相应的通知信息
      */
@@ -175,52 +154,6 @@ class ContentEditManager {
         // 合集数量限制提示
         if (selected.length > 5) {
             this.showNotification('建议一个内容不要加入超过5个合集', 'warning');
-        }
-    }
-
-    /**
-     * 处理内容类型变更
-     * 根据内容类型显示/隐藏相关字段
-     */
-    handleContentTypeChange(typeId) {
-        const durationField = document.getElementById('duration')?.parentElement;
-        const authorField = document.getElementById('author')?.parentElement;
-        
-        switch (typeId) {
-            case '21': // 视频
-                if (durationField) durationField.style.display = 'block';
-                if (authorField) authorField.style.display = 'block';
-                this.showNotification('已切换到视频内容类型', 'info');
-                break;
-            case '11': // 一般文章
-                if (durationField) durationField.style.display = 'none';
-                if (authorField) authorField.style.display = 'block';
-                this.showNotification('已切换到文章内容类型', 'info');
-                break;
-            case '1': // 网站公告
-                if (durationField) durationField.style.display = 'none';
-                if (authorField) authorField.style.display = 'none';
-                this.showNotification('已切换到公告内容类型', 'info');
-                break;
-        }
-    }
-
-    /**
-     * 处理状态变更
-     * 根据发布状态给出相应提示
-     */
-    handleStatusChange(statusId) {
-        const statusMessages = {
-            '0': { message: '内容已设为隐藏状态', type: 'warning' },
-            '1': { message: '内容保存为草稿', type: 'info' },
-            '11': { message: '创意阶段，开始构思', type: 'info' },
-            '91': { message: '内容准备发布', type: 'success' },
-            '99': { message: '内容已发布', type: 'success' }
-        };
-
-        const status = statusMessages[statusId];
-        if (status) {
-            this.showNotification(status.message, status.type);
         }
     }
 
