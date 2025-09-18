@@ -274,12 +274,6 @@
                     <i class="bi bi-x-lg"></i>
                     取消
                 </a>
-                <?php if (!$isCreateMode): ?>
-                <button type="button" class="btn btn-outline-primary" id="previewBtn">
-                    <i class="bi bi-eye"></i>
-                    预览
-                </button>
-                <?php endif; ?>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i>
                     <?= !$isCreateMode ? '保存修改' : '创建标签' ?>
@@ -290,36 +284,13 @@
 </div>
 
 <script>
-    // 简化的表单处理（传统POST提交方式）
+     // 简化的表单处理（传统POST提交方式）
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('tagEditForm');
-        const nameInput = document.getElementById('name_cn');
-        const iconInput = document.getElementById('icon_class');
-        const colorSelect = document.getElementById('color_class');
-        const previewBtn = document.getElementById('tagPreviewBtn');
-        const previewIcon = document.getElementById('previewIcon');
-        const previewText = document.getElementById('previewText');
-
-        // 实时预览更新
-        function updatePreview() {
-            const name = nameInput.value || '新标签';
-            const icon = iconInput.value || 'bi-star';
-            const color = colorSelect.value || 'btn-outline-primary';
-
-            previewText.textContent = name;
-            previewIcon.className = 'bi ' + icon;
-            previewBtn.className = 'btn ' + color;
-        }
-
-        // 绑定预览更新事件
-        if (nameInput) nameInput.addEventListener('input', updatePreview);
-        if (iconInput) iconInput.addEventListener('input', updatePreview);
-        if (colorSelect) colorSelect.addEventListener('change', updatePreview);
 
         // 初始化多选组件（如果存在）
         if (window.MultiSelectDropdown && document.getElementById('videoMultiSelect')) {
             const contentOptions = <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>;
-            
+
             // 转换数据格式
             const videoData = contentOptions.map(function(option) {
                 return {
@@ -349,36 +320,5 @@
                 allowClear: true
             });
         }
-
-        // 表单提交处理（传统POST方式）
-        form.addEventListener('submit', function(e) {
-            // 处理checkbox状态
-            const statusCheckbox = document.getElementById('status_id');
-            if (!statusCheckbox.checked) {
-                // 如果没有选中，添加隐藏字段设置为0
-                const hiddenStatus = document.createElement('input');
-                hiddenStatus.type = 'hidden';
-                hiddenStatus.name = 'status_id';
-                hiddenStatus.value = '0';
-                form.appendChild(hiddenStatus);
-            }
-
-            // 显示加载状态
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
-                submitBtn.disabled = true;
-                
-                // 如果用户刷新页面或返回，恢复按钮状态
-                setTimeout(function() {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                }, 5000);
-            }
-            
-            // 表单将会自动提交到后端（传统POST方式）
-            // 不阻止默认行为，让浏览器执行正常的表单提交
-        });
-    });
+     });
 </script>
