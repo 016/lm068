@@ -98,6 +98,8 @@ function initCollectionSpecificFeatures() {
     
     // 2. 合集描述tooltip功能
     setupCollectionDescriptionTooltips();
+
+    // 3. 初始化table中可能出现的 tooltip
     window.AdminCommon.showTooltip();
     
     console.log('合集特有功能增强初始化完成');
@@ -111,9 +113,11 @@ function setupCollectionDescriptionTooltips() {
     document.querySelectorAll('[data-column="description"]').forEach(cell => {
         const fullText = cell.textContent.trim();
         if (fullText.length > 20) { // 如果描述较长，添加tooltip
-            cell.classList.add('collection-description');
-            cell.setAttribute('data-full-description', fullText);
-            
+            //data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top"
+            cell.setAttribute('data-bs-toggle', 'tooltip');
+            cell.setAttribute('data-bs-placement', 'top');
+            cell.setAttribute('data-bs-title', fullText);
+
             // 截断显示的文本
             if (fullText.length > 20) {
                 cell.textContent = fullText.substring(0, 20) + '...';

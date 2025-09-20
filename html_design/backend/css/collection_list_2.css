@@ -219,52 +219,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* ========== COLLECTION DESCRIPTION STYLES ========== */
-/* 新增 - 合集描述显示样式 */
-.collection-description {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.4;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  position: relative;
-}
-
-.collection-description:hover {
-  color: var(--text-primary);
-  cursor: help;
-}
-
-/* 悬停时显示完整描述的tooltip */
-.collection-description::after {
-  content: attr(data-full-description);
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius);
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-5px);
-  transition: all 0.2s ease;
-  z-index: 1000;
-  box-shadow: var(--shadow-md);
-  max-width: 300px;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-.collection-description:hover::after {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
 
 /* ========== SUMMARY BOX ========== */
 .summary-box {
@@ -509,18 +463,6 @@
     width: 14px;
     height: 14px;
   }
-
-  .collection-description {
-    max-width: 150px;
-    font-size: 0.8rem;
-  }
-
-  /* 移动端tooltip调整 */
-  .collection-description::after {
-    max-width: 250px;
-    font-size: 0.7rem;
-    padding: 0.4rem 0.6rem;
-  }
 }
 
 /* ========== COLLECTION THEME VARIATIONS ========== */
@@ -552,19 +494,6 @@
 
 /* ========== DARK MODE SUPPORT ========== */
 /* 新增 - 深色模式下的合集样式 */
-[data-theme="dark"] .collection-description {
-  color: var(--text-secondary);
-}
-
-[data-theme="dark"] .collection-description:hover {
-  color: var(--text-primary);
-}
-
-[data-theme="dark"] .collection-description::after {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
-}
 
 [data-theme="dark"] .style-icon {
   background: var(--bg-tertiary);

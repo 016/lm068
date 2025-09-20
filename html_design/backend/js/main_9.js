@@ -35,6 +35,7 @@ function initializeCommonElements() {
     // Initialize switch components
     initializeSwitches();
     setupAllSwitchInteractions();
+
 }
 
 // ========== SIDEBAR FUNCTIONALITY ========== 
@@ -174,8 +175,8 @@ function setupResponsiveHandlers() {
 // 显示Toast消息
 function showTooltip() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => {new bootstrap.Tooltip(tooltipTriggerEl); console.log('ee1')})
-    console.log(tooltipList)
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    // console.log(tooltipList)
 }
 
 // ========== Toast FUNCTIONALITY ========== 
