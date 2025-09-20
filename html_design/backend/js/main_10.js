@@ -184,19 +184,50 @@ function showTooltip() {
 }
 
 /**
+ * 重新初始化所有tooltips - 解决动态内容更新后tooltip失效问题
+ * 这个方法会清除现有的tooltips并重新初始化所有带有tooltip属性的元素
+ */
+function reinitializeTooltips() {
+    // 清除现有的tooltips
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(element => {
+        const existingTooltip = bootstrap.Tooltip.getInstance(element);
+        if (existingTooltip) {
+            existingTooltip.dispose();
+        }
+    });
+    
+    // 重新初始化所有tooltips
+    showTooltip();
+    
+    console.log('所有tooltips已重新初始化');
+}
+
+/**
  * 设置描述文本的tooltip功能 - 通用方法
  * @param {Object} options - 配置选项
  * @param {string} options.selector - 目标元素选择器，默认为 '[data-column="description"]'
  * @param {number} options.maxLength - 文本截断长度，默认为 20
  * @param {string} options.placement - tooltip位置，默认为 'top'
+ * @param {boolean} options.reinitialize - 是否重新初始化（清除现有tooltips），默认为 false
  */
 function setupDescriptionTooltips(options = {}) {
     const config = {
         selector: '[data-column="description"]',
         maxLength: 20,
         placement: 'top',
+        reinitialize: false,
         ...options
     };
+    
+    // 如果需要重新初始化，先清除现有的tooltips
+    if (config.reinitialize) {
+        document.querySelectorAll(config.selector).forEach(cell => {
+            const existingTooltip = bootstrap.Tooltip.getInstance(cell);
+            if (existingTooltip) {
+                existingTooltip.dispose();
+            }
+        });
+    }
     
     // 为指定选择器的元素添加完整描述的data属性
     document.querySelectorAll(config.selector).forEach(cell => {
@@ -215,7 +246,7 @@ function setupDescriptionTooltips(options = {}) {
     // 初始化新添加的tooltips
     showTooltip();
     
-    console.log(`描述tooltip功能已设置，选择器: ${config.selector}, 截断长度: ${config.maxLength}`);
+    console.log(`描述tooltip功能已设置，选择器: ${config.selector}, 截断长度: ${config.maxLength}${config.reinitialize ? ' (重新初始化)' : ''}`);
 }
 
 // ========== Toast FUNCTIONALITY ========== 
@@ -1106,6 +1137,9 @@ const TableOperations = {
             tbody.appendChild(tr);
         });
         
+        // 表格重新渲染后，重新初始化所有tooltips - 解决分页排序后tooltip失效问题
+        reinitializeTooltips();
+        
         console.log(`Rendered ${data.length} rows with restored cell attributes`);
     },
     
@@ -1861,6 +1895,7 @@ window.AdminCommon = {
     showModal,
     showToast,
     showTooltip,
+    reinitializeTooltips,
     setupDescriptionTooltips,
     setupNotificationBlink,
     formatDate,
