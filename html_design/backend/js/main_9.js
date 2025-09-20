@@ -1,19 +1,17 @@
 /**
- * Backend Admin Main JavaScript v8 - 优化版表格管理 + Switch交互修复
- * 基于 main_7.js 优化，新增switch组件的完整交互功能
+ * Backend Admin Main JavaScript v9 - 表格重构：完整保存HTML属性和数据
+ * 基于 main_8.js 优化，增强表格数据保存和恢复功能
  * 
  * 主要更新：
- * - 修复switch组件点击无效问题
- * - 在initializeCommonElements中添加switch初始化调用
- * - 新增setupAllSwitchInteractions函数，为所有switch设置交互
- * - 确保switch组件的checkbox值能正确更新和提交
+ * - 修改 loadDataFromHTML 方法，完整保存每个 cell 的所有 HTML 属性
+ * - 修改 renderTableData 方法，完美复原 cell 的所有属性和数据
+ * - 新增 cellAttributeStore 用于存储完整的 cell 属性信息
+ * - 确保重新渲染的表格与原始 HTML 表格完全一致
  * 
- * 其他功能保持与main_7.js相同：
- * - 重构 TableOperations：专注工具方法，移除状态管理
- * - 优化 TableManager：统一排序和事件管理，减少重复代码
- * - 简化 CommonTableActions：合并下拉菜单逻辑
- * - 使用事件委托减少事件绑定开销
- * - 优化分页和显示更新逻辑
+ * 其他功能保持与 main_8.js 相同：
+ * - 完整的 switch 组件交互功能
+ * - 优化的表格管理和排序功能
+ * - 统一的事件管理和下拉菜单逻辑
  */
 
 // ========== GLOBAL VARIABLES ========== 
@@ -668,16 +666,21 @@ function initializeAnimatedCounters() {
     });
 }
 
-/* ========== 优化版表格操作工具类 ========== */
+/* ========== 增强版表格操作工具类 ========== */
 /**
- * 优化版表格操作工具类 - 专注于数据处理和工具方法
+ * 增强版表格操作工具类 - 专注于数据处理和工具方法
+ * 新增完整的 HTML 属性保存和恢复功能
  * 移除状态管理逻辑，提高代码复用性
  */
 const TableOperations = {
     
+    // 存储所有 cell 的完整属性信息
+    cellAttributeStore: new Map(),
+    
     /**
      * 从HTML表格中读取数据并解析列配置
      * 支持任意列结构的表格，自动识别列类型和数据
+     * 新增：完整保存每个 cell 的所有 HTML 属性
      * @param {string} tableSelector - 表格选择器，默认为 '#dataTable'
      * @param {string} bodySelector - 表格body选择器，默认为 'tbody'
      * @returns {Object} 包含 columns 和 data 的对象
@@ -688,6 +691,9 @@ const TableOperations = {
             console.error('Table not found:', tableSelector);
             return { columns: [], data: [] };
         }
+
+        // 清空之前的属性存储
+        this.cellAttributeStore.clear();
 
         // 获取表头信息
         const headerCells = table.querySelectorAll('thead .table-header th[data-column]');
@@ -718,7 +724,12 @@ const TableOperations = {
             columns.forEach(column => {
                 const cell = row.querySelector(`[data-column="${column.id}"]`);
                 if (cell) {
+                    // 提取 cell 数据
                     rowData[column.id] = this.extractCellData(cell, column);
+                    
+                    // 保存 cell 的完整属性信息
+                    const cellKey = `${rowData._rowId || index}_${column.id}`;
+                    this.saveCellAttributes(cellKey, cell);
                 }
             });
             
@@ -726,7 +737,69 @@ const TableOperations = {
         });
 
         console.log(`Loaded ${data.length} rows with ${columns.length} columns from HTML table`);
+        console.log(`Saved attributes for ${this.cellAttributeStore.size} cells`);
         return { columns, data };
+    },
+    
+    /**
+     * 保存单个 cell 的所有 HTML 属性和完整内容
+     * @param {string} cellKey - cell 的唯一标识
+     * @param {Element} cell - cell 元素
+     */
+    saveCellAttributes: function(cellKey, cell) {
+        const cellInfo = {
+            // 保存所有 HTML 属性
+            attributes: {},
+            // 保存完整的 innerHTML
+            innerHTML: cell.innerHTML,
+            // 保存文本内容
+            textContent: cell.textContent,
+            // 保存类名
+            className: cell.className,
+            // 保存内联样式
+            style: cell.getAttribute('style') || ''
+        };
+        
+        // 遍历并保存所有属性
+        for (let i = 0; i < cell.attributes.length; i++) {
+            const attr = cell.attributes[i];
+            cellInfo.attributes[attr.name] = attr.value;
+        }
+        
+        // 保存子元素的属性（如果有的话）
+        const childElements = cell.querySelectorAll('*');
+        if (childElements.length > 0) {
+            cellInfo.childElements = [];
+            childElements.forEach((child, index) => {
+                const childInfo = {
+                    tagName: child.tagName,
+                    className: child.className,
+                    innerHTML: child.innerHTML,
+                    textContent: child.textContent,
+                    attributes: {}
+                };
+                
+                // 保存子元素的所有属性
+                for (let i = 0; i < child.attributes.length; i++) {
+                    const attr = child.attributes[i];
+                    childInfo.attributes[attr.name] = attr.value;
+                }
+                
+                cellInfo.childElements.push(childInfo);
+            });
+        }
+        
+        this.cellAttributeStore.set(cellKey, cellInfo);
+        console.log(`Saved attributes for cell: ${cellKey}`);
+    },
+    
+    /**
+     * 获取保存的 cell 属性信息
+     * @param {string} cellKey - cell 的唯一标识
+     * @returns {Object|null} cell 属性信息
+     */
+    getCellAttributes: function(cellKey) {
+        return this.cellAttributeStore.get(cellKey) || null;
     },
     
     /**
@@ -781,6 +854,7 @@ const TableOperations = {
     
     /**
      * 从表格单元格中提取数据
+     * 增强：保持原有的数据提取逻辑，cell 属性已在 saveCellAttributes 中处理
      * @param {Element} cell - 单元格元素
      * @param {Object} column - 列配置信息
      * @returns {any} 提取的数据
@@ -889,6 +963,7 @@ const TableOperations = {
     
     /**
      * 渲染表格数据
+     * 新增：完美复原每个 cell 的所有属性和数据
      * @param {Array} data - 要渲染的数据
      * @param {Array} columns - 列配置
      * @param {string} tbodySelector - tbody选择器
@@ -917,47 +992,72 @@ const TableOperations = {
             // 添加数据列
             columns.forEach(column => {
                 const td = document.createElement('td');
-                td.className = 'table-cell';
-                td.setAttribute('data-column', column.id);
+                const cellKey = `${row._rowId || row.id || index}_${column.id}`;
+                const savedCellInfo = this.getCellAttributes(cellKey);
+                
+                if (savedCellInfo) {
+                    // 完美复原：使用保存的属性信息
+                    console.log(`Restoring cell attributes for: ${cellKey}`);
+                    
+                    // 恢复所有 HTML 属性
+                    Object.entries(savedCellInfo.attributes).forEach(([attrName, attrValue]) => {
+                        td.setAttribute(attrName, attrValue);
+                    });
+                    
+                    // 恢复完整的 innerHTML
+                    td.innerHTML = savedCellInfo.innerHTML;
+                    
+                    // 恢复类名（如果不是通过 class 属性设置的话）
+                    if (savedCellInfo.className && !savedCellInfo.attributes.class) {
+                        td.className = savedCellInfo.className;
+                    }
+                    
+                } else {
+                    // 降级方案：使用原有的渲染逻辑
+                    console.log(`No saved attributes for ${cellKey}, using fallback rendering`);
+                    
+                    td.className = 'table-cell';
+                    td.setAttribute('data-column', column.id);
 
-                // 根据列类型渲染不同的内容
-                switch (column.type) {
-                    case 'status':
-                        const statusData = row[column.id];
-                        const badgeClass = statusData?.isActive ? 'badge-success' : 'badge-danger';
-                        td.innerHTML = `
-                            <span class="badge rounded-pill ${badgeClass}">
-                                <i class="bi bi-circle-fill badge-icon"></i> ${statusData?.text || '未知'}
-                            </span>
-                        `;
-                        break;
-
-                    case 'icon_class':
-                        const iconClassString = row[column.id];
-                        td.innerHTML = `
-                            <div class="icon-class-display"><span class="bi ${iconClassString}"></span> ${iconClassString}</div>
-                        `;
-                        break;
-                        
-                    case 'number':
-                        if (column.id === 'content_cnt') {
+                    // 根据列类型渲染不同的内容
+                    switch (column.type) {
+                        case 'status':
+                            const statusData = row[column.id];
+                            const badgeClass = statusData?.isActive ? 'badge-success' : 'badge-danger';
                             td.innerHTML = `
-                                <a href="/videos/index?tag_id=${row["id"]}" class="content-link" target="_blank">${row[column.id]?.toLocaleString() || '0'}</a>
+                                <span class="badge rounded-pill ${badgeClass}">
+                                    <i class="bi bi-circle-fill badge-icon"></i> ${statusData?.text || '未知'}
+                                </span>
                             `;
-                        } else {
-                            td.textContent = row[column.id]?.toLocaleString() || '0';
-                        }
-                        break;
-                        
-                    case 'actions':
-                        td.innerHTML = row[column.id] || '';
-                        td.classList.add('table-actions');
-                        break;
-                        
-                    default:
-                        td.textContent = row[column.id] || '';
-                        if (column.id === 'id') td.classList.add('table-id');
-                        if (column.id === 'name') td.classList.add('table-name');
+                            break;
+
+                        case 'icon_class':
+                            const iconClassString = row[column.id];
+                            td.innerHTML = `
+                                <div class="icon-class-display"><span class="bi ${iconClassString}"></span> ${iconClassString}</div>
+                            `;
+                            break;
+                            
+                        case 'number':
+                            if (column.id === 'content_cnt') {
+                                td.innerHTML = `
+                                    <a href="/videos/index?tag_id=${row["id"]}" class="content-link" target="_blank">${row[column.id]?.toLocaleString() || '0'}</a>
+                                `;
+                            } else {
+                                td.textContent = row[column.id]?.toLocaleString() || '0';
+                            }
+                            break;
+                            
+                        case 'actions':
+                            td.innerHTML = row[column.id] || '';
+                            td.classList.add('table-actions');
+                            break;
+                            
+                        default:
+                            td.textContent = row[column.id] || '';
+                            if (column.id === 'id') td.classList.add('table-id');
+                            if (column.id === 'name') td.classList.add('table-name');
+                    }
                 }
                 
                 tr.appendChild(td);
@@ -965,6 +1065,8 @@ const TableOperations = {
             
             tbody.appendChild(tr);
         });
+        
+        console.log(`Rendered ${data.length} rows with restored cell attributes`);
     },
     
     /**
