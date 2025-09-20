@@ -86,17 +86,16 @@
                     
                     <div class="form-group">
                         <label class="form-label" for="password">密码</label>
-                        <div class="input-group has-validation">
+                        <div class="input-group <?php echo isset($errors['password']) ? ' has-validation' : ''; ?>">
                             <input type="password" id="password" name="password" class="form-control<?php echo isset($errors['password']) ? ' is-invalid' : ''; ?>" placeholder="请输入密码" required>
                             <button type="button" class="btn btn-outline-secondary" id="passwordToggle">
                                 <i class="bi bi-eye" id="passwordToggleIcon"></i>
                             </button>
-                            <div class="invalid-feedback">
-                                <?php if (isset($errors['password'])): ?>
-                                    <i class="bi bi-exclamation-circle me-1"></i><?php echo htmlspecialchars($errors['password']); ?>
-                                <?php endif; ?>
-
-                            </div>
+                            <?php if (isset($errors['password'])): ?>
+                                <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-circle me-1"></i><?php echo htmlspecialchars($errors['password']); ?>
+                                </div>
+                            <?php endif; ?>
 
                         </div>
                     </div>
