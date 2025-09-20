@@ -91,11 +91,13 @@
                             <button type="button" class="btn btn-outline-secondary" id="passwordToggle">
                                 <i class="bi bi-eye" id="passwordToggleIcon"></i>
                             </button>
-                            <?php if (isset($errors['password'])): ?>
-                                <div class="invalid-feedback">
+                            <div class="invalid-feedback">
+                                <?php if (isset($errors['password'])): ?>
                                     <i class="bi bi-exclamation-circle me-1"></i><?php echo htmlspecialchars($errors['password']); ?>
-                                </div>
-                            <?php endif; ?>
+                                <?php endif; ?>
+
+                            </div>
+
                         </div>
                     </div>
                     
