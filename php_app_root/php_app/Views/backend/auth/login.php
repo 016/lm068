@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/assets/css/main_3.css">
     
     <!-- page lv Specific CSS -->
-    <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="stylesheet" href="/assets/css/login_2.css">
 </head>
 <body>
     <!-- Background Decoration -->
