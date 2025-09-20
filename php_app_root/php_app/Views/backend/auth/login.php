@@ -68,26 +68,34 @@
                     <p class="login-subtitle">请输入您的管理员凭据以访问系统</p>
                 </div>
                 
-                <?php if (isset($error) && $error): ?>
-                <div class="alert alert-danger" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?= htmlspecialchars($error) ?>
-                </div>
-                <?php endif; ?>
                 
-                <form class="login-form" method="POST" action="/login">
+                <form class="login-form needs-validation" action="/login" id="loginForm" method="post" novalidate>
                     <div class="form-group">
                         <label class="form-label" for="username">用户名或邮箱</label>
-                        <input type="text" id="username" name="username" class="form-input" placeholder="请输入用户名或邮箱" required>
+                        <input type="text" id="username" name="username" class="form-control<?php echo isset($errors['username']) ? ' is-invalid' : (isset($username) && $username ? ' is-valid' : ''); ?>" placeholder="请输入用户名或邮箱" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+                        <?php if (isset($errors['username'])): ?>
+                            <div class="invalid-feedback">
+                                <i class="bi bi-exclamation-circle me-1"></i><?php echo htmlspecialchars($errors['username']); ?>
+                            </div>
+                        <?php elseif (isset($username) && $username): ?>
+                            <div class="valid-feedback">
+                                <i class="bi bi-check-circle me-1"></i>用户名格式正确
+                            </div>
+                        <?php endif; ?>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label" for="password">密码</label>
-                        <div class="password-field">
-                            <input type="password" id="password" name="password" class="form-input" placeholder="请输入密码" required>
-                            <button type="button" class="password-toggle" id="passwordToggle">
+                        <div class="input-group has-validation">
+                            <input type="password" id="password" name="password" class="form-control<?php echo isset($errors['password']) ? ' is-invalid' : ''; ?>" placeholder="请输入密码" required>
+                            <button type="button" class="btn btn-outline-secondary" id="passwordToggle">
                                 <i class="bi bi-eye" id="passwordToggleIcon"></i>
                             </button>
+                            <?php if (isset($errors['password'])): ?>
+                                <div class="invalid-feedback">
+                                    <i class="bi bi-exclamation-circle me-1"></i><?php echo htmlspecialchars($errors['password']); ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     

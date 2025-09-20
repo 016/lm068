@@ -29,11 +29,13 @@ class AuthController extends BackendController
 
         $this->render('auth/login', [
             'title' => '管理员登录',
-            'error' => $_SESSION['login_error'] ?? null
+            'errors' => $_SESSION['login_errors'] ?? [],
+            'username' => $_SESSION['login_username'] ?? ''
         ], false); // 不使用布局
 
-        // 清除错误信息
-        unset($_SESSION['login_error']);
+        // 清除错误信息和表单数据
+        unset($_SESSION['login_errors']);
+        unset($_SESSION['login_username']);
     }
 
     /**
@@ -47,9 +49,25 @@ class AuthController extends BackendController
         $password = $data['password'] ?? '';
         $rememberMe = isset($data['rememberMe']);
 
+        $errors = [];
+
         // 验证输入
-        if (empty($username) || empty($password)) {
-            $_SESSION['login_error'] = '用户名和密码不能为空';
+        if (empty($username)) {
+            $errors['username'] = '用户名或邮箱不能为空';
+        } elseif (!filter_var($username, FILTER_VALIDATE_EMAIL) && strlen($username) < 3) {
+            $errors['username'] = '请输入有效的邮箱地址或用户名';
+        }
+
+        if (empty($password)) {
+            $errors['password'] = '密码不能为空';
+        } elseif (strlen($password) < 6) {
+            $errors['password'] = '密码长度不能少于6位';
+        }
+
+        // 如果有基础验证错误，返回表单
+        if (!empty($errors)) {
+            $_SESSION['login_errors'] = $errors;
+            $_SESSION['login_username'] = $username;
             header('Location: /login');
             exit;
         }
@@ -58,21 +76,27 @@ class AuthController extends BackendController
         $admin = $this->adminUser->findByUsername($username);
         
         if (!$admin) {
-            $_SESSION['login_error'] = '用户名或密码错误';
+            $errors['username'] = '用户名或邮箱不存在';
+            $_SESSION['login_errors'] = $errors;
+            $_SESSION['login_username'] = $username;
             header('Location: /login');
             exit;
         }
 
         // 验证密码
         if (!$this->adminUser->verifyPassword($admin, $password)) {
-            $_SESSION['login_error'] = '用户名或密码错误';
+            $errors['password'] = '密码错误，请重新输入';
+            $_SESSION['login_errors'] = $errors;
+            $_SESSION['login_username'] = $username;
             header('Location: /login');
             exit;
         }
 
         // 检查账户状态
         if ($admin['status_id'] != 1) {
-            $_SESSION['login_error'] = '账户已被禁用，请联系系统管理员';
+            $errors['username'] = '账户已被禁用，请联系系统管理员';
+            $_SESSION['login_errors'] = $errors;
+            $_SESSION['login_username'] = $username;
             header('Location: /login');
             exit;
         }
