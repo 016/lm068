@@ -1,14 +1,13 @@
 /**
- * Backend Admin Main JavaScript v9 - 表格重构：完整保存HTML属性和数据
- * 基于 main_8.js 优化，增强表格数据保存和恢复功能
+ * Backend Admin Main JavaScript v10 - 新增公共tooltip方法
+ * 基于 main_9.js 优化，增加通用的描述tooltip功能
  * 
  * 主要更新：
- * - 修改 loadDataFromHTML 方法，完整保存每个 cell 的所有 HTML 属性
- * - 修改 renderTableData 方法，完美复原 cell 的所有属性和数据
- * - 新增 cellAttributeStore 用于存储完整的 cell 属性信息
- * - 确保重新渲染的表格与原始 HTML 表格完全一致
+ * - 新增 setupDescriptionTooltips 通用方法，支持自定义配置
+ * - 在全局初始化中自动调用 showTooltip()，减少页面重复调用
+ * - 将 setupDescriptionTooltips 导出到 AdminCommon 对象供其他页面使用
  * 
- * 其他功能保持与 main_8.js 相同：
+ * 其他功能保持与 main_9.js 相同：
  * - 完整的 switch 组件交互功能
  * - 优化的表格管理和排序功能
  * - 统一的事件管理和下拉菜单逻辑
