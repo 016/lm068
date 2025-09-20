@@ -81,9 +81,6 @@ function initCollectionListPage() {
     // 6. 初始化合集特有的功能增强
     initCollectionSpecificFeatures();
     
-    // 7. 监听表格内容更新事件，确保tooltip始终有效
-    setupTooltipReinitialization();
-    
     // 8. 将实例保存到全局，方便调试和扩展
     window.collectionListManager = {
         tableManager: tableManager,
@@ -108,44 +105,6 @@ function initCollectionSpecificFeatures() {
     });
     
     console.log('合集特有功能增强初始化完成');
-}
-
-/**
- * 设置tooltip重新初始化机制
- * 监听可能影响tooltip的事件，确保tooltip始终正常工作
- */
-function setupTooltipReinitialization() {
-    console.log('设置tooltip重新初始化机制...');
-    
-    // 监听分页变化
-    const itemsPerPageSelect = document.getElementById('itemsPerPage');
-    if (itemsPerPageSelect) {
-        itemsPerPageSelect.addEventListener('change', function() {
-            // TableManager会自动重新渲染表格并调用reinitializeTooltips()
-            console.log('分页大小改变，tooltip将会自动重新初始化');
-        });
-    }
-    
-    // 监听排序点击
-    document.querySelectorAll('.sort-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-            // TableManager会自动重新渲染表格并调用reinitializeTooltips()
-            console.log('排序触发，tooltip将会自动重新初始化');
-        });
-    });
-    
-    // 监听搜索输入（防抖处理）
-    let searchTimeout;
-    document.querySelectorAll('.table-filter-cell input').forEach(input => {
-        input.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                console.log('搜索过滤触发，tooltip将会自动重新初始化');
-            }, 500);
-        });
-    });
-    
-    console.log('tooltip重新初始化机制设置完成');
 }
 
 
