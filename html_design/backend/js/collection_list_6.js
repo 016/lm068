@@ -50,6 +50,11 @@ function initCollectionListPage() {
                 selector: '[data-column="description"]',
                 maxLength: 20,
                 placement: 'top'
+            },
+            {
+                selector: '[data-column="name"]',
+                maxLength: 8,
+                placement: 'top'
             }
         ]
     });
