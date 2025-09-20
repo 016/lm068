@@ -1555,7 +1555,7 @@ class TableManager {
      */
     refresh() {
         console.log('刷新表格数据');
-        location.reload();
+        window.location.href = window.location.origin + window.location.pathname;
     }
     
     /**
