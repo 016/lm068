@@ -1250,8 +1250,7 @@ class TableManager {
             enablePagination: true,
             enableColumnSettings: true,
             enableSearch: true,
-            // v12 新增：tooltip配置支持数组格式
-            // 单个配置：tooltipConfig: { selector: '[data-column="description"]', maxLength: 20, placement: 'top' }
+            // tooltip配置支持数组格式
             // 多个配置：tooltipConfig: [{ selector: '[data-column="description"]', maxLength: 20, placement: 'top' }, { selector: '[data-column="title"]', maxLength: 30, placement: 'bottom' }]
             tooltipConfig: null,
             ...config

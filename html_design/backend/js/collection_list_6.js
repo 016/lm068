@@ -50,22 +50,8 @@ function initCollectionListPage() {
                 selector: '[data-column="description"]',
                 maxLength: 20,
                 placement: 'top'
-            },
-            // 为 name 列设置 tooltip（示例：如果有这个列的话）
-            {
-                selector: '[data-column="name"]',
-                maxLength: 15,
-                placement: 'bottom'
             }
-            // 可以继续添加更多列的tooltip配置...
         ]
-        
-        // 注意：单个配置仍然支持，例如：
-        // tooltipConfig: {
-        //     selector: '[data-column="description"]',
-        //     maxLength: 20,
-        //     placement: 'top'
-        // }
     });
     
     // 2. 初始化表格管理器
@@ -107,9 +93,6 @@ function initCollectionListPage() {
         }
     };
     
-    // 6. 初始化合集特有的功能增强（tooltip功能已集成到TableManager）
-    initCollectionSpecificFeatures();
-    
     // 7. 将实例保存到全局，方便调试和扩展
     window.collectionListManager = {
         tableManager: tableManager,
@@ -117,24 +100,6 @@ function initCollectionListPage() {
     };
     
     console.log('=== 合集列表页面初始化完成（多列tooltip配置版）===');
-}
-
-/**
- * 初始化合集特有的功能增强
- * 注意：tooltip功能已移至TableManager配置中，此处移除相关代码
- */
-function initCollectionSpecificFeatures() {
-    console.log('初始化合集特有功能增强...');
-    
-    // 原有的tooltip配置代码已移除，现在由TableManager统一管理
-    // 多列tooltip配置支持：
-    // - 可以为不同列设置不同的截断长度
-    // - 可以为不同列设置不同的tooltip位置
-    // - 支持数组和单个对象两种格式
-    
-    // 如果有其他合集特有的功能，可以在这里添加
-    
-    console.log('合集特有功能增强初始化完成');
 }
 
 
