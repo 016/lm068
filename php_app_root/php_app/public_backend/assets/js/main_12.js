@@ -1225,6 +1225,314 @@ const TableOperations = {
         URL.revokeObjectURL(url);
         
         console.log(`Downloaded file: ${filename}`);
+    },
+    
+    /**
+     * 批量操作处理方法
+     * 提供通用的批量操作AJAX请求功能，可配置接口地址和操作类型
+     * @param {Object} config - 配置对象
+     * @param {string} config.action - 操作类型：'enable', 'disable', 'delete'
+     * @param {Array} config.selectedIds - 选中的项目ID数组
+     * @param {string} config.endpoint - API端点地址，如 '/tags/bulk-action'
+     * @param {string} config.entityName - 实体名称，用于确认提示，如 '标签'
+     * @param {Function} config.onSuccess - 成功回调函数
+     * @param {Function} config.onError - 错误回调函数
+     */
+    handleBulkAction: function(config) {
+        const {
+            action,
+            selectedIds,
+            endpoint,
+            entityName = '项目',
+            onSuccess,
+            onError
+        } = config;
+        
+        console.log(`批量操作: ${action}，选中${entityName}:`, selectedIds);
+        
+        if (!selectedIds || selectedIds.length === 0) {
+            alert(`请先选择要操作的${entityName}`);
+            return;
+        }
+        
+        let actionText = '';
+        switch(action) {
+            case 'enable':
+                actionText = '启用';
+                break;
+            case 'disable':
+                actionText = '禁用';
+                break;
+            case 'delete':
+                actionText = '删除';
+                break;
+            default:
+                alert('不支持的操作');
+                return;
+        }
+        
+        // 删除操作需要确认
+        if (action === 'delete' && !confirm(`确定要删除 ${selectedIds.length} 个${entityName}吗？此操作不可撤销。`)) {
+            return;
+        }
+        
+        // 发送AJAX请求
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', endpoint, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (response.success) {
+                        // 成功处理
+                        const message = response.success_count !== undefined && response.error_count !== undefined 
+                            ? `成功${response.success_count}条，失败${response.error_count}条，点击确认后将自动刷新数据。`
+                            : `${actionText}操作完成，点击确认后将自动刷新数据。`;
+                        
+                        alert(message);
+                        
+                        // 调用成功回调或默认刷新页面
+                        if (onSuccess && typeof onSuccess === 'function') {
+                            onSuccess(response);
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        const errorMessage = `操作失败: ${response.message || '未知错误'}`;
+                        
+                        // 调用错误回调或默认显示错误
+                        if (onError && typeof onError === 'function') {
+                            onError(errorMessage, response);
+                        } else {
+                            alert(errorMessage);
+                        }
+                    }
+                } catch (e) {
+                    console.error('响应解析错误:', e);
+                    const errorMessage = '操作失败，服务器响应格式错误';
+                    
+                    if (onError && typeof onError === 'function') {
+                        onError(errorMessage, e);
+                    } else {
+                        alert(errorMessage);
+                    }
+                }
+            }
+        };
+        
+        xhr.onerror = function() {
+            const errorMessage = '网络错误，请稍后重试';
+            
+            if (onError && typeof onError === 'function') {
+                onError(errorMessage);
+            } else {
+                alert(errorMessage);
+            }
+        };
+        
+        // 发送请求数据
+        const formData = `action=${encodeURIComponent(action)}&tag_ids=${encodeURIComponent(JSON.stringify(selectedIds))}`;
+        xhr.send(formData);
+    },
+    
+    /**
+     * 单项删除处理方法
+     * 提供通用的单项删除AJAX请求功能，可配置接口地址和实体类型
+     * @param {Object} config - 配置对象
+     * @param {string|number} config.itemId - 要删除的项目ID
+     * @param {string} config.endpoint - API端点地址，如 '/tags/{id}'
+     * @param {string} config.entityName - 实体名称，用于确认提示，如 '标签'
+     * @param {Object} config.tableManager - 表格管理器实例（可选）
+     * @param {Function} config.onSuccess - 成功回调函数
+     * @param {Function} config.onError - 错误回调函数
+     */
+    handleSingleDelete: function(config) {
+        const {
+            itemId,
+            endpoint,
+            entityName = '项目',
+            tableManager,
+            onSuccess,
+            onError
+        } = config;
+        
+        console.log(`准备删除${entityName}: ${itemId}`);
+        
+        // 确认删除操作
+        if (!confirm(`确定要删除这个${entityName}吗？此操作不可撤销。`)) {
+            return;
+        }
+        
+        // 构建删除端点URL
+        const deleteUrl = endpoint.replace('{id}', itemId) || `${endpoint}/${itemId}`;
+        
+        // 发送AJAX删除请求
+        const xhr = new XMLHttpRequest();
+        xhr.open('DELETE', deleteUrl, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (xhr.status === 200 && response.success) {
+                        // 删除成功
+                        console.log(`${entityName} ${itemId} 删除成功`);
+                        
+                        // 使用notification系统显示成功消息
+                        if (window.AdminCommon && window.AdminCommon.showToast) {
+                            window.AdminCommon.showToast(response.message || `${entityName}删除成功`, 'success');
+                        }
+                        
+                        // 调用成功回调或使用默认处理
+                        if (onSuccess && typeof onSuccess === 'function') {
+                            onSuccess(response, itemId);
+                        } else {
+                            // 默认处理：从TableManager数据中移除项目并重新渲染
+                            if (tableManager && typeof tableManager.removeDataItem === 'function') {
+                                tableManager.removeDataItem(itemId);
+                            } else {
+                                // 备用方案：手动删除表格行并刷新页面
+                                const tableRow = document.querySelector(`tr[data-id="${itemId}"]`);
+                                if (tableRow) {
+                                    tableRow.remove();
+                                }
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        }
+                        
+                    } else {
+                        // 删除失败
+                        console.error(`${entityName} ${itemId} 删除失败:`, response);
+                        const errorMessage = response.message || '删除失败，请稍后重试';
+                        
+                        // 调用错误回调或默认处理
+                        if (onError && typeof onError === 'function') {
+                            onError(errorMessage, response);
+                        } else {
+                            // 使用notification系统显示错误消息
+                            if (window.AdminCommon && window.AdminCommon.showToast) {
+                                window.AdminCommon.showToast(errorMessage, 'danger');
+                            } else {
+                                alert(errorMessage);
+                            }
+                        }
+                    }
+                    
+                } catch (e) {
+                    console.error('解析服务器响应时出错:', e);
+                    console.error('原始响应:', xhr.responseText);
+                    const errorMessage = '删除失败，服务器响应格式错误';
+                    
+                    // 调用错误回调或默认处理
+                    if (onError && typeof onError === 'function') {
+                        onError(errorMessage, e);
+                    } else {
+                        // 使用notification系统显示错误消息
+                        if (window.AdminCommon && window.AdminCommon.showToast) {
+                            window.AdminCommon.showToast(errorMessage, 'danger');
+                        } else {
+                            alert(errorMessage);
+                        }
+                    }
+                }
+            }
+        };
+        
+        xhr.onerror = function() {
+            console.error('删除请求网络错误');
+            const errorMessage = '网络错误，请检查网络连接后重试';
+            
+            // 调用错误回调或默认处理
+            if (onError && typeof onError === 'function') {
+                onError(errorMessage);
+            } else {
+                // 使用notification系统显示网络错误消息
+                if (window.AdminCommon && window.AdminCommon.showToast) {
+                    window.AdminCommon.showToast(errorMessage, 'danger');
+                } else {
+                    alert(errorMessage);
+                }
+            }
+        };
+        
+        // 发送请求
+        xhr.send();
+        
+        console.log(`删除请求已发送: DELETE ${deleteUrl}`);
+    },
+    
+    /**
+     * 设置删除按钮事件监听器
+     * 使用事件委托来处理动态生成的删除按钮
+     * @param {Object} config - 配置对象
+     * @param {string} config.tableSelector - 表格选择器，如 '#dataTable'
+     * @param {string} config.tbodySelector - 表格body选择器，如 '#tagTableBody'
+     * @param {string} config.deleteButtonSelector - 删除按钮选择器，如 '.delete-tag'
+     * @param {string} config.endpoint - 删除API端点，如 '/tags/{id}'
+     * @param {string} config.entityName - 实体名称，如 '标签'
+     * @param {Object} config.tableManager - 表格管理器实例（可选）
+     * @param {Function} config.onSuccess - 成功回调函数（可选）
+     * @param {Function} config.onError - 错误回调函数（可选）
+     */
+    setupDeleteButtonEventListeners: function(config) {
+        const {
+            tableSelector = '#dataTable',
+            tbodySelector,
+            deleteButtonSelector,
+            endpoint,
+            entityName = '项目',
+            tableManager,
+            onSuccess,
+            onError
+        } = config;
+        
+        console.log('设置删除按钮事件监听器...');
+
+        // 确定事件监听的目标元素
+        let targetElement;
+        if (tbodySelector) {
+            targetElement = document.querySelector(tbodySelector);
+        } else {
+            targetElement = document.querySelector(tableSelector);
+        }
+
+        if (!targetElement) {
+            console.error('未找到目标元素:', tbodySelector || tableSelector);
+            return;
+        }
+
+        // 使用事件委托绑定删除按钮点击事件
+        targetElement.addEventListener('click', (e) => {
+            // 检查点击的元素或其父元素是否有指定的删除按钮类
+            const deleteButton = e.target.closest(deleteButtonSelector);
+            if (deleteButton) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const itemId = deleteButton.getAttribute('data-id');
+                if (itemId) {
+                    // 调用单项删除方法
+                    this.handleSingleDelete({
+                        itemId,
+                        endpoint,
+                        entityName,
+                        tableManager,
+                        onSuccess,
+                        onError
+                    });
+                }
+            }
+        });
+        
+        console.log(`删除按钮事件监听器已设置，目标元素: ${tbodySelector || tableSelector}，按钮选择器: ${deleteButtonSelector}`);
     }
 };
 

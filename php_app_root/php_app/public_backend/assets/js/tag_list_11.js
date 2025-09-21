@@ -1,10 +1,11 @@
 /**
- * Tag List Page JavaScript v11 - 优化版，使用精简表格管理器
- * 基于 tag_list_10.js 重构，配合 main_7.js 的优化使用更精简的代码
+ * Tag List Page JavaScript v11 - 重构版，使用通用TableOperations
+ * 基于 tag_list_10.js 重构，配合 main_12.js 的优化使用更精简的代码
  * 
  * 主要改进：
  * - 代码更加精简，减少冗余
  * - 与优化版 TableManager 和 CommonTableActions 配合
+ * - 批量操作和删除功能迁移至 main_12.js 的 TableOperations 中实现复用
  * - 保持所有原有功能不变，逻辑保持一致
  * - 提高代码可读性和维护性
  */
@@ -56,73 +57,25 @@ function initTagListPage() {
     // 4. 初始化操作功能
     tableActions.init();
     
-    // 5. 自定义批量操作处理逻辑 - 实现真实的AJAX批量操作
+    // 5. 自定义批量操作处理逻辑 - 使用通用的TableOperations批量操作方法
     tableActions.handleBulkAction = function(action, selectedIds) {
         console.log(`标签列表页面批量操作: ${action}，选中项目:`, selectedIds);
         
-        if (selectedIds.length === 0) {
-            alert('请先选择要操作的标签');
-            return;
-        }
-        
-        let actionText = '';
-        switch(action) {
-            case 'enable':
-                actionText = '启用';
-                break;
-            case 'disable':
-                actionText = '禁用';
-                break;
-            case 'delete':
-                actionText = '删除';
-                break;
-            default:
-                alert('不支持的操作');
-                return;
-        }
-        
-        // 删除操作需要确认
-        if (action === 'delete' && !confirm(`确定要删除 ${selectedIds.length} 个标签吗？此操作不可撤销。`)) {
-            return;
-        }
-        
-        // 发送AJAX请求
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/tags/bulk-action', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    
-                    if (response.success) {
-                        // 成功处理
-                        const message = response.success_count !== undefined && response.error_count !== undefined 
-                            ? `成功${response.success_count}条，失败${response.error_count}条，点击确认后将自动刷新数据。`
-                            : `${actionText}操作完成，点击确认后将自动刷新数据。`;
-                        
-                        alert(message);
-                        
-                        // 刷新页面保持当前URL格式
-                        window.location.reload();
-                    } else {
-                        alert(`操作失败: ${response.message || '未知错误'}`);
-                    }
-                } catch (e) {
-                    console.error('响应解析错误:', e);
-                    alert('操作失败，服务器响应格式错误');
-                }
+        // 使用TableOperations的通用批量操作方法
+        window.AdminCommon.TableOperations.handleBulkAction({
+            action: action,
+            selectedIds: selectedIds,
+            endpoint: '/tags/bulk-action',
+            entityName: '标签',
+            onSuccess: function(response) {
+                // 成功回调：刷新页面保持当前URL格式
+                window.location.reload();
+            },
+            onError: function(errorMessage, response) {
+                // 错误回调：使用默认的alert显示
+                alert(errorMessage);
             }
-        };
-        
-        xhr.onerror = function() {
-            alert('网络错误，请稍后重试');
-        };
-        
-        // 发送请求数据
-        const formData = `action=${encodeURIComponent(action)}&tag_ids=${encodeURIComponent(JSON.stringify(selectedIds))}`;
-        xhr.send(formData);
+        });
     };
     
     // 6. 初始化批量导入功能
@@ -131,8 +84,14 @@ function initTagListPage() {
         console.log('批量导入功能已初始化');
     }
     
-    // 7. 设置删除按钮的事件监听器
-    setupDeleteButtonEventListeners(tableManager);
+    // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
+    window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
+        tbodySelector: tableManager.config.tbodySelector,
+        deleteButtonSelector: '.delete-tag',
+        endpoint: '/tags/{id}',
+        entityName: '标签',
+        tableManager: tableManager
+    });
     
     // 8. 将实例保存到全局，方便调试和扩展
     window.tagListManager = {
@@ -143,131 +102,9 @@ function initTagListPage() {
     console.log('=== 标签列表页面初始化完成（优化版 TableManager）===');
 }
 
-// ========== 删除按钮功能实现 ==========
-/**
- * 设置删除按钮的事件监听器
- * 使用事件委托来处理动态生成的删除按钮
- */
-function setupDeleteButtonEventListeners(tableManager) {
-    console.log('设置删除按钮事件监听器...');
-
-    //limit click event listener to table body element only
-    const tableBodyElement = document.querySelector(tableManager.config.tbodySelector);
-
-    if (tableBodyElement){
-        // 使用事件委托绑定删除按钮点击事件
-        tableBodyElement.addEventListener('click', function(e) {
-            // 检查点击的元素或其父元素是否有delete-tag类
-            const deleteButton = e.target.closest('.delete-tag');
-            if (deleteButton) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const tagId = deleteButton.getAttribute('data-id');
-                if (tagId) {
-                    handleDeleteTag(tagId, tableManager);
-                }
-            }
-        });
-    }
-
-    
-    console.log('删除按钮事件监听器已设置（使用事件委托）');
-}
-
-/**
- * 处理标签删除操作
- * @param {string|number} tagId - 要删除的标签ID
- * @param {Object} tableManager - 表格管理器实例
- */
-function handleDeleteTag(tagId, tableManager) {
-    console.log(`准备删除标签: ${tagId}`);
-    
-    // 确认删除操作
-    if (!confirm('确定要删除这个标签吗？此操作不可撤销。')) {
-        return;
-    }
-    
-    // 发送AJAX删除请求
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `/tags/${tagId}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            try {
-                const response = JSON.parse(xhr.responseText);
-                
-                if (xhr.status === 200 && response.success) {
-                    // 删除成功
-                    console.log(`标签 ${tagId} 删除成功`);
-                    
-                    // 使用notification系统显示成功消息
-                    if (window.AdminCommon && window.AdminCommon.showToast) {
-                        window.AdminCommon.showToast(response.message || '标签删除成功', 'success');
-                    }
-                    
-                    // 从TableManager数据中移除项目并重新渲染
-                    if (tableManager && typeof tableManager.removeDataItem === 'function') {
-                        // 使用TableManager的removeDataItem方法正确处理数据删除
-                        tableManager.removeDataItem(tagId);
-                    } else {
-                        // 备用方案：手动删除表格行并刷新页面
-                        const tableRow = document.querySelector(`tr[data-id="${tagId}"]`);
-                        if (tableRow) {
-                            tableRow.remove();
-                        }
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    }
-                    
-                } else {
-                    // 删除失败
-                    console.error(`标签 ${tagId} 删除失败:`, response);
-                    
-                    // 使用notification系统显示错误消息
-                    if (window.AdminCommon && window.AdminCommon.showToast) {
-                        window.AdminCommon.showToast(
-                            response.message || '删除失败，请稍后重试', 
-                            'danger'
-                        );
-                    } else {
-                        alert(response.message || '删除失败，请稍后重试');
-                    }
-                }
-                
-            } catch (e) {
-                console.error('解析服务器响应时出错:', e);
-                console.error('原始响应:', xhr.responseText);
-                
-                // 使用notification系统显示错误消息
-                if (window.AdminCommon && window.AdminCommon.showToast) {
-                    window.AdminCommon.showToast('删除失败，服务器响应格式错误', 'danger');
-                } else {
-                    alert('删除失败，服务器响应格式错误');
-                }
-            }
-        }
-    };
-    
-    xhr.onerror = function() {
-        console.error('删除请求网络错误');
-        
-        // 使用notification系统显示网络错误消息
-        if (window.AdminCommon && window.AdminCommon.showToast) {
-            window.AdminCommon.showToast('网络错误，请检查网络连接后重试', 'danger');
-        } else {
-            alert('网络错误，请检查网络连接后重试');
-        }
-    };
-    
-    // 发送请求
-    xhr.send();
-    
-    console.log(`删除请求已发送: DELETE /tags/${tagId}`);
-}
+// ========== 删除按钮功能实现 ========== 
+// 注释：原有的删除功能已迁移至 main_12.js 的 TableOperations 中
+// 现在使用通用的 TableOperations.setupDeleteButtonEventListeners 和 handleSingleDelete 方法
 
 // ========== 导出函数供HTML调用 ========== 
 /**
