@@ -10,7 +10,6 @@ use App\Constants\ContentStatus;
 
 class CollectionController extends BackendController
 {
-    private Collection $curModel;
     private Content $contentModel;
 
     public function __construct()

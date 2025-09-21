@@ -3,10 +3,40 @@
 namespace App\Controllers\Backend;
 
 use App\Core\Controller;
+use App\Core\Model;
 use App\Core\Request;
+use App\Interfaces\HasStatuses;
 
 class BackendController extends Controller
 {
+    /**
+     * 当前控制器操作的模型实例
+     */
+    protected Model|HasStatuses $curModel;
+    /**
+     * 获取模型的所有状态
+     * @return array
+     */
+    protected function getModelStatuses(): array
+    {
+        // 1. 获取当前模型的类名
+        $modelClass = get_class($this->curModel);
+
+        // 2. 检查模型是否实现了 HasStatuses 接口，确保方法存在
+        if (!is_a($modelClass, HasStatuses::class, true)) {
+            // 或者抛出异常，或者返回空数组
+            return [];
+        }
+
+        // 3. 通过类名静态调用接口方法，获取枚举类名
+        $statusEnumClass = $modelClass::getStatusEnum();
+
+        // 4. 使用枚举的 cases() 方法动态生成状态数组，更灵活
+        // array_column 可以方便地将枚举案例转换为 [NAME => value] 的格式
+        return array_column($statusEnumClass::cases(), 'value', 'name');
+    }
+
+
     protected function getTemplatePath(string $template): string
     {
         return __DIR__ . '/../../Views/backend/' . str_replace('.', '/', $template) . '.php';
@@ -99,15 +129,17 @@ class BackendController extends Controller
         $errorCount = 0;
         $totalCount = count($targetIds);
 
+        $statusList = $this->getModelStatuses();
+
         try {
             switch ($action) {
                 case 'enable':
-                    $result = $this->performBulkUpdateStatus($targetIds, 1);
+                    $result = $this->performBulkUpdateStatus($targetIds, $statusList['ENABLED']);
                     $successCount = $result['success'];
                     $errorCount = $result['error'];
                     break;
                 case 'disable':
-                    $result = $this->performBulkUpdateStatus($targetIds, 0);
+                    $result = $this->performBulkUpdateStatus($targetIds, $statusList['DISABLED']);
                     $successCount = $result['success'];
                     $errorCount = $result['error'];
                     break;

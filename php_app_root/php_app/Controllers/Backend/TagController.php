@@ -10,7 +10,6 @@ use App\Constants\ContentStatus;
 
 class TagController extends BackendController
 {
-    protected Tag $curModel;
     private Content $contentModel;
 
     public function __construct()

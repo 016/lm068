@@ -86,7 +86,8 @@ php_app/
 │   ├── Database.php          # 数据库连接
 │   ├── Controller.php        # 基础控制器
 │   └── Model.php             # 基础模型
-├── Constants/                # 常量存放位置
+├── Interfaces/               # Interface 存放位置
+├── Constants/                # Constant 存放位置
 ├── config/                   # 配置文件
 │   ├── main.php              # 应用主配置 (时区, 密钥等)
 │   ├── database.php          # 默认数据库配置

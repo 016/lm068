@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Core\Model;
 use App\Constants\TagStatus;
+use App\Interfaces\HasStatuses;
 
-class Tag extends Model
+class Tag extends Model implements HasStatuses
 {
+
     protected $table = 'tag';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -15,6 +17,14 @@ class Tag extends Model
         'content_cnt', 'status_id'
     ];
     protected $timestamps = true;
+
+    /**
+     * 实现接口方法，返回对应的状态枚举类
+     */
+    public static function getStatusEnum(): string
+    {
+        return TagStatus::class;
+    }
 
     /**
      * 定义验证规则
