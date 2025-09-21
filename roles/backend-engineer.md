@@ -60,6 +60,8 @@
   - 布局内容存放在 对应 layouts 文件夹内, 在无约定的情况下，优先使用layouts内的布局文件
     - layouts/main.php 为默认布局文件, 无特殊指定时优先使用该布局
     - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容已存放在布局文件内, 不需要重复渲染
+  - backend form page
+    - create and edit form page 相同的表单部分使用 _form.php 文件来实现共享
 
 ### MySQL 数据库
 - 因为使用了 PDO::ATTR_EMULATE_PREPARES => false，所以SQL语句中不允许出现同名占位符, 就算对应同一个参数, 也要严格使用不同的占位符
@@ -72,10 +74,6 @@
   - admin.a.com 已指向 php_app_root/php_app/public_backend
 - backend
   - list page 使用 index关键词
-    - <tr class="table-header-bg"> 中的所有搜索项都将通过 $_GET 方法传递给 当前model/index，PHP 以此作为条件读取数据库数据用于显示。
-    - 其他所有的分页排序都由 JS 来完成，相关JS代码已经完成，非必要不修改，直接使用
-    - delete 行为使用 delete关键词
-      - 使用ajax请求，成功后删除list中的对应item,
   - create page 使用 create关键词 
     - 直接post到create 处理完以后跳转回index
   - update page 使用 update关键词 
@@ -83,6 +81,7 @@
   - view page 使用 view关键词
   - 其他要求
     - 后台页面所有功能，需要使用反馈的时候，均使用定义的notification进行反馈
+    
 - frontend
   - list page 使用 index关键词
   - detail page 使用 view关键词
