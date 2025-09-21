@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? '视频分享网站 - 管理后台') ?></title>
+    <title><?= htmlspecialchars($pageTitle ?? '内容分享网站 - 管理后台') ?></title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,7 +31,7 @@
             <div class="sidebar-header">
                 <a href="#" class="logo">
                     <span class="logo-icon">📹</span>
-                    <span class="logo-text">视频管理</span>
+                    <span class="logo-text">内容管理</span>
                 </a>
             </div>
             
@@ -44,8 +44,8 @@
                     </a>
                     <a href="/content" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/content') !== false ? 'active' : '' ?>">
                         <i class="bi bi-camera-video nav-icon"></i>
-                        <span class="nav-text">视频管理</span>
-                        <span class="tooltip">视频管理</span>
+                        <span class="nav-text">内容管理</span>
+                        <span class="tooltip">内容管理</span>
                     </a>
                     <a href="/tags" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/tags') !== false ? 'active' : '' ?>">
                         <i class="bi bi-bookmark nav-icon"></i>
@@ -102,7 +102,7 @@
                     
                     <!-- Navigation Tabs -->
                     <nav class="topbar-nav">
-                        <a href="/content" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/content') !== false ? 'active' : '' ?>">视频</a>
+                        <a href="/content" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/content') !== false ? 'active' : '' ?>">内容</a>
                         <a href="/tags" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/tags') !== false ? 'active' : '' ?>">标签</a>
                         <a href="/collections" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/collections') !== false ? 'active' : '' ?>">合集</a>
                         <a href="/users" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/users') !== false ? 'active' : '' ?>">用户</a>
@@ -113,7 +113,7 @@
                     <!-- Search Box - Moved here as first element -->
                     <div class="header-search">
                         <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="搜索用户、视频、评论...">
+                        <input type="text" class="search-input" placeholder="搜索用户、内容、评论...">
                     </div>
                     
                     <div class="dropdown-container">
@@ -143,7 +143,7 @@
                                     </div>
                                     <div class="notification-content">
                                         <div class="notification-title">系统更新</div>
-                                        <div class="notification-text">视频转码模块已更新至v2.1</div>
+                                        <div class="notification-text">内容转码模块已更新至v2.1</div>
                                         <div class="notification-time">1小时前</div>
                                     </div>
                                 </div>
@@ -232,7 +232,7 @@
             <footer class="footer">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>状态: <span style="color: var(--success);">🟢 所有系统正常运行</span></div>
-                    <div>© 2024 DP视频分享平台 v1.0</div>
+                    <div>© 2024 DP内容分享平台 v1.0</div>
                 </div>
             </footer>
         </div>
