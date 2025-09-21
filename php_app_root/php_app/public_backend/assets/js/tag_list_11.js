@@ -150,21 +150,27 @@ function initTagListPage() {
  */
 function setupDeleteButtonEventListeners(tableManager) {
     console.log('设置删除按钮事件监听器...');
-    
-    // 使用事件委托绑定删除按钮点击事件
-    document.addEventListener('click', function(e) {
-        // 检查点击的元素或其父元素是否有delete-tag类
-        const deleteButton = e.target.closest('.delete-tag');
-        if (deleteButton) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const tagId = deleteButton.getAttribute('data-id');
-            if (tagId) {
-                handleDeleteTag(tagId, tableManager);
+
+    //limit click event listener to table body element only
+    const tableBodyElement = document.querySelector(tableManager.config.tbodySelector);
+
+    if (tableBodyElement){
+        // 使用事件委托绑定删除按钮点击事件
+        tableBodyElement.addEventListener('click', function(e) {
+            // 检查点击的元素或其父元素是否有delete-tag类
+            const deleteButton = e.target.closest('.delete-tag');
+            if (deleteButton) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const tagId = deleteButton.getAttribute('data-id');
+                if (tagId) {
+                    handleDeleteTag(tagId, tableManager);
+                }
             }
-        }
-    });
+        });
+    }
+
     
     console.log('删除按钮事件监听器已设置（使用事件委托）');
 }
