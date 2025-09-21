@@ -1785,11 +1785,40 @@ class TableManager {
     }
     
     /**
-     * 刷新数据
+     * 刷新数据 - 重新加载页面数据
      */
     refresh() {
         console.log('刷新表格数据');
         window.location.href = window.location.origin + window.location.pathname;
+    }
+    
+    /**
+     * 从数据中移除指定ID的项目（用于删除操作）
+     * @param {string|number} itemId - 要删除的项目ID
+     */
+    removeDataItem(itemId) {
+        console.log(`从TableManager数据中移除项目: ${itemId}`);
+        
+        // 从原始数据中移除
+        this.originalData = this.originalData.filter(item => 
+            String(item._rowId || item.id) !== String(itemId)
+        );
+        
+        // 从过滤数据中移除
+        this.filteredData = this.filteredData.filter(item => 
+            String(item._rowId || item.id) !== String(itemId)
+        );
+        
+        // 检查当前页是否还有数据，如果没有则回到上一页
+        const totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
+        if (this.currentPage > totalPages && totalPages > 0) {
+            this.currentPage = totalPages;
+        }
+        
+        console.log(`数据移除完成，剩余数据: ${this.filteredData.length} 条，当前页: ${this.currentPage}`);
+        
+        // 重新显示数据
+        this.updateDisplay();
     }
     
     /**

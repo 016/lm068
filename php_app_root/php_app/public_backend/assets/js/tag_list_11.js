@@ -202,20 +202,16 @@ function handleDeleteTag(tagId, tableManager) {
                         window.AdminCommon.showToast(response.message || '标签删除成功', 'success');
                     }
                     
-                    // 删除对应的表格行
-                    const tableRow = document.querySelector(`tr[data-id="${tagId}"]`);
-                    if (tableRow) {
-                        tableRow.remove();
-                    }
-                    
-                    // 重新渲染表格（更新分页、统计等）
-                    if (tableManager && typeof tableManager.refresh === 'function') {
-                        // 使用延迟刷新确保用户看到成功消息
-                        setTimeout(() => {
-                            tableManager.refresh();
-                        }, 1000);
+                    // 从TableManager数据中移除项目并重新渲染
+                    if (tableManager && typeof tableManager.removeDataItem === 'function') {
+                        // 使用TableManager的removeDataItem方法正确处理数据删除
+                        tableManager.removeDataItem(tagId);
                     } else {
-                        // 备用方案：直接刷新页面
+                        // 备用方案：手动删除表格行并刷新页面
+                        const tableRow = document.querySelector(`tr[data-id="${tagId}"]`);
+                        if (tableRow) {
+                            tableRow.remove();
+                        }
                         setTimeout(() => {
                             window.location.reload();
                         }, 1000);
