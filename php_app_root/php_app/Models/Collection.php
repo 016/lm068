@@ -113,5 +113,42 @@ class Collection extends Model implements HasStatuses
         }
     }
 
+    /**
+     * 重写父类方法，为Collection模型准备CSV导入数据
+     * 
+     * @param array $csvRowData CSV行数据
+     * @return array 处理后的数据
+     */
+    public function prepareBulkImportData(array $csvRowData): array
+    {
+        return [
+            'name_cn' => $csvRowData['name_cn'] ?? '',
+            'name_en' => $csvRowData['name_en'] ?? '',
+            'short_desc_cn' => $csvRowData['short_desc_cn'] ?? '',
+            'short_desc_en' => $csvRowData['short_desc_en'] ?? '',
+            'desc_cn' => $csvRowData['desc_cn'] ?? '',
+            'desc_en' => $csvRowData['desc_en'] ?? '',
+            'color_class' => $csvRowData['color_class'] ?? 'btn-outline-primary',
+            'icon_class' => $csvRowData['icon_class'] ?? 'bi-collection',
+            'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : CollectionStatus::ENABLED->value,
+            'content_cnt' => 0
+        ];
+    }
+
+    /**
+     * 重写父类方法 - 为Collection定义简单的验证逻辑
+     * 
+     * @param array $data 导入数据
+     * @return bool 是否验证通过
+     */
+    public function validateBulkImportData(array $data): bool
+    {
+        // Collection没有定义rules方法，所以我们使用简单的验证
+        if (empty($data['name_cn']) || empty($data['name_en'])) {
+            return false;
+        }
+        
+        return true;
+    }
 
 }

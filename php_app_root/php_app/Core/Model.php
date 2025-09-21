@@ -434,4 +434,75 @@ abstract class Model
             throw $e;
         }
     }
+
+    /**
+     * 准备CSV导入数据 - 子类可重写来自定义数据准备逻辑
+     * 
+     * @param array $csvRowData CSV行数据
+     * @return array 处理后的数据
+     */
+    public function prepareBulkImportData(array $csvRowData): array
+    {
+        // 默认实现，子类可以重写
+        return $csvRowData;
+    }
+
+    /**
+     * 验证CSV导入数据 - 基于现有的validate方法
+     * 
+     * @param array $data 要验证的数据
+     * @return bool 是否验证通过
+     */
+    public function validateBulkImportData(array $data): bool
+    {
+        $errors = $this->validate($data, false);
+        return empty($errors);
+    }
+
+    /**
+     * 检查导入数据是否重复 - 子类可重写
+     * 
+     * @param array $data 导入数据
+     * @return bool 是否重复
+     */
+    public function isDuplicateImportData(array $data): bool
+    {
+        // 默认实现，基于name_cn和name_en检查
+        if (isset($data['name_cn']) && isset($data['name_en'])) {
+            return (bool)$this->findByName($data['name_cn'], $data['name_en']);
+        }
+        return false;
+    }
+
+    /**
+     * 批量导入单条记录 - 通用方法
+     * 
+     * @param array $csvRowData CSV行数据
+     * @return bool 是否成功
+     */
+    public function importSingleRecord(array $csvRowData): bool
+    {
+        try {
+            // 1. 准备数据
+            $data = $this->prepareBulkImportData($csvRowData);
+            
+            // 2. 验证数据
+            if (!$this->validateBulkImportData($data)) {
+                return false;
+            }
+            
+            // 3. 检查重复
+            if ($this->isDuplicateImportData($data)) {
+                return false; // 跳过重复数据
+            }
+            
+            // 4. 创建记录
+            $this->create($data);
+            return true;
+            
+        } catch (\Exception $e) {
+            error_log("Import single record error: " . $e->getMessage());
+            return false;
+        }
+    }
 }

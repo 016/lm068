@@ -243,4 +243,162 @@ class BackendController extends Controller
 
         return ['success' => $successCount, 'error' => $errorCount];
     }
+
+    /**
+     * 通用的CSV批量导入功能
+     * 
+     * @param Request $request 请求对象
+     * @return void
+     */
+    public function bulkImport(Request $request): void
+    {
+        // 验证请求方法
+        if (!$request->isPost()) {
+            $this->jsonResponse(['success' => false, 'message' => '请求方法错误']);
+            return;
+        }
+
+        // 检查是否有文件上传
+        if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+            $this->jsonResponse(['success' => false, 'message' => '文件上传失败']);
+            return;
+        }
+
+        $uploadedFile = $_FILES['csv_file'];
+        
+        // 验证文件类型
+        $fileExtension = strtolower(pathinfo($uploadedFile['name'], PATHINFO_EXTENSION));
+        if ($fileExtension !== 'csv') {
+            $this->jsonResponse(['success' => false, 'message' => '请上传CSV文件']);
+            return;
+        }
+
+        // 验证文件大小 (10MB)
+        if ($uploadedFile['size'] > 10 * 1024 * 1024) {
+            $this->jsonResponse(['success' => false, 'message' => '文件大小不能超过10MB']);
+            return;
+        }
+
+        try {
+            $result = $this->processCSVFile($uploadedFile['tmp_name']);
+            $this->jsonResponse($result);
+        } catch (\Exception $e) {
+            error_log("CSV import error: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'message' => '导入过程中发生错误: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 处理CSV文件导入 - 通用方法
+     * 子类需要重写 getRequiredCSVFields() 和 importSingleRecord() 方法
+     */
+    protected function processCSVFile(string $filePath): array
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            return ['success' => false, 'message' => '无法读取上传的文件'];
+        }
+
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            return ['success' => false, 'message' => '无法打开CSV文件'];
+        }
+
+        $successCount = 0;
+        $errorCount = 0;
+        $lineNumber = 0;
+        $headers = [];
+        $errors = [];
+
+        try {
+            while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) !== false) {
+                $lineNumber++;
+                
+                // 跳过空行
+                if (empty(array_filter($data))) {
+                    continue;
+                }
+
+                // 第一行作为表头
+                if ($lineNumber === 1) {
+                    $headers = array_map('trim', $data);
+                    
+                    // 验证必需的字段
+                    $requiredFields = $this->getRequiredCSVFields();
+                    $missingFields = array_diff($requiredFields, $headers);
+                    if (!empty($missingFields)) {
+                        return [
+                            'success' => false, 
+                            'message' => 'CSV文件缺少必需的字段: ' . implode(', ', $missingFields)
+                        ];
+                    }
+                    continue;
+                }
+
+                // 处理数据行
+                try {
+                    $rowData = $this->parseCSVRow($headers, $data);
+                    if ($this->importSingleRecord($rowData)) {
+                        $successCount++;
+                    } else {
+                        $errorCount++;
+                        $errors[] = "第{$lineNumber}行：数据验证失败";
+                    }
+                } catch (\Exception $e) {
+                    $errorCount++;
+                    $errors[] = "第{$lineNumber}行：" . $e->getMessage();
+                }
+            }
+
+            return [
+                'success' => true,
+                'success_count' => $successCount,
+                'error_count' => $errorCount,
+                'message' => "导入完成：成功{$successCount}条，失败{$errorCount}条",
+                'errors' => array_slice($errors, 0, 10) // 只返回前10个错误
+            ];
+
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    /**
+     * 解析CSV行数据 - 通用方法
+     */
+    protected function parseCSVRow(array $headers, array $data): array
+    {
+        $rowData = [];
+        
+        foreach ($headers as $index => $header) {
+            $value = isset($data[$index]) ? trim($data[$index]) : '';
+            $rowData[$header] = $value;
+        }
+
+        return $rowData;
+    }
+
+    /**
+     * 获取CSV文件必需的字段 - 需要子类重写
+     * 
+     * @return array
+     */
+    protected function getRequiredCSVFields(): array
+    {
+        return ['name_cn', 'name_en']; // 默认字段，子类可以重写
+    }
+
+    /**
+     * 导入单条记录 - 使用当前模型的导入方法
+     * 
+     * @param array $data
+     * @return bool
+     */
+    protected function importSingleRecord(array $data): bool
+    {
+        if (!isset($this->curModel)) {
+            throw new \Exception('当前模型未初始化');
+        }
+
+        return $this->curModel->importSingleRecord($data);
+    }
 }
