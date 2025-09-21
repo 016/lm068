@@ -78,10 +78,10 @@ function initTagListPage() {
         });
     };
     
-    // 6. 初始化批量导入功能
+    // 6. 初始化批量导入功能 - 使用默认配置适配标签页面
     if (window.AdminCommon.BulkImportUtils) {
-        window.AdminCommon.BulkImportUtils.setupBulkImport();
-        console.log('批量导入功能已初始化');
+        window.AdminCommon.BulkImportUtils.setupBulkImport(); // 默认配置适配标签页面
+        console.log('标签批量导入功能已初始化');
     }
     
     // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能

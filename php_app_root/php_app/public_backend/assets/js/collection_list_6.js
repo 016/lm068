@@ -97,7 +97,17 @@ function initCollectionListPage() {
         });
     };
     
-    // 6. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
+    // 6. 初始化批量导入功能
+    if (window.AdminCommon.BulkImportUtils) {
+        // 为合集页面设置专门的批量导入配置
+        window.AdminCommon.BulkImportUtils.setupBulkImport({
+            endpoint: '/collections/bulk-import',
+            entityName: '合集'
+        });
+        console.log('合集批量导入功能已初始化');
+    }
+    
+    // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
     window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
         tbodySelector: tableManager.config.tbodySelector,
         deleteButtonSelector: '.delete-tag',

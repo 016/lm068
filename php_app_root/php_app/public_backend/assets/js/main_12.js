@@ -2279,9 +2279,16 @@ class CommonTableActions {
 
 /* ========== BULK IMPORT FUNCTIONALITY ========== */
 /**
- * 批量导入功能 - 专门为标签列表页面设计
+ * 批量导入功能 - 通用版本，支持配置参数
  */
-function setupBulkImport() {
+function setupBulkImport(config = {}) {
+    const defaultConfig = {
+        endpoint: '/tags/bulk-import',
+        entityName: '标签'
+    };
+    
+    const finalConfig = { ...defaultConfig, ...config };
+    
     const bulkImportBtn = document.getElementById('bulkImportBtn');
     const csvFileInput = document.getElementById('csvFileInput');
     const importModal = document.getElementById('importModal');
@@ -2314,20 +2321,28 @@ function setupBulkImport() {
         }
 
         // 开始上传
-        uploadCSVFile(file);
+        uploadCSVFile(file, finalConfig);
 
         // 清空文件输入框
         csvFileInput.value = '';
     });
 
-    console.log('Bulk import functionality setup completed');
+    console.log(`Bulk import functionality setup completed for ${finalConfig.entityName}, endpoint: ${finalConfig.endpoint}`);
 }
 
 /**
  * 上传CSV文件并处理导入
  * @param {File} file - CSV文件对象
+ * @param {Object} config - 配置对象
  */
-function uploadCSVFile(file) {
+function uploadCSVFile(file, config = {}) {
+    const defaultConfig = {
+        endpoint: '/tags/bulk-import',
+        entityName: '标签'
+    };
+    
+    const finalConfig = { ...defaultConfig, ...config };
+    
     const importModal = new bootstrap.Modal(document.getElementById('importModal'));
     const importProgress = document.getElementById('importProgress');
     const importResult = document.getElementById('importResult');
@@ -2349,7 +2364,7 @@ function uploadCSVFile(file) {
     formData.append('action', 'bulk_import');
 
     // 发送Ajax请求
-    fetch('/tags/bulk-import', {
+    fetch(finalConfig.endpoint, {
         method: 'POST',
         body: formData,
         headers: {
