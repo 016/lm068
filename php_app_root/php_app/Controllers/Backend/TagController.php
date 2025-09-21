@@ -5,6 +5,8 @@ namespace App\Controllers\Backend;
 use App\Core\Request;
 use App\Models\Tag;
 use App\Models\Content;
+use App\Constants\Status;
+use App\Constants\ContentStatus;
 
 class TagController extends BackendController
 {
@@ -62,7 +64,7 @@ class TagController extends BackendController
         $relatedContent = $this->curModel->getRelatedContent($id);
         
         $allContent = $this->contentModel->findAll([
-            'status_id' => [21, 29, 31, 39, 91, 99]  // 只显示进行中或已完成的内容
+            'status_id' => ContentStatus::getVisibleStatuses()
         ]);
 
         $contentOptions = [];
@@ -105,7 +107,7 @@ class TagController extends BackendController
             'desc_en' => $request->post('desc_en'),
             'color_class' => $request->post('color_class'),
             'icon_class' => $request->post('icon_class'),
-            'status_id' => (int)($request->post('status_id') ?? 0)
+            'status_id' => (int)($request->post('status_id') ?? Status::INACTIVE->value)
         ];
 
         // 使用模型验证，传入当前ID以排除自身
@@ -123,7 +125,7 @@ class TagController extends BackendController
             
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
-                'status_id' => [21, 29, 31, 39, 91, 99]
+                'status_id' => ContentStatus::getVisibleStatuses()
             ]);
             
             $contentOptions = [];
@@ -179,7 +181,7 @@ class TagController extends BackendController
             
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
-                'status_id' => [21, 29, 31, 39, 91, 99]
+                'status_id' => ContentStatus::getVisibleStatuses()
             ]);
             
             $contentOptions = [];
@@ -209,7 +211,7 @@ class TagController extends BackendController
     public function create(Request $request): void
     {
         $allContent = $this->contentModel->findAll([
-            'status_id' => [21, 29, 31, 39, 91, 99]
+            'status_id' => ContentStatus::getVisibleStatuses()
         ]);
 
         $contentOptions = [];
@@ -254,7 +256,7 @@ class TagController extends BackendController
             'desc_en' => $request->post('desc_en') ?? '',
             'color_class' => $request->post('color_class') ?? 'btn-outline-primary',
             'icon_class' => $request->post('icon_class') ?? 'bi-tag',
-            'status_id' => (int)($request->post('status_id') ?? 1),
+            'status_id' => (int)($request->post('status_id') ?? Status::ACTIVE->value),
             'content_cnt' => 0
         ];
 
@@ -263,7 +265,7 @@ class TagController extends BackendController
         if (!empty($errors)) {
             // 验证失败，返回创建页面并显示错误
             $allContent = $this->contentModel->findAll([
-                'status_id' => [21, 29, 31, 39, 91, 99]
+                'status_id' => ContentStatus::getVisibleStatuses()
             ]);
             
             $contentOptions = [];
@@ -317,7 +319,7 @@ class TagController extends BackendController
             
             // 出错时返回创建页面并显示错误
             $allContent = $this->contentModel->findAll([
-                'status_id' => [21, 29, 31, 39, 91, 99]
+                'status_id' => ContentStatus::getVisibleStatuses()
             ]);
             
             $contentOptions = [];
@@ -553,7 +555,7 @@ class TagController extends BackendController
             'desc_en' => $data['desc_en'] ?? '',
             'color_class' => $data['color_class'] ?? 'btn-outline-primary',
             'icon_class' => $data['icon_class'] ?? 'bi-tag',
-            'status_id' => isset($data['status_id']) ? (int)$data['status_id'] : 1,
+            'status_id' => isset($data['status_id']) ? (int)$data['status_id'] : Status::ACTIVE->value,
             'content_cnt' => 0
         ];
 

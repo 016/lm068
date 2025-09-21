@@ -4,100 +4,143 @@ namespace App\Constants;
 
 enum ContentStatus: int
 {
-    case PROCESSING = 21;      // 处理中
-    case READY = 29;           // 准备就绪
-    case PUBLISHED = 31;       // 已发布
-    case FEATURED = 39;        // 精选内容
-    case ARCHIVED = 91;        // 已归档
-    case COMPLETED = 99;       // 已完成
+    case HIDDEN = 0;           // 隐藏
+    case DRAFT = 1;            // 草稿
+    case CREATIVE = 11;        // 创意
+    case SCRIPT_START = 18;    // 脚本开
+    case SCRIPT_DONE = 19;     // 脚本完
+    case SHOOTING_START = 21;  // 开拍
+    case SHOOTING_DONE = 29;   // 拍完
+    case EDITING_START = 31;   // 开剪
+    case EDITING_DONE = 39;    // 剪完
+    case PENDING_PUBLISH = 91; // 待发布
+    case PUBLISHED = 99;       // 已发布
 
     public function label(): string
     {
         return match($this) {
-            self::PROCESSING => '处理中',
-            self::READY => '准备就绪',
+            self::HIDDEN => '隐藏',
+            self::DRAFT => '草稿',
+            self::CREATIVE => '创意',
+            self::SCRIPT_START => '脚本开',
+            self::SCRIPT_DONE => '脚本完',
+            self::SHOOTING_START => '开拍',
+            self::SHOOTING_DONE => '拍完',
+            self::EDITING_START => '开剪',
+            self::EDITING_DONE => '剪完',
+            self::PENDING_PUBLISH => '待发布',
             self::PUBLISHED => '已发布',
-            self::FEATURED => '精选内容',
-            self::ARCHIVED => '已归档',
-            self::COMPLETED => '已完成',
         };
     }
 
     public function englishLabel(): string
     {
         return match($this) {
-            self::PROCESSING => 'Processing',
-            self::READY => 'Ready',
+            self::HIDDEN => 'Hidden',
+            self::DRAFT => 'Draft',
+            self::CREATIVE => 'Creative',
+            self::SCRIPT_START => 'Script Start',
+            self::SCRIPT_DONE => 'Script Done',
+            self::SHOOTING_START => 'Shooting Start',
+            self::SHOOTING_DONE => 'Shooting Done',
+            self::EDITING_START => 'Editing Start',
+            self::EDITING_DONE => 'Editing Done',
+            self::PENDING_PUBLISH => 'Pending Publish',
             self::PUBLISHED => 'Published',
-            self::FEATURED => 'Featured',
-            self::ARCHIVED => 'Archived',
-            self::COMPLETED => 'Completed',
         };
     }
 
     public function statusClass(): string
     {
         return match($this) {
-            self::PROCESSING => 'status-processing',
-            self::READY => 'status-ready',
+            self::HIDDEN => 'status-hidden',
+            self::DRAFT => 'status-draft',
+            self::CREATIVE => 'status-creative',
+            self::SCRIPT_START => 'status-script-start',
+            self::SCRIPT_DONE => 'status-script-done',
+            self::SHOOTING_START => 'status-shooting-start',
+            self::SHOOTING_DONE => 'status-shooting-done',
+            self::EDITING_START => 'status-editing-start',
+            self::EDITING_DONE => 'status-editing-done',
+            self::PENDING_PUBLISH => 'status-pending-publish',
             self::PUBLISHED => 'status-published',
-            self::FEATURED => 'status-featured',
-            self::ARCHIVED => 'status-archived',
-            self::COMPLETED => 'status-completed',
         };
     }
 
     public function isVisible(): bool
     {
         return in_array($this, [
-            self::PROCESSING,
-            self::READY,
-            self::PUBLISHED,
-            self::FEATURED,
-            self::ARCHIVED,
-            self::COMPLETED
+            self::SHOOTING_START,
+            self::SHOOTING_DONE,
+            self::EDITING_START,
+            self::EDITING_DONE,
+            self::PENDING_PUBLISH,
+            self::PUBLISHED
         ]);
     }
 
     public function isPublished(): bool
     {
+        return $this === self::PUBLISHED;
+    }
+
+    public function isInProduction(): bool
+    {
         return in_array($this, [
-            self::PUBLISHED,
-            self::FEATURED,
-            self::COMPLETED
+            self::SCRIPT_START,
+            self::SCRIPT_DONE,
+            self::SHOOTING_START,
+            self::SHOOTING_DONE,
+            self::EDITING_START,
+            self::EDITING_DONE
         ]);
     }
 
     public static function getVisibleStatuses(): array
     {
         return [
-            self::PROCESSING->value,
-            self::READY->value,
-            self::PUBLISHED->value,
-            self::FEATURED->value,
-            self::ARCHIVED->value,
-            self::COMPLETED->value
+            self::SHOOTING_START->value,
+            self::SHOOTING_DONE->value,
+            self::EDITING_START->value,
+            self::EDITING_DONE->value,
+            self::PENDING_PUBLISH->value,
+            self::PUBLISHED->value
         ];
     }
 
     public static function getPublishedStatuses(): array
     {
         return [
-            self::PUBLISHED->value,
-            self::FEATURED->value,
-            self::COMPLETED->value
+            self::PUBLISHED->value
+        ];
+    }
+
+    public static function getProductionStatuses(): array
+    {
+        return [
+            self::SCRIPT_START->value,
+            self::SCRIPT_DONE->value,
+            self::SHOOTING_START->value,
+            self::SHOOTING_DONE->value,
+            self::EDITING_START->value,
+            self::EDITING_DONE->value
         ];
     }
 
     public static function getAllValues(): array
     {
         return [
-            self::PROCESSING->value => self::PROCESSING->label(),
-            self::READY->value => self::READY->label(),
+            self::HIDDEN->value => self::HIDDEN->label(),
+            self::DRAFT->value => self::DRAFT->label(),
+            self::CREATIVE->value => self::CREATIVE->label(),
+            self::SCRIPT_START->value => self::SCRIPT_START->label(),
+            self::SCRIPT_DONE->value => self::SCRIPT_DONE->label(),
+            self::SHOOTING_START->value => self::SHOOTING_START->label(),
+            self::SHOOTING_DONE->value => self::SHOOTING_DONE->label(),
+            self::EDITING_START->value => self::EDITING_START->label(),
+            self::EDITING_DONE->value => self::EDITING_DONE->label(),
+            self::PENDING_PUBLISH->value => self::PENDING_PUBLISH->label(),
             self::PUBLISHED->value => self::PUBLISHED->label(),
-            self::FEATURED->value => self::FEATURED->label(),
-            self::ARCHIVED->value => self::ARCHIVED->label(),
-            self::COMPLETED->value => self::COMPLETED->label(),
         ];
     }
 }

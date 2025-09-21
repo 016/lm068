@@ -5,6 +5,7 @@ namespace App\Controllers\Backend;
 use App\Controllers\Backend\BackendController;
 use App\Core\Request;
 use App\Models\AdminUser;
+use App\Constants\Status;
 
 class AuthController extends BackendController
 {
@@ -93,7 +94,7 @@ class AuthController extends BackendController
         }
 
         // 检查账户状态
-        if ($admin['status_id'] != 1) {
+        if ($admin['status_id'] != Status::ACTIVE->value) {
             $errors['username'] = '账户已被禁用，请联系系统管理员';
             $_SESSION['login_errors'] = $errors;
             $_SESSION['login_username'] = $username;

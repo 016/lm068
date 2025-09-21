@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
+use App\Constants\Status;
 
 class AdminUser extends Model
 {
@@ -14,8 +15,11 @@ class AdminUser extends Model
 
     public function findByUsername(string $username): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE username = :username AND status_id = 1 LIMIT 1";
-        return $this->db->fetch($sql, ['username' => $username]);
+        $sql = "SELECT * FROM {$this->table} WHERE username = :username AND status_id = :status_id LIMIT 1";
+        return $this->db->fetch($sql, [
+            'username' => $username,
+            'status_id' => Status::ACTIVE->value
+        ]);
     }
 
     public function verifyPassword(array $admin, string $password): bool
