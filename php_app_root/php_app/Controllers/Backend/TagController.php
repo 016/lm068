@@ -5,7 +5,7 @@ namespace App\Controllers\Backend;
 use App\Core\Request;
 use App\Models\Tag;
 use App\Models\Content;
-use App\Constants\Status;
+use App\Constants\TagStatus;
 use App\Constants\ContentStatus;
 
 class TagController extends BackendController
@@ -107,7 +107,7 @@ class TagController extends BackendController
             'desc_en' => $request->post('desc_en'),
             'color_class' => $request->post('color_class'),
             'icon_class' => $request->post('icon_class'),
-            'status_id' => (int)($request->post('status_id') ?? Status::INACTIVE->value)
+            'status_id' => (int)($request->post('status_id') ?? TagStatus::DISABLED->value)
         ];
 
         // 使用模型验证，传入当前ID以排除自身
@@ -256,7 +256,7 @@ class TagController extends BackendController
             'desc_en' => $request->post('desc_en') ?? '',
             'color_class' => $request->post('color_class') ?? 'btn-outline-primary',
             'icon_class' => $request->post('icon_class') ?? 'bi-tag',
-            'status_id' => (int)($request->post('status_id') ?? Status::ACTIVE->value),
+            'status_id' => (int)($request->post('status_id') ?? TagStatus::ENABLED->value),
             'content_cnt' => 0
         ];
 
@@ -555,7 +555,7 @@ class TagController extends BackendController
             'desc_en' => $data['desc_en'] ?? '',
             'color_class' => $data['color_class'] ?? 'btn-outline-primary',
             'icon_class' => $data['icon_class'] ?? 'bi-tag',
-            'status_id' => isset($data['status_id']) ? (int)$data['status_id'] : Status::ACTIVE->value,
+            'status_id' => isset($data['status_id']) ? (int)$data['status_id'] : TagStatus::ENABLED->value,
             'content_cnt' => 0
         ];
 

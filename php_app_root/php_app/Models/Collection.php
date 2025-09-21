@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Constants\Status;
+use App\Constants\CollectionStatus;
 
 class Collection extends Model
 {
@@ -26,8 +26,8 @@ class Collection extends Model
                 FROM {$this->table}";
         
         $result = $this->db->fetch($sql, [
-            'active_status' => Status::ACTIVE->value,
-            'inactive_status' => Status::INACTIVE->value
+            'active_status' => CollectionStatus::ENABLED->value,
+            'inactive_status' => CollectionStatus::DISABLED->value
         ]);
         
         return [

@@ -5,7 +5,7 @@ namespace App\Controllers\Backend;
 use App\Core\Request;
 use App\Models\Collection;
 use App\Models\Content;
-use App\Constants\Status;
+use App\Constants\CollectionStatus;
 use App\Constants\ContentStatus;
 
 class CollectionController extends BackendController
@@ -96,7 +96,7 @@ class CollectionController extends BackendController
             'desc_en' => $request->post('desc_en'),
             'color_class' => $request->post('color_class'),
             'icon_class' => $request->post('icon_class'),
-            'status_id' => (int)($request->post('status_id') ?? Status::INACTIVE->value)
+            'status_id' => (int)($request->post('status_id') ?? CollectionStatus::DISABLED->value)
         ];
 
         // 验证必填字段
@@ -239,7 +239,7 @@ class CollectionController extends BackendController
             'desc_en' => $request->post('desc_en') ?? '',
             'color_class' => $request->post('color_class') ?? 'btn-outline-primary',
             'icon_class' => $request->post('icon_class') ?? 'bi-collection',
-            'status_id' => (int)($request->post('status_id') ?? Status::ACTIVE->value),
+            'status_id' => (int)($request->post('status_id') ?? CollectionStatus::ENABLED->value),
             'content_cnt' => 0
         ];
 

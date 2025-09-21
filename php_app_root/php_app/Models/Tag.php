@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Constants\Status;
+use App\Constants\TagStatus;
 
 class Tag extends Model
 {
@@ -65,8 +65,8 @@ class Tag extends Model
                 FROM {$this->table}";
         
         $result = $this->db->fetch($sql, [
-            'active_status' => Status::ACTIVE->value,
-            'inactive_status' => Status::INACTIVE->value
+            'active_status' => TagStatus::ENABLED->value,
+            'inactive_status' => TagStatus::DISABLED->value
         ]);
         
         return [

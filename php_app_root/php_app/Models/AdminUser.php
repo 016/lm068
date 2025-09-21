@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Constants\Status;
+use App\Constants\AdminStatus;
 
 class AdminUser extends Model
 {
@@ -18,7 +18,7 @@ class AdminUser extends Model
         $sql = "SELECT * FROM {$this->table} WHERE username = :username AND status_id = :status_id LIMIT 1";
         return $this->db->fetch($sql, [
             'username' => $username,
-            'status_id' => Status::ACTIVE->value
+            'status_id' => AdminStatus::ENABLED->value
         ]);
     }
 

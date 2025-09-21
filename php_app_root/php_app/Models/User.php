@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Constants\Status;
+use App\Constants\UserStatus;
 
 class User extends Model
 {
@@ -27,7 +27,7 @@ class User extends Model
 
     public function getActiveUsers(int $limit = 20, int $offset = 0): array
     {
-        return $this->findAll(['status_id' => Status::ACTIVE->value], $limit, $offset, 'created_at DESC');
+        return $this->findAll(['status_id' => UserStatus::ACTIVE->value], $limit, $offset, 'created_at DESC');
     }
 
     public function createUser(array $data): int
