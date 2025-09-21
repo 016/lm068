@@ -1334,7 +1334,7 @@ const TableOperations = {
         };
         
         // 发送请求数据
-        const formData = `action=${encodeURIComponent(action)}&tag_ids=${encodeURIComponent(JSON.stringify(selectedIds))}`;
+        const formData = `action=${encodeURIComponent(action)}&ids=${encodeURIComponent(JSON.stringify(selectedIds))}`;
         xhr.send(formData);
     },
     

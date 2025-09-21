@@ -20,49 +20,17 @@ class CollectionController extends BackendController
 
     public function index(Request $request): void
     {
-        // 收集所有搜索条件从 $_GET 参数
-        $conditions = [];
-        $searchConditions = [];
-        
-        // 处理状态过滤
-        $statusFilter = $request->get('status');
-        if ($statusFilter !== null && $statusFilter !== '') {
-            $conditions['status_id'] = (int)$statusFilter;
-        }
-        
-        // 处理各列的搜索条件
-        $idSearch = $request->get('id');
-        if ($idSearch !== null && $idSearch !== '') {
-            $searchConditions['id'] = (int)$idSearch;
-        }
-        
-        $nameSearch = $request->get('name');
-        if ($nameSearch !== null && $nameSearch !== '') {
-            $searchConditions['name'] = $nameSearch;
-        }
-        
-        $descriptionSearch = $request->get('description');
-        if ($descriptionSearch !== null && $descriptionSearch !== '') {
-            $searchConditions['description'] = $descriptionSearch;
-        }
-        
-        $contentCntSearch = $request->get('content_cnt');
-        if ($contentCntSearch !== null && $contentCntSearch !== '') {
-            $searchConditions['content_cnt'] = $contentCntSearch;
-        }
-        
-        $iconClassSearch = $request->get('icon_class');
-        if ($iconClassSearch !== null && $iconClassSearch !== '') {
-            $searchConditions['icon_class'] = $iconClassSearch;
-        }
+        // 获取搜索过滤条件，支持所有搜索表单字段
+        $filters = $this->getSearchFilters(['id','name', 'description','content_cnt','icon_class','status_id','order_by'], $request);
+
 
         // 获取所有符合条件的数据，不进行分页
-        $collections = $this->collectionModel->findAllWithSearchConditions($conditions, $searchConditions);
+        $collections = $this->collectionModel->findAllWithFilters($filters);
         $stats = $this->collectionModel->getStats();
 
         $this->render('collections/index', [
             'collections' => $collections,
-            'statusFilter' => $statusFilter,
+            'filters' => $filters,
             'stats' => $stats,
             'title' => '合集管理 - 视频分享网站管理后台',
             'css_files' => ['collection_list_2.css'],
@@ -372,7 +340,9 @@ class CollectionController extends BackendController
     public function bulkAction(Request $request): void
     {
         $action = $request->post('action');
-        $collectionIds = $request->post('collection_ids');
+        $collectionIds = $request->post('ids');
+        var_dump($action);
+        var_dump($collectionIds);
 
         if (!$action || !$collectionIds || !is_array($collectionIds)) {
             $this->jsonResponse(['success' => false, 'message' => '参数错误']);
@@ -639,10 +609,9 @@ class CollectionController extends BackendController
             return false;
         }
 
-        // 检查是否已存在同名合集
-        $existingCollection = $this->checkDuplicateCollection($data['name_cn'], $data['name_en']);
-        if ($existingCollection) {
-            throw new \Exception("合集已存在：{$data['name_cn']} / {$data['name_en']}");
+        // 检查是否已存在同名标签
+        if ($this->collectionModel->findByName($data['name_cn'], $data['name_en'])) {
+            return false; // 跳过重复标签
         }
 
         // 准备数据
@@ -671,20 +640,5 @@ class CollectionController extends BackendController
             error_log("Single collection import error: " . $e->getMessage());
             throw new \Exception("创建合集失败: " . $e->getMessage());
         }
-    }
-
-    /**
-     * 检查重复的合集
-     */
-    private function checkDuplicateCollection(string $nameCn, string $nameEn): ?array
-    {
-        $sql = "SELECT id FROM collection WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
-        $params = [
-            'name_cn' => $nameCn,
-            'name_en' => $nameEn
-        ];
-        
-        $result = $this->collectionModel->getDb()->fetch($sql, $params);
-        return $result ?: null;
     }
 }

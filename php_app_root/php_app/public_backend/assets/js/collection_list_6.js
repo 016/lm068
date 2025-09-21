@@ -38,7 +38,7 @@ function initCollectionListPage() {
         rowCheckboxSelector: '.row-checkbox',
         columnSettingsPopupSelector: '#columnSettingsPopup',
         currentDisplaySelector: '#currentDisplay',
-        defaultItemsPerPage: 2, // 保持与标签页面一致的测试设置
+        defaultItemsPerPage: 5, // 保持与标签页面一致的测试设置
         enableSort: true,
         enablePagination: true,
         enableColumnSettings: true,

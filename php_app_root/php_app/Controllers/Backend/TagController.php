@@ -8,7 +8,7 @@ use App\Models\Content;
 
 class TagController extends BackendController
 {
-    private Tag $tagModel;
+    protected Tag $curModel;
     private Content $contentModel;
 
     public function __construct()
@@ -17,7 +17,7 @@ class TagController extends BackendController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->tagModel = new Tag();
+        $this->curModel = new Tag();
         $this->contentModel = new Content();
     }
 
@@ -27,8 +27,8 @@ class TagController extends BackendController
         $filters = $this->getSearchFilters(['id','name','content_cnt','icon_class','status','order_by'], $request);
         
         // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
-        $tags = $this->tagModel->findAllWithFilters($filters);
-        $stats = $this->tagModel->getStats();
+        $tags = $this->curModel->findAllWithFilters($filters);
+        $stats = $this->curModel->getStats();
 
         // 处理 Toast 消息
         $toastMessage = $_SESSION['toast_message'] ?? null;
@@ -52,14 +52,14 @@ class TagController extends BackendController
     public function edit(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $tag = $this->tagModel->findById($id);
+        $tag = $this->curModel->findById($id);
 
         if (!$tag) {
             $this->redirect('/backend/tags');
             return;
         }
 
-        $relatedContent = $this->tagModel->getRelatedContent($id);
+        $relatedContent = $this->curModel->getRelatedContent($id);
         
         $allContent = $this->contentModel->findAll([
             'status_id' => [21, 29, 31, 39, 91, 99]  // 只显示进行中或已完成的内容
@@ -109,10 +109,10 @@ class TagController extends BackendController
         ];
 
         // 使用模型验证，传入当前ID以排除自身
-        $errors = $this->tagModel->validate($data, true, $id);
+        $errors = $this->curModel->validate($data, true, $id);
         if (!empty($errors)) {
             // 验证失败，返回编辑页面并显示错误
-            $tag = $this->tagModel->findById($id);
+            $tag = $this->curModel->findById($id);
             if (!$tag) {
                 $this->redirect('/tags');
                 return;
@@ -121,7 +121,7 @@ class TagController extends BackendController
             // 合并用户输入的数据到tag数据中
             $tag = array_merge($tag, $data);
             
-            $relatedContent = $this->tagModel->getRelatedContent($id);
+            $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => [21, 29, 31, 39, 91, 99]
             ]);
@@ -151,13 +151,13 @@ class TagController extends BackendController
         }
 
         try {
-            $this->tagModel->update($id, $data);
+            $this->curModel->update($id, $data);
 
             // 处理关联内容
             $relatedVideos = $request->post('related_videos');
             if ($relatedVideos !== null) {
                 $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
-                $this->tagModel->syncContentAssociations($id, $contentIds);
+                $this->curModel->syncContentAssociations($id, $contentIds);
             }
 
             // 成功后跳转到列表页面，添加Toast消息到session
@@ -168,7 +168,7 @@ class TagController extends BackendController
             error_log("Tag update error: " . $e->getMessage());
             
             // 出错时返回编辑页面并显示错误
-            $tag = $this->tagModel->findById($id);
+            $tag = $this->curModel->findById($id);
             if (!$tag) {
                 $this->redirect('/tags');
                 return;
@@ -177,7 +177,7 @@ class TagController extends BackendController
             // 合并用户输入的数据到tag数据中
             $tag = array_merge($tag, $data);
             
-            $relatedContent = $this->tagModel->getRelatedContent($id);
+            $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => [21, 29, 31, 39, 91, 99]
             ]);
@@ -259,7 +259,7 @@ class TagController extends BackendController
         ];
 
         // 使用模型验证
-        $errors = $this->tagModel->validate($data, false);
+        $errors = $this->curModel->validate($data, false);
         if (!empty($errors)) {
             // 验证失败，返回创建页面并显示错误
             $allContent = $this->contentModel->findAll([
@@ -300,12 +300,12 @@ class TagController extends BackendController
         }
 
         try {
-            $tagId = $this->tagModel->create($data);
+            $tagId = $this->curModel->create($data);
 
             $relatedVideos = $request->post('related_videos');
             if ($relatedVideos && is_array($relatedVideos)) {
                 $contentIds = array_map('intval', $relatedVideos);
-                $this->tagModel->syncContentAssociations($tagId, $contentIds);
+                $this->curModel->syncContentAssociations($tagId, $contentIds);
             }
 
             // 成功后跳转到列表页面，添加Toast消息到session
@@ -363,7 +363,7 @@ class TagController extends BackendController
         }
 
         try {
-            $this->tagModel->delete($id);
+            $this->curModel->delete($id);
             $this->jsonResponse(['success' => true, 'message' => '标签删除成功']);
         } catch (\Exception $e) {
             error_log("Tag deletion error: " . $e->getMessage());
@@ -371,79 +371,10 @@ class TagController extends BackendController
         }
     }
 
-    public function bulkAction(Request $request): void
-    {
-        $action = $request->post('action');
-        $tagIdsRaw = $request->post('tag_ids');
-
-        if (!$action || !$tagIdsRaw) {
-            $this->jsonResponse(['success' => false, 'message' => '参数错误']);
-            return;
-        }
-
-        // 处理可能的JSON字符串格式
-        if (is_string($tagIdsRaw)) {
-            $tagIds = json_decode($tagIdsRaw, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->jsonResponse(['success' => false, 'message' => 'tag_ids 格式错误']);
-                return;
-            }
-        } else if (is_array($tagIdsRaw)) {
-            $tagIds = $tagIdsRaw;
-        } else {
-            $this->jsonResponse(['success' => false, 'message' => 'tag_ids 参数类型错误']);
-            return;
-        }
-
-        if (empty($tagIds) || !is_array($tagIds)) {
-            $this->jsonResponse(['success' => false, 'message' => '请选择要操作的标签']);
-            return;
-        }
-
-        $tagIds = array_map('intval', $tagIds);
-        $successCount = 0;
-        $errorCount = 0;
-        $totalCount = count($tagIds);
-
-        try {
-            switch ($action) {
-                case 'enable':
-                    $result = $this->performBulkUpdateStatus($tagIds, 1);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                case 'disable':
-                    $result = $this->performBulkUpdateStatus($tagIds, 0);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                case 'delete':
-                    $result = $this->performBulkDelete($tagIds);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                default:
-                    $this->jsonResponse(['success' => false, 'message' => '不支持的操作']);
-                    return;
-            }
-
-            $this->jsonResponse([
-                'success' => true,
-                'success_count' => $successCount,
-                'error_count' => $errorCount,
-                'total_count' => $totalCount,
-                'message' => "操作完成：成功{$successCount}条，失败{$errorCount}条"
-            ]);
-        } catch (\Exception $e) {
-            error_log("Bulk action error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '操作失败: ' . $e->getMessage()]);
-        }
-    }
-
     /**
      * 执行批量状态更新
      */
-    private function performBulkUpdateStatus(array $tagIds, int $status): array
+    protected function performBulkUpdateStatus(array $tagIds, int $status): array
     {
         $successCount = 0;
         $errorCount = 0;
@@ -451,14 +382,14 @@ class TagController extends BackendController
         foreach ($tagIds as $tagId) {
             try {
                 // 检查标签是否存在
-                $tag = $this->tagModel->findById($tagId);
+                $tag = $this->curModel->findById($tagId);
                 if (!$tag) {
                     $errorCount++;
                     continue;
                 }
 
                 // 更新状态
-                $this->tagModel->update($tagId, ['status_id' => $status]);
+                $this->curModel->update($tagId, ['status_id' => $status]);
                 $successCount++;
             } catch (\Exception $e) {
                 error_log("Failed to update tag {$tagId}: " . $e->getMessage());
@@ -472,7 +403,7 @@ class TagController extends BackendController
     /**
      * 执行批量删除
      */
-    private function performBulkDelete(array $tagIds): array
+    protected function performBulkDelete(array $tagIds): array
     {
         $successCount = 0;
         $errorCount = 0;
@@ -480,14 +411,14 @@ class TagController extends BackendController
         foreach ($tagIds as $tagId) {
             try {
                 // 检查标签是否存在
-                $tag = $this->tagModel->findById($tagId);
+                $tag = $this->curModel->findById($tagId);
                 if (!$tag) {
                     $errorCount++;
                     continue;
                 }
 
                 // 删除标签（包括相关联的内容关系）
-                $this->tagModel->delete($tagId);
+                $this->curModel->delete($tagId);
                 $successCount++;
             } catch (\Exception $e) {
                 error_log("Failed to delete tag {$tagId}: " . $e->getMessage());
@@ -506,14 +437,14 @@ class TagController extends BackendController
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $tag = $this->tagModel->findById($id);
+        $tag = $this->curModel->findById($id);
 
         if (!$tag) {
             $this->redirect('/backend/tags');
             return;
         }
 
-        $relatedContent = $this->tagModel->getRelatedContent($id);
+        $relatedContent = $this->curModel->getRelatedContent($id);
 
         $this->render('tags/show', [
             'tag' => $tag,
@@ -531,7 +462,7 @@ class TagController extends BackendController
         }
 
         try {
-            $content = $this->tagModel->getRelatedContent($tagId);
+            $content = $this->curModel->getRelatedContent($tagId);
             $this->jsonResponse(['success' => true, 'content' => $content]);
         } catch (\Exception $e) {
             error_log("Get content error: " . $e->getMessage());
@@ -684,19 +615,19 @@ class TagController extends BackendController
         ];
 
         // 验证数据
-        $errors = $this->tagModel->validate($tagData, false);
+        $errors = $this->curModel->validate($tagData, false);
         if (!empty($errors)) {
             return false;
         }
 
         // 检查是否已存在同名标签
-        if ($this->tagModel->findByName($tagData['name_cn'], $tagData['name_en'])) {
+        if ($this->curModel->findByName($tagData['name_cn'], $tagData['name_en'])) {
             return false; // 跳过重复标签
         }
 
         // 创建标签
         try {
-            $this->tagModel->create($tagData);
+            $this->curModel->create($tagData);
             return true;
         } catch (\Exception $e) {
             error_log("Failed to create tag: " . $e->getMessage());

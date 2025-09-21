@@ -28,6 +28,100 @@ abstract class Model
         return $this->find($id);
     }
 
+    /**
+     * 根据中文名或英文名查找标签
+     * @param string $nameCn 中文名称
+     * @param string $nameEn 英文名称
+     * @return array|null 标签数据或null
+     */
+    public function findByName(string $nameCn, string $nameEn): ?array
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
+        $params = [
+            'name_cn' => $nameCn,
+            'name_en' => $nameEn
+        ];
+
+        $result = $this->db->fetch($sql, $params);
+        return $result ?: null;
+    }
+
+    /**
+     * 根据过滤条件获取所有标签数据（不分页，用于JS处理）
+     * 支持多字段搜索过滤
+     */
+    public function findAllWithFilters(array $filters = []): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+        $whereConditions = [];
+
+        // 处理搜索条件
+        if (!empty($filters)) {
+            foreach ($filters as $field => $value) {
+                if (empty($value) && $value !== '0') {
+                    continue; //skip for empty null or empty string
+                }
+                switch ($field) {
+                    case 'id':
+                        $whereConditions[] = "id = :search_id";
+                        $params['search_id'] = (int)$value;
+                        break;
+                    case 'name':
+                        $whereConditions[] = "(name_cn LIKE :search_name_cn OR name_en LIKE :search_name_en)";
+                        $params['search_name_cn'] = "%{$value}%";
+                        $params['search_name_en'] = "%{$value}%";
+                        break;
+                    case 'description':
+                        $whereConditions[] = "(desc_cn LIKE :search_desc_cn OR desc_en LIKE :search_desc_en)";
+                        $params['search_desc_cn'] = "%{$value}%";
+                        $params['search_desc_en'] = "%{$value}%";
+                        break;
+                    case 'content_cnt':
+                        // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
+                        if (strpos($value, '-') !== false) {
+                            $range = explode('-', $value);
+                            if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
+                                $whereConditions[] = "content_cnt BETWEEN :cnt_min AND :cnt_max";
+                                $params['cnt_min'] = (int)$range[0];
+                                $params['cnt_max'] = (int)$range[1];
+                            }
+                        } elseif (preg_match('/^([><=]+)(\d+)$/', $value, $matches)) {
+                            $operator = $matches[1];
+                            $number = (int)$matches[2];
+                            if (in_array($operator, ['>', '<', '>=', '<=', '='])) {
+                                $whereConditions[] = "content_cnt {$operator} :cnt_value";
+                                $params['cnt_value'] = $number;
+                            }
+                        } elseif (is_numeric($value)) {
+                            $whereConditions[] = "content_cnt = :cnt_exact";
+                            $params['cnt_exact'] = (int)$value;
+                        }
+                        break;
+                    case 'icon_class':
+                        $whereConditions[] = "icon_class LIKE :search_icon";
+                        $params['search_icon'] = "%{$value}%";
+                        break;
+
+                    case 'status_id':
+                        $whereConditions[] = "status_id = :status_id";
+                        $params['status_id'] = (int)$value;
+                        break;
+                }
+            }
+        }
+
+        if (!empty($whereConditions)) {
+            $sql .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
+        // 排序
+        $orderBy = $filters['order_by'] ?? 'created_at DESC';
+        $sql .= " ORDER BY {$orderBy}";
+
+        return $this->db->fetchAll($sql, $params);
+    }
+
     public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
     {
         $sql = "SELECT * FROM {$this->table}";

@@ -121,7 +121,7 @@
                         <i class="bi bi-plus-lg"></i>
                         创建新合集
                     </a>
-                    <button class="btn btn-outline-primary d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="bulkImportBtn">
                         <i class="bi bi-download"></i>
                         批量导入
                     </button>
@@ -251,25 +251,25 @@
                         <tr class="table-header-bg">
                             <th class="table-filter-cell" data-column="checkbox"></th>
                             <th class="table-filter-cell" data-column="id">
-                                <input type="text" name="id" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($_GET['id'] ?? '') ?>">
+                                <input type="text" name="id" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="name">
-                                <input type="text" name="name" class="form-control form-control-sm" placeholder="搜索合集名" value="<?= htmlspecialchars($_GET['name'] ?? '') ?>">
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="搜索合集名" value="<?= htmlspecialchars($filters['name'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="description">
-                                <input type="text" name="description" class="form-control form-control-sm" placeholder="搜索描述" value="<?= htmlspecialchars($_GET['description'] ?? '') ?>">
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="搜索描述" value="<?= htmlspecialchars($filters['description'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="content_cnt">
-                                <input type="text" name="content_cnt" class="form-control form-control-sm" placeholder="数量范围" value="<?= htmlspecialchars($_GET['content_cnt'] ?? '') ?>">
+                                <input type="text" name="content_cnt" class="form-control form-control-sm" placeholder="数量范围" value="<?= htmlspecialchars($filters['content_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="icon_class">
-                                <input type="text" name="icon_class" class="form-control form-control-sm" placeholder="搜索icon" value="<?= htmlspecialchars($_GET['icon_class'] ?? '') ?>">
+                                <input type="text" name="icon_class" class="form-control form-control-sm" placeholder="搜索icon" value="<?= htmlspecialchars($filters['icon_class'] ?? '') ?>">
                             </th>
-                            <th class="table-filter-cell" data-column="status">
-                                <select name="status" class="form-control form-select form-select-sm">
+                            <th class="table-filter-cell" data-column="status_id">
+                                <select name="status_id" class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
-                                    <option value="1" <?= $statusFilter == '1' ? 'selected' : '' ?>>显示</option>
-                                    <option value="0" <?= $statusFilter == '0' ? 'selected' : '' ?>>隐藏</option>
+                                    <option value="1" <?= ($filters['status_id'] === '1') ? 'selected' : '' ?>>显示</option>
+                                    <option value="0" <?= ($filters['status_id'] === '0') ? 'selected' : '' ?>>隐藏</option>
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="actions"></th>
@@ -309,7 +309,7 @@
                                     <a href="/collections/<?= $collection['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <button class="btn btn-outline-danger btn-sm" title="删除" onclick="deleteCollection(<?= $collection['id'] ?>)">
+                                    <button class="btn btn-outline-danger btn-sm delete-tag" title="删除" data-id="<?= htmlspecialchars($collection['id']) ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -356,32 +356,7 @@
     </div>
 </main>
 
-<script>
-function deleteCollection(id) {
-    if (confirm('确定要删除这个合集吗？此操作不可撤销。')) {
-        fetch(`/collections/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('删除失败: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('删除失败');
-        });
-    }
-}
-
-function exportData(format) {
-    window.location.href = `/collections/export?format=${format}`;
-}
-</script>
+<?php
+// Set form action for create
+include __DIR__ . '/../common/_bulkImport.php';
+?>
