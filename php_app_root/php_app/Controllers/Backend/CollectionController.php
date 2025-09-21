@@ -49,7 +49,7 @@ class CollectionController extends BackendController
             'stats' => $stats,
             'title' => '合集管理 - 视频分享网站管理后台',
             'css_files' => ['collection_list_2.css'],
-            'js_files' => ['main_7.js', 'collection_list_2.js']
+            'js_files' => ['collection_list_6.js']
         ]);
     }
 
