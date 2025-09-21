@@ -69,29 +69,29 @@
 
 ##### php_app 目录结构
 php_app/
-├── app/                      # 主要应用代码 (Web无法直接访问)
-│   ├── Controllers/          # 控制器层 (C)
-│   │   ├── Backend/          # 后台控制器
-│   │   └── Frontend/         # 前台控制器
-│   ├── Models/               # 模型层 (M) - 数据库交互, 业务逻辑 (前后端共用)
-│   ├── Views/                # 视图层 (V)
-│   │   ├── backend/          # 后台视图 (以子文件夹结构来和controller呼应)
-│   │   │   ├── layouts/      # 布局文件 (如头部, 尾部, 侧边栏)
-│   │   │   └── videos/       # 以video举例
-│   │   └── frontend/         # 前台视图 (您的前台HTML页面放这里)
-│   │       ├── layouts/      # 布局文件
-│   │       └── videos/       # 以video举例
-│   └── Core/                 # 核心框架类
-│       ├── Router.php        # 路由器
-│       ├── Request.php       # 请求处理
-│       ├── Database.php      # 数据库连接
-│       ├── Controller.php    # 基础控制器
-│       └── Model.php         # 基础模型
-│
+├── Models/                   # 模型层 (M) - 数据库交互, 业务逻辑 (前后端共用)
+├── Views/                    # 视图层 (V)
+│   ├── backend/              # 后台视图 (以子文件夹结构来和controller呼应)
+│   │   ├──layouts/           # 布局文件 (如头部, 尾部, 侧边栏)
+│   │   └──videos/            # 以video举例
+│   └── frontend/             # 前台视图 (您的前台HTML页面放这里)
+│       ├── layouts/          # 布局文件
+│       └── videos/           # 以video举例
+├── Controllers/              # 控制器层 (C)
+│   ├── Backend/              # 后台控制器
+│   └── Frontend/             # 前台控制器
+├── Core/                     # 核心框架类
+│   ├── Router.php            # 路由器
+│   ├── Request.php           # 请求处理
+│   ├── Database.php          # 数据库连接
+│   ├── Controller.php        # 基础控制器
+│   └── Model.php             # 基础模型
+├── Constants/                # 常量存放位置
 ├── config/                   # 配置文件
 │   ├── main.php              # 应用主配置 (时区, 密钥等)
 │   ├── database.php          # 默认数据库配置
 │   └── database.local.php    # 本地数据库配置 (此文件不提交到版本库)
+├── scripts/                  # 测试脚本存放位置
 │
 ├── public_backend/           # 【后台入口】(admin.yourdomain.com 指向这里)
 │   ├── assets/               # 后台静态资源 (CSS, JS, Images)
