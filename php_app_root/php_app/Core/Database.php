@@ -69,6 +69,25 @@ class Database
         }
     }
 
+    /**
+     * 执行一个 INSERT, UPDATE, DELETE 语句，并返回其影响的行数。
+     *
+     * @param string $sql
+     * @param array $params
+     * @return int 影响的行数
+     * @throws PDOException
+     */
+    public function execute(string $sql, array $params = []): int
+    {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->rowCount(); // 直接返回影响的行数
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
     public function fetchAll(string $sql, array $params = []): array
     {
         $stmt = $this->query($sql, $params);
