@@ -371,63 +371,6 @@ class TagController extends BackendController
         }
     }
 
-    /**
-     * 执行批量状态更新
-     */
-    protected function performBulkUpdateStatus(array $targetIds, int $status_id): array
-    {
-        $successCount = 0;
-        $errorCount = 0;
-
-        foreach ($targetIds as $targetId) {
-            try {
-                // 检查标签是否存在
-                $tag = $this->curModel->findById($targetId);
-                if (!$tag) {
-                    $errorCount++;
-                    continue;
-                }
-
-                // 更新状态
-                $this->curModel->update($targetId, ['status_id' => $status_id]);
-                $successCount++;
-            } catch (\Exception $e) {
-                error_log("Failed to update tag {$targetId}: " . $e->getMessage());
-                $errorCount++;
-            }
-        }
-
-        return ['success' => $successCount, 'error' => $errorCount];
-    }
-
-    /**
-     * 执行批量删除
-     */
-    protected function performBulkDelete(array $targetIds): array
-    {
-        $successCount = 0;
-        $errorCount = 0;
-
-        foreach ($targetIds as $targetId) {
-            try {
-                // 检查标签是否存在
-                $tag = $this->curModel->findById($targetId);
-                if (!$tag) {
-                    $errorCount++;
-                    continue;
-                }
-
-                // 删除标签（包括相关联的内容关系）
-                $this->curModel->delete($targetId);
-                $successCount++;
-            } catch (\Exception $e) {
-                error_log("Failed to delete tag {$targetId}: " . $e->getMessage());
-                $errorCount++;
-            }
-        }
-
-        return ['success' => $successCount, 'error' => $errorCount];
-    }
 
     /**
      * for tag detail view page.

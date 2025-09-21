@@ -133,4 +133,82 @@ class BackendController extends Controller
             $this->jsonResponse(['success' => false, 'message' => '操作失败: ' . $e->getMessage()]);
         }
     }
+
+    /**
+     * 执行批量状态更新 - 通用方法
+     * 支持不同的模型类型进行批量状态更新
+     */
+    protected function performBulkUpdateStatus(array $targetIds, int $status_id): array
+    {
+        $successCount = 0;
+        $errorCount = 0;
+
+        // 检查当前模型是否支持批量更新
+        if (isset($this->curModel) && method_exists($this->curModel, 'bulkUpdateStatus')) {
+            try {
+                $this->curModel->bulkUpdateStatus($targetIds, $status_id);
+                $successCount = count($targetIds);
+            } catch (\Exception $e) {
+                error_log("Bulk status update error: " . $e->getMessage());
+                $errorCount = count($targetIds);
+            }
+        } else {
+            // 逐个更新的兜底方案
+            foreach ($targetIds as $targetId) {
+                try {
+                    // 检查记录是否存在
+                    if (isset($this->curModel) && $this->curModel->exists($targetId)) {
+                        $this->curModel->update($targetId, ['status_id' => $status_id]);
+                        $successCount++;
+                    } else {
+                        $errorCount++;
+                    }
+                } catch (\Exception $e) {
+                    error_log("Failed to update item {$targetId}: " . $e->getMessage());
+                    $errorCount++;
+                }
+            }
+        }
+
+        return ['success' => $successCount, 'error' => $errorCount];
+    }
+
+    /**
+     * 执行批量删除 - 通用方法
+     * 支持不同的模型类型进行批量删除
+     */
+    protected function performBulkDelete(array $targetIds): array
+    {
+        $successCount = 0;
+        $errorCount = 0;
+
+        // 检查当前模型是否支持批量删除
+        if (isset($this->curModel) && method_exists($this->curModel, 'bulkDelete')) {
+            try {
+                $this->curModel->bulkDelete($targetIds);
+                $successCount = count($targetIds);
+            } catch (\Exception $e) {
+                error_log("Bulk delete error: " . $e->getMessage());
+                $errorCount = count($targetIds);
+            }
+        } else {
+            // 逐个删除的兜底方案
+            foreach ($targetIds as $targetId) {
+                try {
+                    // 检查记录是否存在
+                    if (isset($this->curModel) && $this->curModel->exists($targetId)) {
+                        $this->curModel->delete($targetId);
+                        $successCount++;
+                    } else {
+                        $errorCount++;
+                    }
+                } catch (\Exception $e) {
+                    error_log("Failed to delete item {$targetId}: " . $e->getMessage());
+                    $errorCount++;
+                }
+            }
+        }
+
+        return ['success' => $successCount, 'error' => $errorCount];
+    }
 }
