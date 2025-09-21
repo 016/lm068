@@ -68,51 +68,51 @@ class BackendController extends Controller
     public function bulkAction(Request $request): void
     {
         $action = $request->post('action');
-        $rawIds = $request->post('ids');
+        $inputIds = $request->post('ids');
 
-        if (!$action || !$rawIds) {
+        if (!$action || !$inputIds) {
             $this->jsonResponse(['success' => false, 'message' => '参数错误']);
             return;
         }
 
         // 处理可能的JSON字符串格式
-        if (is_string($rawIds)) {
-            $workingIds = json_decode($rawIds, true);
+        if (is_string($inputIds)) {
+            $targetIds = json_decode($inputIds, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $this->jsonResponse(['success' => false, 'message' => 'tag_ids 格式错误']);
                 return;
             }
-        } else if (is_array($rawIds)) {
-            $workingIds = $rawIds;
+        } else if (is_array($inputIds)) {
+            $targetIds = $inputIds;
         } else {
             $this->jsonResponse(['success' => false, 'message' => 'tag_ids 参数类型错误']);
             return;
         }
 
-        if (empty($workingIds) || !is_array($workingIds)) {
+        if (empty($targetIds) || !is_array($targetIds)) {
             $this->jsonResponse(['success' => false, 'message' => '请选择要操作的标签']);
             return;
         }
 
-        $workingIds = array_map('intval', $workingIds);
+        $targetIds = array_map('intval', $targetIds);
         $successCount = 0;
         $errorCount = 0;
-        $totalCount = count($workingIds);
+        $totalCount = count($targetIds);
 
         try {
             switch ($action) {
                 case 'enable':
-                    $result = $this->performBulkUpdateStatus($workingIds, 1);
+                    $result = $this->performBulkUpdateStatus($targetIds, 1);
                     $successCount = $result['success'];
                     $errorCount = $result['error'];
                     break;
                 case 'disable':
-                    $result = $this->performBulkUpdateStatus($workingIds, 0);
+                    $result = $this->performBulkUpdateStatus($targetIds, 0);
                     $successCount = $result['success'];
                     $errorCount = $result['error'];
                     break;
                 case 'delete':
-                    $result = $this->performBulkDelete($workingIds);
+                    $result = $this->performBulkDelete($targetIds);
                     $successCount = $result['success'];
                     $errorCount = $result['error'];
                     break;
