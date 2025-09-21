@@ -72,10 +72,17 @@
   - admin.a.com 已指向 php_app_root/php_app/public_backend
 - backend
   - list page 使用 index关键词
-  - create page 使用 create关键词, 直接post到create 处理完以后跳转回index
-  - update page 使用 update关键词, 直接post到update 处理完以后跳转回index
+    - <tr class="table-header-bg"> 中的所有搜索项都将通过 $_GET 方法传递给 当前model/index，PHP 以此作为条件读取数据库数据用于显示。
+    - 其他所有的分页排序都由 JS 来完成，相关JS代码已经完成，非必要不修改，直接使用
+    - delete 行为使用 delete关键词
+      - 使用ajax请求，成功后删除list中的对应item,
+  - create page 使用 create关键词 
+    - 直接post到create 处理完以后跳转回index
+  - update page 使用 update关键词 
+    - 直接post到update 处理完以后跳转回index
   - view page 使用 view关键词
-  - delete 行为使用 delete关键词, ajax完成，完成后删除list中的对应item, 使用定义的notification进行反馈
+  - 其他要求
+    - 后台页面所有功能，需要使用反馈的时候，均使用定义的notification进行反馈
 - frontend
   - list page 使用 index关键词
   - detail page 使用 view关键词
