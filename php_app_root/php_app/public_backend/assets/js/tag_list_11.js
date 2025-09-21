@@ -131,13 +131,140 @@ function initTagListPage() {
         console.log('批量导入功能已初始化');
     }
     
-    // 7. 将实例保存到全局，方便调试和扩展
+    // 7. 设置删除按钮的事件监听器
+    setupDeleteButtonEventListeners(tableManager);
+    
+    // 8. 将实例保存到全局，方便调试和扩展
     window.tagListManager = {
         tableManager: tableManager,
         tableActions: tableActions
     };
     
     console.log('=== 标签列表页面初始化完成（优化版 TableManager）===');
+}
+
+// ========== 删除按钮功能实现 ==========
+/**
+ * 设置删除按钮的事件监听器
+ * 使用事件委托来处理动态生成的删除按钮
+ */
+function setupDeleteButtonEventListeners(tableManager) {
+    console.log('设置删除按钮事件监听器...');
+    
+    // 使用事件委托绑定删除按钮点击事件
+    document.addEventListener('click', function(e) {
+        // 检查点击的元素或其父元素是否有delete-tag类
+        const deleteButton = e.target.closest('.delete-tag');
+        if (deleteButton) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const tagId = deleteButton.getAttribute('data-id');
+            if (tagId) {
+                handleDeleteTag(tagId, tableManager);
+            }
+        }
+    });
+    
+    console.log('删除按钮事件监听器已设置（使用事件委托）');
+}
+
+/**
+ * 处理标签删除操作
+ * @param {string|number} tagId - 要删除的标签ID
+ * @param {Object} tableManager - 表格管理器实例
+ */
+function handleDeleteTag(tagId, tableManager) {
+    console.log(`准备删除标签: ${tagId}`);
+    
+    // 确认删除操作
+    if (!confirm('确定要删除这个标签吗？此操作不可撤销。')) {
+        return;
+    }
+    
+    // 发送AJAX删除请求
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `/tags/${tagId}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            try {
+                const response = JSON.parse(xhr.responseText);
+                
+                if (xhr.status === 200 && response.success) {
+                    // 删除成功
+                    console.log(`标签 ${tagId} 删除成功`);
+                    
+                    // 使用notification系统显示成功消息
+                    if (window.AdminCommon && window.AdminCommon.showToast) {
+                        window.AdminCommon.showToast(response.message || '标签删除成功', 'success');
+                    }
+                    
+                    // 删除对应的表格行
+                    const tableRow = document.querySelector(`tr[data-id="${tagId}"]`);
+                    if (tableRow) {
+                        tableRow.remove();
+                    }
+                    
+                    // 重新渲染表格（更新分页、统计等）
+                    if (tableManager && typeof tableManager.refresh === 'function') {
+                        // 使用延迟刷新确保用户看到成功消息
+                        setTimeout(() => {
+                            tableManager.refresh();
+                        }, 1000);
+                    } else {
+                        // 备用方案：直接刷新页面
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    
+                } else {
+                    // 删除失败
+                    console.error(`标签 ${tagId} 删除失败:`, response);
+                    
+                    // 使用notification系统显示错误消息
+                    if (window.AdminCommon && window.AdminCommon.showToast) {
+                        window.AdminCommon.showToast(
+                            response.message || '删除失败，请稍后重试', 
+                            'danger'
+                        );
+                    } else {
+                        alert(response.message || '删除失败，请稍后重试');
+                    }
+                }
+                
+            } catch (e) {
+                console.error('解析服务器响应时出错:', e);
+                console.error('原始响应:', xhr.responseText);
+                
+                // 使用notification系统显示错误消息
+                if (window.AdminCommon && window.AdminCommon.showToast) {
+                    window.AdminCommon.showToast('删除失败，服务器响应格式错误', 'danger');
+                } else {
+                    alert('删除失败，服务器响应格式错误');
+                }
+            }
+        }
+    };
+    
+    xhr.onerror = function() {
+        console.error('删除请求网络错误');
+        
+        // 使用notification系统显示网络错误消息
+        if (window.AdminCommon && window.AdminCommon.showToast) {
+            window.AdminCommon.showToast('网络错误，请检查网络连接后重试', 'danger');
+        } else {
+            alert('网络错误，请检查网络连接后重试');
+        }
+    };
+    
+    // 发送请求
+    xhr.send();
+    
+    console.log(`删除请求已发送: DELETE /tags/${tagId}`);
 }
 
 // ========== 导出函数供HTML调用 ========== 
