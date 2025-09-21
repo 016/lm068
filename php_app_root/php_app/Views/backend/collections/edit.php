@@ -1,3 +1,6 @@
+<?php
+use App\Constants\CollectionStatus;
+?>
 <!-- Collection Edit Form Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -175,7 +178,7 @@
                                     <div class="form-group">
                                         <div class="switch-group" id="statusSwitchGroup">
                                             <div class="custom-switch collection-edit-switch" id="statusSwitch">
-                                                <input type="checkbox" id="status_id" name="status_id" value="1" <?= !$collection || $collection['status_id'] ? 'checked' : '' ?>>
+                                                <input type="checkbox" id="status_id" name="status_id" value="<?= CollectionStatus::ENABLED->value ?>" <?= !$collection || $collection['status_id'] ? 'checked' : '' ?>>
                                                 <span class="switch-slider"></span>
                                             </div>
                                             <label for="status_id" class="switch-label">显示状态</label>

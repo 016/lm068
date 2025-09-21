@@ -1,3 +1,6 @@
+<?php
+use App\Constants\TagStatus;
+?>
 <!-- Tag Management Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -256,8 +259,8 @@
                             <th class="table-filter-cell" data-column="status_id">
                                 <select name="status" class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
-                                    <option value="1" <?= ($filters['status'] === '1') ? 'selected' : '' ?>>显示</option>
-                                    <option value="0" <?= ($filters['status'] === '0') ? 'selected' : '' ?>>隐藏</option>
+                                    <option value="<?= TagStatus::ENABLED->value ?>" <?= ($filters['status'] === (string)TagStatus::ENABLED->value) ? 'selected' : '' ?>>显示</option>
+                                    <option value="<?= TagStatus::DISABLED->value ?>" <?= ($filters['status'] === (string)TagStatus::DISABLED->value) ? 'selected' : '' ?>>隐藏</option>
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="actions"></th>

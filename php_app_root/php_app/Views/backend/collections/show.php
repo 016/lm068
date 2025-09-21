@@ -1,3 +1,7 @@
+<?php
+use App\Constants\ContentType;
+use App\Constants\ContentStatus;
+?>
 <!-- Collection Show Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -159,17 +163,12 @@
                                         <td><?= htmlspecialchars($content['title_cn'] ?: $content['title_en']) ?></td>
                                         <td>
                                             <?php
-                                            $typeMap = [
-                                                1 => '网站公告',
-                                                11 => '一般文章', 
-                                                21 => '视频'
-                                            ];
-                                            echo $typeMap[$content['content_type_id']] ?? '未知';
+                                            echo ContentType::from($content['content_type_id'])->label() ?? '未知';
                                             ?>
                                         </td>
                                         <td>
-                                            <span class="badge rounded-pill <?= $content['status_id'] >= 99 ? 'badge-success' : 'badge-warning' ?>">
-                                                <?= $content['status_id'] >= 99 ? '已发布' : '草稿' ?>
+                                            <span class="badge rounded-pill <?= $content['status_id'] == ContentStatus::PUBLISHED->value ? 'badge-success' : 'badge-warning' ?>">
+                                                <?= ContentStatus::from($content['status_id'])->label() ?>
                                             </span>
                                         </td>
                                         <td><?= number_format($content['view_cnt']) ?></td>

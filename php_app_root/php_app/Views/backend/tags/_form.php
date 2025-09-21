@@ -1,3 +1,6 @@
+<?php
+use App\Constants\TagStatus;
+?>
 <!-- Shared Tag Form Content -->
 <div class="form-container">
     <div class="form-header">
@@ -185,8 +188,8 @@
                         <div class="form-group">
                             <div class="switch-group" id="statusSwitchGroup">
                                 <div class="custom-switch tag-edit-switch" id="statusSwitch">
-                                    <input type="checkbox" id="status_id" name="status_id" value="1" 
-                                           <?= ($tag['status_id'] ?? 1) ? 'checked' : '' ?>>
+                                    <input type="checkbox" id="status_id" name="status_id" value="<?= TagStatus::ENABLED->value ?>" 
+                                           <?= ($tag['status_id'] ?? TagStatus::ENABLED->value) ? 'checked' : '' ?>>
                                     <span class="switch-slider"></span>
                                 </div>
                                 <label for="status_id" class="switch-label">显示状态</label>
