@@ -101,41 +101,5 @@ class Collection extends Model
         }
     }
 
-    public function bulkUpdateStatus(array $collectionIds, int $status): bool
-    {
-        if (empty($collectionIds)) {
-            return false;
-        }
-        
-        $placeholders = implode(',', array_fill(0, count($collectionIds), '?'));
-        $sql = "UPDATE {$this->table} SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
-        
-        $params = array_merge([$status], $collectionIds);
-        $this->db->query($sql, $params);
-        
-        return true;
-    }
 
-    public function bulkDelete(array $collectionIds): bool
-    {
-        if (empty($collectionIds)) {
-            return false;
-        }
-        
-        $this->db->beginTransaction();
-        
-        try {
-            $placeholders = implode(',', array_fill(0, count($collectionIds), '?'));
-            
-            $this->db->query("DELETE FROM content_collection WHERE collection_id IN ({$placeholders})", $collectionIds);
-            
-            $this->db->query("DELETE FROM {$this->table} WHERE id IN ({$placeholders})", $collectionIds);
-            
-            $this->db->commit();
-            return true;
-        } catch (\Exception $e) {
-            $this->db->rollback();
-            throw $e;
-        }
-    }
 }

@@ -370,4 +370,68 @@ abstract class Model
     {
         return [];
     }
+
+
+
+    //// bulk actions
+    //bulk update
+    public function bulkUpdateStatus(array $targetIds, int $status): array
+    {
+        $returnCnt = ['total'=>count($targetIds), 'changed'=>0, 'fail'=>0];
+        if (empty($targetIds)) {
+            return $returnCnt;
+        }
+
+        // 分批执行，保证性能. 定义每个批次的大小，例如 1000
+        $chunkSize = 1000;
+        $tagIdChunks = array_chunk($targetIds, $chunkSize);
+
+        foreach ($tagIdChunks as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+            $sql = "UPDATE {$this->table} SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
+
+            $params = array_merge([$status], $chunk);
+
+            // 累加每次成功更新的数量
+            $returnCnt['changed'] += $this->db->execute($sql, $params);
+        }
+
+
+        $returnCnt['fail'] = $returnCnt['total'] - $returnCnt['changed'];
+
+        return $returnCnt;
+    }
+
+    //bulk delete
+    public function bulkDelete(array $targetIds): array
+    {
+        $returnCnt = ['total'=>count($targetIds), 'changed'=>0, 'fail'=>0];
+        if (empty($targetIds)) {
+            return $returnCnt;
+        }
+
+
+        $this->db->beginTransaction();
+
+        try {
+            // 分批执行，保证性能. 定义每个批次的大小，例如 1000
+            $chunkSize = 1000;
+            $tagIdChunks = array_chunk($targetIds, $chunkSize);
+
+            foreach ($tagIdChunks as $chunk) {
+                $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+
+                $returnCnt['changed'] += $this->db->execute("DELETE FROM {$this->table} WHERE id IN ({$placeholders})", $chunk);
+            }
+
+            $this->db->commit();
+
+            $returnCnt['fail'] = $returnCnt['total'] - $returnCnt['changed'];
+            return $returnCnt;
+
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+    }
 }

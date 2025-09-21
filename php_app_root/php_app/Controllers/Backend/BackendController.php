@@ -146,11 +146,11 @@ class BackendController extends Controller
         // 检查当前模型是否支持批量更新
         if (isset($this->curModel) && method_exists($this->curModel, 'bulkUpdateStatus')) {
             try {
-                $this->curModel->bulkUpdateStatus($targetIds, $status_id);
-                $successCount = count($targetIds);
+                $returnCnt = $this->curModel->bulkUpdateStatus($targetIds, $status_id);
+                $successCount = $returnCnt['changed'];
+                $errorCount = $returnCnt['fail'];
             } catch (\Exception $e) {
                 error_log("Bulk status update error: " . $e->getMessage());
-                $errorCount = count($targetIds);
             }
         } else {
             // 逐个更新的兜底方案
