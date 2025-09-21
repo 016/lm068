@@ -15,67 +15,6 @@ class Collection extends Model
     ];
     protected $timestamps = true;
 
-    public function findAllWithPagination(int $page = 1, int $perPage = 10, array $conditions = [], ?string $search = null, ?string $orderBy = null): array
-    {
-        $offset = ($page - 1) * $perPage;
-        
-        $sql = "SELECT * FROM {$this->table}";
-        $params = [];
-        $whereConditions = [];
-
-        if (!empty($conditions)) {
-            foreach ($conditions as $field => $value) {
-                $whereConditions[] = "{$field} = :{$field}";
-                $params[$field] = $value;
-            }
-        }
-
-        if ($search) {
-            $whereConditions[] = "(name_cn LIKE :search OR name_en LIKE :search OR short_desc_cn LIKE :search OR short_desc_en LIKE :search)";
-            $params['search'] = "%{$search}%";
-        }
-
-        if (!empty($whereConditions)) {
-            $sql .= " WHERE " . implode(" AND ", $whereConditions);
-        }
-
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
-        } else {
-            $sql .= " ORDER BY created_at DESC";
-        }
-
-        $sql .= " LIMIT {$perPage} OFFSET {$offset}";
-
-        return $this->db->fetchAll($sql, $params);
-    }
-
-    public function countWithConditions(array $conditions = [], ?string $search = null): int
-    {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table}";
-        $params = [];
-        $whereConditions = [];
-
-        if (!empty($conditions)) {
-            foreach ($conditions as $field => $value) {
-                $whereConditions[] = "{$field} = :{$field}";
-                $params[$field] = $value;
-            }
-        }
-
-        if ($search) {
-            $whereConditions[] = "(name_cn LIKE :search OR name_en LIKE :search OR short_desc_cn LIKE :search OR short_desc_en LIKE :search)";
-            $params['search'] = "%{$search}%";
-        }
-
-        if (!empty($whereConditions)) {
-            $sql .= " WHERE " . implode(" AND ", $whereConditions);
-        }
-
-        $result = $this->db->fetch($sql, $params);
-        return (int)$result['count'];
-    }
-
     public function findAllWithSearchConditions(array $conditions = [], array $searchConditions = []): array
     {
         $sql = "SELECT * FROM {$this->table}";
@@ -99,12 +38,14 @@ class Collection extends Model
                         $params['search_id'] = (int)$value;
                         break;
                     case 'name':
-                        $whereConditions[] = "(name_cn LIKE :search_name OR name_en LIKE :search_name)";
-                        $params['search_name'] = "%{$value}%";
+                        $whereConditions[] = "(name_cn LIKE :search_name_cn OR name_en LIKE :search_name_en)";
+                        $params['search_name_cn'] = "%{$value}%";
+                        $params['search_name_en'] = "%{$value}%";
                         break;
                     case 'description':
-                        $whereConditions[] = "(short_desc_cn LIKE :search_desc OR short_desc_en LIKE :search_desc OR desc_cn LIKE :search_desc OR desc_en LIKE :search_desc)";
-                        $params['search_desc'] = "%{$value}%";
+                        $whereConditions[] = "(desc_cn LIKE :search_desc_cn OR desc_en LIKE :search_desc_en)";
+                        $params['search_desc_cn'] = "%{$value}%";
+                        $params['search_desc_en'] = "%{$value}%";
                         break;
                     case 'content_cnt':
                         // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
