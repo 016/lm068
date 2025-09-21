@@ -7,7 +7,8 @@
       "Bash(mkdir:*)",
       "Bash(tree:*)",
       "Bash(rm:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Read(//home/node/.claude/hooks/**)"
     ],
     "deny": [],
     "ask": []
