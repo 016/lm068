@@ -11,6 +11,9 @@ class ConstantsDemo
 {
     public function statusExamples(): void
     {
+
+        Status::ACTIVE;
+
         echo "=== Status 枚举使用示例 ===\n";
         
         // 替换原来的硬编码: status_id = 1
