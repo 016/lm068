@@ -20,32 +20,49 @@ class CollectionController extends BackendController
 
     public function index(Request $request): void
     {
-        $page = (int)($request->get('page') ?? 1);
-        $perPage = (int)($request->get('per_page') ?? 10);
-        $search = $request->get('search');
-        $statusFilter = $request->get('status');
-        $orderBy = $request->get('order_by') ?? 'created_at DESC';
-
+        // 收集所有搜索条件从 $_GET 参数
         $conditions = [];
+        $searchConditions = [];
+        
+        // 处理状态过滤
+        $statusFilter = $request->get('status');
         if ($statusFilter !== null && $statusFilter !== '') {
             $conditions['status_id'] = (int)$statusFilter;
         }
+        
+        // 处理各列的搜索条件
+        $idSearch = $request->get('id');
+        if ($idSearch !== null && $idSearch !== '') {
+            $searchConditions['id'] = (int)$idSearch;
+        }
+        
+        $nameSearch = $request->get('name');
+        if ($nameSearch !== null && $nameSearch !== '') {
+            $searchConditions['name'] = $nameSearch;
+        }
+        
+        $descriptionSearch = $request->get('description');
+        if ($descriptionSearch !== null && $descriptionSearch !== '') {
+            $searchConditions['description'] = $descriptionSearch;
+        }
+        
+        $contentCntSearch = $request->get('content_cnt');
+        if ($contentCntSearch !== null && $contentCntSearch !== '') {
+            $searchConditions['content_cnt'] = $contentCntSearch;
+        }
+        
+        $iconClassSearch = $request->get('icon_class');
+        if ($iconClassSearch !== null && $iconClassSearch !== '') {
+            $searchConditions['icon_class'] = $iconClassSearch;
+        }
 
-        $collections = $this->collectionModel->findAllWithPagination($page, $perPage, $conditions, $search, $orderBy);
-        $totalCount = $this->collectionModel->countWithConditions($conditions, $search);
+        // 获取所有符合条件的数据，不进行分页
+        $collections = $this->collectionModel->findAllWithSearchConditions($conditions, $searchConditions);
         $stats = $this->collectionModel->getStats();
-
-        $totalPages = ceil($totalCount / $perPage);
 
         $this->render('collections/index', [
             'collections' => $collections,
-            'page' => $page,
-            'perPage' => $perPage,
-            'totalCount' => $totalCount,
-            'totalPages' => $totalPages,
-            'search' => $search,
             'statusFilter' => $statusFilter,
-            'orderBy' => $orderBy,
             'stats' => $stats,
             'title' => '合集管理 - 视频分享网站管理后台',
             'css_files' => ['collection_list_2.css'],

@@ -76,6 +76,74 @@ class Collection extends Model
         return (int)$result['count'];
     }
 
+    public function findAllWithSearchConditions(array $conditions = [], array $searchConditions = []): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $params = [];
+        $whereConditions = [];
+
+        // 处理基本条件（如status_id）
+        if (!empty($conditions)) {
+            foreach ($conditions as $field => $value) {
+                $whereConditions[] = "{$field} = :{$field}";
+                $params[$field] = $value;
+            }
+        }
+
+        // 处理搜索条件
+        if (!empty($searchConditions)) {
+            foreach ($searchConditions as $field => $value) {
+                switch ($field) {
+                    case 'id':
+                        $whereConditions[] = "id = :search_id";
+                        $params['search_id'] = (int)$value;
+                        break;
+                    case 'name':
+                        $whereConditions[] = "(name_cn LIKE :search_name OR name_en LIKE :search_name)";
+                        $params['search_name'] = "%{$value}%";
+                        break;
+                    case 'description':
+                        $whereConditions[] = "(short_desc_cn LIKE :search_desc OR short_desc_en LIKE :search_desc OR desc_cn LIKE :search_desc OR desc_en LIKE :search_desc)";
+                        $params['search_desc'] = "%{$value}%";
+                        break;
+                    case 'content_cnt':
+                        // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
+                        if (strpos($value, '-') !== false) {
+                            $range = explode('-', $value);
+                            if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
+                                $whereConditions[] = "content_cnt BETWEEN :cnt_min AND :cnt_max";
+                                $params['cnt_min'] = (int)$range[0];
+                                $params['cnt_max'] = (int)$range[1];
+                            }
+                        } elseif (preg_match('/^([><=]+)(\d+)$/', $value, $matches)) {
+                            $operator = $matches[1];
+                            $number = (int)$matches[2];
+                            if (in_array($operator, ['>', '<', '>=', '<=', '='])) {
+                                $whereConditions[] = "content_cnt {$operator} :cnt_value";
+                                $params['cnt_value'] = $number;
+                            }
+                        } elseif (is_numeric($value)) {
+                            $whereConditions[] = "content_cnt = :cnt_exact";
+                            $params['cnt_exact'] = (int)$value;
+                        }
+                        break;
+                    case 'icon_class':
+                        $whereConditions[] = "icon_class LIKE :search_icon";
+                        $params['search_icon'] = "%{$value}%";
+                        break;
+                }
+            }
+        }
+
+        if (!empty($whereConditions)) {
+            $sql .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        return $this->db->fetchAll($sql, $params);
+    }
+
     public function getStats(): array
     {
         $sql = "SELECT 
