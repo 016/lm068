@@ -76,27 +76,35 @@ function initCollectionListPage() {
     // 4. 初始化操作功能
     tableActions.init();
     
-    // 5. 自定义批量操作处理逻辑 - 适配合集管理需求
+    // 5. 自定义批量操作处理逻辑 - 使用通用的TableOperations批量操作方法
     tableActions.handleBulkAction = function(action, selectedIds) {
         console.log(`合集列表页面批量操作: ${action}，选中项目:`, selectedIds);
         
-        switch(action) {
-            case 'enable':
-                window.AdminCommon.showToast(`开发中-成功启用了 ${selectedIds.length} 个合集`, 'primary');
-                // 这里可以添加实际的启用逻辑
-                break;
-            case 'disable':
-                window.AdminCommon.showToast(`开发中-成功禁用了 ${selectedIds.length} 个合集`, 'info');
-                // 这里可以添加实际的禁用逻辑
-                break;
-            case 'delete':
-                if (confirm(`确定要删除 ${selectedIds.length} 个合集吗？删除后将无法恢复，相关的内容关联也会被移除。`)) {
-                    window.AdminCommon.showToast(`开发中-成功删除了 ${selectedIds.length} 个合集`, 'danger');
-                    // 这里可以添加实际的删除逻辑
-                }
-                break;
-        }
+        // 使用TableOperations的通用批量操作方法
+        window.AdminCommon.TableOperations.handleBulkAction({
+            action: action,
+            selectedIds: selectedIds,
+            endpoint: '/collections/bulk-action',
+            entityName: '合集',
+            onSuccess: function(response) {
+                // 成功回调：刷新页面保持当前URL格式
+                window.location.reload();
+            },
+            onError: function(errorMessage, response) {
+                // 错误回调：使用默认的alert显示
+                alert(errorMessage);
+            }
+        });
     };
+    
+    // 6. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
+    window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
+        tbodySelector: tableManager.config.tbodySelector,
+        deleteButtonSelector: '.delete-tag',
+        endpoint: '/collections/{id}',
+        entityName: '合集',
+        tableManager: tableManager
+    });
     
     // 7. 将实例保存到全局，方便调试和扩展
     window.collectionListManager = {
