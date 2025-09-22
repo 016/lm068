@@ -6,13 +6,10 @@
     <title>视频管理系统 - 管理员登录</title>
     
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/lib/bootstrap-5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="/assets/lib/bootstrap-icons-1.13.1/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Main CSS - Common Styles -->
     <link rel="stylesheet" href="/assets/css/main_3.css">
@@ -128,10 +125,10 @@
     </div>
 
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/lib/bootstrap-5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Main JS - Common Functions -->
-    <script src="/assets/js/main_8.js"></script>
+    <script src="/assets/js/main_12.js"></script>
     
     <!-- Dashboard Specific JS -->
     <script src="/assets/js/login.js"></script>

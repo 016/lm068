@@ -19,7 +19,9 @@ class DashboardController extends BackendController
                 'total_views' => '2.34M',
                 'total_users' => 45678,
                 'total_subscribers' => 12890
-            ]
+            ],
+            'css_files' => ['dashboard.css'],
+            'js_files' => ['dashboard.js']
         ]);
     }
 }

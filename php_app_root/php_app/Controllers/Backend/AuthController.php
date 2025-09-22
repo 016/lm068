@@ -61,7 +61,7 @@ class AuthController extends BackendController
 
         if (empty($password)) {
             $errors['password'] = '密码不能为空';
-        } elseif (strlen($password) < 6) {
+        } elseif (strlen($password) < 5) {
             $errors['password'] = '密码长度不能少于6位';
         }
 
