@@ -25,8 +25,8 @@ class TagController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id','name','content_cnt','icon_class','status','order_by'], $request);
-        
+        $filters = $this->getSearchFilters(['id', 'name', 'content_cnt', 'icon_class', 'status', 'order_by'], $request);
+
         // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
         $tags = $this->curModel->findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
@@ -61,14 +61,14 @@ class TagController extends BackendController
         }
 
         $relatedContent = $this->curModel->getRelatedContent($id);
-        
+
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
         ]);
 
         $contentOptions = [];
         $selectedContentIds = array_column($relatedContent, 'id');
-        
+
         foreach ($allContent as $content) {
             $contentOptions[] = [
                 'id' => $content['id'],
@@ -91,7 +91,7 @@ class TagController extends BackendController
     public function update(Request $request): void
     {
         $id = (int)($request->post('id') ?? 0);
-        
+
         if (!$id) {
             $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
             return;
@@ -118,18 +118,18 @@ class TagController extends BackendController
                 $this->redirect('/tags');
                 return;
             }
-            
+
             // 合并用户输入的数据到tag数据中
             $tag = array_merge($tag, $data);
-            
+
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             $selectedContentIds = array_column($relatedContent, 'id');
-            
+
             foreach ($allContent as $content) {
                 $contentOptions[] = [
                     'id' => $content['id'],
@@ -137,7 +137,7 @@ class TagController extends BackendController
                     'selected' => in_array($content['id'], $selectedContentIds)
                 ];
             }
-            
+
             $this->render('tags/edit', [
                 'tag' => $tag,
                 'relatedContent' => $relatedContent,
@@ -167,25 +167,25 @@ class TagController extends BackendController
             $this->redirect('/tags');
         } catch (\Exception $e) {
             error_log("Tag update error: " . $e->getMessage());
-            
+
             // 出错时返回编辑页面并显示错误
             $tag = $this->curModel->findById($id);
             if (!$tag) {
                 $this->redirect('/tags');
                 return;
             }
-            
+
             // 合并用户输入的数据到tag数据中
             $tag = array_merge($tag, $data);
-            
+
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             $selectedContentIds = array_column($relatedContent, 'id');
-            
+
             foreach ($allContent as $content) {
                 $contentOptions[] = [
                     'id' => $content['id'],
@@ -193,7 +193,7 @@ class TagController extends BackendController
                     'selected' => in_array($content['id'], $selectedContentIds)
                 ];
             }
-            
+
             $this->render('tags/edit', [
                 'tag' => $tag,
                 'relatedContent' => $relatedContent,
@@ -266,7 +266,7 @@ class TagController extends BackendController
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             foreach ($allContent as $content) {
                 $contentOptions[] = [
@@ -275,7 +275,7 @@ class TagController extends BackendController
                     'selected' => false
                 ];
             }
-            
+
             // 准备视频数据用于JS
             $videoData = [];
             foreach ($allContent as $content) {
@@ -315,12 +315,12 @@ class TagController extends BackendController
             $this->redirect('/tags');
         } catch (\Exception $e) {
             error_log("Tag creation error: " . $e->getMessage());
-            
+
             // 出错时返回创建页面并显示错误
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             foreach ($allContent as $content) {
                 $contentOptions[] = [
@@ -329,7 +329,7 @@ class TagController extends BackendController
                     'selected' => false
                 ];
             }
-            
+
             // 准备视频数据用于JS
             $videoData = [];
             foreach ($allContent as $content) {
@@ -357,7 +357,7 @@ class TagController extends BackendController
     public function destroy(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        
+
         if (!$id) {
             $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
             return;
@@ -399,7 +399,7 @@ class TagController extends BackendController
     public function getContentForTag(Request $request): void
     {
         $tagId = (int)$request->get('tag_id');
-        
+
         if (!$tagId) {
             $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
             return;
@@ -414,3 +414,4 @@ class TagController extends BackendController
         }
     }
 
+}

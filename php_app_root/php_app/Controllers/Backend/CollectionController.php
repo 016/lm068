@@ -22,7 +22,7 @@ class CollectionController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id','name', 'description','content_cnt','icon_class','status_id','order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'name', 'description', 'content_cnt', 'icon_class', 'status_id', 'order_by'], $request);
 
 
         // 获取所有符合条件的数据，不进行分页
@@ -50,14 +50,14 @@ class CollectionController extends BackendController
         }
 
         $relatedContent = $this->curModel->getRelatedContent($id);
-        
+
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
         ]);
 
         $contentOptions = [];
         $selectedContentIds = array_column($relatedContent, 'id');
-        
+
         foreach ($allContent as $content) {
             $contentOptions[] = [
                 'id' => $content['id'],
@@ -80,7 +80,7 @@ class CollectionController extends BackendController
     public function update(Request $request): void
     {
         $id = (int)($request->post('id') ?? 0);
-        
+
         if (!$id) {
             $this->redirect('/collections');
             return;
@@ -114,18 +114,18 @@ class CollectionController extends BackendController
                 $this->redirect('/collections');
                 return;
             }
-            
+
             // 合并用户输入的数据到collection数据中
             $collection = array_merge($collection, $data);
-            
+
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             $selectedContentIds = array_column($relatedContent, 'id');
-            
+
             foreach ($allContent as $content) {
                 $contentOptions[] = [
                     'id' => $content['id'],
@@ -133,7 +133,7 @@ class CollectionController extends BackendController
                     'selected' => in_array($content['id'], $selectedContentIds)
                 ];
             }
-            
+
             $this->render('collections/edit', [
                 'collection' => $collection,
                 'relatedContent' => $relatedContent,
@@ -161,25 +161,25 @@ class CollectionController extends BackendController
             $this->redirect('/collections');
         } catch (\Exception $e) {
             error_log("Collection update error: " . $e->getMessage());
-            
+
             // 出错时返回编辑页面并显示错误
             $collection = $this->curModel->findById($id);
             if (!$collection) {
                 $this->redirect('/collections');
                 return;
             }
-            
+
             // 合并用户输入的数据到collection数据中
             $collection = array_merge($collection, $data);
-            
+
             $relatedContent = $this->curModel->getRelatedContent($id);
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             $selectedContentIds = array_column($relatedContent, 'id');
-            
+
             foreach ($allContent as $content) {
                 $contentOptions[] = [
                     'id' => $content['id'],
@@ -187,7 +187,7 @@ class CollectionController extends BackendController
                     'selected' => in_array($content['id'], $selectedContentIds)
                 ];
             }
-            
+
             $this->render('collections/edit', [
                 'collection' => $collection,
                 'relatedContent' => $relatedContent,
@@ -256,7 +256,7 @@ class CollectionController extends BackendController
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             foreach ($allContent as $content) {
                 $contentOptions[] = [
@@ -265,7 +265,7 @@ class CollectionController extends BackendController
                     'selected' => false
                 ];
             }
-            
+
             $this->render('collections/edit', [
                 'collection' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
@@ -292,12 +292,12 @@ class CollectionController extends BackendController
             $this->redirect('/collections');
         } catch (\Exception $e) {
             error_log("Collection creation error: " . $e->getMessage());
-            
+
             // 出错时返回创建页面并显示错误
             $allContent = $this->contentModel->findAll([
                 'status_id' => ContentStatus::getVisibleStatuses()
             ]);
-            
+
             $contentOptions = [];
             foreach ($allContent as $content) {
                 $contentOptions[] = [
@@ -306,7 +306,7 @@ class CollectionController extends BackendController
                     'selected' => false
                 ];
             }
-            
+
             $this->render('collections/edit', [
                 'collection' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
@@ -323,7 +323,7 @@ class CollectionController extends BackendController
     public function destroy(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        
+
         if (!$id) {
             $this->jsonResponse(['success' => false, 'message' => 'Invalid collection ID']);
             return;
@@ -360,7 +360,7 @@ class CollectionController extends BackendController
     public function getContentForCollection(Request $request): void
     {
         $collectionId = (int)$request->get('collection_id');
-        
+
         if (!$collectionId) {
             $this->jsonResponse(['success' => false, 'message' => 'Invalid collection ID']);
             return;
@@ -375,3 +375,4 @@ class CollectionController extends BackendController
         }
     }
 
+}
