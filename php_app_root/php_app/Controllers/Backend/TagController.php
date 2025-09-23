@@ -53,15 +53,85 @@ class TagController extends BackendController
     public function edit(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $tag = $this->curModel->findById($id);
+        
+        // 处理 POST 请求（表单提交）
+        if ($request->isPost()) {
+            $postId = (int)($request->post('id') ?? 0);
+            
+            if (!$postId || $postId !== $id) {
+                $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
+                return;
+            }
 
+            $data = [
+                'name_cn' => $request->post('name_cn'),
+                'name_en' => $request->post('name_en'),
+                'short_desc_cn' => $request->post('short_desc_cn'),
+                'short_desc_en' => $request->post('short_desc_en'),
+                'desc_cn' => $request->post('desc_cn'),
+                'desc_en' => $request->post('desc_en'),
+                'color_class' => $request->post('color_class'),
+                'icon_class' => $request->post('icon_class'),
+                'status_id' => (int)($request->post('status_id') ?? TagStatus::DISABLED->value)
+            ];
+
+            // 使用模型验证，传入当前ID以排除自身
+            $errors = $this->curModel->validate($data, true, $id);
+            if (!empty($errors)) {
+                // 验证失败，返回编辑页面并显示错误
+                $tag = $this->curModel->findById($id);
+                if (!$tag) {
+                    $this->redirect('/tags');
+                    return;
+                }
+                // 合并用户输入的数据到tag数据中
+                $tag = array_merge($tag, $data);
+                $this->renderEditForm($id, $tag, $errors);
+                return;
+            }
+
+            try {
+                $this->curModel->update($id, $data);
+
+                // 处理关联内容
+                $relatedVideos = $request->post('related_videos');
+                if ($relatedVideos !== null) {
+                    $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
+                    $this->curModel->syncContentAssociations($id, $contentIds);
+                }
+
+                // 成功后跳转到列表页面，添加Toast消息到session
+                $_SESSION['toast_message'] = '标签编辑成功';
+                $_SESSION['toast_type'] = 'success';
+                $this->redirect('/tags');
+            } catch (\Exception $e) {
+                error_log("Tag update error: " . $e->getMessage());
+                // 出错时返回编辑页面并显示错误
+                $tag = $this->curModel->findById($id);
+                if (!$tag) {
+                    $this->redirect('/tags');
+                    return;
+                }
+                // 合并用户输入的数据到tag数据中
+                $tag = array_merge($tag, $data);
+                $this->renderEditForm($id, $tag, ['general' => '更新失败: ' . $e->getMessage()]);
+            }
+            return;
+        }
+
+        // 处理 GET 请求（显示表单）
+        $tag = $this->curModel->findById($id);
         if (!$tag) {
             $this->redirect('/backend/tags');
             return;
         }
 
-        $relatedContent = $this->curModel->getRelatedContent($id);
+        $this->renderEditForm($id, $tag);
+    }
 
+    private function renderEditForm(int $id, array $tag, array $errors = []): void
+    {
+        $relatedContent = $this->curModel->getRelatedContent($id);
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
         ]);
@@ -81,6 +151,7 @@ class TagController extends BackendController
             'tag' => $tag,
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
+            'errors' => $errors,
             'isCreateMode' => false,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
@@ -88,126 +159,57 @@ class TagController extends BackendController
         ]);
     }
 
-    public function update(Request $request): void
+    public function create(Request $request): void
     {
-        $id = (int)($request->post('id') ?? 0);
+        // 处理 POST 请求（表单提交）
+        if ($request->isPost()) {
+            $data = [
+                'name_cn' => $request->post('name_cn'),
+                'name_en' => $request->post('name_en'),
+                'short_desc_cn' => $request->post('short_desc_cn') ?? '',
+                'short_desc_en' => $request->post('short_desc_en') ?? '',
+                'desc_cn' => $request->post('desc_cn') ?? '',
+                'desc_en' => $request->post('desc_en') ?? '',
+                'color_class' => $request->post('color_class') ?? 'btn-outline-primary',
+                'icon_class' => $request->post('icon_class') ?? 'bi-tag',
+                'status_id' => (int)($request->post('status_id') ?? TagStatus::ENABLED->value),
+                'content_cnt' => 0
+            ];
 
-        if (!$id) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
-            return;
-        }
-
-        $data = [
-            'name_cn' => $request->post('name_cn'),
-            'name_en' => $request->post('name_en'),
-            'short_desc_cn' => $request->post('short_desc_cn'),
-            'short_desc_en' => $request->post('short_desc_en'),
-            'desc_cn' => $request->post('desc_cn'),
-            'desc_en' => $request->post('desc_en'),
-            'color_class' => $request->post('color_class'),
-            'icon_class' => $request->post('icon_class'),
-            'status_id' => (int)($request->post('status_id') ?? TagStatus::DISABLED->value)
-        ];
-
-        // 使用模型验证，传入当前ID以排除自身
-        $errors = $this->curModel->validate($data, true, $id);
-        if (!empty($errors)) {
-            // 验证失败，返回编辑页面并显示错误
-            $tag = $this->curModel->findById($id);
-            if (!$tag) {
-                $this->redirect('/tags');
+            // 使用模型验证
+            $errors = $this->curModel->validate($data, false);
+            if (!empty($errors)) {
+                // 验证失败，返回创建页面并显示错误
+                $this->renderCreateForm($data, $errors);
                 return;
             }
 
-            // 合并用户输入的数据到tag数据中
-            $tag = array_merge($tag, $data);
+            try {
+                $tagId = $this->curModel->create($data);
 
-            $relatedContent = $this->curModel->getRelatedContent($id);
-            $allContent = $this->contentModel->findAll([
-                'status_id' => ContentStatus::getVisibleStatuses()
-            ]);
+                $relatedVideos = $request->post('related_videos');
+                if ($relatedVideos && is_array($relatedVideos)) {
+                    $contentIds = array_map('intval', $relatedVideos);
+                    $this->curModel->syncContentAssociations($tagId, $contentIds);
+                }
 
-            $contentOptions = [];
-            $selectedContentIds = array_column($relatedContent, 'id');
-
-            foreach ($allContent as $content) {
-                $contentOptions[] = [
-                    'id' => $content['id'],
-                    'title' => $content['title_cn'] ?: $content['title_en'],
-                    'selected' => in_array($content['id'], $selectedContentIds)
-                ];
+                // 成功后跳转到列表页面，添加Toast消息到session
+                $_SESSION['toast_message'] = '标签创建成功';
+                $_SESSION['toast_type'] = 'success';
+                $this->redirect('/tags');
+            } catch (\Exception $e) {
+                error_log("Tag creation error: " . $e->getMessage());
+                // 出错时返回创建页面并显示错误
+                $this->renderCreateForm($data, ['general' => '创建失败: ' . $e->getMessage()]);
             }
-
-            $this->render('tags/edit', [
-                'tag' => $tag,
-                'relatedContent' => $relatedContent,
-                'contentOptions' => $contentOptions,
-                'errors' => $errors,
-                'isCreateMode' => false,
-                'pageTitle' => '编辑标签 - 视频分享网站管理后台',
-                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js']
-            ]);
             return;
         }
 
-        try {
-            $this->curModel->update($id, $data);
-
-            // 处理关联内容
-            $relatedVideos = $request->post('related_videos');
-            if ($relatedVideos !== null) {
-                $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
-                $this->curModel->syncContentAssociations($id, $contentIds);
-            }
-
-            // 成功后跳转到列表页面，添加Toast消息到session
-            $_SESSION['toast_message'] = '标签编辑成功';
-            $_SESSION['toast_type'] = 'success';
-            $this->redirect('/tags');
-        } catch (\Exception $e) {
-            error_log("Tag update error: " . $e->getMessage());
-
-            // 出错时返回编辑页面并显示错误
-            $tag = $this->curModel->findById($id);
-            if (!$tag) {
-                $this->redirect('/tags');
-                return;
-            }
-
-            // 合并用户输入的数据到tag数据中
-            $tag = array_merge($tag, $data);
-
-            $relatedContent = $this->curModel->getRelatedContent($id);
-            $allContent = $this->contentModel->findAll([
-                'status_id' => ContentStatus::getVisibleStatuses()
-            ]);
-
-            $contentOptions = [];
-            $selectedContentIds = array_column($relatedContent, 'id');
-
-            foreach ($allContent as $content) {
-                $contentOptions[] = [
-                    'id' => $content['id'],
-                    'title' => $content['title_cn'] ?: $content['title_en'],
-                    'selected' => in_array($content['id'], $selectedContentIds)
-                ];
-            }
-
-            $this->render('tags/edit', [
-                'tag' => $tag,
-                'relatedContent' => $relatedContent,
-                'contentOptions' => $contentOptions,
-                'errors' => ['general' => '更新失败: ' . $e->getMessage()],
-                'isCreateMode' => false,
-                'pageTitle' => '编辑标签 - 视频分享网站管理后台',
-                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js']
-            ]);
-        }
+        // 处理 GET 请求（显示表单）
+        $this->renderCreateForm();
     }
 
-    public function create(Request $request): void
+    private function renderCreateForm(?array $tag = null, array $errors = []): void
     {
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
@@ -232,126 +234,17 @@ class TagController extends BackendController
         }
 
         $this->render('tags/create', [
-            'tag' => null,
+            'tag' => $tag,
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
             'videoData' => $videoData,
             'selectedVideoIds' => [],
+            'errors' => $errors,
             'isCreateMode' => true,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
-    }
-
-    public function store(Request $request): void
-    {
-        $data = [
-            'name_cn' => $request->post('name_cn'),
-            'name_en' => $request->post('name_en'),
-            'short_desc_cn' => $request->post('short_desc_cn') ?? '',
-            'short_desc_en' => $request->post('short_desc_en') ?? '',
-            'desc_cn' => $request->post('desc_cn') ?? '',
-            'desc_en' => $request->post('desc_en') ?? '',
-            'color_class' => $request->post('color_class') ?? 'btn-outline-primary',
-            'icon_class' => $request->post('icon_class') ?? 'bi-tag',
-            'status_id' => (int)($request->post('status_id') ?? TagStatus::ENABLED->value),
-            'content_cnt' => 0
-        ];
-
-        // 使用模型验证
-        $errors = $this->curModel->validate($data, false);
-        if (!empty($errors)) {
-            // 验证失败，返回创建页面并显示错误
-            $allContent = $this->contentModel->findAll([
-                'status_id' => ContentStatus::getVisibleStatuses()
-            ]);
-
-            $contentOptions = [];
-            foreach ($allContent as $content) {
-                $contentOptions[] = [
-                    'id' => $content['id'],
-                    'title' => $content['title_cn'] ?: $content['title_en'],
-                    'selected' => false
-                ];
-            }
-
-            // 准备视频数据用于JS
-            $videoData = [];
-            foreach ($allContent as $content) {
-                $videoData[] = [
-                    'id' => (string)$content['id'],
-                    'text' => $content['title_cn'] ?: $content['title_en']
-                ];
-            }
-
-            $this->render('tags/create', [
-                'tag' => $data, // 传递用户输入的数据
-                'relatedContent' => [],
-                'contentOptions' => $contentOptions,
-                'videoData' => $videoData,
-                'selectedVideoIds' => [],
-                'errors' => $errors,
-                'isCreateMode' => true,
-                'pageTitle' => '创建标签 - 视频分享网站管理后台',
-                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
-            ]);
-            return;
-        }
-
-        try {
-            $tagId = $this->curModel->create($data);
-
-            $relatedVideos = $request->post('related_videos');
-            if ($relatedVideos && is_array($relatedVideos)) {
-                $contentIds = array_map('intval', $relatedVideos);
-                $this->curModel->syncContentAssociations($tagId, $contentIds);
-            }
-
-            // 成功后跳转到列表页面，添加Toast消息到session
-            $_SESSION['toast_message'] = '标签创建成功';
-            $_SESSION['toast_type'] = 'success';
-            $this->redirect('/tags');
-        } catch (\Exception $e) {
-            error_log("Tag creation error: " . $e->getMessage());
-
-            // 出错时返回创建页面并显示错误
-            $allContent = $this->contentModel->findAll([
-                'status_id' => ContentStatus::getVisibleStatuses()
-            ]);
-
-            $contentOptions = [];
-            foreach ($allContent as $content) {
-                $contentOptions[] = [
-                    'id' => $content['id'],
-                    'title' => $content['title_cn'] ?: $content['title_en'],
-                    'selected' => false
-                ];
-            }
-
-            // 准备视频数据用于JS
-            $videoData = [];
-            foreach ($allContent as $content) {
-                $videoData[] = [
-                    'id' => (string)$content['id'],
-                    'text' => $content['title_cn'] ?: $content['title_en']
-                ];
-            }
-
-            $this->render('tags/create', [
-                'tag' => $data, // 传递用户输入的数据
-                'relatedContent' => [],
-                'contentOptions' => $contentOptions,
-                'videoData' => $videoData,
-                'selectedVideoIds' => [],
-                'errors' => ['general' => '创建失败: ' . $e->getMessage()],
-                'isCreateMode' => true,
-                'pageTitle' => '创建标签 - 视频分享网站管理后台',
-                'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-                'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
-            ]);
-        }
     }
 
     public function destroy(Request $request): void
