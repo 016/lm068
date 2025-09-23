@@ -79,7 +79,7 @@ $router->delete('/tags/{id}', 'Backend\\TagController@destroy');
 // 合集管理 - 具体路径在参数路径之前
 $router->get('/collections', 'Backend\\CollectionController@index');
 $router->get('/collections/create', 'Backend\\CollectionController@create');
-$router->post('/collections', 'Backend\\CollectionController@store');
+$router->post('/collections/create', 'Backend\\CollectionController@create');
 $router->post('/collections/bulk-action', 'Backend\\CollectionController@bulkAction');
 $router->post('/collections/bulk-import', 'Backend\\CollectionController@bulkImport');
 $router->get('/collections/export', 'Backend\\CollectionController@exportData');
