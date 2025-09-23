@@ -148,8 +148,26 @@ abstract class Model
     }
 
     /**
+     * 获取字段搜索策略配置
+     * 子类可以重写此方法来自定义字段搜索行为
+     * 
+     * @return array 字段搜索策略配置
+     */
+    protected function getFieldSearchStrategies(): array
+    {
+        return [
+            'id' => 'exact',
+            'status_id' => 'exact',
+            'name' => 'bilingual_like',
+            'description' => 'bilingual_like',
+            'icon_class' => 'like',
+            'content_cnt' => 'custom'
+        ];
+    }
+
+    /**
      * 根据过滤条件获取所有标签数据（不分页，用于JS处理）
-     * 支持多字段搜索过滤
+     * 支持多字段搜索过滤，使用混合配置驱动模式
      */
     public function findAllWithFilters(array $filters = []): array
     {
@@ -159,55 +177,22 @@ abstract class Model
 
         // 处理搜索条件
         if (!empty($filters)) {
+            $fieldStrategies = $this->getFieldSearchStrategies();
+            
             foreach ($filters as $field => $value) {
                 if (empty($value) && $value !== '0') {
-                    continue; //skip for empty null or empty string
+                    continue; // skip for empty null or empty string
                 }
-                switch ($field) {
-                    case 'id':
-                        $whereConditions[] = "id = :search_id";
-                        $params['search_id'] = (int)$value;
-                        break;
-                    case 'name':
-                        $whereConditions[] = "(name_cn LIKE :search_name_cn OR name_en LIKE :search_name_en)";
-                        $params['search_name_cn'] = "%{$value}%";
-                        $params['search_name_en'] = "%{$value}%";
-                        break;
-                    case 'description':
-                        $whereConditions[] = "(desc_cn LIKE :search_desc_cn OR desc_en LIKE :search_desc_en)";
-                        $params['search_desc_cn'] = "%{$value}%";
-                        $params['search_desc_en'] = "%{$value}%";
-                        break;
-                    case 'content_cnt':
-                        // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
-                        if (strpos($value, '-') !== false) {
-                            $range = explode('-', $value);
-                            if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
-                                $whereConditions[] = "content_cnt BETWEEN :cnt_min AND :cnt_max";
-                                $params['cnt_min'] = (int)$range[0];
-                                $params['cnt_max'] = (int)$range[1];
-                            }
-                        } elseif (preg_match('/^([><=]+)(\d+)$/', $value, $matches)) {
-                            $operator = $matches[1];
-                            $number = (int)$matches[2];
-                            if (in_array($operator, ['>', '<', '>=', '<=', '='])) {
-                                $whereConditions[] = "content_cnt {$operator} :cnt_value";
-                                $params['cnt_value'] = $number;
-                            }
-                        } elseif (is_numeric($value)) {
-                            $whereConditions[] = "content_cnt = :cnt_exact";
-                            $params['cnt_exact'] = (int)$value;
-                        }
-                        break;
-                    case 'icon_class':
-                        $whereConditions[] = "icon_class LIKE :search_icon";
-                        $params['search_icon'] = "%{$value}%";
-                        break;
 
-                    case 'status_id':
-                        $whereConditions[] = "status_id = :status_id";
-                        $params['status_id'] = (int)$value;
-                        break;
+                // 获取字段策略，默认为 'auto'
+                $strategy = $fieldStrategies[$field] ?? 'auto';
+                
+                if ($strategy === 'custom') {
+                    // 处理自定义复杂逻辑
+                    $this->handleCustomFieldFilter($field, $value, $whereConditions, $params);
+                } else {
+                    // 处理标准策略
+                    $this->handleStandardFieldFilter($field, $value, $strategy, $whereConditions, $params);
                 }
             }
         }
@@ -221,6 +206,93 @@ abstract class Model
         $sql .= " ORDER BY {$orderBy}";
 
         return $this->db->fetchAll($sql, $params);
+    }
+
+    /**
+     * 处理自定义字段过滤逻辑
+     * 子类可以重写此方法来处理特定字段的复杂逻辑
+     * 
+     * @param string $field 字段名
+     * @param mixed $value 搜索值
+     * @param array &$whereConditions WHERE条件数组
+     * @param array &$params 参数数组
+     */
+    protected function handleCustomFieldFilter(string $field, $value, array &$whereConditions, array &$params): void
+    {
+        switch ($field) {
+            case 'content_cnt':
+                // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
+                if (strpos($value, '-') !== false) {
+                    $range = explode('-', $value);
+                    if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
+                        $whereConditions[] = "content_cnt BETWEEN :cnt_min AND :cnt_max";
+                        $params['cnt_min'] = (int)$range[0];
+                        $params['cnt_max'] = (int)$range[1];
+                    }
+                } elseif (preg_match('/^([><=]+)(\d+)$/', $value, $matches)) {
+                    $operator = $matches[1];
+                    $number = (int)$matches[2];
+                    if (in_array($operator, ['>', '<', '>=', '<=', '='])) {
+                        $whereConditions[] = "content_cnt {$operator} :cnt_value";
+                        $params['cnt_value'] = $number;
+                    }
+                } elseif (is_numeric($value)) {
+                    $whereConditions[] = "content_cnt = :cnt_exact";
+                    $params['cnt_exact'] = (int)$value;
+                }
+                break;
+        }
+    }
+
+    /**
+     * 处理标准字段过滤逻辑
+     * 
+     * @param string $field 字段名
+     * @param mixed $value 搜索值
+     * @param string $strategy 搜索策略
+     * @param array &$whereConditions WHERE条件数组
+     * @param array &$params 参数数组
+     */
+    protected function handleStandardFieldFilter(string $field, $value, string $strategy, array &$whereConditions, array &$params): void
+    {
+        $paramKey = "search_{$field}";
+        
+        switch ($strategy) {
+            case 'exact':
+                $whereConditions[] = "{$field} = :{$paramKey}";
+                $params[$paramKey] = is_numeric($value) ? (int)$value : $value;
+                break;
+                
+            case 'like':
+                $whereConditions[] = "{$field} LIKE :{$paramKey}";
+                $params[$paramKey] = "%{$value}%";
+                break;
+                
+            case 'bilingual_like':
+                // 双语模糊搜索 (中英文字段)
+                if ($field === 'name') {
+                    $whereConditions[] = "(name_cn LIKE :{$paramKey}_cn OR name_en LIKE :{$paramKey}_en)";
+                    $params["{$paramKey}_cn"] = "%{$value}%";
+                    $params["{$paramKey}_en"] = "%{$value}%";
+                } elseif ($field === 'description') {
+                    $whereConditions[] = "(desc_cn LIKE :{$paramKey}_cn OR desc_en LIKE :{$paramKey}_en)";
+                    $params["{$paramKey}_cn"] = "%{$value}%";
+                    $params["{$paramKey}_en"] = "%{$value}%";
+                }
+                break;
+                
+            case 'auto':
+            default:
+                // 默认规则：数字用 =，字符串用 LIKE
+                if (is_numeric($value)) {
+                    $whereConditions[] = "{$field} = :{$paramKey}";
+                    $params[$paramKey] = (int)$value;
+                } else {
+                    $whereConditions[] = "{$field} LIKE :{$paramKey}";
+                    $params[$paramKey] = "%{$value}%";
+                }
+                break;
+        }
     }
 
     public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
