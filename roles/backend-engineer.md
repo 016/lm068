@@ -56,7 +56,7 @@
 ### MVC架构规则
 - 使用 MVC架构
 - 遵循 MVC 原则, 进行必要的继承, 以优化代码架构
-- MVC 标准流程, 使用经典MVC流程
+- MVC 标准流程, 使用经典MVC流程, 实现Active Record模式，支持属性访问和错误管理
   - 以create tag 举例
     1. $tag = new Tag();
     2. 把 $tag 传递到 view 实现渲染。
