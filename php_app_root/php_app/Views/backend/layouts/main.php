@@ -224,25 +224,14 @@
             </header>
 
             <?php
+            $flash = $this->getFlashMessage();
+
             // 显示Flash消息 - 使用JavaScript showToast方法
-            if (!isset($_SESSION)) {
-                session_start();
-            }
-            
-            if (isset($_SESSION['flash_message'])):
-                $flash = $_SESSION['flash_message'];
-                unset($_SESSION['flash_message']);
-                $toastType = match($flash['type']) {
-                    'success' => 'success',
-                    'error' => 'danger',
-                    'warning' => 'warning',
-                    default => 'info'
-                };
-            ?>
+            if ($flash): ?>
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         if (typeof showToast === 'function') {
-                            showToast('<?= addslashes(htmlspecialchars($flash['message'])) ?>', '<?= $toastType ?>');
+                            showToast('<?= addslashes(htmlspecialchars($flash['message'])) ?>', '<?= $flash['type'] ?>');
                         } else {
                             console.error('showToast function not found');
                         }
