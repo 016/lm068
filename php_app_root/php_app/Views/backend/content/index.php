@@ -1,24 +1,7 @@
 <?php
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
-
-$this->extend('layouts/main');
-$this->section('title', $pageTitle ?? '内容管理 - 视频分享网站管理后台');
-
-// 添加页面特定的CSS和JS文件
-if (!empty($css_files)) {
-    foreach ($css_files as $file) {
-        $this->addCSS($file);
-    }
-}
-if (!empty($js_files)) {
-    foreach ($js_files as $file) {
-        $this->addJS($file);
-    }
-}
 ?>
-
-<?php $this->section('content'); ?>
 <!-- Content Management Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -458,4 +441,3 @@ function deleteContent(id) {
 }
 </script>
 
-<?php $this->endSection(); ?>

@@ -1,12 +1,7 @@
 <?php
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
-
-$this->extend('layouts/main');
-$this->section('title', '内容详情 - 视频分享网站管理后台');
 ?>
-
-<?php $this->section('content'); ?>
 <!-- Content Show Content -->
 <main class="dashboard-content">
     <!-- Breadcrumb and Page Title -->
@@ -287,4 +282,3 @@ $this->section('title', '内容详情 - 视频分享网站管理后台');
     </div>
 </main>
 
-<?php $this->endSection(); ?>
