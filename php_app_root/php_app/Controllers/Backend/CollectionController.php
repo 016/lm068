@@ -42,6 +42,18 @@ class CollectionController extends BackendController
     public function edit(Request $request): void
     {
         $id = (int)$request->getParam(0);
+        
+        if ($request->isPost()) {
+            // 处理POST请求（更新合集）
+            $this->handleEditPost($request, $id);
+        } else {
+            // 处理GET请求（显示编辑表单）
+            $this->handleEditGet($request, $id);
+        }
+    }
+
+    private function handleEditGet(Request $request, int $id): void
+    {
         $collection = $this->curModel->findById($id);
 
         if (!$collection) {
@@ -70,17 +82,14 @@ class CollectionController extends BackendController
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
             'selectedContentIds' => $selectedContentIds,
-            'isCreateMode' => false,
             'title' => '编辑合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
         ]);
     }
 
-    public function update(Request $request): void
+    private function handleEditPost(Request $request, int $id): void
     {
-        $id = (int)($request->post('id') ?? 0);
-
         if (!$id) {
             $this->redirect('/collections');
             return;
@@ -226,12 +235,11 @@ class CollectionController extends BackendController
             ];
         }
 
-        $this->render('collections/edit', [
+        $this->render('collections/create', [
             'collection' => null,
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
             'selectedContentIds' => [],
-            'isCreateMode' => true,
             'title' => '创建合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -299,13 +307,12 @@ class CollectionController extends BackendController
                 $selectedContentIds = $relatedVideos;
             }
 
-            $this->render('collections/edit', [
+            $this->render('collections/create', [
                 'collection' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
                 'selectedContentIds' => $selectedContentIds,
                 'errors' => $errors,
-                'isCreateMode' => true,
                 'title' => '创建合集 - 视频分享网站管理后台',
                 'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -359,13 +366,12 @@ class CollectionController extends BackendController
                 $selectedContentIds = $relatedVideos;
             }
 
-            $this->render('collections/edit', [
+            $this->render('collections/create', [
                 'collection' => $data, // 传递用户输入的数据
                 'relatedContent' => [],
                 'contentOptions' => $contentOptions,
                 'selectedContentIds' => $selectedContentIds,
                 'errors' => ['general' => '创建失败: ' . $e->getMessage()],
-                'isCreateMode' => true,
                 'title' => '创建合集 - 视频分享网站管理后台',
                 'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
                 'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'collection_edit_6.js']
