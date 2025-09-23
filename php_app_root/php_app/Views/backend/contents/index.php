@@ -261,24 +261,24 @@ use App\Constants\ContentType;
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部类型</option>
                                     <?php foreach (ContentType::getAllValues() as $value => $label): ?>
-                                        <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
+                                        <option value="<?= $value ?>" <?= ($filters['content_type_id'] ?? '') == $value ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="title">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索标题">
+                                <input type="text" class="form-control form-control-sm" placeholder="搜索标题" value="<?= htmlspecialchars($filters['title'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="author">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索作者">
+                                <input type="text" class="form-control form-control-sm" placeholder="搜索作者" value="<?= htmlspecialchars($filters['author'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="view_cnt">
-                                <input type="text" class="form-control form-control-sm" placeholder="观看范围">
+                                <input type="text" class="form-control form-control-sm" placeholder="观看范围" value="<?= htmlspecialchars($filters['view_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
                                     <?php foreach (ContentStatus::getAllValues() as $value => $label): ?>
-                                        <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
+                                        <option value="<?= $value ?>" <?= ($filters['status_id'] ?? '') == $value ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </th>
