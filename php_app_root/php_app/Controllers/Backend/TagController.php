@@ -396,22 +396,4 @@ class TagController extends BackendController
         ]);
     }
 
-    public function getContentForTag(Request $request): void
-    {
-        $tagId = (int)$request->get('tag_id');
-
-        if (!$tagId) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid tag ID']);
-            return;
-        }
-
-        try {
-            $content = $this->curModel->getRelatedContent($tagId);
-            $this->jsonResponse(['success' => true, 'content' => $content]);
-        } catch (\Exception $e) {
-            error_log("Get content error: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => '获取内容失败']);
-        }
-    }
-
 }
