@@ -295,14 +295,15 @@ use App\Constants\TagStatus;
             const contentOptions = <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>;
 
             // 转换数据格式
-            const videoData = contentOptions.map(function(option) {
+            const input_contentList = contentOptions.map(function(option) {
                 return {
                     id: option.id.toString(),
                     text: option.title
                 };
             });
+            window.inputData.contentList = input_contentList;
 
-            const selectedData = contentOptions.filter(function(option) {
+            const input_selectedContentIds = contentOptions.filter(function(option) {
                 return option.selected;
             }).map(function(option) {
                 return {
@@ -310,18 +311,9 @@ use App\Constants\TagStatus;
                     text: option.title
                 };
             });
+            window.inputData.selectedContentIds = input_selectedContentIds;
 
-            // 创建多选组件
-            new MultiSelectDropdown(document.getElementById('videoMultiSelect'), {
-                placeholder: '选择关联视频...',
-                searchPlaceholder: '搜索视频标题...',
-                hiddenInputName: 'related_videos',
-                maxDisplayItems: 7,
-                columns: 4,
-                data: videoData,
-                selected: selectedData,
-                allowClear: true
-            });
+
         }
      });
 </script>
