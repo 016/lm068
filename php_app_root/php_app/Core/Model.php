@@ -11,7 +11,7 @@ abstract class Model
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $timestamps = true;
-    protected $isNew = true;
+    public $isNew = true;
     
     // Active Record 属性
     protected array $attributes = [];

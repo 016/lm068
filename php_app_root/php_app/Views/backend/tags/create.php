@@ -30,7 +30,7 @@
                     <div class="col-12 col-lg-12">
                         <?php 
                         // Set form action for create
-                        $formAction = '/tag/create';
+                        $formAction = '/tags/create';
                         include __DIR__ . '/_form.php'; 
                         ?>
                     </div>

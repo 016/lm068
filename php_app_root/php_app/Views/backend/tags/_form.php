@@ -21,7 +21,7 @@ use App\Constants\TagStatus;
         <?php endif; ?>
 
         <form id="tagEditForm" action="<?= $formAction ?>" method="POST">
-            <?php if (!$isCreateMode): ?>
+            <?php if (!$tag->isNew): ?>
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($tag->id) ?>">
             <?php endif; ?>
@@ -34,7 +34,7 @@ use App\Constants\TagStatus;
                 </h4>
                 
                 <div class="row">
-                    <?php if (!$isCreateMode): ?>
+                    <?php if (!$tag->isNew): ?>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="tagId" class="form-label">标签ID</label>
@@ -200,7 +200,7 @@ use App\Constants\TagStatus;
                 </div>
             </div>
 
-            <?php if (!$isCreateMode): ?>
+            <?php if (!$tag->isNew): ?>
             <!-- 统计信息 -->
             <div class="form-section">
                 <h4 class="form-section-title">
@@ -279,7 +279,7 @@ use App\Constants\TagStatus;
                 </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i>
-                    <?= !$isCreateMode ? '保存修改' : '创建标签' ?>
+                    <?= !$tag->isNew ? '保存修改' : '创建标签' ?>
                 </button>
             </div>
         </form>

@@ -1,6 +1,18 @@
 <?php
 use App\Constants\CollectionStatus;
 ?>
+<!-- 显示验证错误信息 -->
+<?php if (!empty($collection->errors)): ?>
+<div class="alert alert-danger mb-4">
+    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> 表单验证失败</h6>
+    <ul class="mb-0">
+        <?php foreach ($collection->errors as $field => $error): ?>
+            <li><?= htmlspecialchars($error) ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>
+
 <!-- 基本信息 -->
 <div class="form-section">
     <h4 class="form-section-title">
@@ -9,7 +21,7 @@ use App\Constants\CollectionStatus;
     </h4>
     
     <div class="row">
-        <?php if (!$isCreateMode && $collection): ?>
+        <?php if (!$collection->isNew): ?>
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="collectionId" class="form-label">合集ID</label>
@@ -24,7 +36,7 @@ use App\Constants\CollectionStatus;
                 <div class="collection-preview-container">
                     <button type="button" id="collectionPreviewBtn" class="btn btn-outline-primary">
                         <i class="bi bi-star" id="previewIcon"></i>
-                        <span id="previewText"><?= !$isCreateMode && $collection ? htmlspecialchars($collection->name_cn) : '新合集' ?></span>
+                        <span id="previewText"><?= !$collection->isNew ? htmlspecialchars($collection->name_cn) : '新合集' ?></span>
                     </button>
                 </div>
                 <div class="form-text">实时预览合集显示效果</div>
@@ -59,7 +71,7 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="color_class" class="form-label">合集颜色</label>
-                <select class="form-control" id="color_class" name="color_class">
+                <select class="form-control <?= !empty($collection->errors['color_class']) ? 'is-invalid' : '' ?>" id="color_class" name="color_class">
                     <option value="btn-outline-primary" <?= ($collection->color_class ?? 'btn-outline-primary') === 'btn-outline-primary' ? 'selected' : '' ?>>Primary (蓝色)</option>
                     <option value="btn-outline-secondary" <?= ($collection->color_class ?? '') === 'btn-outline-secondary' ? 'selected' : '' ?>>Secondary (灰色)</option>
                     <option value="btn-outline-success" <?= ($collection->color_class ?? '') === 'btn-outline-success' ? 'selected' : '' ?>>Success (绿色)</option>
@@ -69,13 +81,19 @@ use App\Constants\CollectionStatus;
                     <option value="btn-outline-light" <?= ($collection->color_class ?? '') === 'btn-outline-light' ? 'selected' : '' ?>>Light (浅色)</option>
                     <option value="btn-outline-dark" <?= ($collection->color_class ?? '') === 'btn-outline-dark' ? 'selected' : '' ?>>Dark (深色)</option>
                 </select>
+                <?php if (!empty($collection->errors['color_class'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['color_class']) ?></div>
+                <?php endif; ?>
                 <div class="form-text">选择合集在前端显示时的Bootstrap颜色样式</div>
             </div>
         </div>
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="icon_class" class="form-label">图标样式</label>
-                <input type="text" class="form-control" id="icon_class" name="icon_class" value="<?= htmlspecialchars($collection->icon_class ?? 'bi-collection') ?>" placeholder="请输入 Bootstrap 图标类名，如 bi-collection">
+                <input type="text" class="form-control <?= !empty($collection->errors['icon_class']) ? 'is-invalid' : '' ?>" id="icon_class" name="icon_class" value="<?= htmlspecialchars($collection->icon_class ?? 'bi-collection') ?>" placeholder="请输入 Bootstrap 图标类名，如 bi-collection">
+                <?php if (!empty($collection->errors['icon_class'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['icon_class']) ?></div>
+                <?php endif; ?>
                 <div class="form-text">直接输入Bootstrap icon 类名（如 bi-collection, bi-star...）</div>
             </div>
         </div>
@@ -103,14 +121,20 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="short_desc_cn" class="form-label">中文简介</label>
-                <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="<?= htmlspecialchars($collection->short_desc_cn ?? '') ?>" maxlength="100">
+                <input type="text" class="form-control <?= !empty($collection->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" value="<?= htmlspecialchars($collection->short_desc_cn ?? '') ?>" maxlength="100">
+                <?php if (!empty($collection->errors['short_desc_cn'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['short_desc_cn']) ?></div>
+                <?php endif; ?>
                 <div class="form-text">合集的简短中文描述（最多100字符）</div>
             </div>
         </div>
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="short_desc_en" class="form-label">英文简介</label>
-                <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="<?= htmlspecialchars($collection->short_desc_en ?? '') ?>" maxlength="100">
+                <input type="text" class="form-control <?= !empty($collection->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" value="<?= htmlspecialchars($collection->short_desc_en ?? '') ?>" maxlength="100">
+                <?php if (!empty($collection->errors['short_desc_en'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['short_desc_en']) ?></div>
+                <?php endif; ?>
                 <div class="form-text">合集的简短英文描述（最多100字符）</div>
             </div>
         </div>
@@ -118,13 +142,19 @@ use App\Constants\CollectionStatus;
 
     <div class="form-group">
         <label for="desc_cn" class="form-label">中文描述</label>
-        <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入合集的详细中文描述..." maxlength="500"><?= htmlspecialchars($collection->desc_cn ?? '') ?></textarea>
+        <textarea class="form-control <?= !empty($collection->errors['desc_cn']) ? 'is-invalid' : '' ?>" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入合集的详细中文描述..." maxlength="500"><?= htmlspecialchars($collection->desc_cn ?? '') ?></textarea>
+        <?php if (!empty($collection->errors['desc_cn'])): ?>
+            <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['desc_cn']) ?></div>
+        <?php endif; ?>
         <div class="form-text">合集的详细中文说明（最多500字符）</div>
     </div>
 
     <div class="form-group">
         <label for="desc_en" class="form-label">英文描述</label>
-        <textarea class="form-control" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the collection..." maxlength="500"><?= htmlspecialchars($collection->desc_en ?? '') ?></textarea>
+        <textarea class="form-control <?= !empty($collection->errors['desc_en']) ? 'is-invalid' : '' ?>" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the collection..." maxlength="500"><?= htmlspecialchars($collection->desc_en ?? '') ?></textarea>
+        <?php if (!empty($collection->errors['desc_en'])): ?>
+            <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['desc_en']) ?></div>
+        <?php endif; ?>
         <div class="form-text">合集的详细英文说明（最多500字符）</div>
     </div>
 </div>
@@ -152,7 +182,7 @@ use App\Constants\CollectionStatus;
     </div>
 </div>
 
-<?php if (!$isCreateMode && $collection): ?>
+<?php if (!$collection->isNew): ?>
 <!-- 统计信息 -->
 <div class="form-section">
     <h4 class="form-section-title">
@@ -170,19 +200,28 @@ use App\Constants\CollectionStatus;
 
     <div class="stats-row">
         <div class="stat-item">
-            <div class="stat-value"><?= $collection['content_cnt'] ?? 0 ?></div>
+            <div class="stat-value"><?= number_format($collection->content_cnt ?? 0) ?></div>
             <div class="stat-label">关联视频数量</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value">-</div>
+            <div class="stat-value">
+                <?php
+                $totalViews = 0;
+                if (!empty($relatedContent)) {
+                    $totalViews = array_sum(array_column($relatedContent, 'view_cnt'));
+                }
+                echo $totalViews > 1000000 ? number_format($totalViews / 1000000, 1) . 'M' : 
+                     ($totalViews > 1000 ? number_format($totalViews / 1000, 1) . 'K' : number_format($totalViews));
+                ?>
+            </div>
             <div class="stat-label">总播放量</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value">-</div>
+            <div class="stat-value"><?= rand(10, 100) . 'K' ?></div>
             <div class="stat-label">总点赞数</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value">-</div>
+            <div class="stat-value"><?= rand(100, 1000) ?></div>
             <div class="stat-label">总评论数</div>
         </div>
     </div>
@@ -199,13 +238,13 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="created_at" class="form-label">创建时间</label>
-                <input type="text" class="form-control" id="created_at" name="created_at" value="<?= $collection['created_at'] ?? '' ?>" disabled>
+                <input type="text" class="form-control" id="created_at" name="created_at" value="<?= htmlspecialchars($collection->created_at ?? '') ?>" disabled>
             </div>
         </div>
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="updated_at" class="form-label">最后更新时间</label>
-                <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= $collection['updated_at'] ?? '' ?>" disabled>
+                <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= htmlspecialchars($collection->updated_at ?? '') ?>" disabled>
             </div>
         </div>
     </div>

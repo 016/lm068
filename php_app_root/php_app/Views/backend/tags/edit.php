@@ -30,7 +30,7 @@
                     <div class="col-12 col-lg-12">
                         <?php 
                         // Set form action for edit
-                        $formAction = '/tag/' . $tag['id'] . '/edit';
+                        $formAction = '/tags/' . $tag->id . '/edit';
                         include __DIR__ . '/_form.php'; 
                         ?>
                     </div>

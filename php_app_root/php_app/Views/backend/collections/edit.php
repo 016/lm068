@@ -38,19 +38,8 @@ use App\Constants\CollectionStatus;
                 </div>
                 
                 <div class="form-body">
-                    <form id="collectionEditForm" action="/collections/<?= $collection['id'] ?>/edit" method="POST">
-                        <input type="hidden" name="id" id="id" value="<?= $collection['id'] ?>">
-                        
-                        <?php if (isset($errors) && !empty($errors)): ?>
-                            <div class="alert alert-danger mb-4">
-                                <h6><i class="bi bi-exclamation-triangle"></i> 请修正以下错误：</h6>
-                                <ul class="mb-0">
-                                    <?php foreach ($errors as $field => $error): ?>
-                                        <li><?= htmlspecialchars($error) ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
+                    <form id="collectionEditForm" action="/collections/<?= $collection->id ?>/edit" method="POST">
+                        <input type="hidden" name="id" id="id" value="<?= $collection->id ?>">
                         
                         <?php include '_form.php'; ?>
 

@@ -142,7 +142,6 @@ class TagController extends BackendController
             'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
-            'isCreateMode' => false,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -237,7 +236,6 @@ class TagController extends BackendController
             'contentOptions' => $contentOptions,
             'videoData' => $videoData,
             'selectedVideoIds' => [],
-            'isCreateMode' => true,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
