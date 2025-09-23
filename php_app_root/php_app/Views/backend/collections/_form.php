@@ -1,17 +1,41 @@
 <?php
 use App\Constants\CollectionStatus;
 ?>
-<!-- 显示验证错误信息 -->
-<?php if (!empty($collection->errors)): ?>
-<div class="alert alert-danger mb-4">
-    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> 表单验证失败</h6>
-    <ul class="mb-0">
-        <?php foreach ($collection->errors as $field => $error): ?>
-            <li><?= htmlspecialchars($error) ?></li>
-        <?php endforeach; ?>
-    </ul>
-</div>
-<?php endif; ?>
+<!-- Shared Collection Form Content -->
+<div class="form-container">
+    <div class="form-header">
+        <i class="bi bi-collection form-icon"></i>
+        <h3><?= !$collection->isNew ? '合集详细信息' : '新建合集信息' ?></h3>
+    </div>
+    
+    <div class="form-body">
+        <?php if (isset($errors) && !empty($errors)): ?>
+            <div class="alert alert-danger mb-4">
+                <h6><i class="bi bi-exclamation-triangle"></i> 请修正以下错误：</h6>
+                <ul class="mb-0">
+                    <?php foreach ($errors as $field => $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <form id="collectionEditForm" action="<?= $formAction ?>" method="POST">
+            <?php if (!$collection->isNew): ?>
+                <input type="hidden" name="id" id="id" value="<?= $collection->id ?>">
+            <?php endif; ?>
+
+            <!-- 显示验证错误信息 -->
+            <?php if (!empty($collection->errors)): ?>
+            <div class="alert alert-danger mb-4">
+                <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> 表单验证失败</h6>
+                <ul class="mb-0">
+                    <?php foreach ($collection->errors as $field => $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
 
 <!-- 基本信息 -->
 <div class="form-section">
@@ -250,3 +274,18 @@ use App\Constants\CollectionStatus;
     </div>
 </div>
 <?php endif; ?>
+
+            <!-- 表单操作按钮 -->
+            <div class="form-actions">
+                <a href="/collections" id="btn-cancel" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg"></i>
+                    取消
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i>
+                    <?= !$collection->isNew ? '保存修改' : '创建合集' ?>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

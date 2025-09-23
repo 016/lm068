@@ -31,41 +31,11 @@ use App\Constants\CollectionStatus;
     <!-- Collection Create Form -->
     <div class="row justify-content-center">
         <div class="col-12 col-lg-12">
-            <div class="form-container">
-                <div class="form-header">
-                    <i class="bi bi-collection form-icon"></i>
-                    <h3>新建合集信息</h3>
-                </div>
-                
-                <div class="form-body">
-                    <form id="collectionCreateForm" action="/collections/create" method="POST">
-                        <?php if (isset($errors) && !empty($errors)): ?>
-                            <div class="alert alert-danger mb-4">
-                                <h6><i class="bi bi-exclamation-triangle"></i> 请修正以下错误：</h6>
-                                <ul class="mb-0">
-                                    <?php foreach ($errors as $field => $error): ?>
-                                        <li><?= htmlspecialchars($error) ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <?php include '_form.php'; ?>
-
-                        <!-- 表单操作按钮 -->
-                        <div class="form-actions">
-                            <a href="/collections" id="btn-cancel" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg"></i>
-                                取消
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-lg"></i>
-                                创建合集
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <?php 
+            // Set form action for create
+            $formAction = '/collections/create';
+            include __DIR__ . '/_form.php'; 
+            ?>
         </div>
     </div>
 </main>

@@ -31,32 +31,11 @@ use App\Constants\CollectionStatus;
     <!-- Collection Edit Form -->
     <div class="row justify-content-center">
         <div class="col-12 col-lg-12">
-            <div class="form-container">
-                <div class="form-header">
-                    <i class="bi bi-collection form-icon"></i>
-                    <h3>合集详细信息</h3>
-                </div>
-                
-                <div class="form-body">
-                    <form id="collectionEditForm" action="/collections/<?= $collection->id ?>/edit" method="POST">
-                        <input type="hidden" name="id" id="id" value="<?= $collection->id ?>">
-                        
-                        <?php include '_form.php'; ?>
-
-                        <!-- 表单操作按钮 -->
-                        <div class="form-actions">
-                            <a href="/collections" id="btn-cancel" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg"></i>
-                                取消
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-lg"></i>
-                                保存修改
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <?php 
+            // Set form action for edit
+            $formAction = '/collections/' . $collection->id . '/edit';
+            include __DIR__ . '/_form.php'; 
+            ?>
         </div>
     </div>
 </main>
