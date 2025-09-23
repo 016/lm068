@@ -101,8 +101,7 @@ class TagController extends BackendController
                 }
 
                 // 成功后跳转到列表页面，添加Toast消息到session
-                $_SESSION['toast_message'] = '标签编辑成功';
-                $_SESSION['toast_type'] = 'success';
+                $this->setFlashMessage('标签编辑成功', 'success');
                 $this->redirect('/tags');
             } catch (\Exception $e) {
                 error_log("Tag update error: " . $e->getMessage());

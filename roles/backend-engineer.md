@@ -56,6 +56,18 @@
 ### MVC架构规则
 - 使用 MVC架构
 - 遵循 MVC 原则, 进行必要的继承, 以优化代码架构
+- MVC 标准流程, 使用经典MVC流程
+  - 以create tag 举例
+    1. $tag = new Tag();
+    2. 把 $tag 传递到 view 实现渲染。
+    3. view 渲染时使用 $tag 的一些入属性，比如说字数限制标题等常见功能。
+    4. 表单提交时 post 回 create action。对 POST 的数值进行提取并填充回 $tag。
+    5. 使用 Tag 的 validate 对提取的 post 数值进行验证。
+    6. 如果验证失败，使用 $tag->errors 返回给 view, view 向用户渲染错误, 允许再次编辑。
+    7. 重复提交，直至验证通过。写入数据库。完成后续逻辑.
+- Model
+  - 建立 model 和基础 model 
+  - 在 view 和 controller 中按标准使用 model
 - View
   - view 文件存放在 php_app_root/php_app/Views 文件夹下
     - 管理后端存放在 php_app_root/php_app/Views/backend
