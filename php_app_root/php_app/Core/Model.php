@@ -11,16 +11,42 @@ abstract class Model
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $timestamps = true;
+    protected $isNew = true;
 
     public function __construct()
     {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * 检查是否为新记录
+     * @return bool 是否为新记录
+     */
+    public function isNew(): bool
+    {
+        return $this->isNew;
+    }
+
+    /**
+     * 设置记录状态
+     * @param bool $isNew 是否为新记录
+     * @return void
+     */
+    public function setNew(bool $isNew): void
+    {
+        $this->isNew = $isNew;
+    }
+
     public function find(int $id): ?array
     {
         $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
-        return $this->db->fetch($sql, ['id' => $id]);
+        $result = $this->db->fetch($sql, ['id' => $id]);
+        
+        if ($result) {
+            $this->setNew(false);
+        }
+        
+        return $result;
     }
 
     public function findById(int $id): ?array
@@ -43,6 +69,11 @@ abstract class Model
         ];
 
         $result = $this->db->fetch($sql, $params);
+        
+        if ($result) {
+            $this->setNew(false);
+        }
+        
         return $result ?: null;
     }
 
@@ -165,7 +196,13 @@ abstract class Model
             $data['updated_at'] = date('Y-m-d H:i:s');
         }
 
-        return $this->db->insert($this->table, $data);
+        $id = $this->db->insert($this->table, $data);
+        
+        if ($id > 0) {
+            $this->setNew(false);
+        }
+        
+        return $id;
     }
 
     public function update(int $id, array $data): bool
