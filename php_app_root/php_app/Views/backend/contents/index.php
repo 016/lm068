@@ -255,7 +255,7 @@ use App\Constants\ContentType;
                         <tr class="table-header-bg">
                             <th class="table-filter-cell" data-column="checkbox"></th>
                             <th class="table-filter-cell" data-column="id">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索ID">
+                                <input type="text" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>" >
                             </th>
                             <th class="table-filter-cell" data-column="content_type">
                                 <select class="form-control form-select form-select-sm">
@@ -274,7 +274,7 @@ use App\Constants\ContentType;
                             <th class="table-filter-cell" data-column="view_cnt">
                                 <input type="text" class="form-control form-control-sm" placeholder="观看范围">
                             </th>
-                            <th class="table-filter-cell" data-column="status">
+                            <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
                                     <?php foreach (ContentStatus::getAllValues() as $value => $label): ?>

@@ -30,25 +30,18 @@ class ContentController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id', 'title', 'author', 'content_type_id', 'view_cnt', 'status', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'title', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
+        var_dump($filters);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
         $content = $this->curModel->findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
 
-        // 处理 Toast 消息
-        $toastMessage = $_SESSION['toast_message'] ?? null;
-        $toastType = $_SESSION['toast_type'] ?? null;
-        if ($toastMessage) {
-            unset($_SESSION['toast_message'], $_SESSION['toast_type']);
-        }
 
         $this->render('contents/index', [
             'content' => $content,
             'filters' => $filters,
             'stats' => $stats,
-            'toastMessage' => $toastMessage,
-            'toastType' => $toastType,
             'pageTitle' => '内容管理 - 视频分享网站管理后台',
             'css_files' => ['content_list_2.css'],
             'js_files' => ['content_list_2.js']
@@ -62,7 +55,7 @@ class ContentController extends BackendController
         // 1. 通过ID查找Content实例
         $content = $this->curModel->find($id);
         if (!$content) {
-            $this->redirect('/content');
+            $this->redirect('/contents');
             return;
         }
 
@@ -117,7 +110,7 @@ class ContentController extends BackendController
 
                     // 成功后跳转到列表页面
                     $this->setFlashMessage('内容编辑成功', 'success');
-                    $this->redirect('/content');
+                    $this->redirect('/contents');
                 } else {
                     // 保存失败，返回编辑页面并显示错误
                     $this->renderEditForm($content);
@@ -230,7 +223,7 @@ class ContentController extends BackendController
 
                     // 成功后跳转到列表页面
                     $this->setFlashMessage('内容创建成功', 'success');
-                    $this->redirect('/content');
+                    $this->redirect('/contents');
                 } else {
                     // 保存失败，返回创建页面并显示错误
                     $this->renderCreateForm($content);
@@ -338,7 +331,7 @@ class ContentController extends BackendController
         $content = $this->curModel->find($id);  // 返回Content实例
 
         if (!$content) {
-            $this->redirect('/content');
+            $this->redirect('/contents');
             return;
         }
 
