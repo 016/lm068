@@ -54,6 +54,13 @@ class TagController extends BackendController
     {
         $id = (int)$request->getParam(0);
         
+        // 1. 通过ID查找Tag实例
+        $tag = $this->curModel->find($id);
+        if (!$tag) {
+            $this->redirect('/tags');
+            return;
+        }
+
         // 处理 POST 请求（表单提交）
         if ($request->isPost()) {
             $postId = (int)($request->post('id') ?? 0);
@@ -63,6 +70,7 @@ class TagController extends BackendController
                 return;
             }
 
+            // 4. 对 POST 的数值进行提取并填充回 $tag
             $data = [
                 'name_cn' => $request->post('name_cn'),
                 'name_en' => $request->post('name_en'),
@@ -74,63 +82,47 @@ class TagController extends BackendController
                 'icon_class' => $request->post('icon_class'),
                 'status_id' => (int)($request->post('status_id') ?? TagStatus::DISABLED->value)
             ];
+            $tag->fill($data);
 
-            // 使用模型验证，传入当前ID以排除自身
-            $errors = $this->curModel->validate($data, true, $id);
-            if (!empty($errors)) {
-                // 验证失败，返回编辑页面并显示错误
-                $tag = $this->curModel->findById($id);
-                if (!$tag) {
-                    $this->redirect('/tags');
-                    return;
-                }
-                // 合并用户输入的数据到tag数据中
-                $tag = array_merge($tag, $data);
-                $this->renderEditForm($id, $tag, $errors);
+            // 5. 使用 Tag 的 validate 对提取的 post 数值进行验证
+            if (!$tag->validate()) {
+                // 6. 如果验证失败，使用 $tag->errors 返回给 view
+                $this->renderEditForm($tag);
                 return;
             }
 
             try {
-                $this->curModel->update($id, $data);
+                // 7. 验证通过，写入数据库
+                if ($tag->save()) {
+                    // 处理关联内容
+                    $relatedVideos = $request->post('related_videos');
+                    if ($relatedVideos !== null) {
+                        $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
+                        $this->curModel->syncContentAssociations($id, $contentIds);
+                    }
 
-                // 处理关联内容
-                $relatedVideos = $request->post('related_videos');
-                if ($relatedVideos !== null) {
-                    $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
-                    $this->curModel->syncContentAssociations($id, $contentIds);
+                    // 成功后跳转到列表页面
+                    $this->setFlashMessage('标签编辑成功', 'success');
+                    $this->redirect('/tags');
+                } else {
+                    // 保存失败，返回编辑页面并显示错误
+                    $this->renderEditForm($tag);
                 }
-
-                // 成功后跳转到列表页面，添加Toast消息到session
-                $this->setFlashMessage('标签编辑成功', 'success');
-                $this->redirect('/tags');
             } catch (\Exception $e) {
                 error_log("Tag update error: " . $e->getMessage());
-                // 出错时返回编辑页面并显示错误
-                $tag = $this->curModel->findById($id);
-                if (!$tag) {
-                    $this->redirect('/tags');
-                    return;
-                }
-                // 合并用户输入的数据到tag数据中
-                $tag = array_merge($tag, $data);
-                $this->renderEditForm($id, $tag, ['general' => '更新失败: ' . $e->getMessage()]);
+                $tag->errors['general'] = '更新失败: ' . $e->getMessage();
+                $this->renderEditForm($tag);
             }
             return;
         }
 
-        // 处理 GET 请求（显示表单）
-        $tag = $this->curModel->findById($id);
-        if (!$tag) {
-            $this->redirect('/backend/tags');
-            return;
-        }
-
-        $this->renderEditForm($id, $tag);
+        // 2. 把 $tag 传递到 view 实现渲染（GET请求 - 显示表单）
+        $this->renderEditForm($tag);
     }
 
-    private function renderEditForm(int $id, array $tag, array $errors = []): void
+    private function renderEditForm(Tag $tag): void
     {
-        $relatedContent = $this->curModel->getRelatedContent($id);
+        $relatedContent = $this->curModel->getRelatedContent($tag->id);
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
         ]);
@@ -147,10 +139,9 @@ class TagController extends BackendController
         }
 
         $this->render('tags/edit', [
-            'tag' => $tag,
+            'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
-            'errors' => $errors,
             'isCreateMode' => false,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
@@ -160,8 +151,12 @@ class TagController extends BackendController
 
     public function create(Request $request): void
     {
+        // 1. 创建新的Tag实例
+        $tag = new Tag();
+
         // 处理 POST 请求（表单提交）
         if ($request->isPost()) {
+            // 4. 对 POST 的数值进行提取并填充回 $tag
             $data = [
                 'name_cn' => $request->post('name_cn'),
                 'name_en' => $request->post('name_en'),
@@ -174,41 +169,45 @@ class TagController extends BackendController
                 'status_id' => (int)($request->post('status_id') ?? TagStatus::ENABLED->value),
                 'content_cnt' => 0
             ];
+            $tag->fill($data);
 
-            // 使用模型验证
-            $errors = $this->curModel->validate($data, false);
-            if (!empty($errors)) {
-                // 验证失败，返回创建页面并显示错误
-                $this->renderCreateForm($data, $errors);
+            // 5. 使用 Tag 的 validate 对提取的 post 数值进行验证
+            if (!$tag->validate()) {
+                // 6. 如果验证失败，使用 $tag->errors 返回给 view
+                $this->renderCreateForm($tag);
                 return;
             }
 
             try {
-                $tagId = $this->curModel->create($data);
+                // 7. 验证通过，写入数据库
+                if ($tag->save()) {
+                    $relatedVideos = $request->post('related_videos');
+                    if ($relatedVideos && is_array($relatedVideos)) {
+                        $contentIds = array_map('intval', $relatedVideos);
+                        $this->curModel->syncContentAssociations($tag->id, $contentIds);
+                    }
 
-                $relatedVideos = $request->post('related_videos');
-                if ($relatedVideos && is_array($relatedVideos)) {
-                    $contentIds = array_map('intval', $relatedVideos);
-                    $this->curModel->syncContentAssociations($tagId, $contentIds);
+                    // 成功后跳转到列表页面
+                    $_SESSION['toast_message'] = '标签创建成功';
+                    $_SESSION['toast_type'] = 'success';
+                    $this->redirect('/tags');
+                } else {
+                    // 保存失败，返回创建页面并显示错误
+                    $this->renderCreateForm($tag);
                 }
-
-                // 成功后跳转到列表页面，添加Toast消息到session
-                $_SESSION['toast_message'] = '标签创建成功';
-                $_SESSION['toast_type'] = 'success';
-                $this->redirect('/tags');
             } catch (\Exception $e) {
                 error_log("Tag creation error: " . $e->getMessage());
-                // 出错时返回创建页面并显示错误
-                $this->renderCreateForm($data, ['general' => '创建失败: ' . $e->getMessage()]);
+                $tag->errors['general'] = '创建失败: ' . $e->getMessage();
+                $this->renderCreateForm($tag);
             }
             return;
         }
 
-        // 处理 GET 请求（显示表单）
-        $this->renderCreateForm();
+        // 2. 把 $tag 传递到 view 实现渲染（GET请求 - 显示表单）
+        $this->renderCreateForm($tag);
     }
 
-    private function renderCreateForm(?array $tag = null, array $errors = []): void
+    private function renderCreateForm(Tag $tag): void
     {
         $allContent = $this->contentModel->findAll([
             'status_id' => ContentStatus::getVisibleStatuses()
@@ -233,12 +232,11 @@ class TagController extends BackendController
         }
 
         $this->render('tags/create', [
-            'tag' => $tag,
+            'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
             'videoData' => $videoData,
             'selectedVideoIds' => [],
-            'errors' => $errors,
             'isCreateMode' => true,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
@@ -273,17 +271,17 @@ class TagController extends BackendController
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $tag = $this->curModel->findById($id);
+        $tag = $this->curModel->find($id);  // 返回Tag实例
 
         if (!$tag) {
-            $this->redirect('/backend/tags');
+            $this->redirect('/tags');
             return;
         }
 
         $relatedContent = $this->curModel->getRelatedContent($id);
 
         $this->render('tags/show', [
-            'tag' => $tag,
+            'tag' => $tag,  // 传递Tag实例
             'relatedContent' => $relatedContent
         ]);
     }

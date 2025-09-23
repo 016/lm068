@@ -13,7 +13,7 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="collectionId" class="form-label">合集ID</label>
-                <input type="text" class="form-control" id="collectionId" value="#<?= str_pad($collection['id'], 3, '0', STR_PAD_LEFT) ?>" disabled>
+                <input type="text" class="form-control" id="collectionId" value="#<?= str_pad($collection->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
                 <div class="form-text">系统自动生成，不可修改</div>
             </div>
         </div>
@@ -24,7 +24,7 @@ use App\Constants\CollectionStatus;
                 <div class="collection-preview-container">
                     <button type="button" id="collectionPreviewBtn" class="btn btn-outline-primary">
                         <i class="bi bi-star" id="previewIcon"></i>
-                        <span id="previewText"><?= !$isCreateMode && $collection ? htmlspecialchars($collection['name_cn']) : '新合集' ?></span>
+                        <span id="previewText"><?= !$isCreateMode && $collection ? htmlspecialchars($collection->name_cn) : '新合集' ?></span>
                     </button>
                 </div>
                 <div class="form-text">实时预览合集显示效果</div>
@@ -36,9 +36,9 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="name_cn" class="form-label required">中文标题</label>
-                <input type="text" class="form-control<?= isset($errors['name_cn']) ? ' is-invalid' : '' ?>" id="name_cn" name="name_cn" value="<?= !$isCreateMode && $collection ? htmlspecialchars($collection['name_cn']) : ($collection['name_cn'] ?? '') ?>" required>
-                <?php if (isset($errors['name_cn'])): ?>
-                    <div class="invalid-feedback"><?= htmlspecialchars($errors['name_cn']) ?></div>
+                <input type="text" class="form-control<?= isset($collection->errors['name_cn']) ? ' is-invalid' : '' ?>" id="name_cn" name="name_cn" value="<?= htmlspecialchars($collection->name_cn ?? '') ?>" required>
+                <?php if (isset($collection->errors['name_cn'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['name_cn']) ?></div>
                 <?php endif; ?>
                 <div class="form-text">合集的中文显示名称</div>
             </div>
@@ -46,9 +46,9 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="name_en" class="form-label required">英文标题</label>
-                <input type="text" class="form-control<?= isset($errors['name_en']) ? ' is-invalid' : '' ?>" id="name_en" name="name_en" value="<?= !$isCreateMode && $collection ? htmlspecialchars($collection['name_en']) : ($collection['name_en'] ?? '') ?>" required>
-                <?php if (isset($errors['name_en'])): ?>
-                    <div class="invalid-feedback"><?= htmlspecialchars($errors['name_en']) ?></div>
+                <input type="text" class="form-control<?= isset($collection->errors['name_en']) ? ' is-invalid' : '' ?>" id="name_en" name="name_en" value="<?= htmlspecialchars($collection->name_en ?? '') ?>" required>
+                <?php if (isset($collection->errors['name_en'])): ?>
+                    <div class="invalid-feedback"><?= htmlspecialchars($collection->errors['name_en']) ?></div>
                 <?php endif; ?>
                 <div class="form-text">合集的英文显示名称</div>
             </div>
@@ -60,14 +60,14 @@ use App\Constants\CollectionStatus;
             <div class="form-group">
                 <label for="color_class" class="form-label">合集颜色</label>
                 <select class="form-control" id="color_class" name="color_class">
-                    <option value="btn-outline-primary" <?= ($isCreateMode && !isset($collection['color_class'])) || (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-primary') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-primary') ? 'selected' : '' ?>>Primary (蓝色)</option>
-                    <option value="btn-outline-secondary" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-secondary') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-secondary') ? 'selected' : '' ?>>Secondary (灰色)</option>
-                    <option value="btn-outline-success" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-success') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-success') ? 'selected' : '' ?>>Success (绿色)</option>
-                    <option value="btn-outline-danger" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-danger') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-danger') ? 'selected' : '' ?>>Danger (红色)</option>
-                    <option value="btn-outline-warning" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-warning') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-warning') ? 'selected' : '' ?>>Warning (黄色)</option>
-                    <option value="btn-outline-info" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-info') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-info') ? 'selected' : '' ?>>Info (青色)</option>
-                    <option value="btn-outline-light" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-light') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-light') ? 'selected' : '' ?>>Light (浅色)</option>
-                    <option value="btn-outline-dark" <?= (!$isCreateMode && $collection && $collection['color_class'] === 'btn-outline-dark') || ($isCreateMode && isset($collection['color_class']) && $collection['color_class'] === 'btn-outline-dark') ? 'selected' : '' ?>>Dark (深色)</option>
+                    <option value="btn-outline-primary" <?= ($collection->color_class ?? 'btn-outline-primary') === 'btn-outline-primary' ? 'selected' : '' ?>>Primary (蓝色)</option>
+                    <option value="btn-outline-secondary" <?= ($collection->color_class ?? '') === 'btn-outline-secondary' ? 'selected' : '' ?>>Secondary (灰色)</option>
+                    <option value="btn-outline-success" <?= ($collection->color_class ?? '') === 'btn-outline-success' ? 'selected' : '' ?>>Success (绿色)</option>
+                    <option value="btn-outline-danger" <?= ($collection->color_class ?? '') === 'btn-outline-danger' ? 'selected' : '' ?>>Danger (红色)</option>
+                    <option value="btn-outline-warning" <?= ($collection->color_class ?? '') === 'btn-outline-warning' ? 'selected' : '' ?>>Warning (黄色)</option>
+                    <option value="btn-outline-info" <?= ($collection->color_class ?? '') === 'btn-outline-info' ? 'selected' : '' ?>>Info (青色)</option>
+                    <option value="btn-outline-light" <?= ($collection->color_class ?? '') === 'btn-outline-light' ? 'selected' : '' ?>>Light (浅色)</option>
+                    <option value="btn-outline-dark" <?= ($collection->color_class ?? '') === 'btn-outline-dark' ? 'selected' : '' ?>>Dark (深色)</option>
                 </select>
                 <div class="form-text">选择合集在前端显示时的Bootstrap颜色样式</div>
             </div>
@@ -75,7 +75,7 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="icon_class" class="form-label">图标样式</label>
-                <input type="text" class="form-control" id="icon_class" name="icon_class" value="<?= !$isCreateMode && $collection ? htmlspecialchars($collection['icon_class']) : ($collection['icon_class'] ?? 'bi-collection') ?>" placeholder="请输入 Bootstrap 图标类名，如 bi-collection">
+                <input type="text" class="form-control" id="icon_class" name="icon_class" value="<?= htmlspecialchars($collection->icon_class ?? 'bi-collection') ?>" placeholder="请输入 Bootstrap 图标类名，如 bi-collection">
                 <div class="form-text">直接输入Bootstrap icon 类名（如 bi-collection, bi-star...）</div>
             </div>
         </div>
@@ -103,14 +103,14 @@ use App\Constants\CollectionStatus;
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="short_desc_cn" class="form-label">中文简介</label>
-                <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="<?= !$isCreateMode && $collection ? htmlspecialchars($collection['short_desc_cn']) : ($collection['short_desc_cn'] ?? '') ?>" maxlength="100">
+                <input type="text" class="form-control" id="short_desc_cn" name="short_desc_cn" value="<?= htmlspecialchars($collection->short_desc_cn ?? '') ?>" maxlength="100">
                 <div class="form-text">合集的简短中文描述（最多100字符）</div>
             </div>
         </div>
         <div class="col-md-6 pb-3">
             <div class="form-group">
                 <label for="short_desc_en" class="form-label">英文简介</label>
-                <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="<?= !$isCreateMode && $collection ? htmlspecialchars($collection['short_desc_en']) : ($collection['short_desc_en'] ?? '') ?>" maxlength="100">
+                <input type="text" class="form-control" id="short_desc_en" name="short_desc_en" value="<?= htmlspecialchars($collection->short_desc_en ?? '') ?>" maxlength="100">
                 <div class="form-text">合集的简短英文描述（最多100字符）</div>
             </div>
         </div>
@@ -118,13 +118,13 @@ use App\Constants\CollectionStatus;
 
     <div class="form-group">
         <label for="desc_cn" class="form-label">中文描述</label>
-        <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入合集的详细中文描述..." maxlength="500"><?= !$isCreateMode && $collection ? htmlspecialchars($collection['desc_cn']) : ($collection['desc_cn'] ?? '') ?></textarea>
+        <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" placeholder="请输入合集的详细中文描述..." maxlength="500"><?= htmlspecialchars($collection->desc_cn ?? '') ?></textarea>
         <div class="form-text">合集的详细中文说明（最多500字符）</div>
     </div>
 
     <div class="form-group">
         <label for="desc_en" class="form-label">英文描述</label>
-        <textarea class="form-control" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the collection..." maxlength="500"><?= !$isCreateMode && $collection ? htmlspecialchars($collection['desc_en']) : ($collection['desc_en'] ?? '') ?></textarea>
+        <textarea class="form-control" id="desc_en" name="desc_en" rows="3" placeholder="Please enter the detailed English description of the collection..." maxlength="500"><?= htmlspecialchars($collection->desc_en ?? '') ?></textarea>
         <div class="form-text">合集的详细英文说明（最多500字符）</div>
     </div>
 </div>
@@ -141,7 +141,7 @@ use App\Constants\CollectionStatus;
             <div class="form-group">
                 <div class="switch-group" id="statusSwitchGroup">
                     <div class="custom-switch collection-edit-switch" id="statusSwitch">
-                        <input type="checkbox" id="status_id" name="status_id" value="<?= CollectionStatus::ENABLED->value ?>" <?= ($isCreateMode && !isset($collection['status_id'])) || (!$isCreateMode && $collection && $collection['status_id']) || ($isCreateMode && isset($collection['status_id']) && $collection['status_id']) ? 'checked' : '' ?>>
+                        <input type="checkbox" id="status_id" name="status_id" value="<?= CollectionStatus::ENABLED->value ?>" <?= ($collection->status_id ?? CollectionStatus::ENABLED->value) ? 'checked' : '' ?>>
                         <span class="switch-slider"></span>
                     </div>
                     <label for="status_id" class="switch-label">显示状态</label>

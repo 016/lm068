@@ -9,11 +9,11 @@ use App\Constants\TagStatus;
     </div>
     
     <div class="form-body">
-        <?php if (!empty($errors)): ?>
+        <?php if (!empty($tag->errors)): ?>
         <div class="alert alert-danger mb-4">
             <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> 表单验证失败</h6>
             <ul class="mb-0">
-                <?php foreach ($errors as $field => $error): ?>
+                <?php foreach ($tag->errors as $field => $error): ?>
                     <li><?= htmlspecialchars($error) ?></li>
                 <?php endforeach; ?>
             </ul>
@@ -23,7 +23,7 @@ use App\Constants\TagStatus;
         <form id="tagEditForm" action="<?= $formAction ?>" method="POST">
             <?php if (!$isCreateMode): ?>
                 <input type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($tag['id']) ?>">
+                <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($tag->id) ?>">
             <?php endif; ?>
             
             <!-- 基本信息 -->
@@ -38,7 +38,7 @@ use App\Constants\TagStatus;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="tagId" class="form-label">标签ID</label>
-                            <input type="text" class="form-control" id="tagId" value="#<?= str_pad($tag['id'], 3, '0', STR_PAD_LEFT) ?>" disabled>
+                            <input type="text" class="form-control" id="tagId" value="#<?= str_pad($tag->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
                             <div class="form-text">系统自动生成，不可修改</div>
                         </div>
                     </div>
@@ -48,8 +48,8 @@ use App\Constants\TagStatus;
                             <label for="tagPreview" class="form-label">标签预览</label>
                             <div class="tag-preview-container">
                                 <button type="button" id="tagPreviewBtn" class="btn btn-outline-primary">
-                                    <i class="bi <?= htmlspecialchars($tag['icon_class'] ?? 'bi-star') ?>" id="previewIcon"></i>
-                                    <span id="previewText"><?= htmlspecialchars($tag['name_cn'] ?? '新标签') ?></span>
+                                    <i class="bi <?= htmlspecialchars($tag->icon_class ?? 'bi-star') ?>" id="previewIcon"></i>
+                                    <span id="previewText"><?= htmlspecialchars($tag->name_cn ?? '新标签') ?></span>
                                 </button>
                             </div>
                             <div class="form-text">实时预览标签显示效果</div>
@@ -61,11 +61,11 @@ use App\Constants\TagStatus;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="name_cn" class="form-label required">中文标题</label>
-                            <input type="text" class="form-control <?= !empty($errors['name_cn']) ? 'is-invalid' : '' ?>" 
-                                   id="name_cn" name="name_cn" value="<?= htmlspecialchars($tag['name_cn'] ?? '') ?>" 
+                            <input type="text" class="form-control <?= !empty($tag->errors['name_cn']) ? 'is-invalid' : '' ?>" 
+                                   id="name_cn" name="name_cn" value="<?= htmlspecialchars($tag->name_cn ?? '') ?>" 
                                    maxlength="20" required>
-                            <?php if (!empty($errors['name_cn'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($errors['name_cn']) ?></div>
+                            <?php if (!empty($tag->errors['name_cn'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($tag->errors['name_cn']) ?></div>
                             <?php else: ?>
                                 <div class="valid-feedback">check passed.</div>
                             <?php endif; ?>
@@ -75,11 +75,11 @@ use App\Constants\TagStatus;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="name_en" class="form-label required">英文标题</label>
-                            <input type="text" class="form-control <?= !empty($errors['name_en']) ? 'is-invalid' : '' ?>" 
-                                   id="name_en" name="name_en" value="<?= htmlspecialchars($tag['name_en'] ?? '') ?>" 
+                            <input type="text" class="form-control <?= !empty($tag->errors['name_en']) ? 'is-invalid' : '' ?>" 
+                                   id="name_en" name="name_en" value="<?= htmlspecialchars($tag->name_en ?? '') ?>" 
                                    maxlength="40" required>
-                            <?php if (!empty($errors['name_en'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($errors['name_en']) ?></div>
+                            <?php if (!empty($tag->errors['name_en'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($tag->errors['name_en']) ?></div>
                             <?php else: ?>
                                 <div class="valid-feedback">check passed.</div>
                             <?php endif; ?>
@@ -93,14 +93,14 @@ use App\Constants\TagStatus;
                         <div class="form-group">
                             <label for="color_class" class="form-label">标签颜色</label>
                             <select class="form-control" id="color_class" name="color_class">
-                                <option value="btn-outline-primary" <?= ($tag['color_class'] ?? 'btn-outline-primary') === 'btn-outline-primary' ? 'selected' : '' ?>>Primary (蓝色)</option>
-                                <option value="btn-outline-secondary" <?= ($tag['color_class'] ?? '') === 'btn-outline-secondary' ? 'selected' : '' ?>>Secondary (灰色)</option>
-                                <option value="btn-outline-success" <?= ($tag['color_class'] ?? '') === 'btn-outline-success' ? 'selected' : '' ?>>Success (绿色)</option>
-                                <option value="btn-outline-danger" <?= ($tag['color_class'] ?? '') === 'btn-outline-danger' ? 'selected' : '' ?>>Danger (红色)</option>
-                                <option value="btn-outline-warning" <?= ($tag['color_class'] ?? '') === 'btn-outline-warning' ? 'selected' : '' ?>>Warning (黄色)</option>
-                                <option value="btn-outline-info" <?= ($tag['color_class'] ?? '') === 'btn-outline-info' ? 'selected' : '' ?>>Info (青色)</option>
-                                <option value="btn-outline-light" <?= ($tag['color_class'] ?? '') === 'btn-outline-light' ? 'selected' : '' ?>>Light (浅色)</option>
-                                <option value="btn-outline-dark" <?= ($tag['color_class'] ?? '') === 'btn-outline-dark' ? 'selected' : '' ?>>Dark (深色)</option>
+                                <option value="btn-outline-primary" <?= ($tag->color_class ?? 'btn-outline-primary') === 'btn-outline-primary' ? 'selected' : '' ?>>Primary (蓝色)</option>
+                                <option value="btn-outline-secondary" <?= ($tag->color_class ?? '') === 'btn-outline-secondary' ? 'selected' : '' ?>>Secondary (灰色)</option>
+                                <option value="btn-outline-success" <?= ($tag->color_class ?? '') === 'btn-outline-success' ? 'selected' : '' ?>>Success (绿色)</option>
+                                <option value="btn-outline-danger" <?= ($tag->color_class ?? '') === 'btn-outline-danger' ? 'selected' : '' ?>>Danger (红色)</option>
+                                <option value="btn-outline-warning" <?= ($tag->color_class ?? '') === 'btn-outline-warning' ? 'selected' : '' ?>>Warning (黄色)</option>
+                                <option value="btn-outline-info" <?= ($tag->color_class ?? '') === 'btn-outline-info' ? 'selected' : '' ?>>Info (青色)</option>
+                                <option value="btn-outline-light" <?= ($tag->color_class ?? '') === 'btn-outline-light' ? 'selected' : '' ?>>Light (浅色)</option>
+                                <option value="btn-outline-dark" <?= ($tag->color_class ?? '') === 'btn-outline-dark' ? 'selected' : '' ?>>Dark (深色)</option>
                             </select>
                             <div class="form-text">选择标签在前端显示时的Bootstrap颜色样式</div>
                         </div>
@@ -109,7 +109,7 @@ use App\Constants\TagStatus;
                         <div class="form-group">
                             <label for="icon_class" class="form-label">图标样式</label>
                             <input type="text" class="form-control" id="icon_class" name="icon_class" 
-                                   value="<?= htmlspecialchars($tag['icon_class'] ?? 'bi-star') ?>" 
+                                   value="<?= htmlspecialchars($tag->icon_class ?? 'bi-star') ?>" 
                                    placeholder="请输入 Bootstrap 图标类名，如 bi-star">
                             <div class="form-text">直接输入Bootstrap icon 类名（如 bi-star, bi-heart...）</div>
                         </div>
@@ -140,9 +140,9 @@ use App\Constants\TagStatus;
                             <label for="short_desc_cn" class="form-label">中文简介</label>
                             <input type="text" class="form-control <?= !empty($errors['short_desc_cn']) ? 'is-invalid' : '' ?>" 
                                    id="short_desc_cn" name="short_desc_cn" 
-                                   value="<?= htmlspecialchars($tag['short_desc_cn'] ?? '') ?>" maxlength="100">
-                            <?php if (!empty($errors['short_desc_cn'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($errors['short_desc_cn']) ?></div>
+                                   value="<?= htmlspecialchars($tag->short_desc_cn ?? '') ?>" maxlength="100">
+                            <?php if (!empty($tag->errors['short_desc_cn'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($tag->errors['short_desc_cn']) ?></div>
                             <?php endif; ?>
                             <div class="form-text">标签的简短中文描述（最多100字符）</div>
                         </div>
@@ -150,11 +150,11 @@ use App\Constants\TagStatus;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="short_desc_en" class="form-label">英文简介</label>
-                            <input type="text" class="form-control <?= !empty($errors['short_desc_en']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" class="form-control <?= !empty($tag->errors['short_desc_en']) ? 'is-invalid' : '' ?>" 
                                    id="short_desc_en" name="short_desc_en" 
-                                   value="<?= htmlspecialchars($tag['short_desc_en'] ?? '') ?>" maxlength="100">
-                            <?php if (!empty($errors['short_desc_en'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($errors['short_desc_en']) ?></div>
+                                   value="<?= htmlspecialchars($tag->short_desc_en ?? '') ?>" maxlength="100">
+                            <?php if (!empty($tag->errors['short_desc_en'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($tag->errors['short_desc_en']) ?></div>
                             <?php endif; ?>
                             <div class="form-text">标签的简短英文描述（最多100字符）</div>
                         </div>
@@ -164,14 +164,14 @@ use App\Constants\TagStatus;
                 <div class="form-group">
                     <label for="desc_cn" class="form-label">中文描述</label>
                     <textarea class="form-control" id="desc_cn" name="desc_cn" rows="3" 
-                              placeholder="请输入标签的详细中文描述..." maxlength="500"><?= htmlspecialchars($tag['desc_cn'] ?? '') ?></textarea>
+                              placeholder="请输入标签的详细中文描述..." maxlength="500"><?= htmlspecialchars($tag->desc_cn ?? '') ?></textarea>
                     <div class="form-text">标签的详细中文说明（最多500字符）</div>
                 </div>
 
                 <div class="form-group">
                     <label for="desc_en" class="form-label">英文描述</label>
                     <textarea class="form-control" id="desc_en" name="desc_en" rows="3" 
-                              placeholder="Please enter the detailed English description of the tag..." maxlength="500"><?= htmlspecialchars($tag['desc_en'] ?? '') ?></textarea>
+                              placeholder="Please enter the detailed English description of the tag..." maxlength="500"><?= htmlspecialchars($tag->desc_en ?? '') ?></textarea>
                     <div class="form-text">标签的详细英文说明（最多500字符）</div>
                 </div>
             </div>
@@ -189,7 +189,7 @@ use App\Constants\TagStatus;
                             <div class="switch-group" id="statusSwitchGroup">
                                 <div class="custom-switch tag-edit-switch" id="statusSwitch">
                                     <input type="checkbox" id="status_id" name="status_id" value="<?= TagStatus::ENABLED->value ?>" 
-                                           <?= ($tag['status_id'] ?? TagStatus::ENABLED->value) ? 'checked' : '' ?>>
+                                           <?= ($tag->status_id ?? TagStatus::ENABLED->value) ? 'checked' : '' ?>>
                                     <span class="switch-slider"></span>
                                 </div>
                                 <label for="status_id" class="switch-label">显示状态</label>
@@ -218,7 +218,7 @@ use App\Constants\TagStatus;
 
                 <div class="stats-row">
                     <div class="stat-item">
-                        <div class="stat-value"><?= number_format($tag['content_cnt'] ?? 0) ?></div>
+                        <div class="stat-value"><?= number_format($tag->content_cnt ?? 0) ?></div>
                         <div class="stat-label">关联视频数量</div>
                     </div>
                     <div class="stat-item">
@@ -257,14 +257,14 @@ use App\Constants\TagStatus;
                         <div class="form-group">
                             <label for="created_at" class="form-label">创建时间</label>
                             <input type="text" class="form-control" id="created_at" name="created_at" 
-                                   value="<?= htmlspecialchars($tag['created_at'] ?? '') ?>" disabled>
+                                   value="<?= htmlspecialchars($tag->created_at ?? '') ?>" disabled>
                         </div>
                     </div>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="updated_at" class="form-label">最后更新时间</label>
                             <input type="text" class="form-control" id="updated_at" name="updated_at" 
-                                   value="<?= htmlspecialchars($tag['updated_at'] ?? '') ?>" disabled>
+                                   value="<?= htmlspecialchars($tag->updated_at ?? '') ?>" disabled>
                         </div>
                     </div>
                 </div>

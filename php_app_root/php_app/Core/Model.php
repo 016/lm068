@@ -12,10 +12,77 @@ abstract class Model
     protected $fillable = [];
     protected $timestamps = true;
     protected $isNew = true;
+    
+    // Active Record 属性
+    protected array $attributes = [];
+    protected array $original = [];
+    public array $errors = [];
 
     public function __construct()
     {
         $this->db = Database::getInstance();
+    }
+
+    /**
+     * 魔术方法 - 获取属性
+     */
+    public function __get(string $key)
+    {
+        return $this->attributes[$key] ?? null;
+    }
+
+    /**
+     * 魔术方法 - 设置属性
+     */
+    public function __set(string $key, $value): void
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * 魔术方法 - 检查属性是否存在
+     */
+    public function __isset(string $key): bool
+    {
+        return isset($this->attributes[$key]);
+    }
+
+    /**
+     * 填充模型属性
+     */
+    public function fill(array $data): self
+    {
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->fillable) || empty($this->fillable)) {
+                $this->attributes[$key] = $value;
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * 获取所有属性
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * 设置原始数据（用于追踪变更）
+     */
+    public function setOriginal(array $data): void
+    {
+        $this->original = $data;
+        $this->attributes = array_merge($this->attributes, $data);
+    }
+
+    /**
+     * 检查模型是否已修改
+     */
+    public function isDirty(): bool
+    {
+        return $this->attributes !== $this->original;
     }
 
     /**
@@ -37,19 +104,22 @@ abstract class Model
         $this->isNew = $isNew;
     }
 
-    public function find(int $id): ?array
+    public function find(int $id): ?self
     {
         $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
         $result = $this->db->fetch($sql, ['id' => $id]);
         
         if ($result) {
-            $this->setNew(false);
+            $instance = new static();
+            $instance->setOriginal($result);
+            $instance->setNew(false);
+            return $instance;
         }
         
-        return $result;
+        return null;
     }
 
-    public function findById(int $id): ?array
+    public function findById(int $id): ?self
     {
         return $this->find($id);
     }
@@ -273,13 +343,74 @@ abstract class Model
     }
 
     /**
-     * 验证数据是否符合规则
+     * 保存模型（新增或更新）
+     */
+    public function save(): bool
+    {
+        // 验证数据
+        $this->errors = [];
+        if (!$this->validate()) {
+            return false;
+        }
+
+        try {
+            if ($this->isNew()) {
+                $data = $this->getAttributes();
+                if ($this->timestamps) {
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                }
+                
+                $id = $this->db->insert($this->table, $this->filterFillable($data));
+                $this->attributes[$this->primaryKey] = $id;
+                $this->setNew(false);
+                $this->setOriginal($this->attributes);
+            } else {
+                $data = $this->getAttributes();
+                if ($this->timestamps) {
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                }
+                
+                $this->db->update(
+                    $this->table,
+                    $this->filterFillable($data),
+                    "{$this->primaryKey} = :id",
+                    ['id' => $this->attributes[$this->primaryKey]]
+                );
+                $this->setOriginal($this->attributes);
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->errors['general'] = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * 验证模型数据
+     */
+    public function validate(): bool
+    {
+        $this->errors = [];
+
+        // 子类可以重写此方法实现具体验证逻辑
+        if (method_exists($this, 'rules')) {
+            $rules = $this->rules(!$this->isNew());
+            $excludeId = $this->isNew() ? null : $this->attributes[$this->primaryKey] ?? null;
+            $this->errors = $this->validateRules($this->attributes, $rules, $excludeId);
+        }
+
+        return empty($this->errors);
+    }
+
+    /**
+     * 兼容旧的验证方法
      * @param array $data 要验证的数据
      * @param bool $isUpdate 是否为更新操作
      * @param ?int $excludeId 更新时排除的ID
      * @return array 错误信息数组，为空表示验证通过
      */
-    public function validate(array $data, bool $isUpdate = false, ?int $excludeId = null): array
+    public function validateData(array $data, bool $isUpdate = false, ?int $excludeId = null): array
     {
         $errors = [];
 
