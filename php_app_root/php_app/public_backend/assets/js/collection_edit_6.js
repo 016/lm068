@@ -57,8 +57,8 @@ class CollectionEditManager {
     }
 
     // 读取 PHP 填充数据。
-    contentList = window.inputData.contentList;
-    selectedContentIds = window.inputData.selectedContentIds;
+    contentList = window.inputData.contentList ? window.inputData.contentList : [];
+    selectedContentIds = window.inputData.selectedContentIds ? window.inputData.selectedContentIds : [];
 
     /**
      * 初始化页面特定的多选组件
