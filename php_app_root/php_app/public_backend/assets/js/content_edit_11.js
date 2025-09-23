@@ -46,43 +46,12 @@ class ContentEditManager {
             enableNotification: true
         });
     }
-    // 内容标签数据
-    tagsData = [
-        { id: '1', text: '前端开发' },
-        { id: '2', text: 'JavaScript' },
-        { id: '3', text: 'React' },
-        { id: '4', text: 'Vue.js' },
-        { id: '5', text: 'Angular' },
-        { id: '6', text: 'TypeScript' },
-        { id: '7', text: 'CSS3' },
-        { id: '8', text: 'HTML5' },
-        { id: '9', text: 'Node.js' },
-        { id: '10', text: '性能优化' },
-        { id: '11', text: '响应式设计' },
-        { id: '12', text: '移动端开发' },
-        { id: '13', text: 'webpack' },
-        { id: '14', text: 'ES6+' },
-        { id: '15', text: 'UI/UX' },
-        { id: '16', text: '工程化' },
-        { id: '17', text: '测试' },
-        { id: '18', text: '部署' }
-    ];
-    selectedTagIds = ['1', '4', '7', '15'];
 
-    // 内容合集数据
-    collectionsData = [
-        { id: '1', text: '前端基础教程' },
-        { id: '2', text: 'JavaScript进阶' },
-        { id: '3', text: 'React实战项目' },
-        { id: '4', text: 'Vue开发指南' },
-        { id: '5', text: '性能优化专题' },
-        { id: '6', text: '工具链使用' },
-        { id: '7', text: '设计模式' },
-        { id: '8', text: '算法与数据结构' },
-        { id: '9', text: '移动端开发' },
-        { id: '10', text: '全栈开发' }
-    ];
-    selectedCollectionIds = ['1', '4', '7', '10'];
+    // 读取 PHP 填充数据。
+    tagsList = window.inputData.tagsList;
+    selectedTagIds = window.inputData.selectedTagIds;
+    collectionsList = window.inputData.collectionsList;
+    selectedCollectionIds = window.inputData.selectedCollectionIds;
 
     /**
      * 初始化页面特定的多选组件
@@ -95,7 +64,7 @@ class ContentEditManager {
         }
 
 
-        const selectedTags = this.tagsData.filter(tag => this.selectedTagIds.includes(tag.id));
+        const selectedTags = this.tagsList.filter(tag => this.selectedTagIds.includes(tag.id));
         // 初始化标签多选组件
         const tagsInstance = this.formUtils.initializeMultiSelect('tags', {
             container: '#videoTagsMultiSelect',
@@ -104,12 +73,12 @@ class ContentEditManager {
             hiddenInputName: 'tag_ids',
             maxDisplayItems: 3,
             columns: 2,
-            data: this.tagsData,
+            data: this.tagsList,
             selected: selectedTags,
             allowClear: true
         });
 
-        const selectedCollections = this.collectionsData.filter(collection => this.selectedCollectionIds.includes(collection.id));
+        const selectedCollections = this.collectionsList.filter(collection => this.selectedCollectionIds.includes(collection.id));
         // 初始化合集多选组件
         const collectionsInstance = this.formUtils.initializeMultiSelect('collections', {
             container: '#videoCollectionsMultiSelect',
@@ -118,7 +87,7 @@ class ContentEditManager {
             hiddenInputName: 'collection_ids',
             maxDisplayItems: 2,
             columns: 1,
-            data: this.collectionsData,
+            data: this.collectionsList,
             selected: selectedCollections,
             allowClear: true
         });
@@ -134,27 +103,6 @@ class ContentEditManager {
         if (collectionsInstance) {
             document.getElementById('videoCollectionsMultiSelect').addEventListener('multiselect:change', (e) => {
                 this.handleCollectionsChange(e.detail);
-            });
-        }
-    }
-
-    /**
-     * 绑定页面特定事件
-     */
-    bindPageEvents() {
-        // 监听内容类型变更，动态调整表单显示
-        const contentTypeSelect = document.getElementById('content_type_id');
-        if (contentTypeSelect) {
-            contentTypeSelect.addEventListener('change', (e) => {
-                this.handleContentTypeChange(e.target.value);
-            });
-        }
-
-        // 监听状态变更，显示相应的提示信息
-        const statusSelect = document.getElementById('status_id');
-        if (statusSelect) {
-            statusSelect.addEventListener('change', (e) => {
-                this.handleStatusChange(e.target.value);
             });
         }
     }
@@ -206,52 +154,6 @@ class ContentEditManager {
         // 合集数量限制提示
         if (selected.length > 5) {
             this.showNotification('建议一个内容不要加入超过5个合集', 'warning');
-        }
-    }
-
-    /**
-     * 处理内容类型变更
-     * 根据内容类型显示/隐藏相关字段
-     */
-    handleContentTypeChange(typeId) {
-        const durationField = document.getElementById('duration')?.parentElement;
-        const authorField = document.getElementById('author')?.parentElement;
-        
-        switch (typeId) {
-            case '21': // 视频
-                if (durationField) durationField.style.display = 'block';
-                if (authorField) authorField.style.display = 'block';
-                this.showNotification('已切换到视频内容类型', 'info');
-                break;
-            case '11': // 一般文章
-                if (durationField) durationField.style.display = 'none';
-                if (authorField) authorField.style.display = 'block';
-                this.showNotification('已切换到文章内容类型', 'info');
-                break;
-            case '1': // 网站公告
-                if (durationField) durationField.style.display = 'none';
-                if (authorField) authorField.style.display = 'none';
-                this.showNotification('已切换到公告内容类型', 'info');
-                break;
-        }
-    }
-
-    /**
-     * 处理状态变更
-     * 根据发布状态给出相应提示
-     */
-    handleStatusChange(statusId) {
-        const statusMessages = {
-            '0': { message: '内容已设为隐藏状态', type: 'warning' },
-            '1': { message: '内容保存为草稿', type: 'info' },
-            '11': { message: '创意阶段，开始构思', type: 'info' },
-            '91': { message: '内容准备发布', type: 'success' },
-            '99': { message: '内容已发布', type: 'success' }
-        };
-
-        const status = statusMessages[statusId];
-        if (status) {
-            this.showNotification(status.message, status.type);
         }
     }
 

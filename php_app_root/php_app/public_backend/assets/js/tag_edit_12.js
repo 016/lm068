@@ -56,9 +56,9 @@ class TagEditManager {
     }
 
 
-    // 从后端获取视频数据
-    videoData = window.tagCreateData ? window.tagCreateData.videoData : [];
-    selectedVideoIds = window.tagCreateData ? window.tagCreateData.selectedVideoIds : [];
+    // 读取 PHP 填充数据。
+    contentList = window.inputData.contentList;
+    selectedContentIds = window.inputData.selectedContentIds;
 
     /**
      * 初始化页面特定的多选组件
@@ -70,7 +70,7 @@ class TagEditManager {
             return;
         }
 
-        const selectedVideos = this.videoData.filter(video => this.selectedVideoIds.includes(video.id));
+        const selectedContentIds = this.contentList.filter(video => this.selectedContentIds.includes(video.id));
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
@@ -80,8 +80,8 @@ class TagEditManager {
             hiddenInputName: 'related_videos',
             maxDisplayItems: 7,
             columns: 4,
-            data: this.videoData,
-            selected: selectedVideos,
+            data: this.contentList,
+            selected: selectedContentIds,
             allowClear: true
         });
 
@@ -150,9 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 兼容性：暴露给外部使用的工具函数（保持向后兼容）
 window.TagEditForm = {
-    updateVideoStats: (selectedVideos) => {
+    updateVideoStats: (selectedContentIds) => {
         // 使用通用的统计更新方法，支持大数字格式化
-        window.tagEditManager?.formUtils?.updateCommonContentStats(selectedVideos, '.stats-row .stat-item .stat-value', true);
+        window.tagEditManager?.formUtils?.updateCommonContentStats(selectedContentIds, '.stats-row .stat-item .stat-value', true);
     },
     getSelectedVideos: () => {
         return window.tagEditManager?.getSelectedVideos() || [];
