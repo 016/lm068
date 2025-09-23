@@ -121,7 +121,7 @@ use App\Constants\ContentType;
         <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="/content/create" class="btn btn-primary d-flex align-items-center gap-2">
+                    <a href="/contents/create" class="btn btn-primary d-flex align-items-center gap-2">
                         <i class="bi bi-plus-lg"></i>
                         创建新内容
                     </a>
@@ -344,10 +344,10 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/content/edit/<?= $item['id'] ?>" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/contents/edit/<?= $item['id'] ?>" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="/content/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
+                                            <a href="/contents/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             <button class="btn btn-outline-danger btn-sm" title="删除" onclick="deleteContent(<?= $item['id'] ?>)">
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 function deleteContent(id) {
     if (confirm('确定要删除这个内容吗？此操作不可撤销。')) {
-        fetch('/content/destroy/' + id, {
+        fetch('/contents/destroy/' + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

@@ -43,7 +43,7 @@ class ContentController extends BackendController
             unset($_SESSION['toast_message'], $_SESSION['toast_type']);
         }
 
-        $this->render('content/index', [
+        $this->render('contents/index', [
             'content' => $content,
             'filters' => $filters,
             'stats' => $stats,
@@ -169,7 +169,7 @@ class ContentController extends BackendController
             ];
         }
 
-        $this->render('content/edit', [
+        $this->render('contents/edit', [
             'content' => $content,  // 传递Content实例而不是数组
             'relatedTags' => $relatedTags,
             'relatedCollections' => $relatedCollections,
@@ -293,7 +293,7 @@ class ContentController extends BackendController
             ];
         }
 
-        $this->render('content/create', [
+        $this->render('contents/create', [
             'content' => $content,  // 传递Content实例而不是数组
             'relatedTags' => [],
             'relatedCollections' => [],
@@ -345,7 +345,7 @@ class ContentController extends BackendController
         $relatedTags = $this->curModel->getRelatedTags($id);
         $relatedCollections = $this->curModel->getRelatedCollections($id);
 
-        $this->render('content/show', [
+        $this->render('contents/show', [
             'content' => $content,  // 传递Content实例
             'relatedTags' => $relatedTags,
             'relatedCollections' => $relatedCollections

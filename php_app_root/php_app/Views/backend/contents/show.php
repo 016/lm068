@@ -271,7 +271,7 @@ use App\Constants\ContentType;
                             <i class="bi bi-arrow-left"></i>
                             返回列表
                         </a>
-                        <a href="/content/edit/<?= $content->id ?>" class="btn btn-primary">
+                        <a href="/contents/edit/<?= $content->id ?>" class="btn btn-primary">
                             <i class="bi bi-pencil"></i>
                             编辑内容
                         </a>

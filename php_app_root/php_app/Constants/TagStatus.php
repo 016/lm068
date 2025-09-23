@@ -45,4 +45,11 @@ enum TagStatus: int
             self::DISABLED->value => self::DISABLED->label(),
         ];
     }
+
+    public static function getVisibleStatuses(): array
+    {
+        return [
+            self::ENABLED->value
+        ];
+    }
 }
