@@ -257,7 +257,7 @@ use App\Constants\ContentType;
                             <th class="table-filter-cell" data-column="id">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>" >
                             </th>
-                            <th class="table-filter-cell" data-column="content_type">
+                            <th class="table-filter-cell" data-column="content_type_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部类型</option>
                                     <?php foreach (ContentType::getAllValues() as $value => $label): ?>
@@ -265,7 +265,7 @@ use App\Constants\ContentType;
                                     <?php endforeach; ?>
                                 </select>
                             </th>
-                            <th class="table-filter-cell" data-column="title">
+                            <th class="table-filter-cell" data-column="name">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索标题" value="<?= htmlspecialchars($filters['title'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="author">

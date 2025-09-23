@@ -30,7 +30,7 @@ class ContentController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id', 'title', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'name', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
         var_dump($filters);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
