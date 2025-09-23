@@ -51,12 +51,14 @@ $router->post('/login', 'Backend\\AuthController@login');
 $router->get('/logout', 'Backend\\AuthController@logout');
 
 // 内容管理
-$router->get('/content', 'Backend\\ContentController@index');
-$router->get('/content/create', 'Backend\\ContentController@create');
-$router->post('/content', 'Backend\\ContentController@store');
-$router->get('/content/{id}/edit', 'Backend\\ContentController@edit');
-$router->post('/content/{id}', 'Backend\\ContentController@update');
-$router->post('/content/{id}/delete', 'Backend\\ContentController@delete');
+$router->get('/contents', 'Backend\\ContentController@index');
+$router->get('/contents/create', 'Backend\\ContentController@create');
+$router->post('/contents/create', 'Backend\\ContentController@create');  // 创建路由，GET显示表单，POST处理数据
+$router->post('/contents/bulk-action', 'Backend\\ContentController@bulkAction');
+$router->post('/contents/bulk-import', 'Backend\\ContentController@bulkImport');
+$router->get('/contents/{id}/edit', 'Backend\\ContentController@edit');
+$router->post('/contents/{id}/edit', 'Backend\\ContentController@edit');  // 编辑路由，GET显示表单，POST处理数据
+$router->delete('/contents/{id}', 'Backend\\ContentController@destroy');
 
 // 用户管理
 $router->get('/users', 'Backend\\UserController@index');
@@ -67,13 +69,10 @@ $router->post('/users/{id}/ban', 'Backend\\UserController@ban');
 $router->get('/tags', 'Backend\\TagController@index');
 $router->get('/tags/create', 'Backend\\TagController@create');
 $router->post('/tags/create', 'Backend\\TagController@create');  // 创建路由，GET显示表单，POST处理数据
-//$router->post('/tags', 'Backend\\TagController@store');
 $router->post('/tags/bulk-action', 'Backend\\TagController@bulkAction');
 $router->post('/tags/bulk-import', 'Backend\\TagController@bulkImport');
 $router->get('/tags/{id}/edit', 'Backend\\TagController@edit');
 $router->post('/tags/{id}/edit', 'Backend\\TagController@edit');  // 编辑路由，GET显示表单，POST处理数据
-//$router->post('/tags/{id}', 'Backend\\TagController@update');
-//$router->get('/tags/{id}', 'Backend\\TagController@show');
 $router->delete('/tags/{id}', 'Backend\\TagController@destroy');
 
 // 合集管理 - 具体路径在参数路径之前
