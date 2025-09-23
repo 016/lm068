@@ -56,9 +56,7 @@ class FormUtils {
      * });
      */
     init() {
-        console.log('f1')
         this.bindFormEvents();
-        console.log('f2')
         
         if (this.options.enableCharacterCounter) {
             this.initializeCharacterCounters();
