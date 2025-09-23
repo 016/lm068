@@ -265,7 +265,7 @@ use App\Constants\ContentType;
                                     <?php endforeach; ?>
                                 </select>
                             </th>
-                            <th class="table-filter-cell" data-column="name">
+                            <th class="table-filter-cell" data-column="title">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索标题" value="<?= htmlspecialchars($filters['title'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="author">

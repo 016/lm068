@@ -159,7 +159,9 @@ abstract class Model
             'id' => 'exact',
             'status_id' => 'exact',
             'name' => 'bilingual_like',
-            'description' => 'bilingual_like',
+            'title' => 'bilingual_like',
+            'short_desc' => 'bilingual_like',
+            'desc' => 'bilingual_like',
             'icon_class' => 'like',
             'content_cnt' => 'custom'
         ];
@@ -270,15 +272,10 @@ abstract class Model
                 
             case 'bilingual_like':
                 // 双语模糊搜索 (中英文字段)
-                if ($field === 'name') {
-                    $whereConditions[] = "(name_cn LIKE :{$paramKey}_cn OR name_en LIKE :{$paramKey}_en)";
-                    $params["{$paramKey}_cn"] = "%{$value}%";
-                    $params["{$paramKey}_en"] = "%{$value}%";
-                } elseif ($field === 'description') {
-                    $whereConditions[] = "(desc_cn LIKE :{$paramKey}_cn OR desc_en LIKE :{$paramKey}_en)";
-                    $params["{$paramKey}_cn"] = "%{$value}%";
-                    $params["{$paramKey}_en"] = "%{$value}%";
-                }
+                $whereConditions[] = "({$field}_cn LIKE :{$paramKey}_cn OR {$field}_en LIKE :{$paramKey}_en)";
+                $params["{$paramKey}_cn"] = "%{$value}%";
+                $params["{$paramKey}_en"] = "%{$value}%";
+
                 break;
                 
             case 'auto':
