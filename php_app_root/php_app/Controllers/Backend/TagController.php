@@ -187,8 +187,7 @@ class TagController extends BackendController
                     }
 
                     // 成功后跳转到列表页面
-                    $_SESSION['toast_message'] = '标签创建成功';
-                    $_SESSION['toast_type'] = 'success';
+                    $this->setFlashMessage('标签创建成功', 'success');
                     $this->redirect('/tags');
                 } else {
                     // 保存失败，返回创建页面并显示错误
