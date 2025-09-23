@@ -24,6 +24,12 @@ class Collection extends Model implements HasStatuses
         return CollectionStatus::class;
     }
 
+    public function findByField(string $field, $value): ?array
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE {$field} = :value LIMIT 1";
+        return $this->db->fetch($sql, ['value' => $value]);
+    }
+
     public function getStats(): array
     {
         $sql = "SELECT 

@@ -223,6 +223,31 @@
                 </div>
             </header>
 
+            <?php
+            // 显示Flash消息
+            if (!isset($_SESSION)) {
+                session_start();
+            }
+            
+            if (isset($_SESSION['flash_message'])):
+                $flash = $_SESSION['flash_message'];
+                unset($_SESSION['flash_message']);
+                $alertClass = match($flash['type']) {
+                    'success' => 'alert-success',
+                    'error' => 'alert-danger',
+                    'warning' => 'alert-warning',
+                    default => 'alert-info'
+                };
+            ?>
+                <div class="container-fluid mt-3">
+                    <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
+                        <i class="bi bi-<?= $flash['type'] === 'success' ? 'check-circle' : ($flash['type'] === 'error' ? 'exclamation-triangle' : 'info-circle') ?>"></i>
+                        <?= htmlspecialchars($flash['message']) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <?= $content ?? '' ?>
 
             <!-- Footer -->

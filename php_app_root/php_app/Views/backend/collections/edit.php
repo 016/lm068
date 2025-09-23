@@ -38,10 +38,21 @@ use App\Constants\CollectionStatus;
                 </div>
                 
                 <div class="form-body">
-                    <form id="collectionEditForm" action="<?= $collection ? "/collections/{$collection['id']}" : '/collections' ?>" method="POST">
+                    <form id="collectionEditForm" action="<?= $collection ? "/collections/{$collection['id']}/update" : '/collections/create' ?>" method="POST">
                         <?php if ($collection): ?>
                             <input type="hidden" name="_method" value="PUT">
                             <input type="hidden" name="id" id="id" value="<?= $collection['id'] ?>">
+                        <?php endif; ?>
+                        
+                        <?php if (isset($errors) && !empty($errors)): ?>
+                            <div class="alert alert-danger mb-4">
+                                <h6><i class="bi bi-exclamation-triangle"></i> 请修正以下错误：</h6>
+                                <ul class="mb-0">
+                                    <?php foreach ($errors as $field => $error): ?>
+                                        <li><?= htmlspecialchars($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
                         <?php endif; ?>
                         
                         <!-- 基本信息 -->
@@ -79,14 +90,20 @@ use App\Constants\CollectionStatus;
                                 <div class="col-md-6 pb-3">
                                     <div class="form-group">
                                         <label for="name_cn" class="form-label required">中文标题</label>
-                                        <input type="text" class="form-control" id="name_cn" name="name_cn" value="<?= $collection ? htmlspecialchars($collection['name_cn']) : '' ?>" required>
+                                        <input type="text" class="form-control<?= isset($errors['name_cn']) ? ' is-invalid' : '' ?>" id="name_cn" name="name_cn" value="<?= $collection ? htmlspecialchars($collection['name_cn']) : '' ?>" required>
+                                        <?php if (isset($errors['name_cn'])): ?>
+                                            <div class="invalid-feedback"><?= htmlspecialchars($errors['name_cn']) ?></div>
+                                        <?php endif; ?>
                                         <div class="form-text">合集的中文显示名称</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 pb-3">
                                     <div class="form-group">
                                         <label for="name_en" class="form-label required">英文标题</label>
-                                        <input type="text" class="form-control" id="name_en" name="name_en" value="<?= $collection ? htmlspecialchars($collection['name_en']) : '' ?>" required>
+                                        <input type="text" class="form-control<?= isset($errors['name_en']) ? ' is-invalid' : '' ?>" id="name_en" name="name_en" value="<?= $collection ? htmlspecialchars($collection['name_en']) : '' ?>" required>
+                                        <?php if (isset($errors['name_en'])): ?>
+                                            <div class="invalid-feedback"><?= htmlspecialchars($errors['name_en']) ?></div>
+                                        <?php endif; ?>
                                         <div class="form-text">合集的英文显示名称</div>
                                     </div>
                                 </div>
@@ -268,71 +285,9 @@ use App\Constants\CollectionStatus;
 </main>
 
 <script>
-// Multi-select initialization
-document.addEventListener('DOMContentLoaded', function() {
-    const contentOptions = <?= json_encode($contentOptions) ?>;
-    
-    if (typeof initMultiSelect === 'function') {
-        initMultiSelect('videoMultiSelect', {
-            options: contentOptions,
-            name: 'related_videos[]',
-            placeholder: '选择关联视频...',
-            searchPlaceholder: '搜索视频标题...'
-        });
-    }
-    
-    // Preview update
-    const nameInput = document.getElementById('name_cn');
-    const iconInput = document.getElementById('icon_class');
-    const colorSelect = document.getElementById('color_class');
-    const previewBtn = document.getElementById('collectionPreviewBtn');
-    const previewIcon = document.getElementById('previewIcon');
-    const previewText = document.getElementById('previewText');
-    
-    function updatePreview() {
-        const name = nameInput.value || '新合集';
-        const iconClass = iconInput.value || 'bi-collection';
-        const colorClass = colorSelect.value || 'btn-outline-primary';
-        
-        previewText.textContent = name;
-        previewIcon.className = `bi ${iconClass}`;
-        previewBtn.className = `btn ${colorClass}`;
-    }
-    
-    if (nameInput) nameInput.addEventListener('input', updatePreview);
-    if (iconInput) iconInput.addEventListener('input', updatePreview);
-    if (colorSelect) colorSelect.addEventListener('change', updatePreview);
-    
-    updatePreview();
-});
-
-// Form submission
-document.getElementById('collectionEditForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const url = this.getAttribute('action');
-    const method = <?= $collection ? '"PUT"' : '"POST"' ?>;
-    
-    fetch(url, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            window.location.href = '/collections';
-        } else {
-            alert('操作失败: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('操作失败');
-    });
-});
+// 将动态数据传递给JS
+window.inputData = {
+    contentList: <?= json_encode($contentOptions) ?>,
+    selectedContentIds: <?= json_encode($selectedContentIds ?? []) ?>
+};
 </script>

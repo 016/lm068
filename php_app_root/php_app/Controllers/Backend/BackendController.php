@@ -75,6 +75,32 @@ class BackendController extends Controller
         exit;
     }
 
+    protected function setFlashMessage(string $message, string $type = 'info'): void
+    {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $_SESSION['flash_message'] = [
+            'message' => $message,
+            'type' => $type
+        ];
+    }
+
+    protected function getFlashMessage(): ?array
+    {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        
+        if (isset($_SESSION['flash_message'])) {
+            $message = $_SESSION['flash_message'];
+            unset($_SESSION['flash_message']);
+            return $message;
+        }
+        
+        return null;
+    }
+
     /**
      * 从请求中提取搜索过滤条件
      */
