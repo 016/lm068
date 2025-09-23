@@ -106,6 +106,7 @@ class CollectionController extends BackendController
                     $this->curModel->syncContentAssociations($id, $contentIds);
                 }
 
+                $this->setFlashMessage('合集更新成功', 'success');
                 // 成功后跳转到列表页面
                 $this->redirect('/collections');
             } else {
@@ -113,8 +114,9 @@ class CollectionController extends BackendController
                 $this->renderEditForm($collection);
             }
         } catch (\Exception $e) {
-            error_log("Collection update error: " . $e->getMessage());
-            $collection->errors['general'] = '更新失败: ' . $e->getMessage();
+            $fullMsg = $e->getFile() .' - L:'. $e->getLine(). ' - '. $e->getMessage() . '- <br/>'. $e->getTraceAsString();
+            error_log("Collection update error: " . $fullMsg);
+            $collection->errors['general'] = '更新失败: ' . $fullMsg;
             $this->renderEditForm($collection);
         }
     }

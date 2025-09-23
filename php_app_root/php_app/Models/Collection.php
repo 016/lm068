@@ -188,11 +188,11 @@ class Collection extends Model implements HasStatuses
                 SET content_cnt = (
                     SELECT COUNT(*) 
                     FROM content_collection 
-                    WHERE collection_id = :collection_id
+                    WHERE collection_id = :collection_id_1
                 )
-                WHERE id = :collection_id";
+                WHERE id = :collection_id_2";
         
-        $this->db->query($sql, ['collection_id' => $collectionId]);
+        $this->db->query($sql, ['collection_id_1' => $collectionId, 'collection_id_2' => $collectionId]);
         return true;
     }
 
@@ -220,8 +220,10 @@ class Collection extends Model implements HasStatuses
         
         try {
             $this->db->query("DELETE FROM content_collection WHERE collection_id = :collection_id", ['collection_id' => $collectionId]);
-            
+
             foreach ($contentIds as $contentId) {
+
+                if (empty($contentId)) { continue; }
                 $this->db->query(
                     "INSERT INTO content_collection (collection_id, content_id) VALUES (:collection_id, :content_id)",
                     ['collection_id' => $collectionId, 'content_id' => $contentId]

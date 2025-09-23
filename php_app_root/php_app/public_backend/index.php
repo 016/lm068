@@ -84,7 +84,7 @@ $router->post('/collections/bulk-action', 'Backend\\CollectionController@bulkAct
 $router->post('/collections/bulk-import', 'Backend\\CollectionController@bulkImport');
 $router->get('/collections/export', 'Backend\\CollectionController@exportData');
 $router->get('/collections/{id}/edit', 'Backend\\CollectionController@edit');
-$router->post('/collections/{id}', 'Backend\\CollectionController@update');
+$router->post('/collections/{id}/edit', 'Backend\\CollectionController@edit');
 $router->get('/collections/{id}', 'Backend\\CollectionController@show');
 $router->delete('/collections/{id}', 'Backend\\CollectionController@destroy');
 
