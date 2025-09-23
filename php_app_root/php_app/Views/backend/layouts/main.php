@@ -224,7 +224,7 @@
             </header>
 
             <?php
-            // 显示Flash消息
+            // 显示Flash消息 - 使用JavaScript showToast方法
             if (!isset($_SESSION)) {
                 session_start();
             }
@@ -232,20 +232,22 @@
             if (isset($_SESSION['flash_message'])):
                 $flash = $_SESSION['flash_message'];
                 unset($_SESSION['flash_message']);
-                $alertClass = match($flash['type']) {
-                    'success' => 'alert-success',
-                    'error' => 'alert-danger',
-                    'warning' => 'alert-warning',
-                    default => 'alert-info'
+                $toastType = match($flash['type']) {
+                    'success' => 'success',
+                    'error' => 'danger',
+                    'warning' => 'warning',
+                    default => 'info'
                 };
             ?>
-                <div class="container-fluid mt-3">
-                    <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
-                        <i class="bi bi-<?= $flash['type'] === 'success' ? 'check-circle' : ($flash['type'] === 'error' ? 'exclamation-triangle' : 'info-circle') ?>"></i>
-                        <?= htmlspecialchars($flash['message']) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        if (typeof showToast === 'function') {
+                            showToast('<?= addslashes(htmlspecialchars($flash['message'])) ?>', '<?= $toastType ?>');
+                        } else {
+                            console.error('showToast function not found');
+                        }
+                    });
+                </script>
             <?php endif; ?>
 
             <?= $content ?? '' ?>
