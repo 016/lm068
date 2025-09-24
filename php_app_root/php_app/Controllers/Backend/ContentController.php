@@ -280,6 +280,16 @@ class ContentController extends BackendController
     }
 
     /**
+     * 获取CSV文件必需的字段 - 重写父类方法适配Content模型
+     * 
+     * @return array
+     */
+    protected function getRequiredCSVFields(): array
+    {
+        return ['title_en']; // 内容必须有英文标题，中文标题可选
+    }
+
+    /**
      * for content detail view page.
      * @param Request $request
      * @return void
