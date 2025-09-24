@@ -15,7 +15,8 @@ class AdminUser extends Model
 
     public function findByUsername(string $username): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE username = :username AND status_id = :status_id LIMIT 1";
+        $table = static::getTableName();
+        $sql = "SELECT * FROM {$table} WHERE username = :username AND status_id = :status_id LIMIT 1";
         return $this->db->fetch($sql, [
             'username' => $username,
             'status_id' => AdminStatus::ENABLED->value

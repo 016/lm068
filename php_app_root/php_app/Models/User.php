@@ -15,13 +15,15 @@ class User extends Model
 
     public function findByEmail(string $email): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
+        $table = static::getTableName();
+        $sql = "SELECT * FROM {$table} WHERE email = :email LIMIT 1";
         return $this->db->fetch($sql, ['email' => $email]);
     }
 
     public function findByUsername(string $username): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE username = :username LIMIT 1";
+        $table = static::getTableName();
+        $sql = "SELECT * FROM {$table} WHERE username = :username LIMIT 1";
         return $this->db->fetch($sql, ['username' => $username]);
     }
 

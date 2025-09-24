@@ -145,18 +145,20 @@ class Collection extends Model implements HasStatuses
 
     public function findByField(string $field, $value): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE {$field} = :value LIMIT 1";
+        $table = static::getTableName();
+        $sql = "SELECT * FROM {$table} WHERE {$field} = :value LIMIT 1";
         return $this->db->fetch($sql, ['value' => $value]);
     }
 
     public function getStats(): array
     {
+        $table = static::getTableName();
         $sql = "SELECT 
                     COUNT(*) as total_collections,
                     SUM(CASE WHEN status_id = :active_status THEN 1 ELSE 0 END) as active_collections,
                     SUM(CASE WHEN status_id = :inactive_status THEN 1 ELSE 0 END) as inactive_collections,
                     SUM(content_cnt) as total_content_associations
-                FROM {$this->table}";
+                FROM {$table}";
         
         $result = $this->db->fetch($sql, [
             'active_status' => CollectionStatus::ENABLED->value,
@@ -184,7 +186,8 @@ class Collection extends Model implements HasStatuses
 
     public function updateContentCount(int $collectionId): bool
     {
-        $sql = "UPDATE {$this->table} 
+        $table = static::getTableName();
+        $sql = "UPDATE {$table} 
                 SET content_cnt = (
                     SELECT COUNT(*) 
                     FROM content_collection 

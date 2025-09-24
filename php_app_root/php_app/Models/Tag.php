@@ -147,12 +147,14 @@ class Tag extends Model implements HasStatuses
 
     public function getStats(): array
     {
+
         $sql = "SELECT 
                     COUNT(*) as total_tags,
                     SUM(CASE WHEN status_id = :active_status THEN 1 ELSE 0 END) as active_tags,
                     SUM(CASE WHEN status_id = :inactive_status THEN 1 ELSE 0 END) as inactive_tags,
                     SUM(content_cnt) as total_content_associations
-                FROM {$this->table}";
+                FROM ".static::getTableName();
+
         
         $result = $this->db->fetch($sql, [
             'active_status' => TagStatus::ENABLED->value,
@@ -180,7 +182,9 @@ class Tag extends Model implements HasStatuses
 
     public function updateContentCount(int $tagId): bool
     {
-        $sql = "UPDATE {$this->table} 
+        $table = static::getTableName();
+
+        $sql = "UPDATE {$table} 
                 SET content_cnt = (
                     SELECT COUNT(*) 
                     FROM content_tag 

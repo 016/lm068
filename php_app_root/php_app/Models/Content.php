@@ -197,13 +197,14 @@ class Content extends Model implements HasStatuses
      */
     public function getStats(): array
     {
+        $table = static::getTableName();
         $sql = "SELECT 
                     COUNT(*) as total_content,
                     SUM(CASE WHEN status_id = :published_status THEN 1 ELSE 0 END) as published_content,
                     SUM(CASE WHEN status_id = :draft_status THEN 1 ELSE 0 END) as draft_content,
                     SUM(view_cnt) as total_views,
                     AVG(view_cnt) as avg_views
-                FROM {$this->table}";
+                FROM {$table}";
         
         $result = $this->db->fetch($sql, [
             'published_status' => ContentStatus::PUBLISHED->value,
@@ -376,7 +377,8 @@ class Content extends Model implements HasStatuses
      */
     public function incrementViewCount(int $contentId): bool
     {
-        $sql = "UPDATE {$this->table} SET view_cnt = view_cnt + 1 WHERE id = :id";
+        $table = static::getTableName();
+        $sql = "UPDATE {$table} SET view_cnt = view_cnt + 1 WHERE id = :id";
         $this->db->query($sql, ['id' => $contentId]);
         return true;
     }
