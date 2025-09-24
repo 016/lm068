@@ -22,9 +22,6 @@ class ContentEditManager {
         // 初始化页面特定的多选组件
         this.initializePageMultiSelects();
         
-        // 绑定页面特定事件
-        this.bindPageEvents();
-        
         console.log('ContentEditManager initialized');
     }
 
@@ -67,11 +64,11 @@ class ContentEditManager {
         const selectedTags = this.tagsList.filter(tag => this.selectedTagIds.includes(tag.id));
         // 初始化标签多选组件
         const tagsInstance = this.formUtils.initializeMultiSelect('tags', {
-            container: '#videoTagsMultiSelect',
+            container: '#contentTagsMultiSelect',
             placeholder: '选择内容标签...',
             searchPlaceholder: '搜索标签...',
             hiddenInputName: 'tag_ids',
-            maxDisplayItems: 3,
+            maxDisplayItems: 5,
             columns: 2,
             data: this.tagsList,
             selected: selectedTags,
@@ -81,12 +78,12 @@ class ContentEditManager {
         const selectedCollections = this.collectionsList.filter(collection => this.selectedCollectionIds.includes(collection.id));
         // 初始化合集多选组件
         const collectionsInstance = this.formUtils.initializeMultiSelect('collections', {
-            container: '#videoCollectionsMultiSelect',
+            container: '#contentCollectionsMultiSelect',
             placeholder: '选择内容合集...',
             searchPlaceholder: '搜索合集...',
             hiddenInputName: 'collection_ids',
-            maxDisplayItems: 2,
-            columns: 1,
+            maxDisplayItems: 5,
+            columns: 2,
             data: this.collectionsList,
             selected: selectedCollections,
             allowClear: true
@@ -94,14 +91,14 @@ class ContentEditManager {
 
         // 绑定标签变更的特定处理
         if (tagsInstance) {
-            document.getElementById('videoTagsMultiSelect').addEventListener('multiselect:change', (e) => {
+            document.getElementById('contentTagsMultiSelect').addEventListener('multiselect:change', (e) => {
                 this.handleTagsChange(e.detail);
             });
         }
 
         // 绑定合集变更的特定处理
         if (collectionsInstance) {
-            document.getElementById('videoCollectionsMultiSelect').addEventListener('multiselect:change', (e) => {
+            document.getElementById('contentCollectionsMultiSelect').addEventListener('multiselect:change', (e) => {
                 this.handleCollectionsChange(e.detail);
             });
         }

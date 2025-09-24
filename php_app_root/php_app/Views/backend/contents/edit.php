@@ -28,7 +28,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-12">
             <?php 
-            $formAction = '/contents/edit/' . $content->id;
+            $formAction = "/contents/{$content->id}/edit";
             include __DIR__ . '/_form.php'; 
             ?>
         </div>

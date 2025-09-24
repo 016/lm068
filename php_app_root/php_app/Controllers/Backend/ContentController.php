@@ -130,43 +130,23 @@ class ContentController extends BackendController
     {
         $relatedTags = $this->curModel->getRelatedTags($content->id);
         $relatedCollections = $this->curModel->getRelatedCollections($content->id);
+        $selectedTagIds = array_column($relatedTags, 'id');
+        $selectedCollectionIds = array_column($relatedCollections, 'id');
         
-        $allTags = $this->tagModel->findAll([
+        $tagsList = $this->tagModel->findAll([
             'status_id' => TagStatus::getVisibleStatuses()
         ]);
         
-        $allCollections = $this->collectionModel->findAll([
+        $collectionsList = $this->collectionModel->findAll([
             'status_id' => CollectionStatus::getVisibleStatuses()
         ]);
 
-        $tagOptions = [];
-        $selectedTagIds = array_column($relatedTags, 'id');
-
-        foreach ($allTags as $tag) {
-            $tagOptions[] = [
-                'id' => $tag['id'],
-                'text' => $tag['name_cn'] ?: $tag['name_en'],
-                'selected' => in_array($tag['id'], $selectedTagIds)
-            ];
-        }
-
-        $collectionOptions = [];
-        $selectedCollectionIds = array_column($relatedCollections, 'id');
-
-        foreach ($allCollections as $collection) {
-            $collectionOptions[] = [
-                'id' => $collection['id'],
-                'text' => $collection['name_cn'] ?: $collection['name_en'],
-                'selected' => in_array($collection['id'], $selectedCollectionIds)
-            ];
-        }
-
         $this->render('contents/edit', [
             'content' => $content,  // 传递Content实例而不是数组
-            'relatedTags' => $relatedTags,
-            'relatedCollections' => $relatedCollections,
-            'tagOptions' => $tagOptions,
-            'collectionOptions' => $collectionOptions,
+            'tagsList' => $tagsList,
+            'collectionsList' => $collectionsList,
+            'selectedTagIds' => $selectedTagIds,
+            'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '编辑内容 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'content_edit_11.js']
@@ -249,37 +229,19 @@ class ContentController extends BackendController
             'status_id' => CollectionStatus::getVisibleStatuses()
         ]);
 
-        $tagOptions = [];
-        foreach ($allTags as $tag) {
-            $tagOptions[] = [
-                'id' => $tag['id'],
-                'text' => $tag['name_cn'] ?: $tag['name_en'],
-                'selected' => false
-            ];
-        }
-
-        $collectionOptions = [];
-        foreach ($allCollections as $collection) {
-            $collectionOptions[] = [
-                'id' => $collection['id'],
-                'text' => $collection['name_cn'] ?: $collection['name_en'],
-                'selected' => false
-            ];
-        }
-
         // 准备标签数据用于JS
-        $tagData = [];
+        $tagsList = [];
         foreach ($allTags as $tag) {
-            $tagData[] = [
+            $tagsList[] = [
                 'id' => (string)$tag['id'],
                 'text' => $tag['name_cn'] ?: $tag['name_en']
             ];
         }
 
         // 准备合集数据用于JS
-        $collectionData = [];
+        $collectionsList = [];
         foreach ($allCollections as $collection) {
-            $collectionData[] = [
+            $collectionsList[] = [
                 'id' => (string)$collection['id'],
                 'text' => $collection['name_cn'] ?: $collection['name_en']
             ];
@@ -289,10 +251,8 @@ class ContentController extends BackendController
             'content' => $content,  // 传递Content实例而不是数组
             'relatedTags' => [],
             'relatedCollections' => [],
-            'tagOptions' => $tagOptions,
-            'collectionOptions' => $collectionOptions,
-            'tagData' => $tagData,
-            'collectionData' => $collectionData,
+            'tagsList' => $tagsList,
+            'collectionsList' => $collectionsList,
             'selectedTagIds' => [],
             'selectedCollectionIds' => [],
             'pageTitle' => '创建内容 - 视频分享网站管理后台',

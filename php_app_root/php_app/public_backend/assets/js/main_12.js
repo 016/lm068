@@ -2405,7 +2405,7 @@ function uploadCSVFile(file, config = {}) {
 }
 
 // ========== GLOBAL EXPORTS ==========
-window.inputData = {};
+// window.inputData = {};
 window.AdminCommon = {
     showModal,
     showToast,

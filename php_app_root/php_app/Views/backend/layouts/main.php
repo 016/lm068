@@ -39,7 +39,7 @@
                         <span class="nav-text">仪表板</span>
                         <span class="tooltip">仪表板</span>
                     </a>
-                    <a href="/content" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/content') !== false ? 'active' : '' ?>">
+                    <a href="/contents" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/contents') !== false ? 'active' : '' ?>">
                         <i class="bi bi-camera-video nav-icon"></i>
                         <span class="nav-text">内容管理</span>
                         <span class="tooltip">内容管理</span>

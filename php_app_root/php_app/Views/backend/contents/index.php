@@ -344,7 +344,7 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/contents/edit/<?= $item['id'] ?>" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/contents/<?= $item['id'] ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <a href="/contents/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
