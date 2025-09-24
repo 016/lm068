@@ -289,7 +289,7 @@ use App\Constants\TagStatus;
                                         </div>
                                     </td>
                                     <td class="table-cell" data-column="status_id">
-                                        <span class="badge rounded-pill <?= $tag['status_id'] ? 'badge-success' : 'badge-danger' ?>">
+                                        <span class="badge rounded-pill <?= $tag['status_id'] ? 'text-bg-success' : 'text-bg-danger' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
                                             <?= $tag['status_id'] ? '显示' : '隐藏' ?>
                                         </span>

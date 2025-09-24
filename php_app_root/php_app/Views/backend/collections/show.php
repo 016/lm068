@@ -57,7 +57,7 @@ use App\Constants\ContentStatus;
                                 <div class="form-group">
                                     <label class="form-label">状态</label>
                                     <div class="form-control-plaintext">
-                                        <span class="badge rounded-pill <?= $collection['status_id'] ? 'badge-success' : 'badge-danger' ?>">
+                                        <span class="badge rounded-pill <?= $collection['status_id'] ? 'text-bg-success' : 'text-bg-danger' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
                                             <?= $collection['status_id'] ? '显示' : '隐藏' ?>
                                         </span>
@@ -167,8 +167,11 @@ use App\Constants\ContentStatus;
                                             ?>
                                         </td>
                                         <td>
-                                            <span class="badge rounded-pill <?= $content['status_id'] == ContentStatus::PUBLISHED->value ? 'badge-success' : 'badge-warning' ?>">
-                                                <?= ContentStatus::from($content['status_id'])->label() ?>
+                                            <?php
+                                            $contentStatus = ContentStatus::from($content['status_id']);
+                                            ?>
+                                            <span class="badge rounded-pill <?= $contentStatus->bootstrapBadgeClass() ?>">
+                                                <?= $contentStatus->label() ?>
                                             </span>
                                         </td>
                                         <td><?= number_format($content['view_cnt']) ?></td>

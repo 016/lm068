@@ -299,7 +299,7 @@ use App\Constants\CollectionStatus;
                                 </div>
                             </td>
                             <td class="table-cell" data-column="status_id">
-                                <span class="badge rounded-pill <?= $collection['status_id'] ? 'badge-success' : 'badge-danger' ?>">
+                                <span class="badge rounded-pill <?= $collection['status_id'] ? 'text-bg-success' : 'text-bg-danger' ?>">
                                     <i class="bi bi-circle-fill badge-icon"></i>
                                     <?= $collection['status_id'] ? '显示' : '隐藏' ?>
                                 </span>

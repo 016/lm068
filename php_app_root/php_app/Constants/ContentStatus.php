@@ -67,6 +67,23 @@ enum ContentStatus: int
         };
     }
 
+    public function bootstrapBadgeClass(): string
+    {
+        return match($this) {
+            self::HIDDEN => 'text-bg-danger',         // 隐藏 - 红色(危险)
+            self::DRAFT => 'text-bg-secondary',       // 草稿 - 灰色
+            self::CREATIVE => 'text-bg-light',        // 创意 - 浅灰色
+            self::SCRIPT_START => 'text-bg-info',     // 脚本开 - 蓝色(信息)
+            self::SCRIPT_DONE => 'text-bg-primary',   // 脚本完 - 主色(蓝色)
+            self::SHOOTING_START => 'text-bg-warning', // 开拍 - 黄色(警告)
+            self::SHOOTING_DONE => 'text-bg-warning',  // 拍完 - 黄色(警告)
+            self::EDITING_START => 'text-bg-warning',  // 开剪 - 黄色(进行中)
+            self::EDITING_DONE => 'text-bg-info',      // 剪完 - 蓝色(接近完成)
+            self::PENDING_PUBLISH => 'text-bg-warning', // 待发布 - 黄色(等待)
+            self::PUBLISHED => 'text-bg-success',      // 已发布 - 绿色(成功)
+        };
+    }
+
     public function isVisible(): bool
     {
         return in_array($this, [

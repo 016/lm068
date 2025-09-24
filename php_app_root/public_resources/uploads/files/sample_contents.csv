@@ -1,0 +1,6 @@
+title_cn,title_en,short_desc_cn,short_desc_en,desc_cn,desc_en,color_class,icon_class,status_id
+科技,Technology,科技相关内容,Technology related content,用于标记科技类视频和文章,For marking technology videos and articles,btn-outline-primary,bi-cpu,1
+教育,Education,教育学习内容,Educational content,教育培训相关的视频内容,Educational and training related video content,btn-outline-success,bi-book,1
+娱乐,Entertainment,娱乐休闲内容,Entertainment content,娱乐休闲类视频内容,Entertainment and leisure video content,btn-outline-warning,bi-emoji-smile,1
+生活,Lifestyle,生活类内容,Lifestyle content,日常生活相关的视频内容,Daily life related video content,btn-outline-info,bi-house,1
+美食,Food,美食烹饪内容,Food and cooking content,美食制作和烹饪相关内容,Food preparation and cooking related content,btn-outline-danger,bi-cup-hot,1

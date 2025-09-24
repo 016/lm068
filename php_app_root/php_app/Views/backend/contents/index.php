@@ -329,13 +329,7 @@ use App\Constants\ContentType;
                                     <td class="table-cell" data-column="status_id">
                                         <?php 
                                         $status = ContentStatus::tryFrom($item['status_id']);
-                                        $statusClass = match($item['status_id']) {
-                                            ContentStatus::PUBLISHED->value => 'badge-success',
-                                            ContentStatus::PENDING_PUBLISH->value => 'badge-warning',
-                                            ContentStatus::DRAFT->value => 'badge-secondary',
-                                            ContentStatus::HIDDEN->value => 'badge-danger',
-                                            default => 'badge-info'
-                                        };
+                                        $statusClass = $status ? $status->bootstrapBadgeClass() : 'text-bg-secondary';
                                         ?>
                                         <span class="badge rounded-pill <?= $statusClass ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i> 
@@ -388,6 +382,7 @@ use App\Constants\ContentType;
                             <div class="d-flex align-items-center gap-2">
                                 <span class="pagination-text">每页</span>
                                 <select class="form-select form-select-sm" id="itemsPerPage" style="width: auto;">
+                                    <option value="5" selected>5</option>
                                     <option value="10" selected>10</option>
                                     <option value="20">20</option>
                                     <option value="50">50</option>
@@ -406,18 +401,8 @@ use App\Constants\ContentType;
     </div>
 </main>
 
-<?php if (!empty($toastMessage)): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    showToast('<?= addslashes($toastMessage) ?>', '<?= $toastType ?>');
-});
-</script>
-<?php endif; ?>
-
 <?php
 // 包含内容批量导入组件
 include __DIR__ . '/../common/_bulkImportContent.php';
 ?>
-
-<!-- 删除功能现在通过 main_12.js 的 TableOperations 统一处理 -->
 

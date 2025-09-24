@@ -200,13 +200,7 @@ use App\Constants\ContentType;
                                     <div class="form-control-plaintext">
                                         <?php 
                                         $status = ContentStatus::tryFrom($content->status_id);
-                                        $statusClass = match($content->status_id) {
-                                            ContentStatus::PUBLISHED->value => 'badge-success',
-                                            ContentStatus::PENDING_PUBLISH->value => 'badge-warning',
-                                            ContentStatus::DRAFT->value => 'badge-secondary',
-                                            ContentStatus::HIDDEN->value => 'badge-danger',
-                                            default => 'badge-info'
-                                        };
+                                        $statusClass = $status ? $status->bootstrapBadgeClass() : 'text-bg-secondary';
                                         ?>
                                         <span class="badge <?= $statusClass ?>">
                                             <?= htmlspecialchars($status ? $status->label() : '未知') ?>
