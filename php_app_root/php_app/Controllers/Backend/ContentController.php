@@ -133,12 +133,11 @@ class ContentController extends BackendController
         $selectedTagIds = array_column($relatedTags, 'id');
         $selectedCollectionIds = array_column($relatedCollections, 'id');
         
-        $tagsList = $this->tagModel->findAll([
+        $tagsList = Tag::loadList([
             'status_id' => TagStatus::getVisibleStatuses()
         ]);
-        var_dump($tagsList);
         
-        $collectionsList = $this->collectionModel->findAll([
+        $collectionsList = Collection::loadList([
             'status_id' => CollectionStatus::getVisibleStatuses()
         ]);
 

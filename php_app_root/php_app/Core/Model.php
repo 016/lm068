@@ -280,6 +280,28 @@ abstract class Model
     }
 
     /**
+     * for quick get model list for multi-select init.
+     *  force format to [[id, text], ... ]
+     * @param array $conditions
+     * @param string|null $textField
+     * @param string|null $idField
+     * @param int|null $limit
+     * @param int|null $offset
+     * @param string|null $orderBy
+     * @return array
+     */
+    public static function loadList(?array $conditions = [], ?string $textField='name_cn', ?string $idField='id', ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
+    {
+        $models = static::findAll($conditions, $limit,$offset,$orderBy);
+
+        $returnArray = [];
+        foreach ($models as $oneModel) {
+            $returnArray[] = ['id' => $oneModel[$idField], 'text' => $oneModel[$textField]];
+        }
+        return $returnArray;
+    }
+
+    /**
      * 处理自定义字段过滤逻辑
      * 子类可以重写此方法来处理特定字段的复杂逻辑
      * 

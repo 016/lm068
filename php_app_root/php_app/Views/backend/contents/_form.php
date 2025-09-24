@@ -302,3 +302,16 @@ use App\Constants\ContentType;
         </form>
     </div>
 </div>
+
+<script>
+    // 将动态数据传递给JS
+    window.inputData = {
+        // 内容标签数据
+        tagsList: <?= json_encode($tagsList ?? []) ?>,
+        selectedTagIds: <?= json_encode($selectedTagIds ?? []) ?>,
+
+        // 内容合集数据
+        collectionsList: <?= json_encode($collectionsList ?? []) ?>,
+        selectedCollectionIds: <?= json_encode($selectedCollectionIds ?? []) ?>,
+    };
+</script>

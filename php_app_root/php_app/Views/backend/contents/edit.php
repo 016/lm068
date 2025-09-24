@@ -35,20 +35,3 @@
     </div>
 </main>
 
-<script>
-// 将动态数据传递给JS
-window.inputData = {
-    // 内容标签数据
-    tagsList: <?= json_encode(array_map(function($tag) {
-        return ['id' => (string)$tag['id'], 'text' => $tag['text']];
-    }, $tagOptions ?? [])) ?>,
-    selectedTagIds: <?= json_encode(array_map('strval', array_column($relatedTags ?? [], 'id'))) ?>,
-
-    // 内容合集数据
-    collectionsList: <?= json_encode(array_map(function($collection) {
-        return ['id' => (string)$collection['id'], 'text' => $collection['text']];
-    }, $collectionOptions ?? [])) ?>,
-    selectedCollectionIds: <?= json_encode(array_map('strval', array_column($relatedCollections ?? [], 'id'))) ?>,
-};
-</script>
-
