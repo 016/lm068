@@ -38,7 +38,7 @@ abstract class Model
      * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
      * @return array 格式化后的数组结果
      */
-    public static function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null, callable|array|null $formatter = null): array
+    public static function findAll(array $conditions = [], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null, callable|array|null $formatter = null): array
     {
         $db = Database::getInstance();
         $table = static::getTableName();
