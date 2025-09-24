@@ -302,7 +302,7 @@ use App\Constants\TagStatus;
                                             <a href="/tags/<?= htmlspecialchars($tag['id']) ?>" class="btn btn-outline-info btn-sm" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <button class="btn btn-outline-danger btn-sm delete-tag" title="删除" data-id="<?= htmlspecialchars($tag['id']) ?>">
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($tag['id']) ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>

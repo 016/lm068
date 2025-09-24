@@ -87,7 +87,7 @@ function initTagListPage() {
     // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
     window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
         tbodySelector: tableManager.config.tbodySelector,
-        deleteButtonSelector: '.delete-tag',
+        deleteButtonSelector: '.delete-item',
         endpoint: '/tags/{id}',
         entityName: '标签',
         tableManager: tableManager

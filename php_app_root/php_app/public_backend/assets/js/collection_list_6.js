@@ -110,7 +110,7 @@ function initCollectionListPage() {
     // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
     window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
         tbodySelector: tableManager.config.tbodySelector,
-        deleteButtonSelector: '.delete-tag',
+        deleteButtonSelector: '.delete-item',
         endpoint: '/collections/{id}',
         entityName: '合集',
         tableManager: tableManager

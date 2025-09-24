@@ -1475,7 +1475,7 @@ const TableOperations = {
      * @param {Object} config - 配置对象
      * @param {string} config.tableSelector - 表格选择器，如 '#dataTable'
      * @param {string} config.tbodySelector - 表格body选择器，如 '#tagTableBody'
-     * @param {string} config.deleteButtonSelector - 删除按钮选择器，如 '.delete-tag'
+     * @param {string} config.deleteButtonSelector - 删除按钮选择器，如 '.delete-item'
      * @param {string} config.endpoint - 删除API端点，如 '/tags/{id}'
      * @param {string} config.entityName - 实体名称，如 '标签'
      * @param {Object} config.tableManager - 表格管理器实例（可选）
