@@ -205,12 +205,12 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="content_type">
+                            <th class="table-cell sortable-header" data-column="content_type_id">
                                 <div class="d-flex align-items-center">
                                     类型
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="content_type" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="content_type" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="content_type_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="content_type_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -241,12 +241,12 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="status">
+                            <th class="table-cell sortable-header" data-column="status_id">
                                 <div class="d-flex align-items-center">
                                     状态
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -295,7 +295,7 @@ use App\Constants\ContentType;
                                         </div>
                                     </td>
                                     <td class="table-cell table-id" data-column="id"><?= $item['id'] ?></td>
-                                    <td class="table-cell" data-column="content_type">
+                                    <td class="table-cell" data-column="content_type_id">
                                         <?php 
                                         $type = ContentType::tryFrom($item['content_type_id']);
                                         $typeClass = match($item['content_type_id']) {
@@ -326,7 +326,7 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell" data-column="author"><?= htmlspecialchars($item['author'] ?? 'DP') ?></td>
                                     <td class="table-cell" data-column="view_cnt"><?= number_format($item['view_cnt'] ?? 0) ?></td>
-                                    <td class="table-cell" data-column="status">
+                                    <td class="table-cell" data-column="status_id">
                                         <?php 
                                         $status = ContentStatus::tryFrom($item['status_id']);
                                         $statusClass = match($item['status_id']) {
