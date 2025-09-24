@@ -125,7 +125,7 @@ use App\Constants\ContentType;
                         <i class="bi bi-plus-lg"></i>
                         创建新内容
                     </a>
-                    <button class="btn btn-outline-primary d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="bulkImportBtn">
                         <i class="bi bi-download"></i>
                         批量导入
                     </button>
@@ -350,7 +350,7 @@ use App\Constants\ContentType;
                                             <a href="/contents/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <button class="btn btn-outline-danger btn-sm" title="删除" onclick="deleteContent(<?= $item['id'] ?>)">
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= $item['id'] ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -414,30 +414,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <?php endif; ?>
 
-<script>
-function deleteContent(id) {
-    if (confirm('确定要删除这个内容吗？此操作不可撤销。')) {
-        fetch('/contents/destroy/' + id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast(data.message, 'success');
-                // 移除表格行
-                document.querySelector(`tr[data-id="${id}"]`).remove();
-            } else {
-                showToast(data.message, 'error');
-            }
-        })
-        .catch(error => {
-            showToast('删除失败，请稍后重试', 'error');
-        });
-    }
-}
-</script>
+<?php
+// 包含内容批量导入组件
+include __DIR__ . '/../common/_bulkImportContent.php';
+?>
+
+<!-- 删除功能现在通过 main_12.js 的 TableOperations 统一处理 -->
 
