@@ -314,4 +314,29 @@ use App\Constants\ContentType;
         collectionsList: <?= json_encode($collectionsList ?? []) ?>,
         selectedCollectionIds: <?= json_encode($selectedCollectionIds ?? []) ?>,
     };
+
+    window.inputData = {
+        // 内容标签数据
+        tagsList: [
+            {id: 1, text: '前端开发'},
+            {id: 2, text: 'JavaScript'},
+            {id: 3, text: 'React'},
+            {id: 4, text: 'Vue.js'},
+            {id: 5, text: 'Angular'},
+            {id: 6, text: 'TypeScript'},
+            {id: 7, text: 'CSS3'},
+            {id: 8, text: 'HTML5'},
+            {id: 9, text: 'Node.js'},
+            {id: 10, text: '性能优化'},
+            {id: 11, text: '响应式设计'},
+            {id: 12, text: '移动端开发'},
+            {id: 13, text: 'webpack'},
+            {id: 14, text: 'ES6+'},
+            {id: 15, text: 'UI/UX'},
+            {id: 16, text: '工程化'},
+            {id: 17, text: '测试'},
+            {id: 18, text: '部署'}
+        ],
+        selectedTagIds: ['1', '4', '7', '15'],
+    };
 </script>

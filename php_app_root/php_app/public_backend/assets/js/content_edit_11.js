@@ -6,7 +6,7 @@
 
 class ContentEditManager {
     constructor() {
-        this.form = document.getElementById('videoEditForm');
+        this.form = document.getElementById('contentEditForm');
         this.formUtils = null;
         
         this.init();
@@ -36,7 +36,7 @@ class ContentEditManager {
         }
 
         // 创建表单工具实例，启用所有功能
-        this.formUtils = new FormUtils('#videoEditForm', {
+        this.formUtils = new FormUtils('#contentEditForm', {
             enableAutoSave: false, // 暂时禁用自动保存
             enableCharacterCounter: true,
             enableFileUpload: true,

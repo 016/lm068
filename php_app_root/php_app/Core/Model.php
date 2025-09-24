@@ -296,7 +296,7 @@ abstract class Model
 
         $returnArray = [];
         foreach ($models as $oneModel) {
-            $returnArray[] = ['id' => $oneModel[$idField], 'text' => $oneModel[$textField]];
+            $returnArray[] = ['id' => (int)$oneModel[$idField], 'text' => $oneModel[$textField]];
         }
         return $returnArray;
     }
