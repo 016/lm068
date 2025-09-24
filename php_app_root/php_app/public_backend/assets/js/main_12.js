@@ -914,7 +914,7 @@ const TableOperations = {
      * 检测列的数据类型
      * @param {string} columnId - 列ID
      * @param {Element} headerCell - header元素
-     * @returns {string} 数据类型：'number', 'text', 'status', 'actions'
+     * @returns {string} 数据类型：'number', 'text', 'status_id', 'actions'
      */
     detectColumnType: function(columnId, headerCell) {
         const typeMapping = {
@@ -923,7 +923,7 @@ const TableOperations = {
             'views': 'number',
             'count': 'number',
             'icon_class': 'icon_class',
-            'status': 'status',
+            'status_id': 'status',
             'actions': 'actions'
         };
         

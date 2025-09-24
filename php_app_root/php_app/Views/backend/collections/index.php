@@ -240,12 +240,12 @@ use App\Constants\CollectionStatus;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="status">
+                            <th class="table-cell sortable-header" data-column="status_id">
                                 <div class="d-flex align-items-center">
                                     状态
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -298,7 +298,7 @@ use App\Constants\CollectionStatus;
                                     <?= htmlspecialchars($collection['icon_class'] ?: 'bi-collection') ?>
                                 </div>
                             </td>
-                            <td class="table-cell" data-column="status">
+                            <td class="table-cell" data-column="status_id">
                                 <span class="badge rounded-pill <?= $collection['status_id'] ? 'badge-success' : 'badge-danger' ?>">
                                     <i class="bi bi-circle-fill badge-icon"></i>
                                     <?= $collection['status_id'] ? '显示' : '隐藏' ?>
