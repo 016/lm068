@@ -163,7 +163,8 @@ abstract class Model
             'short_desc' => 'bilingual_like',
             'desc' => 'bilingual_like',
             'icon_class' => 'like',
-            'content_cnt' => 'custom'
+            'content_cnt' => 'custom',
+            'view_cnt' => 'custom'
         ];
     }
 
@@ -223,11 +224,12 @@ abstract class Model
     {
         switch ($field) {
             case 'content_cnt':
+            case 'view_cnt':
                 // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
                 if (strpos($value, '-') !== false) {
                     $range = explode('-', $value);
                     if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
-                        $whereConditions[] = "content_cnt BETWEEN :cnt_min AND :cnt_max";
+                        $whereConditions[] = "{$field} BETWEEN :cnt_min AND :cnt_max";
                         $params['cnt_min'] = (int)$range[0];
                         $params['cnt_max'] = (int)$range[1];
                     }
@@ -235,11 +237,11 @@ abstract class Model
                     $operator = $matches[1];
                     $number = (int)$matches[2];
                     if (in_array($operator, ['>', '<', '>=', '<=', '='])) {
-                        $whereConditions[] = "content_cnt {$operator} :cnt_value";
+                        $whereConditions[] = "{$field} {$operator} :cnt_value";
                         $params['cnt_value'] = $number;
                     }
                 } elseif (is_numeric($value)) {
-                    $whereConditions[] = "content_cnt = :cnt_exact";
+                    $whereConditions[] = "{$field} = :cnt_exact";
                     $params['cnt_exact'] = (int)$value;
                 }
                 break;
