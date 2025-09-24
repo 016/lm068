@@ -56,7 +56,7 @@ class Tag extends Model implements HasStatuses
     {
         return [
             'name_cn' => 'required|max:50|unique',
-            'name_en' => 'required|max:50',
+            'name_en' => 'required|max:50|unique',
             'short_desc_cn' => 'max:100',
             'short_desc_en' => 'max:100',
             'desc_cn' => 'max:500',

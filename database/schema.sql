@@ -24,7 +24,7 @@ CREATE TABLE `content` (
   `content_type_id` TINYINT UNSIGNED NOT NULL COMMENT '内容类型: 1-网站公告, 11-一般文章, 21-视频',
   `author` VARCHAR(255) DEFAULT 'DP' COMMENT '作者名称',
   `title_en` VARCHAR(255) NOT NULL COMMENT '英文标题',
-  `title_cn` VARCHAR(255) DEFAULT NULL COMMENT '中文标题',
+  `title_cn` VARCHAR(255) NOT NULL COMMENT '中文标题',
   `desc_en` TEXT COMMENT '英文描述/内容, 支持markdown格式纯文本存储',
   `desc_cn` TEXT COMMENT '中文描述/内容, 支持markdown格式纯文本存储',
   `short_desc_en` VARCHAR(300) COMMENT '英文简介',
@@ -150,7 +150,7 @@ CREATE TABLE `subscription` (
 CREATE TABLE `tag` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `name_en` VARCHAR(50) NOT NULL,
-  `name_cn` VARCHAR(50) DEFAULT NULL,
+  `name_cn` VARCHAR(50) NOT NULL,
   `short_desc_en` VARCHAR(100) DEFAULT '',
   `short_desc_cn` VARCHAR(100) DEFAULT '',
   `desc_en` VARCHAR(500),

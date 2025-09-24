@@ -59,8 +59,8 @@ class Content extends Model implements HasStatuses
     {
         return [
             'content_type_id' => 'required|numeric',
-            'title_en' => 'required|max:255',
-            'title_cn' => 'max:255',
+            'title_en' => 'required|max:255|unique',
+            'title_cn' => 'required|max:255|unique',
             'desc_en' => 'max:65535', // TEXT类型
             'desc_cn' => 'max:65535', // TEXT类型
             'short_desc_en' => 'max:300',
