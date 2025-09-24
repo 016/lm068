@@ -28,7 +28,7 @@ class TagController extends BackendController
         $filters = $this->getSearchFilters(['id', 'name', 'content_cnt', 'icon_class', 'status_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
-        $tags = $this->curModel->findAllWithFilters($filters);
+        $tags = Tag::findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
 
         // 处理 Toast 消息
@@ -55,7 +55,7 @@ class TagController extends BackendController
         $id = (int)$request->getParam(0);
         
         // 1. 通过ID查找Tag实例
-        $tag = $this->curModel->find($id);
+        $tag = Tag::find($id);
         if (!$tag) {
             $this->redirect('/tags');
             return;
@@ -268,7 +268,7 @@ class TagController extends BackendController
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $tag = $this->curModel->find($id);  // 返回Tag实例
+        $tag = Tag::find($id);  // 返回Tag实例
 
         if (!$tag) {
             $this->redirect('/tags');

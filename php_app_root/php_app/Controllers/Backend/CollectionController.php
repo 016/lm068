@@ -26,7 +26,7 @@ class CollectionController extends BackendController
 
 
         // 获取所有符合条件的数据，不进行分页
-        $collections = $this->curModel->findAllWithFilters($filters);
+        $collections = Collection::findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
 
         $this->render('collections/index', [
@@ -55,7 +55,7 @@ class CollectionController extends BackendController
     private function handleEditGet(Request $request, int $id): void
     {
         // 1. 通过ID查找Collection实例
-        $collection = $this->curModel->find($id);
+        $collection = Collection::find($id);
 
         if (!$collection) {
             $this->redirect('/collections');
@@ -69,7 +69,7 @@ class CollectionController extends BackendController
     private function handleEditPost(Request $request, int $id): void
     {
         // 1. 通过ID查找Collection实例
-        $collection = $this->curModel->find($id);
+        $collection = Collection::find($id);
         if (!$collection) {
             $this->redirect('/collections');
             return;
@@ -260,7 +260,7 @@ class CollectionController extends BackendController
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $collection = $this->curModel->find($id);  // 返回Collection实例
+        $collection = Collection::find($id);  // 返回Collection实例
 
         if (!$collection) {
             $this->redirect('/collections');

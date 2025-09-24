@@ -157,10 +157,11 @@ abstract class Model
         $this->isNew = $isNew;
     }
 
-    public function find(int $id): ?self
+    public static function find(int $id): ?self
     {
-        $sql = "SELECT * FROM " . static::getTableName() . " WHERE {$this->primaryKey} = :id LIMIT 1";
-        $result = $this->db->fetch($sql, ['id' => $id]);
+        $db = Database::getInstance();
+        $sql = "SELECT * FROM " . static::getTableName() . " WHERE id = :id LIMIT 1";
+        $result = $db->fetch($sql, ['id' => $id]);
         
         if ($result) {
             $instance = new static();
@@ -172,9 +173,9 @@ abstract class Model
         return null;
     }
 
-    public function findById(int $id): ?self
+    public static function findById(int $id): ?self
     {
-        return $this->find($id);
+        return static::find($id);
     }
 
     /**
@@ -183,19 +184,16 @@ abstract class Model
      * @param string $nameEn 英文名称
      * @return array|null 标签数据或null
      */
-    public function findByName(string $nameCn, string $nameEn): ?array
+    public static function findByName(string $nameCn, string $nameEn): ?array
     {
+        $db = Database::getInstance();
         $sql = "SELECT * FROM " . static::getTableName() . " WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
         $params = [
             'name_cn' => $nameCn,
             'name_en' => $nameEn
         ];
 
-        $result = $this->db->fetch($sql, $params);
-        
-        if ($result) {
-            $this->setNew(false);
-        }
+        $result = $db->fetch($sql, $params);
         
         return $result ?: null;
     }
@@ -206,7 +204,7 @@ abstract class Model
      * 
      * @return array 字段搜索策略配置
      */
-    protected function getFieldSearchStrategies(): array
+    protected static function getFieldSearchStrategies(): array
     {
         return [
             'id' => 'exact',
@@ -225,15 +223,16 @@ abstract class Model
      * 根据过滤条件获取所有标签数据（不分页，用于JS处理）
      * 支持多字段搜索过滤，使用混合配置驱动模式
      */
-    public function findAllWithFilters(array $filters = []): array
+    public static function findAllWithFilters(array $filters = []): array
     {
+        $db = Database::getInstance();
         $sql = "SELECT * FROM " . static::getTableName();
         $params = [];
         $whereConditions = [];
 
         // 处理搜索条件
         if (!empty($filters)) {
-            $fieldStrategies = $this->getFieldSearchStrategies();
+            $fieldStrategies = static::getFieldSearchStrategies();
             
             foreach ($filters as $field => $value) {
                 if (empty($value) && $value !== '0') {
@@ -245,10 +244,10 @@ abstract class Model
                 
                 if ($strategy === 'custom') {
                     // 处理自定义复杂逻辑
-                    $this->handleCustomFieldFilter($field, $value, $whereConditions, $params);
+                    static::handleCustomFieldFilter($field, $value, $whereConditions, $params);
                 } else {
                     // 处理标准策略
-                    $this->handleStandardFieldFilter($field, $value, $strategy, $whereConditions, $params);
+                    static::handleStandardFieldFilter($field, $value, $strategy, $whereConditions, $params);
                 }
             }
         }
@@ -261,7 +260,7 @@ abstract class Model
         $orderBy = $filters['order_by'] ?? 'created_at DESC';
         $sql .= " ORDER BY {$orderBy}";
 
-        return $this->db->fetchAll($sql, $params);
+        return $db->fetchAll($sql, $params);
     }
 
     /**
@@ -273,7 +272,7 @@ abstract class Model
      * @param array &$whereConditions WHERE条件数组
      * @param array &$params 参数数组
      */
-    protected function handleCustomFieldFilter(string $field, $value, array &$whereConditions, array &$params): void
+    protected static function handleCustomFieldFilter(string $field, $value, array &$whereConditions, array &$params): void
     {
         switch ($field) {
             case 'content_cnt':
@@ -310,7 +309,7 @@ abstract class Model
      * @param array &$whereConditions WHERE条件数组
      * @param array &$params 参数数组
      */
-    protected function handleStandardFieldFilter(string $field, $value, string $strategy, array &$whereConditions, array &$params): void
+    protected static function handleStandardFieldFilter(string $field, $value, string $strategy, array &$whereConditions, array &$params): void
     {
         $paramKey = "search_{$field}";
         
@@ -347,7 +346,7 @@ abstract class Model
         }
     }
 
-    public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
+    public function findAllWithPagination(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
     {
         $sql = "SELECT * FROM " . static::getTableName();
         $params = [];
@@ -428,8 +427,9 @@ abstract class Model
         return $deleted > 0;
     }
 
-    public function count(array $conditions = []): int
+    public static function count(array $conditions = []): int
     {
+        $db = Database::getInstance();
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName();
         $params = [];
 
@@ -442,14 +442,15 @@ abstract class Model
             $sql .= " WHERE " . implode(" AND ", $whereClause);
         }
 
-        $result = $this->db->fetch($sql, $params);
+        $result = $db->fetch($sql, $params);
         return (int)$result['count'];
     }
 
-    public function exists(int $id): bool
+    public static function exists(int $id): bool
     {
-        $sql = "SELECT 1 FROM " . static::getTableName() . " WHERE {$this->primaryKey} = :id LIMIT 1";
-        return (bool)$this->db->fetch($sql, ['id' => $id]);
+        $db = Database::getInstance();
+        $sql = "SELECT 1 FROM " . static::getTableName() . " WHERE id = :id LIMIT 1";
+        return (bool)$db->fetch($sql, ['id' => $id]);
     }
 
     public function query(string $sql, array $params = []): \PDOStatement
@@ -667,8 +668,9 @@ abstract class Model
 
     //// bulk actions
     //bulk update
-    public function bulkUpdateStatus(array $targetIds, int $status): array
+    public static function bulkUpdateStatus(array $targetIds, int $status): array
     {
+        $db = Database::getInstance();
         $returnCnt = ['total'=>count($targetIds), 'changed'=>0, 'fail'=>0];
         if (empty($targetIds)) {
             return $returnCnt;
@@ -685,7 +687,7 @@ abstract class Model
             $params = array_merge([$status], $chunk);
 
             // 累加每次成功更新的数量
-            $returnCnt['changed'] += $this->db->execute($sql, $params);
+            $returnCnt['changed'] += $db->execute($sql, $params);
         }
 
 
@@ -695,15 +697,16 @@ abstract class Model
     }
 
     //bulk delete
-    public function bulkDelete(array $targetIds): array
+    public static function bulkDelete(array $targetIds): array
     {
+        $db = Database::getInstance();
         $returnCnt = ['total'=>count($targetIds), 'changed'=>0, 'fail'=>0];
         if (empty($targetIds)) {
             return $returnCnt;
         }
 
 
-        $this->db->beginTransaction();
+        $db->beginTransaction();
 
         try {
             // 分批执行，保证性能. 定义每个批次的大小，例如 1000
@@ -713,16 +716,16 @@ abstract class Model
             foreach ($tagIdChunks as $chunk) {
                 $placeholders = implode(',', array_fill(0, count($chunk), '?'));
 
-                $returnCnt['changed'] += $this->db->execute("DELETE FROM " . static::getTableName() . " WHERE id IN ({$placeholders})", $chunk);
+                $returnCnt['changed'] += $db->execute("DELETE FROM " . static::getTableName() . " WHERE id IN ({$placeholders})", $chunk);
             }
 
-            $this->db->commit();
+            $db->commit();
 
             $returnCnt['fail'] = $returnCnt['total'] - $returnCnt['changed'];
             return $returnCnt;
 
         } catch (\Exception $e) {
-            $this->db->rollback();
+            $db->rollback();
             throw $e;
         }
     }

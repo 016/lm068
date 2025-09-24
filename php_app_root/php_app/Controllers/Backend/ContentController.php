@@ -33,7 +33,7 @@ class ContentController extends BackendController
         $filters = $this->getSearchFilters(['id', 'title', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
-        $content = $this->curModel->findAllWithFilters($filters);
+        $content = Content::findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
 
 
@@ -52,7 +52,7 @@ class ContentController extends BackendController
         $id = (int)$request->getParam(0);
         
         // 1. 通过ID查找Content实例
-        $content = $this->curModel->find($id);
+        $content = Content::find($id);
         if (!$content) {
             $this->redirect('/contents');
             return;
@@ -298,7 +298,7 @@ class ContentController extends BackendController
     public function show(Request $request): void
     {
         $id = (int)$request->getParam(0);
-        $content = $this->curModel->find($id);  // 返回Content实例
+        $content = Content::find($id);  // 返回Content实例
 
         if (!$content) {
             $this->redirect('/contents');

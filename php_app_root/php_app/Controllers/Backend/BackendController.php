@@ -204,7 +204,8 @@ class BackendController extends Controller
         // 检查当前模型是否支持批量更新
         if (isset($this->curModel) && method_exists($this->curModel, 'bulkUpdateStatus')) {
             try {
-                $returnCnt = $this->curModel->bulkUpdateStatus($targetIds, $status_id);
+                $modelClass = get_class($this->curModel);
+                $returnCnt = $modelClass::bulkUpdateStatus($targetIds, $status_id);
                 $successCount = $returnCnt['changed'];
                 $errorCount = $returnCnt['fail'];
             } catch (\Exception $e) {
@@ -215,7 +216,8 @@ class BackendController extends Controller
             foreach ($targetIds as $targetId) {
                 try {
                     // 检查记录是否存在
-                    if (isset($this->curModel) && $this->curModel->exists($targetId)) {
+                    $modelClass = get_class($this->curModel);
+                    if (isset($this->curModel) && $modelClass::exists($targetId)) {
                         $this->curModel->update($targetId, ['status_id' => $status_id]);
                         $successCount++;
                     } else {
@@ -243,7 +245,8 @@ class BackendController extends Controller
         // 检查当前模型是否支持批量删除
         if (isset($this->curModel) && method_exists($this->curModel, 'bulkDelete')) {
             try {
-                $this->curModel->bulkDelete($targetIds);
+                $modelClass = get_class($this->curModel);
+                $modelClass::bulkDelete($targetIds);
                 $successCount = count($targetIds);
             } catch (\Exception $e) {
                 error_log("Bulk delete error: " . $e->getMessage());
@@ -254,7 +257,8 @@ class BackendController extends Controller
             foreach ($targetIds as $targetId) {
                 try {
                     // 检查记录是否存在
-                    if (isset($this->curModel) && $this->curModel->exists($targetId)) {
+                    $modelClass = get_class($this->curModel);
+                    if (isset($this->curModel) && $modelClass::exists($targetId)) {
                         $this->curModel->delete($targetId);
                         $successCount++;
                     } else {
