@@ -403,6 +403,6 @@ use App\Constants\ContentType;
 
 <?php
 // 包含内容批量导入组件
-include __DIR__ . '/../common/_bulkImportContent.php';
+include __DIR__ . '/../common/_bulkImport.php';
 ?>
 
