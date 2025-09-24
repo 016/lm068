@@ -7,7 +7,7 @@ use App\Constants\UserStatus;
 
 class User extends Model
 {
-    protected $table = 'user';
+    protected static string $table = 'user';
     protected $fillable = [
         'username', 'email', 'password_hash', 'avatar', 
         'nickname', 'status_id'

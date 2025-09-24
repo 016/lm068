@@ -7,7 +7,7 @@ use App\Core\Database;
 abstract class Model
 {
     protected $db;
-    protected $table;
+    protected static string $table;
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $timestamps = true;
@@ -21,6 +21,59 @@ abstract class Model
     public function __construct()
     {
         $this->db = Database::getInstance();
+    }
+
+    /**
+     * 获取当前模型的表名
+     */
+    protected static function getTableName(): string
+    {
+        return static::$table;
+    }
+
+    /**
+     * 静态方法 - 查找所有记录，支持查询条件和输出格式化
+     * 
+     * @param array $conditions 查询条件数组 
+     * @param callable|null $formatter 输出格式化回调函数
+     * @return array 格式化后的数组结果
+     */
+    public static function findAll(array $conditions = [], ?callable $formatter = null): array
+    {
+        $db = Database::getInstance();
+        $table = static::getTableName();
+        
+        $sql = "SELECT * FROM {$table}";
+        $params = [];
+
+        // 处理查询条件
+        if (!empty($conditions)) {
+            $whereClause = [];
+            foreach ($conditions as $field => $value) {
+                if (is_array($value)) {
+                    $placeholders = implode(',', array_fill(0, count($value), '?'));
+                    $whereClause[] = "{$field} IN ({$placeholders})";
+                    $params = array_merge($params, $value);
+                } else {
+                    $whereClause[] = "{$field} = :{$field}";
+                    $params[$field] = $value;
+                }
+            }
+            $sql .= " WHERE " . implode(" AND ", $whereClause);
+        }
+
+        // 默认按创建时间排序
+        $sql .= " ORDER BY created_at DESC";
+
+        // 执行查询
+        $results = $db->fetchAll($sql, $params);
+
+        // 如果提供了格式化函数，则应用格式化
+        if ($formatter !== null && is_callable($formatter)) {
+            $results = array_map($formatter, $results);
+        }
+
+        return $results;
     }
 
     /**
@@ -106,7 +159,7 @@ abstract class Model
 
     public function find(int $id): ?self
     {
-        $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
+        $sql = "SELECT * FROM " . static::getTableName() . " WHERE {$this->primaryKey} = :id LIMIT 1";
         $result = $this->db->fetch($sql, ['id' => $id]);
         
         if ($result) {
@@ -132,7 +185,7 @@ abstract class Model
      */
     public function findByName(string $nameCn, string $nameEn): ?array
     {
-        $sql = "SELECT * FROM {$this->table} WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
+        $sql = "SELECT * FROM " . static::getTableName() . " WHERE name_cn = :name_cn OR name_en = :name_en LIMIT 1";
         $params = [
             'name_cn' => $nameCn,
             'name_en' => $nameEn
@@ -174,7 +227,7 @@ abstract class Model
      */
     public function findAllWithFilters(array $filters = []): array
     {
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT * FROM " . static::getTableName();
         $params = [];
         $whereConditions = [];
 
@@ -296,7 +349,7 @@ abstract class Model
 
     public function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
     {
-        $sql = "SELECT * FROM {$this->table}";
+        $sql = "SELECT * FROM " . static::getTableName();
         $params = [];
 
         if (!empty($conditions)) {
@@ -337,7 +390,7 @@ abstract class Model
             $data['updated_at'] = date('Y-m-d H:i:s');
         }
 
-        $id = $this->db->insert($this->table, $data);
+        $id = $this->db->insert(static::getTableName(), $data);
         
         if ($id > 0) {
             $this->setNew(false);
@@ -355,7 +408,7 @@ abstract class Model
         }
 
         $updated = $this->db->update(
-            $this->table,
+            static::getTableName(),
             $data,
             "{$this->primaryKey} = :id",
             ['id' => $id]
@@ -367,7 +420,7 @@ abstract class Model
     public function delete(int $id): bool
     {
         $deleted = $this->db->delete(
-            $this->table,
+            static::getTableName(),
             "{$this->primaryKey} = :id",
             ['id' => $id]
         );
@@ -377,7 +430,7 @@ abstract class Model
 
     public function count(array $conditions = []): int
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+        $sql = "SELECT COUNT(*) as count FROM " . static::getTableName();
         $params = [];
 
         if (!empty($conditions)) {
@@ -395,7 +448,7 @@ abstract class Model
 
     public function exists(int $id): bool
     {
-        $sql = "SELECT 1 FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
+        $sql = "SELECT 1 FROM " . static::getTableName() . " WHERE {$this->primaryKey} = :id LIMIT 1";
         return (bool)$this->db->fetch($sql, ['id' => $id]);
     }
 
@@ -432,7 +485,7 @@ abstract class Model
                     $data['updated_at'] = date('Y-m-d H:i:s');
                 }
                 
-                $id = $this->db->insert($this->table, $this->filterFillable($data));
+                $id = $this->db->insert(static::getTableName(), $this->filterFillable($data));
                 $this->attributes[$this->primaryKey] = $id;
                 $this->setNew(false);
                 $this->setOriginal($this->attributes);
@@ -443,7 +496,7 @@ abstract class Model
                 }
                 
                 $this->db->update(
-                    $this->table,
+                    static::getTableName(),
                     $this->filterFillable($data),
                     "{$this->primaryKey} = :id",
                     ['id' => $this->attributes[$this->primaryKey]]
@@ -535,7 +588,7 @@ abstract class Model
 
                     case 'unique':
                         if (!empty($value)) {
-                            $table = $ruleParam ?: $this->table;
+                            $table = $ruleParam ?: static::getTableName();
                             $exists = $this->checkUnique($field, $value, $table, $excludeId);
                             if ($exists) {
                                 $errors[$field] = $this->getErrorMessage($field, 'unique');
@@ -627,7 +680,7 @@ abstract class Model
 
         foreach ($tagIdChunks as $chunk) {
             $placeholders = implode(',', array_fill(0, count($chunk), '?'));
-            $sql = "UPDATE {$this->table} SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
+            $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
 
             $params = array_merge([$status], $chunk);
 
@@ -660,7 +713,7 @@ abstract class Model
             foreach ($tagIdChunks as $chunk) {
                 $placeholders = implode(',', array_fill(0, count($chunk), '?'));
 
-                $returnCnt['changed'] += $this->db->execute("DELETE FROM {$this->table} WHERE id IN ({$placeholders})", $chunk);
+                $returnCnt['changed'] += $this->db->execute("DELETE FROM " . static::getTableName() . " WHERE id IN ({$placeholders})", $chunk);
             }
 
             $this->db->commit();

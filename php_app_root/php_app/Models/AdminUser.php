@@ -7,7 +7,7 @@ use App\Constants\AdminStatus;
 
 class AdminUser extends Model
 {
-    protected $table = 'admin_user';
+    protected static string $table = 'admin_user';
     protected $fillable = [
         'username', 'password_hash', 'email', 'real_name',
         'avatar', 'phone', 'status_id', 'role_id'

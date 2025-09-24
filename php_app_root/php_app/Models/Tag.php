@@ -9,7 +9,7 @@ use App\Interfaces\HasStatuses;
 class Tag extends Model implements HasStatuses
 {
 
-    protected $table = 'tag';
+    protected static string $table = 'tag';
     protected $primaryKey = 'id';
     protected $fillable = [
         'name_en', 'name_cn', 'short_desc_en', 'short_desc_cn', 

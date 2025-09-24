@@ -8,7 +8,7 @@ use App\Interfaces\HasStatuses;
 
 class Collection extends Model implements HasStatuses
 {
-    protected $table = 'collection';
+    protected static string $table = 'collection';
     protected $primaryKey = 'id';
     protected $fillable = [
         'name_en', 'name_cn', 'short_desc_en', 'short_desc_cn', 

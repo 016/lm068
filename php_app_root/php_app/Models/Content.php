@@ -9,7 +9,7 @@ use App\Interfaces\HasStatuses;
 
 class Content extends Model implements HasStatuses
 {
-    protected $table = 'content';
+    protected static string $table = 'content';
     protected $primaryKey = 'id';
     protected $fillable = [
         'content_type_id', 'author', 'title_en', 'title_cn',
