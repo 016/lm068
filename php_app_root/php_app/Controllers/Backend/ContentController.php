@@ -136,6 +136,7 @@ class ContentController extends BackendController
         $tagsList = $this->tagModel->findAll([
             'status_id' => TagStatus::getVisibleStatuses()
         ]);
+        var_dump($tagsList);
         
         $collectionsList = $this->collectionModel->findAll([
             'status_id' => CollectionStatus::getVisibleStatuses()
