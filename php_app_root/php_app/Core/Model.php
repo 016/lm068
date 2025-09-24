@@ -35,10 +35,10 @@ abstract class Model
      * 静态方法 - 查找所有记录，支持查询条件和输出格式化
      * 
      * @param array $conditions 查询条件数组 
-     * @param callable|null $formatter 输出格式化回调函数
+     * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
      * @return array 格式化后的数组结果
      */
-    public static function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null, ?callable $formatter = null): array
+    public static function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null, callable|array|null $formatter = null): array
     {
         $db = Database::getInstance();
         $table = static::getTableName();
@@ -76,9 +76,17 @@ abstract class Model
         // 执行查询
         $results = $db->fetchAll($sql, $params);
 
-        // 如果提供了格式化函数，则应用格式化
-        if ($formatter !== null && is_callable($formatter)) {
-            $results = array_map($formatter, $results);
+        // 应用格式化
+        if ($formatter !== null) {
+            if (is_array($formatter)) {
+                // 字段名数组模式：筛选指定字段
+                $results = array_map(function($row) use ($formatter) {
+                    return array_intersect_key($row, array_flip($formatter));
+                }, $results);
+            } elseif (is_callable($formatter)) {
+                // 格式化函数模式：使用自定义格式化函数
+                $results = array_map($formatter, $results);
+            }
         }
 
         return $results;
