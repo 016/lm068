@@ -38,7 +38,7 @@ abstract class Model
      * @param callable|null $formatter 输出格式化回调函数
      * @return array 格式化后的数组结果
      */
-    public static function findAll(array $conditions = [], ?callable $formatter = null): array
+    public static function findAll(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null, ?callable $formatter = null): array
     {
         $db = Database::getInstance();
         $table = static::getTableName();
@@ -62,8 +62,16 @@ abstract class Model
             $sql .= " WHERE " . implode(" AND ", $whereClause);
         }
 
-        // 默认按创建时间排序
-        $sql .= " ORDER BY created_at DESC";
+        if ($orderBy) {
+            $sql .= " ORDER BY {$orderBy}";
+        }
+
+        if ($limit) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset > 0) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
 
         // 执行查询
         $results = $db->fetchAll($sql, $params);
@@ -346,39 +354,6 @@ abstract class Model
         }
     }
 
-    public function findAllWithPagination(array $conditions = [], ?int $limit = null, int $offset = 0, ?string $orderBy = null): array
-    {
-        $sql = "SELECT * FROM " . static::getTableName();
-        $params = [];
-
-        if (!empty($conditions)) {
-            $whereClause = [];
-            foreach ($conditions as $field => $value) {
-                if (is_array($value)) {
-                    $placeholders = implode(',', array_fill(0, count($value), '?'));
-                    $whereClause[] = "{$field} IN ({$placeholders})";
-                    $params = array_merge($params, $value);
-                } else {
-                    $whereClause[] = "{$field} = :{$field}";
-                    $params[$field] = $value;
-                }
-            }
-            $sql .= " WHERE " . implode(" AND ", $whereClause);
-        }
-
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
-        }
-
-        if ($limit) {
-            $sql .= " LIMIT {$limit}";
-            if ($offset > 0) {
-                $sql .= " OFFSET {$offset}";
-            }
-        }
-
-        return $this->db->fetchAll($sql, $params);
-    }
 
     public function create(array $data): int
     {
