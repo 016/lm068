@@ -25,7 +25,7 @@ class TagController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id', 'name', 'content_cnt', 'icon_class', 'status', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'name', 'content_cnt', 'icon_class', 'status_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的标签数据（不分页，由JS处理分页）
         $tags = $this->curModel->findAllWithFilters($filters);

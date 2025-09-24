@@ -231,12 +231,12 @@ use App\Constants\TagStatus;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="status">
+                            <th class="table-cell sortable-header" data-column="status_id">
                                 <div class="d-flex align-items-center">
                                     状态
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="status_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="status_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -257,10 +257,10 @@ use App\Constants\TagStatus;
                                 <input type="text" name="icon_class" class="form-control form-control-sm" placeholder="搜索icon" value="<?= htmlspecialchars($filters['icon_class'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
-                                <select name="status" class="form-control form-select form-select-sm">
+                                <select name="status_id" class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
-                                    <option value="<?= TagStatus::ENABLED->value ?>" <?= ($filters['status'] === (string)TagStatus::ENABLED->value) ? 'selected' : '' ?>>显示</option>
-                                    <option value="<?= TagStatus::DISABLED->value ?>" <?= ($filters['status'] === (string)TagStatus::DISABLED->value) ? 'selected' : '' ?>>隐藏</option>
+                                    <option value="<?= TagStatus::ENABLED->value ?>" <?= ($filters['status_id'] === (string)TagStatus::ENABLED->value) ? 'selected' : '' ?>>显示</option>
+                                    <option value="<?= TagStatus::DISABLED->value ?>" <?= ($filters['status_id'] === (string)TagStatus::DISABLED->value) ? 'selected' : '' ?>>隐藏</option>
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="actions"></th>
@@ -288,7 +288,7 @@ use App\Constants\TagStatus;
                                             <?= htmlspecialchars($tag['icon_class'] ?: 'bi-tag') ?>
                                         </div>
                                     </td>
-                                    <td class="table-cell" data-column="status">
+                                    <td class="table-cell" data-column="status_id">
                                         <span class="badge rounded-pill <?= $tag['status_id'] ? 'badge-success' : 'badge-danger' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
                                             <?= $tag['status_id'] ? '显示' : '隐藏' ?>
