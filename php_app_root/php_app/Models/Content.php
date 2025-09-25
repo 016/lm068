@@ -285,20 +285,29 @@ class Content extends Model implements HasStatuses
             // 获取之前的标签ID列表
             $oldTagIds = array_column($this->getRelatedTags($contentId), 'id');
             
-            // 删除现有关联
-            $this->db->query("DELETE FROM content_tag WHERE content_id = :content_id", ['content_id' => $contentId]);
+            // 筛选需要删除和添加的标签
+            $tagsToRemove = array_diff($oldTagIds, $tagIds);  // 需要删除的
+            $tagsToAdd = array_diff($tagIds, $oldTagIds);     // 需要添加的
+            
+            // 删除不再需要的关联
+            foreach ($tagsToRemove as $tagId) {
+                $this->db->query(
+                    "DELETE FROM content_tag WHERE content_id = :content_id AND tag_id = :tag_id",
+                    ['content_id' => $contentId, 'tag_id' => $tagId]
+                );
+            }
             
             // 添加新关联
-            foreach ($tagIds as $tagId) {
+            foreach ($tagsToAdd as $tagId) {
                 $this->db->query(
                     "INSERT INTO content_tag (content_id, tag_id) VALUES (:content_id, :tag_id)",
                     ['content_id' => $contentId, 'tag_id' => $tagId]
                 );
             }
 
-            // 更新所有相关标签的内容计数
-            $allTagIds = array_unique(array_merge($oldTagIds, $tagIds));
-            foreach ($allTagIds as $tagId) {
+            // 更新所有相关标签的内容计数（只更新有变化的标签）
+            $affectedTagIds = array_unique(array_merge($tagsToRemove, $tagsToAdd));
+            foreach ($affectedTagIds as $tagId) {
                 $this->updateTagContentCount($tagId);
             }
             
@@ -338,9 +347,23 @@ class Content extends Model implements HasStatuses
         $this->db->beginTransaction();
         
         try {
-            $this->db->query("DELETE FROM content_collection WHERE content_id = :content_id", ['content_id' => $contentId]);
+            // 获取之前的合集ID列表
+            $oldCollectionIds = array_column($this->getRelatedCollections($contentId), 'id');
             
-            foreach ($collectionIds as $collectionId) {
+            // 筛选需要删除和添加的合集
+            $collectionsToRemove = array_diff($oldCollectionIds, $collectionIds);  // 需要删除的
+            $collectionsToAdd = array_diff($collectionIds, $oldCollectionIds);     // 需要添加的
+            
+            // 删除不再需要的关联
+            foreach ($collectionsToRemove as $collectionId) {
+                $this->db->query(
+                    "DELETE FROM content_collection WHERE content_id = :content_id AND collection_id = :collection_id",
+                    ['content_id' => $contentId, 'collection_id' => $collectionId]
+                );
+            }
+            
+            // 添加新关联
+            foreach ($collectionsToAdd as $collectionId) {
                 $this->db->query(
                     "INSERT INTO content_collection (content_id, collection_id) VALUES (:content_id, :collection_id)",
                     ['content_id' => $contentId, 'collection_id' => $collectionId]
