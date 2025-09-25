@@ -282,19 +282,29 @@ class Content extends Model implements HasStatuses
         $this->db->beginTransaction();
         
         try {
-            // 获取之前的标签ID列表
-            $oldTagIds = array_column($this->getRelatedTags($contentId), 'id');
+            // 一次性读取所有现有的关联记录（包含主键ID和tag_id）
+            $existingAssociations = $this->db->fetchAll(
+                "SELECT id, tag_id FROM content_tag WHERE content_id = :content_id",
+                ['content_id' => $contentId]
+            );
+            
+            $oldTagIds = array_column($existingAssociations, 'tag_id');
             
             // 筛选需要删除和添加的标签
-            $tagsToRemove = array_diff($oldTagIds, $tagIds);  // 需要删除的
-            $tagsToAdd = array_diff($tagIds, $oldTagIds);     // 需要添加的
+            $tagsToRemove = array_diff($oldTagIds, $tagIds);  // 需要删除的tag_id
+            $tagsToAdd = array_diff($tagIds, $oldTagIds);     // 需要添加的tag_id
             
-            // 删除不再需要的关联
-            foreach ($tagsToRemove as $tagId) {
-                $this->db->query(
-                    "DELETE FROM content_tag WHERE content_id = :content_id AND tag_id = :tag_id",
-                    ['content_id' => $contentId, 'tag_id' => $tagId]
-                );
+            // 找到需要删除的记录的主键ID
+            $recordsToDelete = [];
+            foreach ($existingAssociations as $association) {
+                if (in_array($association['tag_id'], $tagsToRemove)) {
+                    $recordsToDelete[] = $association['id'];
+                }
+            }
+            
+            // 用主键ID删除记录
+            foreach ($recordsToDelete as $recordId) {
+                $this->db->query("DELETE FROM content_tag WHERE id = :id", ['id' => $recordId]);
             }
             
             // 添加新关联
@@ -347,19 +357,29 @@ class Content extends Model implements HasStatuses
         $this->db->beginTransaction();
         
         try {
-            // 获取之前的合集ID列表
-            $oldCollectionIds = array_column($this->getRelatedCollections($contentId), 'id');
+            // 一次性读取所有现有的关联记录（包含主键ID和collection_id）
+            $existingAssociations = $this->db->fetchAll(
+                "SELECT id, collection_id FROM content_collection WHERE content_id = :content_id",
+                ['content_id' => $contentId]
+            );
+            
+            $oldCollectionIds = array_column($existingAssociations, 'collection_id');
             
             // 筛选需要删除和添加的合集
-            $collectionsToRemove = array_diff($oldCollectionIds, $collectionIds);  // 需要删除的
-            $collectionsToAdd = array_diff($collectionIds, $oldCollectionIds);     // 需要添加的
+            $collectionsToRemove = array_diff($oldCollectionIds, $collectionIds);  // 需要删除的collection_id
+            $collectionsToAdd = array_diff($collectionIds, $oldCollectionIds);     // 需要添加的collection_id
             
-            // 删除不再需要的关联
-            foreach ($collectionsToRemove as $collectionId) {
-                $this->db->query(
-                    "DELETE FROM content_collection WHERE content_id = :content_id AND collection_id = :collection_id",
-                    ['content_id' => $contentId, 'collection_id' => $collectionId]
-                );
+            // 找到需要删除的记录的主键ID
+            $recordsToDelete = [];
+            foreach ($existingAssociations as $association) {
+                if (in_array($association['collection_id'], $collectionsToRemove)) {
+                    $recordsToDelete[] = $association['id'];
+                }
+            }
+            
+            // 用主键ID删除记录
+            foreach ($recordsToDelete as $recordId) {
+                $this->db->query("DELETE FROM content_collection WHERE id = :id", ['id' => $recordId]);
             }
             
             // 添加新关联
