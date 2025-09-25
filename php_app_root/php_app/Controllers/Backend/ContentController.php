@@ -97,15 +97,16 @@ class ContentController extends BackendController
                 if ($content->save()) {
                     // 处理关联标签
                     $tagIds = $request->post('tag_ids');
+                    var_dump($tagIds);
                     if ($tagIds !== null) {
-                        $tagIdsArray = is_array($tagIds) ? array_map('intval', $tagIds) : [];
+                        $tagIdsArray = explode(',', $tagIds);
                         $this->curModel->syncTagAssociations($id, $tagIdsArray);
                     }
 
                     // 处理关联合集
                     $collectionIds = $request->post('collection_ids');
                     if ($collectionIds !== null) {
-                        $collectionIdsArray = is_array($collectionIds) ? array_map('intval', $collectionIds) : [];
+                        $collectionIdsArray = explode(',', $collectionIds);
                         $this->curModel->syncCollectionAssociations($id, $collectionIdsArray);
                     }
 
