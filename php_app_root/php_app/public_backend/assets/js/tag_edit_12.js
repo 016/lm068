@@ -74,10 +74,10 @@ class TagEditManager {
 
         // 初始化视频多选组件
         const videosInstance = this.formUtils.initializeMultiSelect('videos', {
-            container: '#videoMultiSelect',
+            container: '#contentMultiSelect',
             placeholder: '选择关联视频...',
             searchPlaceholder: '搜索视频标题...',
-            hiddenInputName: 'related_videos',
+            hiddenInputName: 'content_ids',
             maxDisplayItems: 7,
             columns: 4,
             data: this.contentList,
@@ -87,7 +87,7 @@ class TagEditManager {
 
         // 绑定视频变更的特定处理
         if (videosInstance) {
-            document.getElementById('videoMultiSelect').addEventListener('multiselect:change', (e) => {
+            document.getElementById('contentMultiSelect').addEventListener('multiselect:change', (e) => {
                 // 使用通用的视频变更处理方法，标签页面有更高的视频数量限制
                 this.formUtils.handleCommonContentsChange(e.detail);
             });

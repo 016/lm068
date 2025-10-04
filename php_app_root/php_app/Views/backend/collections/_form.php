@@ -126,8 +126,8 @@ use App\Constants\CollectionStatus;
     <div class="row">
         <div class="col-md-12 pb-3">
             <div class="form-group">
-                <label for="related_videos" class="form-label">关联视频</label>
-                <div id="videoMultiSelect" class="multi-select-container"></div>
+                <label for="contentMultiSelect" class="form-label">关联视频</label>
+                <div id="contentMultiSelect" class="multi-select-container"></div>
                 <div class="form-text">选择要关联到此合集的视频，可多选</div>
             </div>
         </div>

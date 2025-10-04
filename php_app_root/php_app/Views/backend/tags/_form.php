@@ -119,8 +119,8 @@ use App\Constants\TagStatus;
                 <div class="row">
                     <div class="col-md-12 pb-3">
                         <div class="form-group">
-                            <label for="related_videos" class="form-label">关联视频</label>
-                            <div id="videoMultiSelect" class="multi-select-container"></div>
+                            <label for="contentMultiSelect" class="form-label">关联视频</label>
+                            <div id="contentMultiSelect" class="multi-select-container"></div>
                             <div class="form-text">选择要关联到此标签的视频，可多选</div>
                         </div>
                     </div>
@@ -287,33 +287,5 @@ use App\Constants\TagStatus;
 </div>
 
 <script>
-     // 简化的表单处理（传统POST提交方式）
-    document.addEventListener('DOMContentLoaded', function() {
 
-        // 初始化多选组件（如果存在）
-        if (window.MultiSelectDropdown && document.getElementById('videoMultiSelect')) {
-            const contentOptions = <?= json_encode($contentOptions ?? [], JSON_UNESCAPED_UNICODE) ?>;
-
-            // 转换数据格式
-            const input_contentList = contentOptions.map(function(option) {
-                return {
-                    id: option.id.toString(),
-                    text: option.title
-                };
-            });
-            window.inputData.contentList = input_contentList;
-
-            const input_selectedContentIds = contentOptions.filter(function(option) {
-                return option.selected;
-            }).map(function(option) {
-                return {
-                    id: option.id.toString(),
-                    text: option.title
-                };
-            });
-            window.inputData.selectedContentIds = input_selectedContentIds;
-
-
-        }
-     });
 </script>
