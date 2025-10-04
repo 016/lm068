@@ -97,16 +97,15 @@ class ContentController extends BackendController
                 if ($content->save()) {
                     // 处理关联标签
                     $tagIds = $request->post('tag_ids');
-                    var_dump($tagIds);
                     if ($tagIds !== null) {
-                        $tagIdsArray = explode(',', $tagIds);
+                        $tagIdsArray =  $tagIds == '' ? [] : explode(',', $tagIds);
                         $this->curModel->syncTagAssociations($id, $tagIdsArray);
                     }
 
                     // 处理关联合集
                     $collectionIds = $request->post('collection_ids');
                     if ($collectionIds !== null) {
-                        $collectionIdsArray = explode(',', $collectionIds);
+                        $collectionIdsArray =  $collectionIds == '' ? [] : explode(',', $collectionIds);
                         $this->curModel->syncCollectionAssociations($id, $collectionIdsArray);
                     }
 
@@ -120,6 +119,7 @@ class ContentController extends BackendController
                     $this->renderEditForm($content, $postedTagIds, $postedCollectionIds);
                 }
             } catch (\Exception $e) {
+//                var_dump($e->getTraceAsString());
                 error_log("Content update error: " . $e->getMessage());
                 $content->errors['general'] = '更新失败: ' . $e->getMessage();
                 $postedTagIds = $request->post('tag_ids');
@@ -133,7 +133,7 @@ class ContentController extends BackendController
         $this->renderEditForm($content);
     }
 
-    private function renderEditForm(Content $content, ?array $postedTagIds = null, ?array $postedCollectionIds = null): void
+    private function renderEditForm(Content $content, ?string $postedTagIds = null, ?string $postedCollectionIds = null): void
     {
         // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
         if ($postedTagIds !== null) {

@@ -381,7 +381,7 @@ class Content extends Model implements HasStatuses
             foreach ($recordsToDelete as $recordId) {
                 $this->db->query("DELETE FROM content_collection WHERE id = :id", ['id' => $recordId]);
             }
-            
+
             // 添加新关联
             foreach ($collectionsToAdd as $collectionId) {
                 $this->db->query(
