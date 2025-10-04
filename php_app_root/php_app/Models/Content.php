@@ -456,7 +456,7 @@ class Content extends UploadableModel implements HasStatuses
 
     /**
      * 重写父类方法，为Content模型准备CSV导入数据
-     * 
+     *
      * @param array $csvRowData CSV行数据
      * @return array 处理后的数据
      */
@@ -477,5 +477,24 @@ class Content extends UploadableModel implements HasStatuses
             'pv_cnt' => 0,
             'view_cnt' => 0
         ];
+    }
+
+    /**
+     * 获取所有内容列表（用于下拉选择）
+     */
+    public static function loadList(array $filters = []): array
+    {
+        $instance = new static();
+        $results = $instance->findAll($filters);
+
+        $list = [];
+        foreach ($results as $item) {
+            $list[] = [
+                'id' => $item['id'],
+                'text' => $item['title_cn'] ?: $item['title_en'],
+                'content_type_id' => $item['content_type_id']
+            ];
+        }
+        return $list;
     }
 }
