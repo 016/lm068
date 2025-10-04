@@ -478,5 +478,5 @@ class Content extends UploadableModel implements HasStatuses
             'view_cnt' => 0
         ];
     }
-    
+
 }

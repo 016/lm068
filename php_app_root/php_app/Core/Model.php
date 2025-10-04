@@ -302,7 +302,12 @@ abstract class Model
         foreach ($models as $oneModel) {
             $item = [];
             foreach ($fieldMapping as $outputKey => $sourceField) {
-                $item[$outputKey] = $outputKey === 'id' ? (int)$oneModel[$sourceField] : $oneModel[$sourceField];
+
+                $item[$outputKey] =  $oneModel[$sourceField] ?? '';
+
+                if ($outputKey === 'id'){
+                    $item[$outputKey] = (int)$item[$outputKey];
+                }
             }
             $returnArray[] = $item;
         }

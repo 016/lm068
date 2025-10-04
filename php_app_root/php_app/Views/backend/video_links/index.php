@@ -120,7 +120,7 @@ use App\Constants\LinkStatus;
         <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="/video-links/create" class="btn btn-primary d-flex align-items-center gap-2">
+                    <a href="/video-links/create<?= isset($filters['content_id']) && $filters['content_id'] ? '?content_id=' . $filters['content_id'] : '' ?>" class="btn btn-primary d-flex align-items-center gap-2">
                         <i class="bi bi-plus-lg"></i>
                         创建新链接
                     </a>
@@ -222,15 +222,6 @@ use App\Constants\LinkStatus;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="external_video_id">
-                                <div class="d-flex align-items-center">
-                                    视频ID
-                                    <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="external_video_id" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="external_video_id" data-direction="desc"></i>
-                                    </div>
-                                </div>
-                            </th>
                             <th class="table-cell sortable-header" data-column="play_cnt">
                                 <div class="d-flex align-items-center">
                                     播放数
@@ -257,13 +248,20 @@ use App\Constants\LinkStatus;
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="content_title">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索内容" value="<?= htmlspecialchars($filters['content_id'] ?? '') ?>">
+                                <select class="form-control form-select form-select-sm">
+                                    <option value="">全部内容</option>
+                                    <?php foreach ($contentsList as $content): ?>
+                                        <option value="<?= $content['id'] ?>" <?= ($filters['content_id'] ?? '') == $content['id'] ? 'selected' : '' ?>><?= htmlspecialchars($content['text']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </th>
                             <th class="table-filter-cell" data-column="platform_name">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索平台" value="<?= htmlspecialchars($filters['platform_id'] ?? '') ?>">
-                            </th>
-                            <th class="table-filter-cell" data-column="external_video_id">
-                                <input type="text" class="form-control form-control-sm" placeholder="搜索视频ID" value="<?= htmlspecialchars($filters['external_video_id'] ?? '') ?>">
+                                <select class="form-control form-select form-select-sm">
+                                    <option value="">全部平台</option>
+                                    <?php foreach ($platformsList as $platform): ?>
+                                        <option value="<?= $platform['id'] ?>" <?= ($filters['platform_id'] ?? '') == $platform['id'] ? 'selected' : '' ?>><?= htmlspecialchars($platform['text']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </th>
                             <th class="table-filter-cell" data-column="play_cnt">
                                 <input type="text" class="form-control form-control-sm" placeholder="播放范围">
@@ -300,7 +298,6 @@ use App\Constants\LinkStatus;
                                             <?= htmlspecialchars($item['platform_name'] ?? '') ?>
                                         </span>
                                     </td>
-                                    <td class="table-cell" data-column="external_video_id"><?= htmlspecialchars($item['external_video_id'] ?? '') ?></td>
                                     <td class="table-cell" data-column="play_cnt"><?= number_format($item['play_cnt'] ?? 0) ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php
@@ -333,7 +330,7 @@ use App\Constants\LinkStatus;
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center py-4">
+                                <td colspan="7" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                         暂无视频链接数据

@@ -44,10 +44,18 @@ class VideoLinkController extends BackendController
 
         $stats = $this->curModel->getStats();
 
+        // 获取下拉选择所需数据
+        $platformsList = Platform::loadList([], ['id'=>'id', 'text'=>'name']);
+        $contentsList = Content::loadList([
+            'content_type_id' => ContentType::VIDEO->value
+        ], ['id'=>'id', 'text'=>'title_cn']);
+
         $this->render('video_links/index', [
             'videoLinks' => $videoLinks,
             'filters' => $filters,
             'stats' => $stats,
+            'platformsList' => $platformsList,
+            'contentsList' => $contentsList,
             'pageTitle' => '视频链接管理 - 视频分享网站管理后台',
             'css_files' => ['content_list_2.css'],
             'js_files' => ['video_link_list_1.js']
@@ -198,10 +206,10 @@ class VideoLinkController extends BackendController
 
     private function renderCreateForm(VideoLink $videoLink): void
     {
-        $platformsList = Platform::loadList();
+        $platformsList = Platform::loadList([], ['id'=>'id', 'text'=>'name']);
         $contentsList = Content::loadList([
             'content_type_id' => ContentType::VIDEO->value
-        ]);
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         $this->render('video_links/create', [
             'videoLink' => $videoLink,
