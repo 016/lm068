@@ -481,20 +481,35 @@ class Content extends UploadableModel implements HasStatuses
 
     /**
      * 获取所有内容列表（用于下拉选择）
+     *
+     * @param array|null $conditions 查询条件
+     * @param array|null $fieldMapping 字段映射配置，例如 ['id'=>'id', 'text'=>'title_cn']
+     * @param int|null $limit 限制数量
+     * @param int|null $offset 偏移量
+     * @param string|null $orderBy 排序规则
+     * @return array 格式化后的数组
      */
-    public static function loadList(?array $conditions = [], ?string $textField='name_cn', ?string $idField='id', ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
+    public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'title_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
-        $instance = new static();
-        $results = $instance->findAll($conditions);
+        $models = static::findAll($conditions, $limit, $offset, $orderBy);
 
-        $list = [];
-        foreach ($results as $item) {
-            $list[] = [
-                'id' => $item['id'],
-                'text' => $item['title_cn'] ?: $item['title_en'],
-                'content_type_id' => $item['content_type_id']
-            ];
+        $returnArray = [];
+        foreach ($models as $oneModel) {
+            $item = [];
+            foreach ($fieldMapping as $outputKey => $sourceField) {
+                // 特殊处理：如果字段不存在，尝试回退到备选字段
+                if ($outputKey === 'text' && !isset($oneModel[$sourceField])) {
+                    $item[$outputKey] = $oneModel['title_cn'] ?: $oneModel['title_en'];
+                } else {
+                    $item[$outputKey] = $outputKey === 'id' ? (int)$oneModel[$sourceField] : $oneModel[$sourceField];
+                }
+            }
+            // 始终包含 content_type_id（Content特殊需求）
+            if (!isset($item['content_type_id']) && isset($oneModel['content_type_id'])) {
+                $item['content_type_id'] = $oneModel['content_type_id'];
+            }
+            $returnArray[] = $item;
         }
-        return $list;
+        return $returnArray;
     }
 }

@@ -135,7 +135,7 @@ class TagController extends BackendController
 
         $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ], 'title_cn');
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         $this->render('tags/edit', [
             'tag' => $tag,  // 传递Tag实例而不是数组
@@ -211,7 +211,7 @@ class TagController extends BackendController
     {
         $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ], 'title_cn');
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
         $selectedContentIds = $postedContentIds !== null ? $postedContentIds : [];

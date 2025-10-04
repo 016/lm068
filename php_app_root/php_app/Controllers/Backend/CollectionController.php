@@ -135,7 +135,7 @@ class CollectionController extends BackendController
 
         $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ], 'title_cn');
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         $this->render('collections/edit', [
             'collection' => $collection,  // 传递Collection实例
@@ -211,7 +211,7 @@ class CollectionController extends BackendController
     {
         $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ], 'title_cn');
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
         $selectedContentIds = $postedContentIds !== null ? $postedContentIds : [];
