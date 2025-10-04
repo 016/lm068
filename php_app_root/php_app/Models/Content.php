@@ -26,6 +26,7 @@ class Content extends UploadableModel implements HasStatuses
             'type' => 'image',
             'path_key' => 'thumbnails_path',
             'required' => false,
+            'replace_old' => true,  // 启用旧文件替换，只保留最新的缩略图
         ]
     ];
 
