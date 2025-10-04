@@ -273,18 +273,15 @@ abstract class UploadableModel extends Model
      */
     protected function deleteOldFiles(string $attribute, array $config): bool
     {
-        // 获取当前记录的文件前缀
-        $prefix = $this->generateFilePrefix();
         $uploadPath = $this->getUploadPath($config['path_key'] ?? 'base_path');
+        $newFileName = $this->attributes[$attribute] ?? null;
+        $deleted = false;
 
-        // 查找所有匹配前缀的旧文件（任意后缀）
+        // 1. 使用当前前缀（基于PK）查找并删除旧文件
+        $prefix = $this->generateFilePrefix();
         $pattern = $uploadPath . $prefix . '_*.*';
         $matchedFiles = glob($pattern);
 
-        // 获取新上传的文件名（避免误删）
-        $newFileName = $this->attributes[$attribute] ?? null;
-
-        $deleted = false;
         if ($matchedFiles) {
             foreach ($matchedFiles as $filePath) {
                 $currentFileName = basename($filePath);
@@ -298,6 +295,18 @@ abstract class UploadableModel extends Model
                     unlink($filePath);
                     $deleted = true;
                 }
+            }
+        }
+
+        // 2. 额外处理：删除 original 中记录的旧文件（处理随机前缀的新建场景）
+        $oldFileName = $this->original[$attribute] ?? null;
+
+        if ($oldFileName && $oldFileName !== $newFileName) {
+            $oldFilePath = $uploadPath . $oldFileName;
+
+            if (file_exists($oldFilePath) && is_file($oldFilePath)) {
+                unlink($oldFilePath);
+                $deleted = true;
             }
         }
 
