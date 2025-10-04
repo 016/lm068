@@ -482,10 +482,10 @@ class Content extends UploadableModel implements HasStatuses
     /**
      * 获取所有内容列表（用于下拉选择）
      */
-    public static function loadList(array $filters = []): array
+    public static function loadList(?array $conditions = [], ?string $textField='name_cn', ?string $idField='id', ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
         $instance = new static();
-        $results = $instance->findAll($filters);
+        $results = $instance->findAll($conditions);
 
         $list = [];
         foreach ($results as $item) {

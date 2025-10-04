@@ -90,6 +90,16 @@ $router->post('/collections/{id}/edit', 'Backend\\CollectionController@edit');
 $router->get('/collections/{id}', 'Backend\\CollectionController@show');
 $router->delete('/collections/{id}', 'Backend\\CollectionController@destroy');
 
+// 视频链接管理
+$router->get('/video-links', 'Backend\\VideoLinkController@index');
+$router->get('/video-links/create', 'Backend\\VideoLinkController@create');
+$router->post('/video-links/create', 'Backend\\VideoLinkController@create');  // 创建路由，GET显示表单，POST处理数据
+$router->post('/video-links/bulk-action', 'Backend\\VideoLinkController@bulkAction');
+$router->post('/video-links/bulk-import', 'Backend\\VideoLinkController@bulkImport');
+$router->get('/video-links/{id}/edit', 'Backend\\VideoLinkController@edit');
+$router->post('/video-links/{id}/edit', 'Backend\\VideoLinkController@edit');  // 编辑路由，GET显示表单，POST处理数据
+$router->delete('/video-links/{id}', 'Backend\\VideoLinkController@destroy');
+
 // 404页面
 $router->notFound(function() {
     http_response_code(404);
