@@ -144,7 +144,7 @@ class TagController extends BackendController
             'contentOptions' => $contentOptions,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
     }
 
@@ -237,7 +237,7 @@ class TagController extends BackendController
             'selectedVideoIds' => [],
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'tag_edit_12.js']
+            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'tag_edit_12.js']
         ]);
     }
 
