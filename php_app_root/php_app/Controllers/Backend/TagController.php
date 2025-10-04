@@ -138,10 +138,24 @@ class TagController extends BackendController
             ];
         }
 
+        // 准备内容数据用于JS (与content模块保持一致)
+        $contentsList = [];
+        foreach ($allContent as $content) {
+            $contentsList[] = [
+                'id' => (string)$content['id'],
+                'text' => $content['title_cn'] ?: $content['title_en']
+            ];
+        }
+
+        // 转换selectedContentIds为字符串数组
+        $selectedVideoIds = array_map('strval', $selectedContentIds);
+
         $this->render('tags/edit', [
             'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
+            'contentsList' => $contentsList,
+            'selectedVideoIds' => $selectedVideoIds,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -220,10 +234,10 @@ class TagController extends BackendController
             ];
         }
 
-        // 准备视频数据用于JS
-        $videoData = [];
+        // 准备内容数据用于JS (与content模块保持一致，使用contentsList)
+        $contentsList = [];
         foreach ($allContent as $content) {
-            $videoData[] = [
+            $contentsList[] = [
                 'id' => (string)$content['id'],
                 'text' => $content['title_cn'] ?: $content['title_en']
             ];
@@ -233,7 +247,7 @@ class TagController extends BackendController
             'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
-            'videoData' => $videoData,
+            'contentsList' => $contentsList,
             'selectedVideoIds' => [],
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],

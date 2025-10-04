@@ -290,7 +290,7 @@ use App\Constants\TagStatus;
     // 将动态数据传递给JS
     window.inputData = {
         // 内容数据
-        contentList: <?= json_encode($contentOptions ?? []) ?>,
-        selectedContentIds: <?= json_encode(array_column($relatedContent ?? [], 'id')) ?>
+        contentList: <?= json_encode($contentsList ?? []) ?>,
+        selectedContentIds: <?= json_encode($selectedVideoIds ?? []) ?>
     };
 </script>

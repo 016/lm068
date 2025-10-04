@@ -138,11 +138,25 @@ class CollectionController extends BackendController
             ];
         }
 
+        // 准备内容数据用于JS (与content模块保持一致)
+        $contentsList = [];
+        foreach ($allContent as $content) {
+            $contentsList[] = [
+                'id' => (string)$content['id'],
+                'text' => $content['title_cn'] ?: $content['title_en']
+            ];
+        }
+
+        // 转换selectedContentIds为字符串数组
+        $selectedVideoIds = array_map('strval', $selectedContentIds);
+
         $this->render('collections/edit', [
             'collection' => $collection,  // 传递Collection实例
             'relatedContent' => $relatedContent,
             'contentOptions' => $contentOptions,
+            'contentsList' => $contentsList,
             'selectedContentIds' => $selectedContentIds,
+            'selectedVideoIds' => $selectedVideoIds,
             'title' => '编辑合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -228,11 +242,22 @@ class CollectionController extends BackendController
             ];
         }
 
+        // 准备内容数据用于JS (与content模块保持一致)
+        $contentsList = [];
+        foreach ($allContent as $content) {
+            $contentsList[] = [
+                'id' => (string)$content['id'],
+                'text' => $content['title_cn'] ?: $content['title_en']
+            ];
+        }
+
         $this->render('collections/create', [
             'collection' => $collection,  // 传递Collection实例而不是null
             'relatedContent' => [],
             'contentOptions' => $contentOptions,
+            'contentsList' => $contentsList,
             'selectedContentIds' => [],
+            'selectedVideoIds' => [],
             'title' => '创建合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']

@@ -37,10 +37,3 @@
                 </div>
             </main>
 
-<script>
-    // 将动态数据传递给JS
-    window.tagCreateData = {
-        videoData: <?= json_encode($videoData ?? [], JSON_UNESCAPED_UNICODE) ?>,
-        selectedVideoIds: <?= json_encode($selectedVideoIds ?? [], JSON_UNESCAPED_UNICODE) ?>
-    };
-</script>
