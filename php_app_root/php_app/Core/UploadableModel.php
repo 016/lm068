@@ -189,6 +189,29 @@ abstract class UploadableModel extends Model
     }
 
     /**
+     * 生成文件名前缀（基于 Model 名称 + PK 加密混淆）
+     *
+     * @return string 16位加密前缀
+     */
+    protected function generateFilePrefix(): string
+    {
+        $modelName = static::class;  // 获取当前 Model 类名
+        $pk = $this->getPrimaryKey();  // 获取主键值
+
+        // 如果主键为空（新建记录），使用随机前缀
+        if (empty($pk)) {
+            return bin2hex(random_bytes(8));  // 生成16位随机前缀
+        }
+
+        // 组合 modelName + PK 生成唯一字符串
+        $rawString = $modelName . '_' . $pk;
+
+        // SHA256 加密后截取前16位
+        $hash = hash('sha256', $rawString);
+        return substr($hash, 0, 16);
+    }
+
+    /**
      * 生成唯一文件名
      *
      * @param string $extension 文件扩展名
@@ -196,7 +219,10 @@ abstract class UploadableModel extends Model
      */
     protected function generateFileName(string $extension): string
     {
-        return uniqid('u_', true) . '_' . time() . '.' . $extension;
+        $prefix = $this->generateFilePrefix();
+        $timestamp = time();
+
+        return "{$prefix}_{$timestamp}.{$extension}";
     }
 
     /**
@@ -240,7 +266,6 @@ abstract class UploadableModel extends Model
      * 删除旧文件（支持跨后缀删除）
      * 用于在上传新文件后清理旧文件
      * 注意：该方法在新文件上传成功后调用，此时 $this->attributes[$attribute] 已更新为新文件名
-     *       需要从数据库读取旧文件名进行删除
      *
      * @param string $attribute 属性名
      * @param array $config 上传配置
@@ -248,31 +273,16 @@ abstract class UploadableModel extends Model
      */
     protected function deleteOldFiles(string $attribute, array $config): bool
     {
-        // 获取新上传的文件名（当前 attributes 中的值）
-        $newFileName = $this->attributes[$attribute] ?? null;
-
-        if (!$newFileName) {
-            return false;
-        }
-
-        // 从数据库读取旧文件名
-        $oldFileName = $this->getOldAttributeValue($attribute);
-
-        // 如果没有旧文件，或新旧文件名相同，不需要删除
-        if (!$oldFileName || $oldFileName === $newFileName) {
-            return false;
-        }
-
+        // 获取当前记录的文件前缀
+        $prefix = $this->generateFilePrefix();
         $uploadPath = $this->getUploadPath($config['path_key'] ?? 'base_path');
 
-        // 提取旧文件名主体（去除后缀）
-        $fileBaseName = pathinfo($oldFileName, PATHINFO_FILENAME);
-
-        // 使用 glob 查找所有匹配的旧文件（任意后缀）
-        $pattern = $uploadPath . $fileBaseName . '.*';
+        // 查找所有匹配前缀的旧文件（任意后缀）
+        $pattern = $uploadPath . $prefix . '_*.*';
         $matchedFiles = glob($pattern);
-        var_dump($matchedFiles);
-        exit;
+
+        // 获取新上传的文件名（避免误删）
+        $newFileName = $this->attributes[$attribute] ?? null;
 
         $deleted = false;
         if ($matchedFiles) {
@@ -294,18 +304,6 @@ abstract class UploadableModel extends Model
         return $deleted;
     }
 
-    /**
-     * 获取属性的旧值（从 Active Record 的 $original 读取）
-     * 利用 Model::find() 已加载的原始数据，避免额外数据库查询
-     *
-     * @param string $attribute 属性名
-     * @return string|null 旧值
-     */
-    protected function getOldAttributeValue(string $attribute): ?string
-    {
-        // 直接从 $original 读取（Model::find() 时已通过 setOriginal() 加载）
-        return $this->original[$attribute] ?? null;
-    }
 
     /**
      * 重写 save 方法，在保存前处理文件URL
