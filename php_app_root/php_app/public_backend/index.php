@@ -5,9 +5,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Router;
 use App\Core\Request;
+use App\Core\Config;
+
+// 加载配置（支持本地配置覆盖）
+$config = Config::load('main');
 
 // 设置错误报告
-$config = require_once __DIR__ . '/../config/main.php';
 if ($config['debug']) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);

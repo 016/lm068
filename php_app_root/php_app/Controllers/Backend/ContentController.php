@@ -61,7 +61,7 @@ class ContentController extends BackendController
         // 处理 POST 请求（表单提交）
         if ($request->isPost()) {
             $postId = (int)($request->post('id') ?? 0);
-            
+
             if (!$postId || $postId !== $id) {
                 $this->jsonResponse(['success' => false, 'message' => 'Invalid content ID']);
                 return;
@@ -78,9 +78,14 @@ class ContentController extends BackendController
                 'desc_cn' => $request->post('desc_cn'),
                 'desc_en' => $request->post('desc_en'),
                 'duration' => $request->post('duration'),
-                'thumbnail' => $request->post('thumbnail'),
                 'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value)
             ];
+
+            // 处理文件上传
+            if (!empty($_FILES)) {
+                $content->handleFileUploads($_FILES);
+            }
+
             $content->fill($data);
 
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
@@ -188,11 +193,16 @@ class ContentController extends BackendController
                 'desc_cn' => $request->post('desc_cn') ?? '',
                 'desc_en' => $request->post('desc_en') ?? '',
                 'duration' => $request->post('duration') ?? '',
-                'thumbnail' => $request->post('thumbnail') ?? '',
                 'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
                 'pv_cnt' => 0,
                 'view_cnt' => 0
             ];
+
+            // 处理文件上传
+            if (!empty($_FILES)) {
+                $content->handleFileUploads($_FILES);
+            }
+
             $content->fill($data);
 
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证

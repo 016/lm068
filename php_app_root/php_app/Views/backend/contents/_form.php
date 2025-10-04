@@ -21,7 +21,7 @@ use App\Constants\ContentType;
         </div>
         <?php endif; ?>
 
-        <form id="contentEditForm" action="<?= $formAction ?>" method="POST">
+        <form id="contentEditForm" action="<?= $formAction ?>" method="POST" enctype="multipart/form-data">
             <?php if (!$content->isNew): ?>
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($content->id) ?>">
@@ -63,11 +63,17 @@ use App\Constants\ContentType;
                             <label for="thumbnailUpload" class="form-label">缩略图管理</label>
                             <div class="thumbnail-section">
                                 <div class="thumbnail-upload-area">
-                                    <input type="file" class="form-control" id="thumbnailUpload" name="thumbnail_upload" accept="image/*">
-                                    <div class="form-text">上传缩略图文件 (支持 JPG、PNG 格式)</div>
+                                    <input type="file" class="form-control" id="thumbnailUpload" name="thumbnail" accept="image/*">
+                                    <div class="form-text">上传缩略图文件 (支持 JPG、PNG、GIF、WEBP 格式)</div>
                                 </div>
                                 <div class="thumbnail-preview-container">
-                                    <img src="<?= htmlspecialchars($content->thumbnail ?: 'https://picsum.photos/400/225?random=1') ?>" alt="内容缩略图" class="thumbnail-preview" id="thumbnailPreview">
+                                    <?php
+                                    $thumbnailUrl = $content->getThumbnailUrl();
+                                    if ($thumbnailUrl): ?>
+                                        <img src="<?= htmlspecialchars($thumbnailUrl) ?>" alt="内容缩略图" class="thumbnail-preview" id="thumbnailPreview">
+                                    <?php else: ?>
+                                        <img src="" alt="暂无缩略图" class="thumbnail-preview" id="thumbnailPreview" style="display:none;">
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="form-text">缩略图预览区域</div>

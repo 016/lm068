@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Core\Model;
+use App\Core\UploadableModel;
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
 use App\Interfaces\HasStatuses;
 
-class Content extends Model implements HasStatuses
+class Content extends UploadableModel implements HasStatuses
 {
     protected static string $table = 'content';
     protected $primaryKey = 'id';
@@ -17,6 +17,17 @@ class Content extends Model implements HasStatuses
         'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id'
     ];
     protected $timestamps = true;
+
+    /**
+     * 可上传属性配置
+     */
+    protected array $uploadableAttributes = [
+        'thumbnail' => [
+            'type' => 'image',
+            'path_key' => 'thumbnails_path',
+            'required' => false,
+        ]
+    ];
 
     // 默认属性值
     protected array $defaults = [
@@ -115,6 +126,22 @@ class Content extends Model implements HasStatuses
     public function getDisplayShortDescription(): string
     {
         return $this->short_desc_cn ?: $this->short_desc_en;
+    }
+
+    /**
+     * 获取缩略图URL
+     * @param bool $withFallback 是否返回空字符串（无缩略图时）
+     * @return string 缩略图URL
+     */
+    public function getThumbnailUrl(bool $withFallback = false): string
+    {
+        $url = $this->getFileUrl('thumbnail');
+
+        if (!$url && !$withFallback) {
+            return ''; // 返回空字符串，由前端控制显示
+        }
+
+        return $url ?? '';
     }
 
     /**
