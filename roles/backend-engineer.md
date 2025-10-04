@@ -36,6 +36,9 @@
     - b-content-index: content index page
     - b-content-create: content create form page
     - b-content-edit: content edit form page
+    - b-video_link-index: video_link index page
+    - b-video_link-create: video_link create form page
+    - b-video_link-edit: video_link edit form page
     - b-user-management: 用户管理模块
     - b-comment-management: 评论管理模块
     - b-subscription-management: 订阅邮件管理模块
