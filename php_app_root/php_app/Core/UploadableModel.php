@@ -271,6 +271,8 @@ abstract class UploadableModel extends Model
         // 使用 glob 查找所有匹配的旧文件（任意后缀）
         $pattern = $uploadPath . $fileBaseName . '.*';
         $matchedFiles = glob($pattern);
+        var_dump($matchedFiles);
+        exit;
 
         $deleted = false;
         if ($matchedFiles) {
@@ -303,31 +305,6 @@ abstract class UploadableModel extends Model
     {
         // 直接从 $original 读取（Model::find() 时已通过 setOriginal() 加载）
         return $this->original[$attribute] ?? null;
-    }
-
-    /**
-     * 删除文件
-     *
-     * @param string $attribute 属性名
-     * @return bool 是否删除成功
-     */
-    public function deleteFile(string $attribute): bool
-    {
-        $fileName = $this->attributes[$attribute] ?? null;
-
-        if (!$fileName) {
-            return false;
-        }
-
-        $config = $this->uploadableAttributes[$attribute] ?? [];
-        $uploadPath = $this->getUploadPath($config['path_key'] ?? 'base_path');
-        $filePath = $uploadPath . $fileName;
-
-        if (file_exists($filePath)) {
-            return unlink($filePath);
-        }
-
-        return false;
     }
 
     /**
