@@ -198,13 +198,12 @@ abstract class UploadableModel extends Model
         $modelName = static::class;  // 获取当前 Model 类名
         $pk = $this->getPrimaryKey();  // 获取主键值
 
-        // 如果主键为空（新建记录），使用随机前缀
-        if (empty($pk)) {
-            return bin2hex(random_bytes(8));  // 生成16位随机前缀
-        }
-
         // 组合 modelName + PK 生成唯一字符串
         $rawString = $modelName . '_' . $pk;
+        // 如果主键为空（新建记录），使用随机前缀
+        if (empty($pk)) {
+            $rawString = $modelName . '_c_'  . bin2hex(random_bytes(16));
+        }
 
         // SHA256 加密后截取前16位
         $hash = hash('sha256', $rawString);

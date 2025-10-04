@@ -31,6 +31,11 @@ abstract class Model
         return static::$table;
     }
 
+    protected function getPrimaryKey(): string
+    {
+        return $this->attributes[$this->primaryKey] ?? '';
+    }
+
     /**
      * 静态方法 - 查找所有记录，支持查询条件和输出格式化
      * 
