@@ -287,21 +287,24 @@ abstract class Model
     /**
      * for quick get model list for multi-select init.
      *  force format to [[id, text], ... ]
-     * @param array $conditions
-     * @param string|null $textField
-     * @param string|null $idField
-     * @param int|null $limit
-     * @param int|null $offset
-     * @param string|null $orderBy
-     * @return array
+     * @param array $conditions 查询条件
+     * @param array $fieldMapping 字段映射配置，例如 ['id'=>'id', 'text'=>'name_cn']
+     * @param int|null $limit 限制数量
+     * @param int|null $offset 偏移量
+     * @param string|null $orderBy 排序规则
+     * @return array 格式化后的数组
      */
-    public static function loadList(?array $conditions = [], ?string $textField='name_cn', ?string $idField='id', ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
+    public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
         $models = static::findAll($conditions, $limit,$offset,$orderBy);
 
         $returnArray = [];
         foreach ($models as $oneModel) {
-            $returnArray[] = ['id' => (int)$oneModel[$idField], 'text' => $oneModel[$textField]];
+            $item = [];
+            foreach ($fieldMapping as $outputKey => $sourceField) {
+                $item[$outputKey] = $outputKey === 'id' ? (int)$oneModel[$sourceField] : $oneModel[$sourceField];
+            }
+            $returnArray[] = $item;
         }
         return $returnArray;
     }
