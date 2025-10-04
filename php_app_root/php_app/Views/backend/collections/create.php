@@ -39,11 +39,3 @@ use App\Constants\CollectionStatus;
         </div>
     </div>
 </main>
-
-<script>
-// 将动态数据传递给JS
-window.inputData = {
-    contentList: <?= json_encode($contentOptions) ?>,
-    selectedContentIds: <?= json_encode($selectedContentIds ?? []) ?>
-};
-</script>

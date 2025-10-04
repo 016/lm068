@@ -289,3 +289,12 @@ use App\Constants\CollectionStatus;
         </form>
     </div>
 </div>
+
+<script>
+    // 将动态数据传递给JS
+    window.inputData = {
+        // 内容数据
+        contentList: <?= json_encode($contentOptions ?? []) ?>,
+        selectedContentIds: <?= json_encode($selectedContentIds ?? []) ?>
+    };
+</script>

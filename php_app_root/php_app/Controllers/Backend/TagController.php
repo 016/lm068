@@ -95,10 +95,10 @@ class TagController extends BackendController
                 // 7. 验证通过，写入数据库
                 if ($tag->save()) {
                     // 处理关联内容
-                    $relatedVideos = $request->post('related_videos');
-                    if ($relatedVideos !== null) {
-                        $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
-                        $this->curModel->syncContentAssociations($id, $contentIds);
+                    $contentIds = $request->post('content_ids');
+                    if ($contentIds !== null) {
+                        $contentIdsArray = $contentIds == '' ? [] : explode(',', $contentIds);
+                        $this->curModel->syncContentAssociations($id, $contentIdsArray);
                     }
 
                     // 成功后跳转到列表页面
@@ -180,10 +180,10 @@ class TagController extends BackendController
             try {
                 // 7. 验证通过，写入数据库
                 if ($tag->save()) {
-                    $relatedVideos = $request->post('related_videos');
-                    if ($relatedVideos && is_array($relatedVideos)) {
-                        $contentIds = array_map('intval', $relatedVideos);
-                        $this->curModel->syncContentAssociations($tag->id, $contentIds);
+                    $contentIds = $request->post('content_ids');
+                    if ($contentIds && is_array($contentIds)) {
+                        $contentIdsArray = array_map('intval', $contentIds);
+                        $this->curModel->syncContentAssociations($tag->id, $contentIdsArray);
                     }
 
                     // 成功后跳转到列表页面

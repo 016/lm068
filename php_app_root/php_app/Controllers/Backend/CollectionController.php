@@ -100,10 +100,10 @@ class CollectionController extends BackendController
             // 7. 验证通过，写入数据库
             if ($collection->save()) {
                 // 处理关联内容
-                $relatedVideos = $request->post('related_videos');
-                if ($relatedVideos !== null) {
-                    $contentIds = is_array($relatedVideos) ? array_map('intval', $relatedVideos) : [];
-                    $this->curModel->syncContentAssociations($id, $contentIds);
+                $contentIds = $request->post('content_ids');
+                if ($contentIds !== null) {
+                    $contentIdsArray = $contentIds == '' ? [] : explode(',', $contentIds);
+                    $this->curModel->syncContentAssociations($id, $contentIdsArray);
                 }
 
                 $this->setFlashMessage('合集更新成功', 'success');
@@ -181,17 +181,17 @@ class CollectionController extends BackendController
                 // 7. 验证通过，写入数据库
                 if ($collection->save()) {
                     // 处理关联内容
-                    $relatedVideos = $request->post('related_videos');
-                    if ($relatedVideos) {
-                        $contentIds = [];
-                        if (is_string($relatedVideos)) {
-                            $contentIds = array_map('intval', explode(',', $relatedVideos));
-                        } elseif (is_array($relatedVideos)) {
-                            $contentIds = array_map('intval', $relatedVideos);
+                    $contentIds = $request->post('content_ids');
+                    if ($contentIds) {
+                        $contentIdsArray = [];
+                        if (is_string($contentIds)) {
+                            $contentIdsArray = array_map('intval', explode(',', $contentIds));
+                        } elseif (is_array($contentIds)) {
+                            $contentIdsArray = array_map('intval', $contentIds);
                         }
-                        $contentIds = array_filter($contentIds);
-                        if (!empty($contentIds)) {
-                            $this->curModel->syncContentAssociations($collection->id, $contentIds);
+                        $contentIdsArray = array_filter($contentIdsArray);
+                        if (!empty($contentIdsArray)) {
+                            $this->curModel->syncContentAssociations($collection->id, $contentIdsArray);
                         }
                     }
 
