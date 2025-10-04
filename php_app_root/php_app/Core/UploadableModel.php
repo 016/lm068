@@ -196,7 +196,7 @@ abstract class UploadableModel extends Model
      */
     protected function generateFileName(string $extension): string
     {
-        return uniqid('upload_', true) . '_' . time() . '.' . $extension;
+        return uniqid('u_', true) . '_' . time() . '.' . $extension;
     }
 
     /**
@@ -293,25 +293,16 @@ abstract class UploadableModel extends Model
     }
 
     /**
-     * 获取属性的旧值（从数据库读取）
+     * 获取属性的旧值（从 Active Record 的 $original 读取）
+     * 利用 Model::find() 已加载的原始数据，避免额外数据库查询
      *
      * @param string $attribute 属性名
      * @return string|null 旧值
      */
     protected function getOldAttributeValue(string $attribute): ?string
     {
-        // 如果是新记录（没有ID），则没有旧值
-        if (!isset($this->attributes[$this->primaryKey]) || empty($this->attributes[$this->primaryKey])) {
-            return null;
-        }
-
-        $id = $this->attributes[$this->primaryKey];
-        $table = static::getTableName();
-        $sql = "SELECT {$attribute} FROM {$table} WHERE {$this->primaryKey} = :id LIMIT 1";
-
-        $result = $this->db->fetch($sql, ['id' => $id]);
-
-        return $result[$attribute] ?? null;
+        // 直接从 $original 读取（Model::find() 时已通过 setOriginal() 加载）
+        return $this->original[$attribute] ?? null;
     }
 
     /**
