@@ -158,10 +158,12 @@ abstract class UploadableModel extends Model
     protected function getUploadPath(string $pathKey): string
     {
         $relativePath = Config::get("upload.{$pathKey}", '../public_resources/uploads/');
+        $realPath = realpath($relativePath);
+        if ($realPath && is_dir($realPath)) {
+            $realPath .= DIRECTORY_SEPARATOR;
+        }
 
-        // 转换为绝对路径
-        $basePath = __DIR__ . '/../';
-        return realpath($basePath) . '/' . ltrim($relativePath, './');
+        return $realPath;
     }
 
     /**

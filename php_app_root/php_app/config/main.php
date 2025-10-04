@@ -24,11 +24,11 @@ return [
         'allowed_file_types' => ['pdf', 'doc', 'docx', 'zip', 'rar'],
 
         // 上传路径配置 - 基于项目根目录的相对路径
-        'base_path' => '../public_resources/uploads/',
-        'thumbnails_path' => '../public_resources/uploads/thumbnails/',
-        'videos_preview_path' => '../public_resources/uploads/videos_preview/',
-        'avatars_path' => '../public_resources/uploads/avatars/',
-        'files_path' => '../public_resources/uploads/files/',
+        'base_path' =>  __DIR__.'/../../public_resources/uploads/',
+        'thumbnails_path' => __DIR__.'/../../public_resources/uploads/thumbnails/',
+        'videos_preview_path' =>  __DIR__.'/../../public_resources/uploads/videos_preview/',
+        'avatars_path' =>  __DIR__.'/../../public_resources/uploads/avatars/',
+        'files_path' =>  __DIR__.'/../../public_resources/uploads/files/',
 
         // 资源URL前缀配置
         'base_url' => 'https://dp-t-static.lib00.com/',

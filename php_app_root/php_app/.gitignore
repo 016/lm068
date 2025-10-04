@@ -11,10 +11,6 @@ runtime/logs/*.log
 # Ignore temporary files
 runtime/cache/*
 
-# Ignore uploaded files (in development)
-../public_resources/uploads/*
-!../public_resources/uploads/.gitkeep
-
 # Ignore IDE files
 .vscode/
 .idea/
