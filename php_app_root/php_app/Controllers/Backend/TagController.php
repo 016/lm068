@@ -84,10 +84,13 @@ class TagController extends BackendController
             ];
             $tag->fill($data);
 
+            $contentIds = $request->post('content_ids');
+            $contentIds = $contentIds == '' ? [] : array_map('intval', explode(',', $contentIds));
+
             // 5. 使用 Tag 的 validate 对提取的 post 数值进行验证
             if (!$tag->validate()) {
                 // 6. 如果验证失败，使用 $tag->errors 返回给 view
-                $this->renderEditForm($tag);
+                $this->renderEditForm($tag, $contentIds);
                 return;
             }
 
@@ -95,10 +98,9 @@ class TagController extends BackendController
                 // 7. 验证通过，写入数据库
                 if ($tag->save()) {
                     // 处理关联内容
-                    $contentIds = $request->post('content_ids');
-                    if ($contentIds !== null) {
-                        $contentIdsArray = $contentIds == '' ? [] : explode(',', $contentIds);
-                        $this->curModel->syncContentAssociations($id, $contentIdsArray);
+
+                    if (!empty($contentIds)) {
+                        $this->curModel->syncContentAssociations($id, $contentIds);
                     }
 
                     // 成功后跳转到列表页面
@@ -106,12 +108,12 @@ class TagController extends BackendController
                     $this->redirect('/tags');
                 } else {
                     // 保存失败，返回编辑页面并显示错误
-                    $this->renderEditForm($tag);
+                    $this->renderEditForm($tag, $contentIds);
                 }
             } catch (\Exception $e) {
                 error_log("Tag update error: " . $e->getMessage());
                 $tag->errors['general'] = '更新失败: ' . $e->getMessage();
-                $this->renderEditForm($tag);
+                $this->renderEditForm($tag, $contentIds);
             }
             return;
         }
@@ -120,42 +122,26 @@ class TagController extends BackendController
         $this->renderEditForm($tag);
     }
 
-    private function renderEditForm(Tag $tag): void
+    private function renderEditForm(Tag $tag, ?array $postedContentIds = null): void
     {
-        $relatedContent = $this->curModel->getRelatedContent($tag->id);
-        $allContent = $this->contentModel->findAll([
+        $relatedContents = $this->curModel->getRelatedContent($tag->id);
+
+        // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
+        if ($postedContentIds !== null) {
+            $selectedContentIds =  $postedContentIds;
+        } else {
+            $selectedContentIds = array_column($relatedContents, 'id');
+        }
+
+        $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ]);
-
-        $contentOptions = [];
-        $selectedContentIds = array_column($relatedContent, 'id');
-
-        foreach ($allContent as $content) {
-            $contentOptions[] = [
-                'id' => $content['id'],
-                'title' => $content['title_cn'] ?: $content['title_en'],
-                'selected' => in_array($content['id'], $selectedContentIds)
-            ];
-        }
-
-        // 准备内容数据用于JS (与content模块保持一致)
-        $contentsList = [];
-        foreach ($allContent as $content) {
-            $contentsList[] = [
-                'id' => (string)$content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
-
-        // 转换selectedContentIds为字符串数组
-        $selectedVideoIds = array_map('strval', $selectedContentIds);
+        ], 'title_cn');
 
         $this->render('tags/edit', [
             'tag' => $tag,  // 传递Tag实例而不是数组
-            'relatedContent' => $relatedContent,
-            'contentOptions' => $contentOptions,
+            'relatedContent' => $relatedContents,
             'contentsList' => $contentsList,
-            'selectedVideoIds' => $selectedVideoIds,
+            'selectedContentIds' => $selectedContentIds,
             'pageTitle' => '编辑标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'tag_edit_12.js']
@@ -184,20 +170,22 @@ class TagController extends BackendController
             ];
             $tag->fill($data);
 
+            $contentIds = $request->post('content_ids');
+            $contentIds = $contentIds == '' ? [] : array_map('intval', explode(',', $contentIds));
+
             // 5. 使用 Tag 的 validate 对提取的 post 数值进行验证
             if (!$tag->validate()) {
+
                 // 6. 如果验证失败，使用 $tag->errors 返回给 view
-                $this->renderCreateForm($tag);
+                $this->renderCreateForm($tag, $contentIds);
                 return;
             }
 
             try {
                 // 7. 验证通过，写入数据库
                 if ($tag->save()) {
-                    $contentIds = $request->post('content_ids');
-                    if ($contentIds && is_array($contentIds)) {
-                        $contentIdsArray = array_map('intval', $contentIds);
-                        $this->curModel->syncContentAssociations($tag->id, $contentIdsArray);
+                    if (!empty($contentIds)) {
+                        $this->curModel->syncContentAssociations($tag->id, $contentIds);
                     }
 
                     // 成功后跳转到列表页面
@@ -205,12 +193,12 @@ class TagController extends BackendController
                     $this->redirect('/tags');
                 } else {
                     // 保存失败，返回创建页面并显示错误
-                    $this->renderCreateForm($tag);
+                    $this->renderCreateForm($tag, $contentIds);
                 }
             } catch (\Exception $e) {
                 error_log("Tag creation error: " . $e->getMessage());
                 $tag->errors['general'] = '创建失败: ' . $e->getMessage();
-                $this->renderCreateForm($tag);
+                $this->renderCreateForm($tag, $contentIds);
             }
             return;
         }
@@ -219,36 +207,20 @@ class TagController extends BackendController
         $this->renderCreateForm($tag);
     }
 
-    private function renderCreateForm(Tag $tag): void
+    private function renderCreateForm(Tag $tag, ?array $postedContentIds = null): void
     {
-        $allContent = $this->contentModel->findAll([
+        $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ]);
+        ], 'title_cn');
 
-        $contentOptions = [];
-        foreach ($allContent as $content) {
-            $contentOptions[] = [
-                'id' => $content['id'],
-                'title' => $content['title_cn'] ?: $content['title_en'],
-                'selected' => false
-            ];
-        }
-
-        // 准备内容数据用于JS (与content模块保持一致，使用contentsList)
-        $contentsList = [];
-        foreach ($allContent as $content) {
-            $contentsList[] = [
-                'id' => (string)$content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
+        // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
+        $selectedContentIds = $postedContentIds !== null ? $postedContentIds : [];
 
         $this->render('tags/create', [
             'tag' => $tag,  // 传递Tag实例而不是数组
             'relatedContent' => [],
-            'contentOptions' => $contentOptions,
             'contentsList' => $contentsList,
-            'selectedVideoIds' => [],
+            'selectedContentIds' => $selectedContentIds,
             'pageTitle' => '创建标签 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'tag_edit_12.js']

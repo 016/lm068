@@ -295,6 +295,6 @@ use App\Constants\CollectionStatus;
     window.inputData = {
         // 内容数据
         contentList: <?= json_encode($contentsList ?? []) ?>,
-        selectedContentIds: <?= json_encode($selectedVideoIds ?? []) ?>
+        selectedContentIds: <?= json_encode($selectedContentIds ?? []) ?>
     };
 </script>

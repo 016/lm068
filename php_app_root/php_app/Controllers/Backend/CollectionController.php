@@ -88,11 +88,13 @@ class CollectionController extends BackendController
             'status_id' => (int)($request->post('status_id') ?? CollectionStatus::DISABLED->value)
         ];
         $collection->fill($data);
+        $contentIds = $request->post('content_ids');
+        $contentIds = $contentIds == '' ? [] : array_map('intval', explode(',', $contentIds));
 
         // 5. 使用 Collection 的 validate 对提取的 post 数值进行验证
         if (!$collection->validate()) {
             // 6. 如果验证失败，使用 $collection->errors 返回给 view
-            $this->renderEditForm($collection);
+            $this->renderEditForm($collection, $contentIds);
             return;
         }
 
@@ -100,10 +102,9 @@ class CollectionController extends BackendController
             // 7. 验证通过，写入数据库
             if ($collection->save()) {
                 // 处理关联内容
-                $contentIds = $request->post('content_ids');
-                if ($contentIds !== null) {
-                    $contentIdsArray = $contentIds == '' ? [] : explode(',', $contentIds);
-                    $this->curModel->syncContentAssociations($id, $contentIdsArray);
+
+                if (!empty($contentIds)) {
+                    $this->curModel->syncContentAssociations($id, $contentIds);
                 }
 
                 $this->setFlashMessage('合集更新成功', 'success');
@@ -111,52 +112,36 @@ class CollectionController extends BackendController
                 $this->redirect('/collections');
             } else {
                 // 保存失败，返回编辑页面并显示错误
-                $this->renderEditForm($collection);
+                $this->renderEditForm($collection, $contentIds);
             }
         } catch (\Exception $e) {
             $fullMsg = $e->getFile() .' - L:'. $e->getLine(). ' - '. $e->getMessage() . '- <br/>'. $e->getTraceAsString();
             error_log("Collection update error: " . $fullMsg);
             $collection->errors['general'] = '更新失败: ' . $fullMsg;
-            $this->renderEditForm($collection);
+            $this->renderEditForm($collection, $contentIds);
         }
     }
 
-    private function renderEditForm(Collection $collection): void
+    private function renderEditForm(Collection $collection, ?array $postedContentIds = null): void
     {
-        $relatedContent = $this->curModel->getRelatedContent($collection->id);
-        $allContent = $this->contentModel->findAll([
+        $relatedContents = $this->curModel->getRelatedContent($collection->id);
+
+        // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
+        if ($postedContentIds !== null) {
+            $selectedContentIds =  $postedContentIds;
+        } else {
+            $selectedContentIds = array_column($relatedContents, 'id');
+        }
+
+        $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ]);
-
-        $contentOptions = [];
-        $selectedContentIds = array_column($relatedContent, 'id');
-
-        foreach ($allContent as $content) {
-            $contentOptions[] = [
-                'id' => $content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
-
-        // 准备内容数据用于JS (与content模块保持一致)
-        $contentsList = [];
-        foreach ($allContent as $content) {
-            $contentsList[] = [
-                'id' => (string)$content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
-
-        // 转换selectedContentIds为字符串数组
-        $selectedVideoIds = array_map('strval', $selectedContentIds);
+        ], 'title_cn');
 
         $this->render('collections/edit', [
             'collection' => $collection,  // 传递Collection实例
-            'relatedContent' => $relatedContent,
-            'contentOptions' => $contentOptions,
+            'relatedContent' => $relatedContents,
             'contentsList' => $contentsList,
             'selectedContentIds' => $selectedContentIds,
-            'selectedVideoIds' => $selectedVideoIds,
             'title' => '编辑合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']
@@ -184,10 +169,13 @@ class CollectionController extends BackendController
             ];
             $collection->fill($data);
 
+            $contentIds = $request->post('content_ids');
+            $contentIds = $contentIds == '' ? [] : array_map('intval', explode(',', $contentIds));
+
             // 5. 使用 Collection 的 validate 对提取的 post 数值进行验证
             if (!$collection->validate()) {
                 // 6. 如果验证失败，使用 $collection->errors 返回给 view
-                $this->renderCreateForm($collection);
+                $this->renderCreateForm($collection, $contentIds);
                 return;
             }
 
@@ -195,18 +183,9 @@ class CollectionController extends BackendController
                 // 7. 验证通过，写入数据库
                 if ($collection->save()) {
                     // 处理关联内容
-                    $contentIds = $request->post('content_ids');
-                    if ($contentIds) {
-                        $contentIdsArray = [];
-                        if (is_string($contentIds)) {
-                            $contentIdsArray = array_map('intval', explode(',', $contentIds));
-                        } elseif (is_array($contentIds)) {
-                            $contentIdsArray = array_map('intval', $contentIds);
-                        }
-                        $contentIdsArray = array_filter($contentIdsArray);
-                        if (!empty($contentIdsArray)) {
-                            $this->curModel->syncContentAssociations($collection->id, $contentIdsArray);
-                        }
+
+                    if (!empty($contentIds)) {
+                        $this->curModel->syncContentAssociations($collection->id, $contentIds);
                     }
 
                     // 成功后跳转到列表页面
@@ -214,12 +193,12 @@ class CollectionController extends BackendController
                     $this->redirect('/collections');
                 } else {
                     // 保存失败，返回创建页面并显示错误
-                    $this->renderCreateForm($collection);
+                    $this->renderCreateForm($collection, $contentIds);
                 }
             } catch (\Exception $e) {
                 error_log("Collection creation error: " . $e->getMessage());
                 $collection->errors['general'] = '创建失败: ' . $e->getMessage();
-                $this->renderCreateForm($collection);
+                $this->renderCreateForm($collection, $contentIds);
             }
             return;
         }
@@ -228,36 +207,21 @@ class CollectionController extends BackendController
         $this->renderCreateForm($collection);
     }
 
-    private function renderCreateForm(Collection $collection): void
+    private function renderCreateForm(Collection $collection, ?array $postedContentIds = null): void
     {
-        $allContent = $this->contentModel->findAll([
+        $contentsList = Content::loadList([
             'status_id' => ContentStatus::getVisibleStatuses()
-        ]);
+        ], 'title_cn');
 
-        $contentOptions = [];
-        foreach ($allContent as $content) {
-            $contentOptions[] = [
-                'id' => $content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
+        // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
+        $selectedContentIds = $postedContentIds !== null ? $postedContentIds : [];
 
-        // 准备内容数据用于JS (与content模块保持一致)
-        $contentsList = [];
-        foreach ($allContent as $content) {
-            $contentsList[] = [
-                'id' => (string)$content['id'],
-                'text' => $content['title_cn'] ?: $content['title_en']
-            ];
-        }
 
         $this->render('collections/create', [
             'collection' => $collection,  // 传递Collection实例而不是null
             'relatedContent' => [],
-            'contentOptions' => $contentOptions,
             'contentsList' => $contentsList,
-            'selectedContentIds' => [],
-            'selectedVideoIds' => [],
+            'selectedContentIds' => $selectedContentIds,
             'title' => '创建合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']

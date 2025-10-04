@@ -88,11 +88,15 @@ class ContentController extends BackendController
 
             $content->fill($data);
 
+            $postedTagIds = $request->post('tag_ids');
+            $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
+            $postedCollectionIds = $request->post('collection_ids');
+            $postedCollectionIds = $postedCollectionIds == '' ? [] : array_map('intval', explode(',', $postedCollectionIds));
+
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
             if (!$content->validate()) {
                 // 6. 如果验证失败，使用 $content->errors 返回给 view
-                $postedTagIds = $request->post('tag_ids');
-                $postedCollectionIds = $request->post('collection_ids');
+
                 $this->renderEditForm($content, $postedTagIds, $postedCollectionIds);
                 return;
             }
@@ -101,17 +105,13 @@ class ContentController extends BackendController
                 // 7. 验证通过，写入数据库
                 if ($content->save()) {
                     // 处理关联标签
-                    $tagIds = $request->post('tag_ids');
-                    if ($tagIds !== null) {
-                        $tagIdsArray =  $tagIds == '' ? [] : explode(',', $tagIds);
-                        $this->curModel->syncTagAssociations($id, $tagIdsArray);
+                    if (!empty($postedTagIds)) {
+                        $this->curModel->syncTagAssociations($id, $postedTagIds);
                     }
 
                     // 处理关联合集
-                    $collectionIds = $request->post('collection_ids');
-                    if ($collectionIds !== null) {
-                        $collectionIdsArray =  $collectionIds == '' ? [] : explode(',', $collectionIds);
-                        $this->curModel->syncCollectionAssociations($id, $collectionIdsArray);
+                    if (!empty($postedCollectionIds)) {
+                        $this->curModel->syncCollectionAssociations($id, $postedCollectionIds);
                     }
 
                     // 成功后跳转到列表页面
@@ -138,18 +138,18 @@ class ContentController extends BackendController
         $this->renderEditForm($content);
     }
 
-    private function renderEditForm(Content $content, ?string $postedTagIds = null, ?string $postedCollectionIds = null): void
+    private function renderEditForm(Content $content, ?array $postedTagIds = null, ?array $postedCollectionIds = null): void
     {
         // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
         if ($postedTagIds !== null) {
-            $selectedTagIds = is_array($postedTagIds) ? array_map('strval', $postedTagIds) : [];
+            $selectedTagIds = $postedTagIds;
         } else {
             $relatedTags = $this->curModel->getRelatedTags($content->id);
             $selectedTagIds = array_column($relatedTags, 'id');
         }
         
         if ($postedCollectionIds !== null) {
-            $selectedCollectionIds = is_array($postedCollectionIds) ? array_map('strval', $postedCollectionIds) : [];
+            $selectedCollectionIds = $postedCollectionIds;
         } else {
             $relatedCollections = $this->curModel->getRelatedCollections($content->id);
             $selectedCollectionIds = array_column($relatedCollections, 'id');
@@ -205,11 +205,15 @@ class ContentController extends BackendController
 
             $content->fill($data);
 
+            $postedTagIds = $request->post('tag_ids');
+            $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
+            $postedCollectionIds = $request->post('collection_ids');
+            $postedCollectionIds = $postedCollectionIds == '' ? [] : array_map('intval', explode(',', $postedCollectionIds));
+
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
             if (!$content->validate()) {
                 // 6. 如果验证失败，使用 $content->errors 返回给 view
-                $postedTagIds = $request->post('tag_ids');
-                $postedCollectionIds = $request->post('collection_ids');
+
                 $this->renderCreateForm($content, $postedTagIds, $postedCollectionIds);
                 return;
             }
@@ -217,16 +221,12 @@ class ContentController extends BackendController
             try {
                 // 7. 验证通过，写入数据库
                 if ($content->save()) {
-                    $tagIds = $request->post('tag_ids');
-                    if ($tagIds && is_array($tagIds)) {
-                        $tagIdsArray = array_map('intval', $tagIds);
-                        $this->curModel->syncTagAssociations($content->id, $tagIdsArray);
+                    if (!empty($postedTagIds)) {
+                        $this->curModel->syncTagAssociations($content->id, $postedTagIds);
                     }
 
-                    $collectionIds = $request->post('collection_ids');
-                    if ($collectionIds && is_array($collectionIds)) {
-                        $collectionIdsArray = array_map('intval', $collectionIds);
-                        $this->curModel->syncCollectionAssociations($content->id, $collectionIdsArray);
+                    if (!empty($postedCollectionIds)) {
+                        $this->curModel->syncCollectionAssociations($content->id, $postedCollectionIds);
                     }
 
                     // 成功后跳转到列表页面
@@ -262,27 +262,17 @@ class ContentController extends BackendController
             'status_id' => CollectionStatus::getVisibleStatuses()
         ]);
 
-        // 准备标签数据用于JS
-        $tagsList = [];
-        foreach ($allTags as $tag) {
-            $tagsList[] = [
-                'id' => (string)$tag['id'],
-                'text' => $tag['name_cn'] ?: $tag['name_en']
-            ];
-        }
+        $tagsList = Tag::loadList([
+            'status_id' => TagStatus::getVisibleStatuses()
+        ]);
 
-        // 准备合集数据用于JS
-        $collectionsList = [];
-        foreach ($allCollections as $collection) {
-            $collectionsList[] = [
-                'id' => (string)$collection['id'],
-                'text' => $collection['name_cn'] ?: $collection['name_en']
-            ];
-        }
+        $collectionsList = Collection::loadList([
+            'status_id' => CollectionStatus::getVisibleStatuses()
+        ]);
 
         // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
-        $selectedTagIds = $postedTagIds !== null ? array_map('strval', $postedTagIds) : [];
-        $selectedCollectionIds = $postedCollectionIds !== null ? array_map('strval', $postedCollectionIds) : [];
+        $selectedTagIds = $postedTagIds !== null ? $postedTagIds : [];
+        $selectedCollectionIds = $postedCollectionIds !== null ? $postedCollectionIds : [];
 
         $this->render('contents/create', [
             'content' => $content,  // 传递Content实例而不是数组
@@ -294,7 +284,7 @@ class ContentController extends BackendController
             'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '创建内容 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_2.js', 'form_utils_2.js', 'content_edit_11.js']
+            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'content_edit_11.js']
         ]);
     }
 
