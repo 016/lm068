@@ -98,7 +98,30 @@ class BackendController extends Controller
      */
     protected function beforeActionFilters(): array
     {
-        return [];
+        return [
+            // 所有 action 都需要登录认证
+            [
+                'filter' => 'auth'
+            ],
+
+            // 示例: 仅删除操作需要额外的权限检查(已注释)
+            // [
+            //     'filter' => 'method',
+            //     'method' => 'checkDeletePermission',
+            //     'only' => ['destroy']
+            // ],
+
+            // 示例: 批量操作需要特殊验证(已注释)
+            // [
+            //     'filter' => 'callback',
+            //     'callback' => function($controller) {
+            //         // 自定义逻辑
+            //         return true;
+            //     },
+            //     'only' => ['bulkAction', 'bulkImport']
+            // ]
+        ];
+
     }
 
     /**

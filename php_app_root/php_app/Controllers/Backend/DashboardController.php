@@ -8,10 +8,6 @@ class DashboardController extends BackendController
 {
     public function index(Request $request): void
     {
-        if (!$this->requireAuth()) {
-            return;
-        }
-
         $this->render('dashboard.index', [
             'title' => '管理后台 - 数据面板',
             'stats' => [

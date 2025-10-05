@@ -23,39 +23,6 @@ class TagController extends BackendController
     }
 
     /**
-     * 配置 before action 过滤器
-     * 演示多种配置方式
-     *
-     * @return array
-     */
-    protected function beforeActionFilters(): array
-    {
-        return [
-            // 所有 action 都需要登录认证
-            [
-                'filter' => 'auth'
-            ],
-
-            // 示例: 仅删除操作需要额外的权限检查(已注释)
-            // [
-            //     'filter' => 'method',
-            //     'method' => 'checkDeletePermission',
-            //     'only' => ['destroy']
-            // ],
-
-            // 示例: 批量操作需要特殊验证(已注释)
-            // [
-            //     'filter' => 'callback',
-            //     'callback' => function($controller) {
-            //         // 自定义逻辑
-            //         return true;
-            //     },
-            //     'only' => ['bulkAction', 'bulkImport']
-            // ]
-        ];
-    }
-
-    /**
      * 自定义权限检查方法示例(已注释使用)
      * 演示如何创建自定义过滤器方法
      *

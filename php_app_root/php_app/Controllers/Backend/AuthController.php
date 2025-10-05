@@ -17,6 +17,11 @@ class AuthController extends BackendController
         $this->adminUser = new AdminUser();
     }
 
+    protected function beforeActionFilters(): array
+    {
+        return [];
+    }
+
     /**
      * 显示登录页面
      */
