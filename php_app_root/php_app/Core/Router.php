@@ -75,18 +75,28 @@ class Router
 
         if (is_string($handler)) {
             list($controller, $method) = explode('@', $handler);
-            
+
             // Add namespace prefix
             $controllerClass = 'App\\Controllers\\' . $controller;
-            
+
             if (!class_exists($controllerClass)) {
                 throw new \Exception("Controller {$controllerClass} not found");
             }
 
             $controllerInstance = new $controllerClass();
-            
+
             if (!method_exists($controllerInstance, $method)) {
                 throw new \Exception("Method {$method} not found in {$controllerClass}");
+            }
+
+            // 执行 before action 过滤器
+            if (method_exists($controllerInstance, 'runBeforeActionFilters')) {
+                $filterResult = $controllerInstance->runBeforeActionFilters($method);
+
+                // 如果过滤器返回 false, 中断执行
+                if ($filterResult === false) {
+                    return false;
+                }
             }
 
             return call_user_func([$controllerInstance, $method], $request);

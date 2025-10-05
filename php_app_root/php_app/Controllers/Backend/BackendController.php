@@ -90,6 +90,107 @@ class BackendController extends Controller
         }
     }
 
+    /**
+     * 定义 before action 过滤器配置
+     * 子类重写此方法来配置过滤器
+     *
+     * @return array 过滤器配置数组
+     */
+    protected function beforeActionFilters(): array
+    {
+        return [];
+    }
+
+    /**
+     * 执行 before action 过滤器
+     * 在每个 action 执行前自动调用
+     *
+     * @param string $action 当前要执行的 action 名称
+     * @return bool 返回 true 继续执行 action, 返回 false 中断执行
+     */
+    public function runBeforeActionFilters(string $action): bool
+    {
+        $filters = $this->beforeActionFilters();
+
+        foreach ($filters as $filter) {
+            // 检查此过滤器是否应用于当前 action
+            if (!$this->shouldApplyFilter($filter, $action)) {
+                continue;
+            }
+
+            // 执行过滤器
+            $result = $this->executeFilter($filter);
+
+            // 如果过滤器返回 false, 中断执行
+            if ($result === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 判断过滤器是否应用于当前 action
+     *
+     * @param array $filter 过滤器配置
+     * @param string $action 当前 action 名称
+     * @return bool
+     */
+    protected function shouldApplyFilter(array $filter, string $action): bool
+    {
+        // 支持 'only' 配置 - 仅应用于指定的 actions
+        if (isset($filter['only'])) {
+            return in_array($action, (array)$filter['only']);
+        }
+
+        // 支持 'except' 配置 - 应用于除指定外的所有 actions
+        if (isset($filter['except'])) {
+            return !in_array($action, (array)$filter['except']);
+        }
+
+        // 默认应用于所有 action
+        return true;
+    }
+
+    /**
+     * 执行单个过滤器
+     *
+     * @param array $filter 过滤器配置
+     * @return bool 返回 true 继续执行, 返回 false 中断执行
+     */
+    protected function executeFilter(array $filter): bool
+    {
+        $filterType = $filter['filter'] ?? null;
+
+        if (!$filterType) {
+            return true;
+        }
+
+        // 支持预定义的过滤器类型
+        switch ($filterType) {
+            case 'auth':
+                // 认证过滤器
+                return $this->requireAuth();
+
+            case 'callback':
+                // 支持自定义回调函数
+                if (isset($filter['callback']) && is_callable($filter['callback'])) {
+                    return call_user_func($filter['callback'], $this);
+                }
+                break;
+
+            case 'method':
+                // 支持调用当前类的方法
+                if (isset($filter['method']) && method_exists($this, $filter['method'])) {
+                    return $this->{$filter['method']}();
+                }
+                break;
+        }
+
+        return true;
+    }
+
     protected function requireAuth(): bool
     {
         if (!isset($_SESSION['admin_id'])) {
