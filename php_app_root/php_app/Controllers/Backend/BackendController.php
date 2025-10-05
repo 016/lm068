@@ -36,6 +36,38 @@ class BackendController extends Controller
         return array_column($statusEnumClass::cases(), 'value', 'name');
     }
 
+    /**
+     * 将 action 字符串解析为状态值
+     *
+     * @param string $action 操作名称（如 'published', 'draft', 'enable' 等）
+     * @param array $statusList 当前模型支持的状态列表 [NAME => value]
+     * @return int|null 返回状态值，如果无法解析则返回 null
+     */
+    protected function resolveActionToStatus(string $action, array $statusList): ?int
+    {
+        // 将 action 转换为大写，用于匹配枚举名称
+        $enumName = strtoupper($action);
+
+        // 检查是否在状态列表中存在
+        if (array_key_exists($enumName, $statusList)) {
+            return $statusList[$enumName];
+        }
+
+        // 兼容旧的 enable/disable 操作
+        // 注意：这里假设 ENABLED/DISABLED 是通用状态
+        // 如果模型没有这些状态，会返回 null
+        if ($action === 'enable' && array_key_exists('ENABLED', $statusList)) {
+            return $statusList['ENABLED'];
+        }
+
+        if ($action === 'disable' && array_key_exists('DISABLED', $statusList)) {
+            return $statusList['DISABLED'];
+        }
+
+        // 无法解析，返回 null
+        return null;
+    }
+
 
     protected function getTemplatePath(string $template): string
     {
@@ -158,25 +190,23 @@ class BackendController extends Controller
         $statusList = $this->getModelStatuses();
 
         try {
-            switch ($action) {
-                case 'enable':
-                    $result = $this->performBulkUpdateStatus($targetIds, $statusList['ENABLED']);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                case 'disable':
-                    $result = $this->performBulkUpdateStatus($targetIds, $statusList['DISABLED']);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                case 'delete':
-                    $result = $this->performBulkDelete($targetIds);
-                    $successCount = $result['success'];
-                    $errorCount = $result['error'];
-                    break;
-                default:
-                    $this->jsonResponse(['success' => false, 'message' => '不支持的操作']);
-                    return;
+            // 尝试解析 action 为状态更新操作
+            $statusValue = $this->resolveActionToStatus($action, $statusList);
+
+            if ($statusValue !== null) {
+                // 状态更新操作
+                $result = $this->performBulkUpdateStatus($targetIds, $statusValue);
+                $successCount = $result['success'];
+                $errorCount = $result['error'];
+            } elseif ($action === 'delete') {
+                // 删除操作
+                $result = $this->performBulkDelete($targetIds);
+                $successCount = $result['success'];
+                $errorCount = $result['error'];
+            } else {
+                // 不支持的操作
+                $this->jsonResponse(['success' => false, 'message' => "不支持的操作: {$action}"]);
+                return;
             }
 
             $this->jsonResponse([
