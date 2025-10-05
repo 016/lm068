@@ -1267,8 +1267,9 @@ const TableOperations = {
                 actionText = '删除';
                 break;
             default:
-                alert('不支持的操作');
-                return;
+                actionText = '';
+                // alert('不支持的操作');
+                // return;
         }
         
         // 删除操作需要确认
