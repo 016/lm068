@@ -135,13 +135,13 @@ class BackendController extends Controller
         if (is_string($inputIds)) {
             $targetIds = json_decode($inputIds, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->jsonResponse(['success' => false, 'message' => 'tag_ids 格式错误']);
+                $this->jsonResponse(['success' => false, 'message' => 'input_ids 格式错误']);
                 return;
             }
         } else if (is_array($inputIds)) {
             $targetIds = $inputIds;
         } else {
-            $this->jsonResponse(['success' => false, 'message' => 'tag_ids 参数类型错误']);
+            $this->jsonResponse(['success' => false, 'message' => 'input_ids 参数类型错误']);
             return;
         }
 
