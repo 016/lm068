@@ -166,13 +166,49 @@ use App\Constants\ContentType;
                     </button>
                     <div class="dropdown-menu" id="bulkActionsDropdown">
                         <div class="dropdown-body">
-                            <div class="dropdown-item" data-action="publish">
-                                <i class="bi bi-check-circle text-success"></i>
-                                批量发布
+                            <div class="dropdown-item" data-action="<?= ContentStatus::HIDDEN->value ?>">
+                                <i class="bi bi-eye-slash text-danger"></i>
+                                批量设为: <?= ContentStatus::HIDDEN->label() ?>
                             </div>
-                            <div class="dropdown-item" data-action="draft">
-                                <i class="bi bi-file-earmark text-warning"></i>
-                                转为草稿
+                            <div class="dropdown-item" data-action="<?= ContentStatus::DRAFT->value ?>">
+                                <i class="bi bi-file-earmark text-secondary"></i>
+                                批量设为: <?= ContentStatus::DRAFT->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::CREATIVE->value ?>">
+                                <i class="bi bi-lightbulb text-light"></i>
+                                批量设为: <?= ContentStatus::CREATIVE->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::SCRIPT_START->value ?>">
+                                <i class="bi bi-file-text text-info"></i>
+                                批量设为: <?= ContentStatus::SCRIPT_START->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::SCRIPT_DONE->value ?>">
+                                <i class="bi bi-file-check text-primary"></i>
+                                批量设为: <?= ContentStatus::SCRIPT_DONE->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::SHOOTING_START->value ?>">
+                                <i class="bi bi-camera-video text-warning"></i>
+                                批量设为: <?= ContentStatus::SHOOTING_START->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::SHOOTING_DONE->value ?>">
+                                <i class="bi bi-camera-video-fill text-warning"></i>
+                                批量设为: <?= ContentStatus::SHOOTING_DONE->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::EDITING_START->value ?>">
+                                <i class="bi bi-scissors text-warning"></i>
+                                批量设为: <?= ContentStatus::EDITING_START->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::EDITING_DONE->value ?>">
+                                <i class="bi bi-check2-square text-info"></i>
+                                批量设为: <?= ContentStatus::EDITING_DONE->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::PENDING_PUBLISH->value ?>">
+                                <i class="bi bi-clock text-warning"></i>
+                                批量设为: <?= ContentStatus::PENDING_PUBLISH->label() ?>
+                            </div>
+                            <div class="dropdown-item" data-action="<?= ContentStatus::PUBLISHED->value ?>">
+                                <i class="bi bi-check-circle text-success"></i>
+                                批量设为: <?= ContentStatus::PUBLISHED->label() ?>
                             </div>
                             <div class="dropdown-divider"></div>
                             <div class="dropdown-item text-danger" data-action="delete">
