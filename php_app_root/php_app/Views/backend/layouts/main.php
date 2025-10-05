@@ -99,7 +99,7 @@
                     
                     <!-- Navigation Tabs -->
                     <nav class="topbar-nav">
-                        <a href="/content" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/content') !== false ? 'active' : '' ?>">内容</a>
+                        <a href="/contents" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/contents') !== false ? 'active' : '' ?>">内容</a>
                         <a href="/tags" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/tags') !== false ? 'active' : '' ?>">标签</a>
                         <a href="/collections" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/collections') !== false ? 'active' : '' ?>">合集</a>
                         <a href="/users" class="nav-tab <?= strpos($_SERVER['REQUEST_URI'], '/users') !== false ? 'active' : '' ?>">用户</a>

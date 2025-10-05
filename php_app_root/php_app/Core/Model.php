@@ -230,6 +230,7 @@ abstract class Model
         return [
             'id' => 'exact',
             'status_id' => 'exact',
+            'code' => 'like',
             'name' => 'bilingual_like',
             'title' => 'bilingual_like',
             'short_desc' => 'bilingual_like',
