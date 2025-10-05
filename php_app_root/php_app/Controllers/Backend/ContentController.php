@@ -30,7 +30,7 @@ class ContentController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id', 'title', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'title', 'code', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
         $content = Content::findAllWithFilters($filters);
@@ -71,6 +71,7 @@ class ContentController extends BackendController
             $data = [
                 'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
                 'author' => $request->post('author') ?? 'DP',
+                'code' => $request->post('code') ?? '',
                 'title_cn' => $request->post('name_cn'),
                 'title_en' => $request->post('name_en'),
                 'short_desc_cn' => $request->post('short_desc_cn'),
@@ -186,6 +187,7 @@ class ContentController extends BackendController
             $data = [
                 'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
                 'author' => $request->post('author') ?? 'DP',
+                'code' => $request->post('code') ?? '',
                 'title_cn' => $request->post('name_cn'),
                 'title_en' => $request->post('name_en'),
                 'short_desc_cn' => $request->post('short_desc_cn') ?? '',

@@ -222,6 +222,15 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
+                            <th class="table-cell sortable-header" data-column="code">
+                                <div class="d-flex align-items-center">
+                                    内部代码
+                                    <div class="sort-icons-container">
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="code" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="code" data-direction="desc"></i>
+                                    </div>
+                                </div>
+                            </th>
                             <th class="table-cell sortable-header" data-column="author">
                                 <div class="d-flex align-items-center">
                                     作者
@@ -266,6 +275,9 @@ use App\Constants\ContentType;
                             </th>
                             <th class="table-filter-cell" data-column="title">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索标题" value="<?= htmlspecialchars($filters['title'] ?? '') ?>">
+                            </th>
+                            <th class="table-filter-cell" data-column="code">
+                                <input type="text" class="form-control form-control-sm" placeholder="搜索代码" value="<?= htmlspecialchars($filters['code'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="author">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索作者" value="<?= htmlspecialchars($filters['author'] ?? '') ?>">
@@ -323,6 +335,7 @@ use App\Constants\ContentType;
                                             <?php endif; ?>
                                         </div>
                                     </td>
+                                    <td class="table-cell" data-column="code"><?= htmlspecialchars($item['code'] ?? '') ?></td>
                                     <td class="table-cell" data-column="author"><?= htmlspecialchars($item['author'] ?? 'DP') ?></td>
                                     <td class="table-cell" data-column="view_cnt"><?= number_format($item['view_cnt'] ?? 0) ?></td>
                                     <td class="table-cell" data-column="status_id">
@@ -357,7 +370,7 @@ use App\Constants\ContentType;
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center py-4">
+                                <td colspan="9" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                         暂无内容数据

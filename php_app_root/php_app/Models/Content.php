@@ -12,7 +12,7 @@ class Content extends UploadableModel implements HasStatuses
     protected static string $table = 'content';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'content_type_id', 'author', 'title_en', 'title_cn',
+        'content_type_id', 'author', 'code', 'title_en', 'title_cn',
         'desc_en', 'desc_cn', 'short_desc_en', 'short_desc_cn',
         'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id'
     ];
@@ -34,6 +34,7 @@ class Content extends UploadableModel implements HasStatuses
     protected array $defaults = [
         'content_type_id' => 21, // 默认为视频
         'author' => 'DP',
+        'code' => '',
         'title_en' => '',
         'title_cn' => '',
         'desc_en' => '',
@@ -71,6 +72,7 @@ class Content extends UploadableModel implements HasStatuses
     {
         return [
             'content_type_id' => 'required|numeric',
+            'code' => 'max:50',
             'title_en' => 'required|max:255|unique',
             'title_cn' => 'required|max:255|unique',
             'desc_en' => 'max:65535', // TEXT类型
@@ -93,6 +95,7 @@ class Content extends UploadableModel implements HasStatuses
         return [
             'content_type_id' => '内容类型',
             'author' => '作者',
+            'code' => '内部代码',
             'title_en' => '英文标题',
             'title_cn' => '中文标题',
             'desc_en' => '英文描述',
@@ -465,6 +468,7 @@ class Content extends UploadableModel implements HasStatuses
         return [
             'content_type_id' => isset($csvRowData['content_type_id']) ? (int)$csvRowData['content_type_id'] : ContentType::VIDEO->value,
             'author' => $csvRowData['author'] ?? 'DP',
+            'code' => $csvRowData['code'] ?? '',
             'title_en' => $csvRowData['title_en'] ?? '',
             'title_cn' => $csvRowData['title_cn'] ?? '',
             'desc_en' => $csvRowData['desc_en'] ?? '',

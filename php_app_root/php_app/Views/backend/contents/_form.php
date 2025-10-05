@@ -107,12 +107,12 @@ use App\Constants\ContentType;
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
-                            <label for="duration" class="form-label">内容时长</label>
-                            <input type="text" class="form-control <?= isset($content->errors['duration']) ? 'is-invalid' : '' ?>" id="duration" name="duration" value="<?= htmlspecialchars($content->duration ?? '') ?>" placeholder="mm:ss">
-                            <?php if (isset($content->errors['duration'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['duration']) ?></div>
+                            <label for="code" class="form-label">内部管理代码</label>
+                            <input type="text" class="form-control <?= isset($content->errors['code']) ? 'is-invalid' : '' ?>" id="code" name="code" value="<?= htmlspecialchars($content->code ?? '') ?>" maxlength="50" placeholder="请输入内部管理代码">
+                            <?php if (isset($content->errors['code'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['code']) ?></div>
                             <?php endif; ?>
-                            <div class="form-text">格式：分钟:秒(如 12:35)</div>
+                            <div class="form-text">内容的内部管理代码，用于内部标识</div>
                         </div>
                     </div>
                     <div class="col-md-6 pb-3">
@@ -123,6 +123,19 @@ use App\Constants\ContentType;
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['author']) ?></div>
                             <?php endif; ?>
                             <div class="form-text">内容的创作者或制作者</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
+                            <label for="duration" class="form-label">内容时长</label>
+                            <input type="text" class="form-control <?= isset($content->errors['duration']) ? 'is-invalid' : '' ?>" id="duration" name="duration" value="<?= htmlspecialchars($content->duration ?? '') ?>" placeholder="mm:ss">
+                            <?php if (isset($content->errors['duration'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['duration']) ?></div>
+                            <?php endif; ?>
+                            <div class="form-text">格式：分钟:秒(如 12:35)</div>
                         </div>
                     </div>
                 </div>
