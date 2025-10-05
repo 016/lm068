@@ -165,11 +165,11 @@ use App\Constants\LinkStatus;
                     </button>
                     <div class="dropdown-menu" id="bulkActionsDropdown">
                         <div class="dropdown-body">
-                            <div class="dropdown-item" data-action="enable">
+                            <div class="dropdown-item" data-action="valid">
                                 <i class="bi bi-check-circle text-success"></i>
                                 批量启用
                             </div>
-                            <div class="dropdown-item" data-action="disable">
+                            <div class="dropdown-item" data-action="invalid">
                                 <i class="bi bi-x-circle text-warning"></i>
                                 批量禁用
                             </div>
