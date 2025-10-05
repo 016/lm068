@@ -28,7 +28,7 @@ class VideoLinkController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件
-        $filters = $this->getSearchFilters(['id', 'content_id', 'platform_id', 'external_video_id', 'status_id', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'content_id', 'platform_id', 'external_video_id', 'play_cnt', 'status_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的视频链接数据（不分页，由JS处理分页）
         $videoLinks = VideoLink::findAllWithFilters($filters);
@@ -130,10 +130,10 @@ class VideoLinkController extends BackendController
 
     private function renderEditForm(VideoLink $videoLink): void
     {
-        $platformsList = Platform::loadList();
+        $platformsList = Platform::loadList([], ['id'=>'id', 'text'=>'name']);
         $contentsList = Content::loadList([
             'content_type_id' => ContentType::VIDEO->value
-        ]);
+        ], ['id'=>'id', 'text'=>'title_cn']);
 
         $this->render('video_links/edit', [
             'videoLink' => $videoLink,

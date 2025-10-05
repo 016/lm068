@@ -204,21 +204,21 @@ use App\Constants\LinkStatus;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="content_title">
+                            <th class="table-cell sortable-header" data-column="content_id">
                                 <div class="d-flex align-items-center">
                                     关联内容
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="content_title" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="content_title" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="content_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="content_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="platform_name">
+                            <th class="table-cell sortable-header" data-column="platform_id">
                                 <div class="d-flex align-items-center">
                                     平台
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="platform_name" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="platform_name" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="platform_id" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="platform_id" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -247,7 +247,7 @@ use App\Constants\LinkStatus;
                             <th class="table-filter-cell" data-column="id">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索ID" value="<?= htmlspecialchars($filters['id'] ?? '') ?>">
                             </th>
-                            <th class="table-filter-cell" data-column="content_title">
+                            <th class="table-filter-cell" data-column="content_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部内容</option>
                                     <?php foreach ($contentsList as $content): ?>
@@ -255,7 +255,7 @@ use App\Constants\LinkStatus;
                                     <?php endforeach; ?>
                                 </select>
                             </th>
-                            <th class="table-filter-cell" data-column="platform_name">
+                            <th class="table-filter-cell" data-column="platform_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部平台</option>
                                     <?php foreach ($platformsList as $platform): ?>
@@ -264,7 +264,7 @@ use App\Constants\LinkStatus;
                                 </select>
                             </th>
                             <th class="table-filter-cell" data-column="play_cnt">
-                                <input type="text" class="form-control form-control-sm" placeholder="播放范围">
+                                <input type="text" class="form-control form-control-sm" placeholder="播放范围" value="<?= htmlspecialchars($filters['play_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
@@ -287,12 +287,12 @@ use App\Constants\LinkStatus;
                                         </div>
                                     </td>
                                     <td class="table-cell table-id" data-column="id"><?= $item['id'] ?></td>
-                                    <td class="table-cell" data-column="content_title">
+                                    <td class="table-cell" data-column="content_id">
                                         <a href="/contents/<?= $item['content_id'] ?>/edit" class="text-decoration-none">
                                             <?= htmlspecialchars($item['content_title'] ?? "ID: {$item['content_id']}") ?>
                                         </a>
                                     </td>
-                                    <td class="table-cell" data-column="platform_name">
+                                    <td class="table-cell" data-column="platform_id">
                                         <span class="badge rounded-pill text-bg-info">
                                             <i class="bi bi-play-btn badge-icon"></i>
                                             <?= htmlspecialchars($item['platform_name'] ?? '') ?>

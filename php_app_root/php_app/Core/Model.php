@@ -236,7 +236,8 @@ abstract class Model
             'desc' => 'bilingual_like',
             'icon_class' => 'like',
             'content_cnt' => 'custom',
-            'view_cnt' => 'custom'
+            'view_cnt' => 'custom',
+            'play_cnt' => 'custom'
         ];
     }
 
@@ -327,6 +328,7 @@ abstract class Model
     {
         switch ($field) {
             case 'content_cnt':
+            case 'play_cnt':
             case 'view_cnt':
                 // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
                 if (strpos($value, '-') !== false) {
