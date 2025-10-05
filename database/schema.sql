@@ -23,6 +23,7 @@ CREATE TABLE `content` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `content_type_id` TINYINT UNSIGNED NOT NULL COMMENT '内容类型: 1-网站公告, 11-一般文章, 21-视频',
   `author` VARCHAR(255) DEFAULT 'DP' COMMENT '作者名称',
+  `code` VARCHAR(50) COMMENT '内部管理代码',
   `title_en` VARCHAR(255) NOT NULL COMMENT '英文标题',
   `title_cn` VARCHAR(255) NOT NULL COMMENT '中文标题',
   `desc_en` TEXT COMMENT '英文描述/内容, 支持markdown格式纯文本存储',
