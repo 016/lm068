@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-enum LinkStatus: int
+enum VideoLinkStatus: int
 {
     case INVALID = 0;      // 失效
     case VALID = 1;        // 正常

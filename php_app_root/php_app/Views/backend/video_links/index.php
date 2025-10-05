@@ -1,5 +1,5 @@
 <?php
-use App\Constants\LinkStatus;
+use App\Constants\VideoLinkStatus;
 ?>
 <!-- Video Link Management Content -->
 <main class="dashboard-content">
@@ -269,7 +269,7 @@ use App\Constants\LinkStatus;
                             <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
                                     <option value="">全部状态</option>
-                                    <?php foreach (LinkStatus::getAllValues() as $value => $label): ?>
+                                    <?php foreach (VideoLinkStatus::getAllValues() as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= ($filters['status_id'] ?? '') == $value ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                                     <?php endforeach; ?>
                                 </select>
@@ -301,10 +301,10 @@ use App\Constants\LinkStatus;
                                     <td class="table-cell" data-column="play_cnt"><?= number_format($item['play_cnt'] ?? 0) ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php
-                                        $status = LinkStatus::tryFrom($item['status_id']);
+                                        $status = VideoLinkStatus::tryFrom($item['status_id']);
                                         $statusClass = match($item['status_id']) {
-                                            LinkStatus::VALID->value => 'text-bg-success',
-                                            LinkStatus::INVALID->value => 'text-bg-danger',
+                                            VideoLinkStatus::VALID->value => 'text-bg-success',
+                                            VideoLinkStatus::INVALID->value => 'text-bg-danger',
                                             default => 'text-bg-secondary'
                                         };
                                         ?>

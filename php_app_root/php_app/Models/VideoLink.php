@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Constants\LinkStatus;
+use App\Constants\VideoLinkStatus;
 use App\Interfaces\HasStatuses;
 
 class VideoLink extends Model implements HasStatuses
@@ -44,7 +44,7 @@ class VideoLink extends Model implements HasStatuses
      */
     public static function getStatusEnum(): string
     {
-        return LinkStatus::class;
+        return VideoLinkStatus::class;
     }
 
     /**
@@ -96,7 +96,7 @@ class VideoLink extends Model implements HasStatuses
     public function getStatusLabel(): string
     {
         if (isset($this->status_id)) {
-            $status = LinkStatus::tryFrom($this->status_id);
+            $status = VideoLinkStatus::tryFrom($this->status_id);
             return $status ? $status->label() : '未知状态';
         }
         return '未设置';
@@ -107,7 +107,7 @@ class VideoLink extends Model implements HasStatuses
      */
     public function isValid(): bool
     {
-        return $this->status_id === LinkStatus::VALID->value;
+        return $this->status_id === VideoLinkStatus::VALID->value;
     }
 
     /**
@@ -149,8 +149,8 @@ class VideoLink extends Model implements HasStatuses
                 FROM {$table}";
 
         $result = $this->db->fetch($sql, [
-            'valid_status' => LinkStatus::VALID->value,
-            'invalid_status' => LinkStatus::INVALID->value
+            'valid_status' => VideoLinkStatus::VALID->value,
+            'invalid_status' => VideoLinkStatus::INVALID->value
         ]);
 
         return [
@@ -223,7 +223,7 @@ class VideoLink extends Model implements HasStatuses
             'download_cnt' => isset($csvRowData['download_cnt']) ? (int)$csvRowData['download_cnt'] : 0,
             'comment_cnt' => isset($csvRowData['comment_cnt']) ? (int)$csvRowData['comment_cnt'] : 0,
             'share_cnt' => isset($csvRowData['share_cnt']) ? (int)$csvRowData['share_cnt'] : 0,
-            'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : LinkStatus::VALID->value
+            'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : VideoLinkStatus::VALID->value
         ];
     }
 }

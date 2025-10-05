@@ -6,7 +6,7 @@ use App\Core\Request;
 use App\Models\VideoLink;
 use App\Models\Platform;
 use App\Models\Content;
-use App\Constants\LinkStatus;
+use App\Constants\VideoLinkStatus;
 use App\Constants\ContentType;
 
 class VideoLinkController extends BackendController
@@ -94,7 +94,7 @@ class VideoLinkController extends BackendController
                 'download_cnt' => (int)($request->post('download_cnt') ?? 0),
                 'comment_cnt' => (int)($request->post('comment_cnt') ?? 0),
                 'share_cnt' => (int)($request->post('share_cnt') ?? 0),
-                'status_id' => (int)($request->post('status_id') ?? LinkStatus::VALID->value)
+                'status_id' => (int)($request->post('status_id') ?? VideoLinkStatus::VALID->value)
             ];
 
             $videoLink->fill($data);
@@ -170,7 +170,7 @@ class VideoLinkController extends BackendController
                 'download_cnt' => (int)($request->post('download_cnt') ?? 0),
                 'comment_cnt' => (int)($request->post('comment_cnt') ?? 0),
                 'share_cnt' => (int)($request->post('share_cnt') ?? 0),
-                'status_id' => (int)($request->post('status_id') ?? LinkStatus::VALID->value)
+                'status_id' => (int)($request->post('status_id') ?? VideoLinkStatus::VALID->value)
             ];
 
             $videoLink->fill($data);
