@@ -1,5 +1,5 @@
 <?php
-use App\Constants\LinkStatus;
+use App\Constants\VideoLinkStatus;
 ?>
 <!-- Shared Video Link Form Content -->
 <div class="form-container">
@@ -194,7 +194,7 @@ use App\Constants\LinkStatus;
                         <div class="form-group">
                             <label for="status_id" class="form-label">链接状态</label>
                             <select class="form-control form-select <?= isset($videoLink->errors['status_id']) ? 'is-invalid' : '' ?>" id="status_id" name="status_id">
-                                <?php foreach (LinkStatus::getAllValues() as $value => $label): ?>
+                                <?php foreach (VideoLinkStatus::getAllValues() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= ($videoLink->status_id == $value) ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                                 <?php endforeach; ?>
                             </select>
