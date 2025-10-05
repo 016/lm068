@@ -168,23 +168,8 @@ use App\Constants\ContentType;
                         <div class="dropdown-body">
                             <?php foreach (ContentStatus::cases() as $status): ?>
                             <div class="dropdown-item" data-action="<?= strtolower($status->name) ?>">
-                                <?php
-                                $icon = match($status) {
-                                    ContentStatus::HIDDEN => 'bi-eye-slash',
-                                    ContentStatus::DRAFT => 'bi-file-earmark',
-                                    ContentStatus::CREATIVE => 'bi-lightbulb',
-                                    ContentStatus::SCRIPT_START => 'bi-file-text',
-                                    ContentStatus::SCRIPT_DONE => 'bi-file-check',
-                                    ContentStatus::SHOOTING_START => 'bi-camera-video',
-                                    ContentStatus::SHOOTING_DONE => 'bi-camera-video-fill',
-                                    ContentStatus::EDITING_START => 'bi-scissors',
-                                    ContentStatus::EDITING_DONE => 'bi-check2-square',
-                                    ContentStatus::PENDING_PUBLISH => 'bi-clock',
-                                    ContentStatus::PUBLISHED => 'bi-check-circle',
-                                };
-                                $badgeClass = str_replace('text-bg-', 'text-', $status->bootstrapBadgeClass());
-                                ?>
-                                <i class="bi <?= $icon ?> <?= $badgeClass ?>"></i>
+                                <?php $badgeClass = str_replace('text-bg-', 'text-', $status->bootstrapBadgeClass()); ?>
+                                <i class="bi <?= $status->icon() ?> <?= $badgeClass ?>"></i>
                                 批量设为: <?= $status->label() ?>
                             </div>
                             <?php endforeach; ?>

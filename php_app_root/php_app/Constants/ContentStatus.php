@@ -84,6 +84,23 @@ enum ContentStatus: int
         };
     }
 
+    public function icon(): string
+    {
+        return match($this) {
+            self::HIDDEN => 'bi-eye-slash',
+            self::DRAFT => 'bi-file-earmark',
+            self::CREATIVE => 'bi-lightbulb',
+            self::SCRIPT_START => 'bi-file-text',
+            self::SCRIPT_DONE => 'bi-file-check',
+            self::SHOOTING_START => 'bi-camera-video',
+            self::SHOOTING_DONE => 'bi-camera-video-fill',
+            self::EDITING_START => 'bi-scissors',
+            self::EDITING_DONE => 'bi-check2-square',
+            self::PENDING_PUBLISH => 'bi-clock',
+            self::PUBLISHED => 'bi-check-circle',
+        };
+    }
+
     public function isVisible(): bool
     {
         return in_array($this, [
