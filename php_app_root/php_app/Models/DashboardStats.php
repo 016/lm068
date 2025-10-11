@@ -4,7 +4,6 @@ namespace App\Models;
 
 /**
  * DashboardStats Model
- *
  */
 class DashboardStats
 {
