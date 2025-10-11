@@ -483,4 +483,103 @@ class Content extends UploadableModel implements HasStatuses
         ];
     }
 
+    /**
+     * 获取内容总数和本月新增统计
+     *
+     * @return array ['total' => int, 'monthly_new' => int, 'monthly_growth_rate' => float]
+     */
+    public static function getTotalAndMonthlyStats(): array
+    {
+        $db = \App\Core\Database::getInstance();
+
+        // 总内容数
+        $total = static::count();
+
+        // 本月新增内容数
+        $firstDayOfMonth = date('Y-m-01 00:00:00');
+        $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE created_at >= :first_day";
+        $result = $db->fetch($sql, ['first_day' => $firstDayOfMonth]);
+        $monthlyNew = (int)$result['count'];
+
+        // 计算增长率
+        $growthRate = $total > 0 ? round(($monthlyNew / $total) * 100, 1) : 0;
+
+        return [
+            'total' => $total,
+            'monthly_new' => $monthlyNew,
+            'monthly_growth_rate' => $growthRate
+        ];
+    }
+
+    /**
+     * 获取按状态统计的内容数量
+     *
+     * @return array ['published' => int, 'pending_publish' => int, 'shooting_done' => int, 'script_done' => int]
+     */
+    public static function getStatusStats(): array
+    {
+        return [
+            'published' => static::count(['status_id' => ContentStatus::PUBLISHED->value]),
+            'pending_publish' => static::count(['status_id' => ContentStatus::PENDING_PUBLISH->value]),
+            'shooting_done' => static::count(['status_id' => ContentStatus::SHOOTING_DONE->value]),
+            'script_done' => static::count(['status_id' => ContentStatus::SCRIPT_DONE->value])
+        ];
+    }
+
+    /**
+     * 获取指定日期范围内的每日统计数据
+     *
+     * @param string $startDate 开始日期 (Y-m-d)
+     * @param string $endDate 结束日期 (Y-m-d)
+     * @return array
+     */
+    public static function getDailyStats(string $startDate, string $endDate): array
+    {
+        $db = \App\Core\Database::getInstance();
+        $data = [];
+        $currentDate = new \DateTime($startDate);
+        $endDateTime = new \DateTime($endDate);
+
+        while ($currentDate <= $endDateTime) {
+            $dateStr = $currentDate->format('Y-m-d');
+            $nextDayStr = $currentDate->modify('+1 day')->format('Y-m-d');
+            $currentDate->modify('-1 day'); // 恢复当前日期
+
+            // 当日总视频数量
+            $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE created_at < :next_day";
+            $result = $db->fetch($sql, ['next_day' => $nextDayStr]);
+            $totalVideos = (int)$result['count'];
+
+            // 当日新增视频数量
+            $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() .
+                   " WHERE created_at >= :current_day AND created_at < :next_day";
+            $result = $db->fetch($sql, [
+                'current_day' => $dateStr . ' 00:00:00',
+                'next_day' => $nextDayStr . ' 00:00:00'
+            ]);
+            $newVideos = (int)$result['count'];
+
+            // 当日发布视频数量
+            $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() .
+                   " WHERE status_id = :status_id AND updated_at >= :current_day AND updated_at < :next_day";
+            $result = $db->fetch($sql, [
+                'status_id' => ContentStatus::PUBLISHED->value,
+                'current_day' => $dateStr . ' 00:00:00',
+                'next_day' => $nextDayStr . ' 00:00:00'
+            ]);
+            $publishedVideos = (int)$result['count'];
+
+            $data[] = [
+                'date' => $dateStr,
+                'total_videos' => $totalVideos,
+                'new_videos' => $newVideos,
+                'published_videos' => $publishedVideos
+            ];
+
+            $currentDate->modify('+1 day');
+        }
+
+        return $data;
+    }
+
 }

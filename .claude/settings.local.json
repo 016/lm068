@@ -8,7 +8,8 @@
       "Bash(tree:*)",
       "Bash(rm:*)",
       "Bash(php:*)",
-      "Read(//home/node/.claude/hooks/**)"
+      "Read(//home/node/.claude/hooks/**)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
