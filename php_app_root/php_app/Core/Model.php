@@ -26,12 +26,12 @@ abstract class Model
     /**
      * 获取当前模型的表名
      */
-    protected static function getTableName(): string
+    public static function getTableName(): string
     {
         return static::$table;
     }
 
-    protected function getPrimaryKey(): string
+    public function getPrimaryKey(): string
     {
         return $this->attributes[$this->primaryKey] ?? '';
     }

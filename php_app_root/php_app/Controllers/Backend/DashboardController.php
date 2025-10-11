@@ -46,14 +46,48 @@ class DashboardController extends BackendController
             ? round(($monthlyNewVideos / $totalVideos) * 100, 1)
             : 0;
 
+        // 注册用户总数
+        $sql = "SELECT COUNT(*) as count FROM user";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $totalUsers = (int)$result['count'];
+
+        // 本月新增注册用户
+        $sql = "SELECT COUNT(*) as count FROM user WHERE created_at >= :first_day_of_month";
+        $result = $contentModel->query($sql, ['first_day_of_month' => $firstDayOfMonth])->fetch(\PDO::FETCH_ASSOC);
+        $monthlyNewUsers = (int)$result['count'];
+
+        // 计算用户本月增长百分比
+        $userMonthlyGrowthRate = $totalUsers > 0
+            ? round(($monthlyNewUsers / $totalUsers) * 100, 1)
+            : 0;
+
+        // 邮件订阅者总数 (status_id = 1 表示已订阅)
+        $sql = "SELECT COUNT(*) as count FROM subscription WHERE status_id = 1";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $totalSubscribers = (int)$result['count'];
+
+        // 本月新增邮件订阅者
+        $sql = "SELECT COUNT(*) as count FROM subscription WHERE status_id = 1 AND created_at >= :first_day_of_month";
+        $result = $contentModel->query($sql, ['first_day_of_month' => $firstDayOfMonth])->fetch(\PDO::FETCH_ASSOC);
+        $monthlyNewSubscribers = (int)$result['count'];
+
+        // 计算订阅者本月增长百分比
+        $subscriberMonthlyGrowthRate = $totalSubscribers > 0
+            ? round(($monthlyNewSubscribers / $totalSubscribers) * 100, 1)
+            : 0;
+
         return [
             'total_videos' => $totalVideos,
             'monthly_new_videos' => $monthlyNewVideos,
             'monthly_growth_rate' => $monthlyGrowthRate,
-            // TODO: 暂无数据，使用0占位，待后续实现
+            // 总观看次数无需读取用0表示
             'total_views' => 0,
-            'total_users' => 0,
-            'total_subscribers' => 0
+            'total_users' => $totalUsers,
+            'monthly_new_users' => $monthlyNewUsers,
+            'user_monthly_growth_rate' => $userMonthlyGrowthRate,
+            'total_subscribers' => $totalSubscribers,
+            'monthly_new_subscribers' => $monthlyNewSubscribers,
+            'subscriber_monthly_growth_rate' => $subscriberMonthlyGrowthRate
         ];
     }
 
@@ -62,6 +96,8 @@ class DashboardController extends BackendController
      */
     private function getContentGridData(): array
     {
+        $contentModel = new Content();
+
         // 视频状态统计
         $publishedCount = Content::count([
             'status_id' => ContentStatus::PUBLISHED->value
@@ -79,6 +115,27 @@ class DashboardController extends BackendController
             'status_id' => ContentStatus::SCRIPT_DONE->value
         ]);
 
+        // 评论统计 (status_id: 0-已隐藏, 1-待审核, 99-审核通过)
+        // 总数
+        $sql = "SELECT COUNT(*) as count FROM comment";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $totalComments = (int)$result['count'];
+
+        // 待审核
+        $sql = "SELECT COUNT(*) as count FROM comment WHERE status_id = 1";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $pendingComments = (int)$result['count'];
+
+        // 审核通过
+        $sql = "SELECT COUNT(*) as count FROM comment WHERE status_id = 99";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $approvedComments = (int)$result['count'];
+
+        // 已隐藏
+        $sql = "SELECT COUNT(*) as count FROM comment WHERE status_id = 0";
+        $result = $contentModel->query($sql, [])->fetch(\PDO::FETCH_ASSOC);
+        $hiddenComments = (int)$result['count'];
+
         return [
             'video_stats' => [
                 'published' => $publishedCount,
@@ -86,12 +143,11 @@ class DashboardController extends BackendController
                 'shooting_done' => $shootingDoneCount,
                 'script_done' => $scriptDoneCount
             ],
-            // TODO: 暂无数据，使用0占位，待后续实现
             'comment_stats' => [
-                'total' => 0,
-                'pending' => 0,
-                'approved' => 0,
-                'hidden' => 0
+                'total' => $totalComments,
+                'pending' => $pendingComments,
+                'approved' => $approvedComments,
+                'hidden' => $hiddenComments
             ],
             // TODO: 暂无数据，使用0占位，待后续实现
             'queue_stats' => [

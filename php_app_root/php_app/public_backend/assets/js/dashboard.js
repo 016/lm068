@@ -148,6 +148,14 @@ function loadChartDataFromDropdown(value) {
     const startDateStr = startDate.toISOString().split('T')[0];
     const endDateStr = endDate.toISOString().split('T')[0];
 
+    // 同步更新自定义日期范围输入框
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    if (startDateInput && endDateInput) {
+        startDateInput.value = startDateStr;
+        endDateInput.value = endDateStr;
+    }
+
     // 调用API获取数据
     fetchChartData(startDateStr, endDateStr);
 }

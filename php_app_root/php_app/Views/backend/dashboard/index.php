@@ -52,11 +52,10 @@
                 </div>
             </div>
             <div class="metric-card-body">
-                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
                 <div class="metric-value"><?= number_format($metrics['total_users']) ?></div>
-                <div class="metric-change">
-                    <i class="bi bi-dash" style="font-size: 16px;"></i>
-                    暂无数据
+                <div class="metric-change <?= $metrics['user_monthly_growth_rate'] > 0 ? 'positive' : '' ?>">
+                    <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                    +<?= $metrics['user_monthly_growth_rate'] ?>% 本月
                 </div>
             </div>
         </div>
@@ -72,11 +71,10 @@
                 </div>
             </div>
             <div class="metric-card-body">
-                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
                 <div class="metric-value"><?= number_format($metrics['total_subscribers']) ?></div>
-                <div class="metric-change">
-                    <i class="bi bi-dash" style="font-size: 16px;"></i>
-                    暂无数据
+                <div class="metric-change <?= $metrics['subscriber_monthly_growth_rate'] > 0 ? 'positive' : '' ?>">
+                    <i class="bi bi-trending-up" style="font-size: 16px;"></i>
+                    +<?= $metrics['subscriber_monthly_growth_rate'] ?>% 本月
                 </div>
             </div>
         </div>
@@ -194,7 +192,7 @@
                 <!-- 快捷时间选择 -->
                 <div class="dropdown-container">
                     <button class="date-range-btn" id="dateRangeBtn">
-                        <span id="dateRangeText">本月</span>
+                        <span id="dateRangeText">最近30天</span>
                         <i class="bi bi-chevron-down" style="font-size: 16px;"></i>
                     </button>
                     <div class="dropdown-menu" id="dateRangeDropdown">
