@@ -9,18 +9,18 @@
                 </div>
                 <div class="metric-header-text">
                     <h4>总视频数</h4>
-                    <span class="metric-subtitle">已发布的视频总数</span>
+                    <span class="metric-subtitle">数据库中视频总数</span>
                 </div>
             </div>
             <div class="metric-card-body">
-                <div class="metric-value">12,547</div>
-                <div class="metric-change positive">
+                <div class="metric-value"><?= number_format($metrics['total_videos']) ?></div>
+                <div class="metric-change <?= $metrics['monthly_growth_rate'] > 0 ? 'positive' : '' ?>">
                     <i class="bi bi-trending-up" style="font-size: 16px;"></i>
-                    +2.3% 本月
+                    +<?= $metrics['monthly_growth_rate'] ?>% 本月
                 </div>
             </div>
         </div>
-        
+
         <div class="metric-card">
             <div class="metric-card-header">
                 <div class="metric-icon views">
@@ -32,14 +32,15 @@
                 </div>
             </div>
             <div class="metric-card-body">
-                <div class="metric-value">2.34M</div>
-                <div class="metric-change positive">
-                    <i class="bi bi-trending-up" style="font-size: 16px;"></i>
-                    +15.2% 本月
+                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
+                <div class="metric-value"><?= number_format($metrics['total_views']) ?></div>
+                <div class="metric-change">
+                    <i class="bi bi-dash" style="font-size: 16px;"></i>
+                    暂无数据
                 </div>
             </div>
         </div>
-        
+
         <div class="metric-card">
             <div class="metric-card-header">
                 <div class="metric-icon users">
@@ -51,14 +52,15 @@
                 </div>
             </div>
             <div class="metric-card-body">
-                <div class="metric-value">45,678</div>
-                <div class="metric-change positive">
-                    <i class="bi bi-trending-up" style="font-size: 16px;"></i>
-                    +8.7% 本月
+                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
+                <div class="metric-value"><?= number_format($metrics['total_users']) ?></div>
+                <div class="metric-change">
+                    <i class="bi bi-dash" style="font-size: 16px;"></i>
+                    暂无数据
                 </div>
             </div>
         </div>
-        
+
         <div class="metric-card">
             <div class="metric-card-header">
                 <div class="metric-icon subscribers">
@@ -70,10 +72,11 @@
                 </div>
             </div>
             <div class="metric-card-body">
-                <div class="metric-value">12,890</div>
-                <div class="metric-change positive">
-                    <i class="bi bi-trending-up" style="font-size: 16px;"></i>
-                    +5.1% 本月
+                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
+                <div class="metric-value"><?= number_format($metrics['total_subscribers']) ?></div>
+                <div class="metric-change">
+                    <i class="bi bi-dash" style="font-size: 16px;"></i>
+                    暂无数据
                 </div>
             </div>
         </div>
@@ -94,25 +97,25 @@
             <div class="metric-card-body">
                 <div class="status-grid-updated">
                     <div class="status-item-updated">
-                        <div class="status-number-updated">11,234</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['published']) ?></div>
                         <div class="status-label-updated">已发布</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">345</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['pending_publish']) ?></div>
                         <div class="status-label-updated">待发布</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">892</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['shooting_done']) ?></div>
                         <div class="status-label-updated">拍摄完</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">1,076</div>
-                        <div class="status-label-updated">剪辑完</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['script_done']) ?></div>
+                        <div class="status-label-updated">脚本完</div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="metric-card-updated">
             <div class="metric-card-header">
                 <div class="metric-icon-small security">
@@ -124,27 +127,28 @@
                 </div>
             </div>
             <div class="metric-card-body">
+                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
                 <div class="status-grid-updated">
                     <div class="status-item-updated">
-                        <div class="status-number-updated">11,876</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['comment_stats']['total']) ?></div>
                         <div class="status-label-updated">总数</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">234</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['comment_stats']['pending']) ?></div>
                         <div class="status-label-updated">待审核</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">45</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['comment_stats']['approved']) ?></div>
                         <div class="status-label-updated">审核通过</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">12</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['comment_stats']['hidden']) ?></div>
                         <div class="status-label-updated">已隐藏</div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="metric-card-updated">
             <div class="metric-card-header">
                 <div class="metric-icon-small moderation">
@@ -156,21 +160,22 @@
                 </div>
             </div>
             <div class="metric-card-body">
+                <!-- TODO: 暂无数据，使用0占位，待后续实现 -->
                 <div class="status-grid-updated">
                     <div class="status-item-updated">
-                        <div class="status-number-updated">23</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['queue_stats']['new']) ?></div>
                         <div class="status-label-updated">新任务</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">5</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['queue_stats']['in_progress']) ?></div>
                         <div class="status-label-updated">进行中</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">3</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['queue_stats']['completed']) ?></div>
                         <div class="status-label-updated">已完成</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated">1</div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['queue_stats']['failed']) ?></div>
                         <div class="status-label-updated">失败</div>
                     </div>
                 </div>

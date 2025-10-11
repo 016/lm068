@@ -49,6 +49,7 @@ $router = new Router();
 // 定义后台路由
 $router->get('/', 'Backend\\DashboardController@index');
 $router->get('/dashboard', 'Backend\\DashboardController@index');
+$router->get('/dashboard/chart-data', 'Backend\\DashboardController@getChartData');
 $router->get('/login', 'Backend\\AuthController@showLogin');
 $router->post('/login', 'Backend\\AuthController@login');
 $router->get('/logout', 'Backend\\AuthController@logout');
