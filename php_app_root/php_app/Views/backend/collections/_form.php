@@ -241,11 +241,11 @@ use App\Constants\CollectionStatus;
             <div class="stat-label">总播放量</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value"><?= rand(10, 100) . 'K' ?></div>
+            <div class="stat-value">-</div>
             <div class="stat-label">总点赞数</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value"><?= rand(100, 1000) ?></div>
+            <div class="stat-value">-</div>
             <div class="stat-label">总评论数</div>
         </div>
     </div>

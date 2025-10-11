@@ -97,7 +97,7 @@ use App\Constants\CollectionStatus;
                     </div>
                 </div>
                 <div class="metric-card-body">
-                    <div class="metric-value-small"><?= number_format($stats['total_content_associations'] / 1000, 1) ?>K</div>
+                    <div class="metric-value-small"><?= number_format($stats['total_content_associations'], 0) ?></div>
                     <div class="monthly-stats">
                         <i class="bi bi-graph-up monthly-stats-icon"></i>
                         <span>本月增长: 120</span>

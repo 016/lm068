@@ -273,11 +273,11 @@ use App\Constants\ContentType;
                         <div class="stat-label">PV计数</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value"><?= count($relatedTags ?? []) ?></div>
+                        <div class="stat-value"><?= count($selectedTagIds ?? []) ?></div>
                         <div class="stat-label">关联标签</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value"><?= count($relatedCollections ?? []) ?></div>
+                        <div class="stat-value"><?= count($selectedCollectionIds ?? []) ?></div>
                         <div class="stat-label">关联合集</div>
                     </div>
                 </div>
