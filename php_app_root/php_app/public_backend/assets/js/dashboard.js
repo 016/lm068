@@ -237,8 +237,8 @@ function createChart(data) {
                     type: 'bar',
                     label: '当日新增视频数量',
                     data: data.map(d => d.new_videos),
-                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
-                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    borderColor: '#f59e0b',
                     borderWidth: 1,
                     yAxisID: 'y'
                 },
@@ -247,8 +247,8 @@ function createChart(data) {
                     type: 'bar',
                     label: '当日发布视频数量',
                     data: data.map(d => d.published_videos),
-                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
-                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: '#10b981',
                     borderWidth: 1,
                     yAxisID: 'y'
                 },
