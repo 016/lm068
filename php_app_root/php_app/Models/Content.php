@@ -133,6 +133,63 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
+     * 根据指定语言获取标题
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的标题
+     */
+    public function getTitle(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $title = $lang === 'zh' ? $this->title_cn : $this->title_en;
+
+        // 如果指定语言的标题为空,降级到另一个语言
+        if (empty($title)) {
+            $title = $lang === 'zh' ? $this->title_en : $this->title_cn;
+        }
+
+        return $title ?? '';
+    }
+
+    /**
+     * 根据指定语言获取描述
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的描述
+     */
+    public function getDescription(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $desc = $lang === 'zh' ? $this->desc_cn : $this->desc_en;
+
+        // 如果指定语言的描述为空,降级到另一个语言
+        if (empty($desc)) {
+            $desc = $lang === 'zh' ? $this->desc_en : $this->desc_cn;
+        }
+
+        return $desc ?? '';
+    }
+
+    /**
+     * 根据指定语言获取简介
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的简介
+     */
+    public function getShortDescription(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $shortDesc = $lang === 'zh' ? $this->short_desc_cn : $this->short_desc_en;
+
+        // 如果指定语言的简介为空,降级到另一个语言
+        if (empty($shortDesc)) {
+            $shortDesc = $lang === 'zh' ? $this->short_desc_en : $this->short_desc_cn;
+        }
+
+        return $shortDesc ?? '';
+    }
+
+    /**
      * 获取缩略图URL
      * @param bool $withFallback 是否返回空字符串（无缩略图时）
      * @return string 缩略图URL

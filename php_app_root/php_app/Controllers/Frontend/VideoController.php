@@ -15,6 +15,9 @@ class VideoController extends FrontendController
      */
     public function index(): void
     {
+        // 获取当前语言
+        $currentLang = \App\Core\I18n::getCurrentLang();
+
         // 获取GET参数
         $page = max(1, (int)($this->request->getInput('page', 1)));
         $search = trim($this->request->getInput('search', ''));
@@ -69,11 +72,15 @@ class VideoController extends FrontendController
             'resourceUrl' => '/assets', // 前端资源URL前缀
             'pageCss' => 'f-video-list.css',  // 页面专用CSS
             'pageJs' => 'f-video-list.js',    // 页面专用JS
+            // i18n相关数据
+            'currentLang' => $currentLang,
+            'supportedLangs' => \App\Core\I18n::getSupportedLangs(),
         ];
 
         // 渲染视图
         $content = $this->view('videos.index', $data);
-        echo $this->layout($content, '视频列表', $data);
+        $pageTitle = $currentLang === 'zh' ? '视频列表' : 'Video List';
+        echo $this->layout($content, $pageTitle, $data);
     }
 
     /**

@@ -15,6 +15,15 @@
     <?php if (isset($pageCss)): ?>
         <link href="<?= $resourceUrl ?? '/assets' ?>/css/<?= $pageCss ?>" rel="stylesheet">
     <?php endif; ?>
+
+    <!-- i18n配置 - 必须在i18n-helper.js之前加载 -->
+    <script>
+        // PHP传递给JS的i18n配置
+        window.PHP_I18N_CONFIG = {
+            currentLang: '<?= $currentLang ?? 'zh' ?>',
+            supportedLangs: <?= json_encode($supportedLangs ?? ['zh', 'en']) ?>
+        };
+    </script>
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -36,13 +45,13 @@
                 <!-- 主要导航 -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link <?= ($_SERVER['REQUEST_URI'] === '/' ? 'active' : '') ?>" href="/">首页</a>
+                        <a class="nav-link <?= ($_SERVER['REQUEST_URI'] === '/' ? 'active' : '') ?>" href="/" data-i18n="nav.home">首页</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/videos') === 0 ? 'active' : '') ?>" href="/videos">视频</a>
+                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/videos') === 0 ? 'active' : '') ?>" href="/videos" data-i18n="nav.videos">视频</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">关于</a>
+                        <a class="nav-link" href="#" data-i18n="nav.about">关于</a>
                     </li>
                 </ul>
 
@@ -51,11 +60,25 @@
                     <!-- 语言切换 -->
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-globe"></i> CN
+                            <i class="bi bi-globe"></i> <span id="current-lang-label"><?= ($currentLang ?? 'zh') === 'zh' ? 'CN' : 'EN' ?></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item active" href="#">简体中文</a></li>
-                            <li><a class="dropdown-item" href="#">English</a></li>
+                            <li>
+                                <a class="dropdown-item lang-switch-item <?= ($currentLang ?? 'zh') === 'zh' ? 'active' : '' ?>"
+                                   href="javascript:void(0)"
+                                   data-lang="zh"
+                                   onclick="window.i18n.switchLanguage('zh')">
+                                    简体中文
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item lang-switch-item <?= ($currentLang ?? 'zh') === 'en' ? 'active' : '' ?>"
+                                   href="javascript:void(0)"
+                                   data-lang="en"
+                                   onclick="window.i18n.switchLanguage('en')">
+                                    English
+                                </a>
+                            </li>
                         </ul>
                     </div>
 
@@ -71,8 +94,8 @@
                         </ul>
                     </div>
 
-                    <button class="btn btn-sm btn-outline-primary me-2 login-type-btn" type="button">登录</button>
-                    <button class="btn btn-sm btn-primary login-type-btn" type="button">注册</button>
+                    <button class="btn btn-sm btn-outline-primary me-2 login-type-btn" type="button" data-i18n="nav.login">登录</button>
+                    <button class="btn btn-sm btn-primary login-type-btn" type="button" data-i18n="nav.register">注册</button>
                 </div>
             </div>
         </div>
@@ -174,6 +197,10 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- i18n脚本 - 必须按顺序加载 -->
+    <script src="<?= $resourceUrl ?? '/assets' ?>/js/i18n.js"></script>
+    <script src="<?= $resourceUrl ?? '/assets' ?>/js/i18n-helper.js"></script>
 
     <!-- 自定义JavaScript -->
     <script src="<?= $resourceUrl ?? '/assets' ?>/js/main.js"></script>

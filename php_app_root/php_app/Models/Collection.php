@@ -101,6 +101,63 @@ class Collection extends Model implements HasStatuses
     }
 
     /**
+     * 根据指定语言获取名称
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的名称
+     */
+    public function getName(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $name = $lang === 'zh' ? $this->name_cn : $this->name_en;
+
+        // 如果指定语言的名称为空,降级到另一个语言
+        if (empty($name)) {
+            $name = $lang === 'zh' ? $this->name_en : $this->name_cn;
+        }
+
+        return $name ?? '';
+    }
+
+    /**
+     * 根据指定语言获取简介
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的简介
+     */
+    public function getShortDescription(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $shortDesc = $lang === 'zh' ? $this->short_desc_cn : $this->short_desc_en;
+
+        // 如果指定语言的简介为空,降级到另一个语言
+        if (empty($shortDesc)) {
+            $shortDesc = $lang === 'zh' ? $this->short_desc_en : $this->short_desc_cn;
+        }
+
+        return $shortDesc ?? '';
+    }
+
+    /**
+     * 根据指定语言获取描述
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的描述
+     */
+    public function getDescription(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $desc = $lang === 'zh' ? $this->desc_cn : $this->desc_en;
+
+        // 如果指定语言的描述为空,降级到另一个语言
+        if (empty($desc)) {
+            $desc = $lang === 'zh' ? $this->desc_en : $this->desc_cn;
+        }
+
+        return $desc ?? '';
+    }
+
+    /**
      * 获取状态标签
      */
     public function getStatusLabel(): string

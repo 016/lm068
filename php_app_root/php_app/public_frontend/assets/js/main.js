@@ -1,14 +1,19 @@
 // main.js - 通用JavaScript功能，可在多页面间共享
 document.addEventListener('DOMContentLoaded', function() {
+    // 初始化i18n功能 (i18n-helper.js已经自动初始化,这里确保兼容性)
+    if (window.i18n) {
+        console.log('[main.js] i18n initialized, current language:', window.i18n.getCurrentLang());
+    }
+
     // 初始化主题切换功能
     initThemeToggle();
-    
+
     // 初始化悬浮按钮功能
     initFloatingButtons();
-    
+
     // 初始化微信二维码功能
     initWeChatQRCode();
-    
+
 });
 
 // 初始化主题切换功能

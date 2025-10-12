@@ -42,12 +42,17 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
 
 <!-- 视频筛选区域 -->
 <form class="card mb-4" method="GET" action="/videos">
+    <!-- 保持语言参数 -->
+    <?php if (!empty($currentLang)): ?>
+        <input type="hidden" name="lang" value="<?= $currentLang ?>">
+    <?php endif; ?>
+
     <div class="card-body">
         <div class="row g-3 mb-3">
             <!-- 标签筛选 -->
             <div class="col-md-6">
                 <div class="custom-multiselect" data-name="tag_id">
-                    <div class="multiselect-display" data-placeholder="请选择标签">
+                    <div class="multiselect-display" data-placeholder="<?= $currentLang === 'zh' ? '请选择标签' : 'Select Tags' ?>">
                         <?php if (!empty($selectedTagIds)): ?>
                             <div class="selected-items">
                                 <?php
@@ -56,9 +61,10 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     $tag = array_filter($allTags, fn($t) => $t['id'] == $tagId);
                                     $tag = reset($tag);
                                     if ($tag):
+                                        $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                 ?>
                                     <span class="selected-item">
-                                        <?= htmlspecialchars($tag['name_cn']) ?>
+                                        <?= htmlspecialchars($tagName) ?>
                                         <button type="button" class="remove-btn" data-value="<?= $tagId ?>">
                                             <i class="bi bi-x"></i>
                                         </button>
@@ -67,22 +73,24 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     endif;
                                 endforeach;
                                 ?>
-                                <span class="selected-count">共<?= count($selectedTagIds) ?>个</span>
+                                <span class="selected-count" data-i18n="filter.selected_count" data-i18n-vars='{"count":<?= count($selectedTagIds) ?>}'>共<?= count($selectedTagIds) ?>个</span>
                             </div>
                         <?php else: ?>
-                            <span class="placeholder-text">请选择标签</span>
+                            <span class="placeholder-text" data-i18n="filter.tag_placeholder"><?= $currentLang === 'zh' ? '请选择标签' : 'Select Tags' ?></span>
                         <?php endif; ?>
                         <i class="bi bi-chevron-down arrow-icon"></i>
                     </div>
                     <div class="multiselect-dropdown">
-                        <?php foreach ($allTags as $tag): ?>
+                        <?php foreach ($allTags as $tag):
+                            $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
+                        ?>
                             <div class="dropdown-option" data-value="<?= $tag['id'] ?>">
                                 <input type="checkbox"
                                        id="tag-<?= $tag['id'] ?>"
                                        name="tag_id[]"
                                        value="<?= $tag['id'] ?>"
                                        <?= in_array($tag['id'], $selectedTagIds) ? 'checked' : '' ?>>
-                                <label for="tag-<?= $tag['id'] ?>"><?= htmlspecialchars($tag['name_cn']) ?></label>
+                                <label for="tag-<?= $tag['id'] ?>"><?= htmlspecialchars($tagName) ?></label>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -92,7 +100,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
             <!-- 合集筛选 -->
             <div class="col-md-6">
                 <div class="custom-multiselect" data-name="collection_id">
-                    <div class="multiselect-display" data-placeholder="请选择合集">
+                    <div class="multiselect-display" data-placeholder="<?= $currentLang === 'zh' ? '请选择合集' : 'Select Collections' ?>">
                         <?php if (!empty($selectedCollectionIds)): ?>
                             <div class="selected-items">
                                 <?php
@@ -101,9 +109,10 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     $collection = array_filter($allCollections, fn($c) => $c['id'] == $collectionId);
                                     $collection = reset($collection);
                                     if ($collection):
+                                        $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                 ?>
                                     <span class="selected-item">
-                                        <?= htmlspecialchars($collection['name_cn']) ?>
+                                        <?= htmlspecialchars($collectionName) ?>
                                         <button type="button" class="remove-btn" data-value="<?= $collectionId ?>">
                                             <i class="bi bi-x"></i>
                                         </button>
@@ -112,22 +121,24 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     endif;
                                 endforeach;
                                 ?>
-                                <span class="selected-count">共<?= count($selectedCollectionIds) ?>个</span>
+                                <span class="selected-count" data-i18n="filter.selected_count" data-i18n-vars='{"count":<?= count($selectedCollectionIds) ?>}'>共<?= count($selectedCollectionIds) ?>个</span>
                             </div>
                         <?php else: ?>
-                            <span class="placeholder-text">请选择合集</span>
+                            <span class="placeholder-text" data-i18n="filter.collection_placeholder"><?= $currentLang === 'zh' ? '请选择合集' : 'Select Collections' ?></span>
                         <?php endif; ?>
                         <i class="bi bi-chevron-down arrow-icon"></i>
                     </div>
                     <div class="multiselect-dropdown">
-                        <?php foreach ($allCollections as $collection): ?>
+                        <?php foreach ($allCollections as $collection):
+                            $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
+                        ?>
                             <div class="dropdown-option" data-value="<?= $collection['id'] ?>">
                                 <input type="checkbox"
                                        id="collection-<?= $collection['id'] ?>"
                                        name="collection_id[]"
                                        value="<?= $collection['id'] ?>"
                                        <?= in_array($collection['id'], $selectedCollectionIds) ? 'checked' : '' ?>>
-                                <label for="collection-<?= $collection['id'] ?>"><?= htmlspecialchars($collection['name_cn']) ?></label>
+                                <label for="collection-<?= $collection['id'] ?>"><?= htmlspecialchars($collectionName) ?></label>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -141,10 +152,11 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                 <div class="input-group">
                     <input type="text"
                            class="form-control"
-                           placeholder="输入关键词搜索..."
+                           placeholder="<?= $currentLang === 'zh' ? '输入关键词搜索...' : 'Search keywords...' ?>"
                            name="search"
                            id="searchInput"
-                           value="<?= htmlspecialchars($search) ?>">
+                           value="<?= htmlspecialchars($search) ?>"
+                           data-i18n-placeholder="filter.search_placeholder">
                     <button class="btn btn-primary" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
@@ -154,7 +166,13 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
             <!-- 搜索结果显示 -->
             <div class="col-md-6 d-flex align-items-end">
                 <div class="w-100">
-                    <span class="text-muted">搜索结果: 共找到 <strong><?= $totalVideos ?></strong> 个视频</span>
+                    <span class="text-muted">
+                        <?php if ($currentLang === 'zh'): ?>
+                            搜索结果: 共找到 <strong><?= $totalVideos ?></strong> 个视频
+                        <?php else: ?>
+                            Search Results: Found <strong><?= $totalVideos ?></strong> videos
+                        <?php endif; ?>
+                    </span>
                 </div>
             </div>
         </div>
@@ -179,8 +197,8 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                         </div>
                         <div class="card-body p-3">
                             <h5 class="card-title video-title">
-                                <a href="/videos/<?= $video->id ?>" class="text-decoration-none">
-                                    <?= htmlspecialchars($video->getDisplayTitle()) ?>
+                                <a href="/videos/<?= $video->id ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
+                                    <?= htmlspecialchars($video->getTitle($currentLang)) ?>
                                 </a>
                             </h5>
                             <div class="video-meta mb-2">
@@ -192,7 +210,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                 </small>
                             </div>
                             <p class="card-text video-description text-muted small">
-                                <?= htmlspecialchars($video->getDisplayShortDescription()) ?>
+                                <?= htmlspecialchars($video->getShortDescription($currentLang)) ?>
                             </p>
                         </div>
                         <div class="card-footer">
@@ -201,10 +219,11 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     <?php
                                     $displayTags = array_slice($video->tags, 0, 2);
                                     foreach ($displayTags as $tag):
+                                        $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                     ?>
-                                        <a href="/videos?tag_id=<?= $tag['id'] ?>"
+                                        <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
                                            class="btn btn-outline-primary btn-sm me-1">
-                                            <?= htmlspecialchars($tag['name_cn']) ?>
+                                            <?= htmlspecialchars($tagName) ?>
                                         </a>
                                     <?php endforeach; ?>
                                 </div>
@@ -212,10 +231,11 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     <?php
                                     if (!empty($video->collections)):
                                         $collection = $video->collections[0];
+                                        $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                     ?>
-                                        <a href="/videos?collection_id=<?= $collection['id'] ?>"
+                                        <a href="/videos?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
                                            class="btn btn-outline-success btn-sm">
-                                            <?= htmlspecialchars($collection['name_cn']) ?>
+                                            <?= htmlspecialchars($collectionName) ?>
                                         </a>
                                     <?php endif; ?>
                                 </div>
@@ -228,14 +248,20 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
     </div>
 
     <!-- 分页导航 -->
-    <?php if ($totalPages > 1): ?>
-        <nav aria-label="视频列表分页" class="mt-5">
+    <?php if ($totalPages > 1):
+        // 添加语言参数到分页链接
+        if (!empty($currentLang)) {
+            $currentParams['lang'] = $currentLang;
+        }
+    ?>
+        <nav aria-label="<?= $currentLang === 'zh' ? '视频列表分页' : 'Video List Pagination' ?>" class="mt-5">
             <div class="pagination-wrapper d-flex justify-content-center align-items-center">
                 <!-- 上一页 -->
                 <?php if ($currentPage > 1): ?>
                     <a href="<?= buildPaginationUrl($currentPage - 1, $currentParams) ?>"
                        class="pagination-btn pagination-btn-prev"
-                       title="上一页">
+                       title="<?= $currentLang === 'zh' ? '上一页' : 'Previous' ?>"
+                       data-i18n-title="pagination.prev">
                         <i class="bi bi-chevron-left"></i>
                     </a>
                 <?php else: ?>
@@ -267,7 +293,8 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                 <?php if ($currentPage < $totalPages): ?>
                     <a href="<?= buildPaginationUrl($currentPage + 1, $currentParams) ?>"
                        class="pagination-btn pagination-btn-next"
-                       title="下一页">
+                       title="<?= $currentLang === 'zh' ? '下一页' : 'Next' ?>"
+                       data-i18n-title="pagination.next">
                         <i class="bi bi-chevron-right"></i>
                     </a>
                 <?php else: ?>
@@ -278,7 +305,11 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
             </div>
             <div class="text-center mt-3">
                 <small class="text-muted">
-                    共 <?= $totalVideos ?> 个视频，当前第 <?= $currentPage ?> 页，共 <?= $totalPages ?> 页
+                    <?php if ($currentLang === 'zh'): ?>
+                        共 <?= $totalVideos ?> 个视频，当前第 <?= $currentPage ?> 页，共 <?= $totalPages ?> 页
+                    <?php else: ?>
+                        Total <?= $totalVideos ?> videos, Page <?= $currentPage ?> of <?= $totalPages ?>
+                    <?php endif; ?>
                 </small>
             </div>
         </nav>
@@ -288,7 +319,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
     <!-- 空状态 -->
     <div class="empty-state">
         <i class="bi bi-film"></i>
-        <h3>暂无视频</h3>
-        <p>没有找到符合条件的视频，请尝试调整筛选条件</p>
+        <h3 data-i18n="empty.title"><?= $currentLang === 'zh' ? '暂无视频' : 'No Videos' ?></h3>
+        <p data-i18n="empty.desc"><?= $currentLang === 'zh' ? '没有找到符合条件的视频，请尝试调整筛选条件' : 'No videos found matching your criteria. Try adjusting your filters.' ?></p>
     </div>
 <?php endif; ?>
