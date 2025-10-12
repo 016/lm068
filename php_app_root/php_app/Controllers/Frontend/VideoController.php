@@ -131,17 +131,17 @@ class VideoController extends FrontendController
         $videoLinkModel = new \App\Models\VideoLink();
         $videoLinks = $videoLinkModel->getByContentId($id);
 
-        // 获取评论 - 只显示已审核通过的评论
+        // 获取评论 - 只显示已审核通过的评论（嵌套结构）
         $commentModel = new \App\Models\Comment();
         $commentsPerPage = 10;
         $commentPage = max(1, (int)($this->request->getInput('comment_page', 1)));
 
-        // 使用分页查询评论
-        $commentsResult = $commentModel->paginate(
-            ['content_id' => $id, 'status_id' => 99],
-            $commentsPerPage,
+        // 使用嵌套评论查询方法
+        $commentsResult = $commentModel->getNestedComments(
+            $id,
+            \App\Models\Comment::STATUS_APPROVED,
             $commentPage,
-            'created_at DESC'
+            $commentsPerPage
         );
         $comments = $commentsResult['items'];
         $commentsTotalPages = $commentsResult['totalPages'];
