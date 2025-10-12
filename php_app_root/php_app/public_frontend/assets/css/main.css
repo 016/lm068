@@ -138,7 +138,9 @@ body {
 }
 
 .login-type-btn {
-    width: 66px;
+    min-width: 66px;
+    padding: 0.25rem 1rem;
+    white-space: nowrap;
 }
 
 /* 卡片样式 */
