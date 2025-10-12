@@ -1,4 +1,3 @@
-```sql
 -- =================================================================
 -- IT-Professional Generated Demo Data for lm068
 -- 数据库: 科技类视频网站
@@ -88,38 +87,38 @@ INSERT INTO `collection` (`id`, `name_en`, `name_cn`, `short_desc_cn`, `color_cl
 -- ------------------------------------------------------------------
 INSERT INTO `content` (`id`, `content_type_id`, `title_en`, `title_cn`, `short_desc_cn`, `thumbnail`, `duration`, `pv_cnt`, `view_cnt`, `status_id`) VALUES
 -- 公告 (1条)
-(1, 1, 'Website v2.0 Launch Announcement', '网站v2.0版本上线公告', '我们很高兴地宣布，网站2.0版本正式上线，带来了全新的UI和功能！', 'demo.jpg', NULL, 1500, 800, 99),
+(1, 1, 'Website v2.0 Launch Announcement', '网站v2.0版本上线公告', '我们很高兴地宣布，网站2.0版本正式上线，带来了全新的UI和功能！', '802.7.11.7_cover.jpg', NULL, 1500, 800, 99),
 -- 文章 (4条)
-(2, 11, 'Understanding HTTP/3 In-Depth', '深入理解HTTP/3', 'HTTP/3是下一代Web协议，本文将带你深入了解其核心QUIC协议和优势。', 'demo.jpg', NULL, 8000, 4500, 99),
-(3, 11, 'Top 10 VSCode Extensions for 2024', '2024年最佳VSCode插件Top10', '工欲善其事，必先利其器。这10款插件将极大提升你的开发效率。', 'demo.jpg', NULL, 12000, 7800, 99),
-(4, 11, 'Is Rust the Future of System Programming?', 'Rust是系统编程的未来吗？', '探讨Rust语言的所有权、借用检查等特性为何让它成为C++的有力竞争者。', 'demo.jpg', NULL, 6500, 3200, 99),
-(5, 11, 'My Career Path as a Software Engineer', '我的软件工程师职业规划之路', '分享从初级工程师到技术专家的成长心得与建议。', 'demo.jpg', NULL, 9500, 6000, 99),
+(2, 11, 'Understanding HTTP/3 In-Depth', '深入理解HTTP/3', 'HTTP/3是下一代Web协议，本文将带你深入了解其核心QUIC协议和优势。', '802.7.11.7_cover.jpg', NULL, 8000, 4500, 99),
+(3, 11, 'Top 10 VSCode Extensions for 2024', '2024年最佳VSCode插件Top10', '工欲善其事，必先利其器。这10款插件将极大提升你的开发效率。', '802.7.11.7_cover.jpg', NULL, 12000, 7800, 99),
+(4, 11, 'Is Rust the Future of System Programming?', 'Rust是系统编程的未来吗？', '探讨Rust语言的所有权、借用检查等特性为何让它成为C++的有力竞争者。', '802.7.11.7_cover.jpg', NULL, 6500, 3200, 99),
+(5, 11, 'My Career Path as a Software Engineer', '我的软件工程师职业规划之路', '分享从初级工程师到技术专家的成长心得与建议。', '802.7.11.7_cover.jpg', NULL, 9500, 6000, 99),
 -- 视频 (25条)
-(6, 21, 'Python Web Scraper Tutorial: E-commerce Data', 'Python爬虫实战：抓取电商网站数据', '手把手教你用Requests和BeautifulSoup库，从零开始编写一个Python网络爬虫。', 'demo.jpg', '0:25:40', 55000, 28000, 99),
-(7, 21, 'Building a Full-Stack App with React & Express', '用React和Express构建一个全栈应用', '项目实战课程，学习如何结合React前端与Node.js Express后端。', 'demo.jpg', '1:10:22', 78000, 45000, 99),
-(8, 21, 'What is GPT-4? An AI Revolution', 'GPT-4是什么？一场AI革命', '通俗易懂地解释GPT-4的工作原理及其对未来的深远影响。', 'demo.jpg', '0:18:15', 150000, 98000, 99),
-(9, 21, 'CI/CD Pipeline with GitLab and Docker', '使用GitLab和Docker搭建CI/CD流水线', 'DevOps核心技能，学习如何自动化你的代码构建、测试和部署流程。', 'demo.jpg', '0:45:05', 42000, 21000, 99),
-(10, 21, 'Apple M3 Chip Macbook Pro In-depth Review', '苹果M3芯片Macbook Pro深度评测', '性能、功耗、游戏、生产力全方位评测，M3芯片真的值得升级吗？', 'demo.jpg', '0:22:50', 95000, 65000, 99),
-(11, 21, 'SQL Injection 101: How to Hack and Defend', 'SQL注入入门：从攻击到防御', '演示常见的SQL注入攻击手法，并讲解如何在代码层面进行有效防御。', 'demo.jpg', '0:33:18', 61000, 33000, 99),
-(12, 21, 'Go Goroutines Explained Simply', 'Go并发编程：轻松理解Goroutine', '深入浅出讲解Go语言的核心并发特性——Goroutine和Channel。', 'demo.jpg', '0:28:30', 38000, 19000, 99),
-(13, 21, 'Vue 3 Composition API vs Options API', 'Vue 3深度解析：Composition API vs Options API', '对比分析Vue 3两种API的优缺点及适用场景，助你写出更优雅的代码。', 'demo.jpg', '0:21:00', 31000, 17000, 99),
-(14, 21, 'Tech News Roundup: AI Chips War', '每周科技快讯：AI芯片战争升级', '本周焦点：Nvidia, AMD, Intel在AI芯片领域的最新动态和未来布局。', 'demo.jpg', '0:12:35', 25000, 15000, 99),
-(15, 21, 'Animated Guide to Quick Sort Algorithm', '动画详解快速排序算法', '通过生动的动画，让你彻底搞懂经典排序算法“快速排序”的原理和实现。', 'demo.jpg', '0:15:20', 88000, 52000, 99),
-(16, 21, 'Python Crash Course for Beginners', 'Python快速入门教程 (上)', '面向零基础学习者，从变量、数据类型到循环控制，快速上手Python。', 'demo.jpg', '0:55:10', 120000, 75000, 99),
-(17, 21, 'Python Functions and Modules', 'Python快速入门教程 (下)', '深入讲解函数、模块和包，构建结构化的Python应用。', 'demo.jpg', '0:48:00', 90000, 58000, 99),
-(18, 21, 'Building a Blog with Vue.js and Firebase', 'Vue.js 3项目：从零搭建个人博客', '一个完整的Vue项目，学习组件化开发、路由和状态管理。', 'demo.jpg', '1:30:00', 45000, 29000, 99),
-(19, 21, 'Intro to Machine Learning with Scikit-learn', '机器学习入门：使用Scikit-learn', '介绍机器学习基本概念，并使用Python的Scikit-learn库解决一个分类问题。', 'demo.jpg', '0:38:45', 51000, 26000, 99),
-(20, 21, 'Deploying Your App on AWS EC2', '手把手教你将应用部署到AWS EC2', '从创建实例、配置环境到上线Web应用，完整的云计算入门实践。', 'demo.jpg', '0:40:10', 36000, 18000, 99),
-(21, 21, 'How HTTPS Works (SSL/TLS Explained)', 'HTTPS是如何工作的？(SSL/TLS证书详解)', '揭秘浏览器地址栏的小绿锁，讲解非对称加密、证书颁发机构等网络安全知识。', 'demo.jpg', '0:19:55', 72000, 41000, 99),
-(22, 21, 'Building a Real-time Chat App with Go', 'Go语言实战：构建实时聊天应用', '利用Go的并发能力和WebSocket技术，打造一个高性能的在线聊天室。', 'demo.jpg', '1:05:00', 29000, 15000, 99),
-(23, 21, 'Nvidia RTX 4090 vs AMD RX 7900XTX', '显卡对决：Nvidia RTX 4090 vs AMD RX 7900XTX', '旗舰显卡的巅峰对决，游戏性能、生产力、光追表现全面对比。', 'demo.jpg', '0:17:30', 110000, 72000, 99),
-(24, 21, 'Tech News Roundup: The Metaverse Reality', '每周科技快讯：元宇宙的现实与幻想', '探讨本周关于元宇宙的最新进展，是未来还是泡沫？', 'demo.jpg', '0:14:00', 18000, 9000, 99),
-(25, 21, 'Binary Search Algorithm Explained', '算法动画：二分查找法', '在有序数组中进行高效查找的必备算法，包教包会。', 'demo.jpg', '0:09:45', 98000, 61000, 99),
-(26, 21, 'Setup a Kubernetes Cluster on Local Machine', '在本地搭建Kubernetes集群 (K8s教程)', '使用Minikube或Kind，在你的电脑上快速搭建一个用于学习和测试的K8s环境。', 'demo.jpg', '0:35:15', 33000, 16000, 99),
-(27, 21, 'Understanding Docker Containers', 'Docker核心概念：容器化技术详解', '什么是容器？它和虚拟机有什么区别？本视频将为你解答。', 'demo.jpg', '0:20:00', 65000, 39000, 99),
-(28, 21, 'Create a REST API with Go and Gin', '使用Go和Gin框架创建REST API', '学习如何使用流行的Gin框架快速开发高性能的Web API。', 'demo.jpg', '0:50:30', 22000, 11000, 91),
-(29, 21, 'React State Management: Context vs Redux', 'React状态管理：Context还是Redux？', '分析React内置Context API和第三方库Redux的差异，帮你做出正确的技术选型。', 'demo.jpg', '0:24:00', 48000, 27000, 99),
-(30, 21, '[Draft] Unboxing the new Raspberry Pi 5', '[草稿] 树莓派5开箱初体验', '这是一个草稿视频，内容还未完成。', 'demo.jpg', '0:00:00', 0, 0, 1);
+(6, 21, 'Python Web Scraper Tutorial: E-commerce Data', 'Python爬虫实战：抓取电商网站数据', '手把手教你用Requests和BeautifulSoup库，从零开始编写一个Python网络爬虫。', '802.7.11.7_cover.jpg', '0:25:40', 55000, 28000, 99),
+(7, 21, 'Building a Full-Stack App with React & Express', '用React和Express构建一个全栈应用', '项目实战课程，学习如何结合React前端与Node.js Express后端。', '802.7.11.7_cover.jpg', '1:10:22', 78000, 45000, 99),
+(8, 21, 'What is GPT-4? An AI Revolution', 'GPT-4是什么？一场AI革命', '通俗易懂地解释GPT-4的工作原理及其对未来的深远影响。', '802.7.11.7_cover.jpg', '0:18:15', 150000, 98000, 99),
+(9, 21, 'CI/CD Pipeline with GitLab and Docker', '使用GitLab和Docker搭建CI/CD流水线', 'DevOps核心技能，学习如何自动化你的代码构建、测试和部署流程。', '802.7.11.7_cover.jpg', '0:45:05', 42000, 21000, 99),
+(10, 21, 'Apple M3 Chip Macbook Pro In-depth Review', '苹果M3芯片Macbook Pro深度评测', '性能、功耗、游戏、生产力全方位评测，M3芯片真的值得升级吗？', '802.7.11.7_cover.jpg', '0:22:50', 95000, 65000, 99),
+(11, 21, 'SQL Injection 101: How to Hack and Defend', 'SQL注入入门：从攻击到防御', '演示常见的SQL注入攻击手法，并讲解如何在代码层面进行有效防御。', '802.7.11.7_cover.jpg', '0:33:18', 61000, 33000, 99),
+(12, 21, 'Go Goroutines Explained Simply', 'Go并发编程：轻松理解Goroutine', '深入浅出讲解Go语言的核心并发特性——Goroutine和Channel。', '802.7.11.7_cover.jpg', '0:28:30', 38000, 19000, 99),
+(13, 21, 'Vue 3 Composition API vs Options API', 'Vue 3深度解析：Composition API vs Options API', '对比分析Vue 3两种API的优缺点及适用场景，助你写出更优雅的代码。', '802.7.11.7_cover.jpg', '0:21:00', 31000, 17000, 99),
+(14, 21, 'Tech News Roundup: AI Chips War', '每周科技快讯：AI芯片战争升级', '本周焦点：Nvidia, AMD, Intel在AI芯片领域的最新动态和未来布局。', '802.7.11.7_cover.jpg', '0:12:35', 25000, 15000, 99),
+(15, 21, 'Animated Guide to Quick Sort Algorithm', '动画详解快速排序算法', '通过生动的动画，让你彻底搞懂经典排序算法“快速排序”的原理和实现。', '802.7.11.7_cover.jpg', '0:15:20', 88000, 52000, 99),
+(16, 21, 'Python Crash Course for Beginners', 'Python快速入门教程 (上)', '面向零基础学习者，从变量、数据类型到循环控制，快速上手Python。', '802.7.11.7_cover.jpg', '0:55:10', 120000, 75000, 99),
+(17, 21, 'Python Functions and Modules', 'Python快速入门教程 (下)', '深入讲解函数、模块和包，构建结构化的Python应用。', '802.7.11.7_cover.jpg', '0:48:00', 90000, 58000, 99),
+(18, 21, 'Building a Blog with Vue.js and Firebase', 'Vue.js 3项目：从零搭建个人博客', '一个完整的Vue项目，学习组件化开发、路由和状态管理。', '802.7.11.7_cover.jpg', '1:30:00', 45000, 29000, 99),
+(19, 21, 'Intro to Machine Learning with Scikit-learn', '机器学习入门：使用Scikit-learn', '介绍机器学习基本概念，并使用Python的Scikit-learn库解决一个分类问题。', '802.7.11.7_cover.jpg', '0:38:45', 51000, 26000, 99),
+(20, 21, 'Deploying Your App on AWS EC2', '手把手教你将应用部署到AWS EC2', '从创建实例、配置环境到上线Web应用，完整的云计算入门实践。', '802.7.11.7_cover.jpg', '0:40:10', 36000, 18000, 99),
+(21, 21, 'How HTTPS Works (SSL/TLS Explained)', 'HTTPS是如何工作的？(SSL/TLS证书详解)', '揭秘浏览器地址栏的小绿锁，讲解非对称加密、证书颁发机构等网络安全知识。', '802.7.11.7_cover.jpg', '0:19:55', 72000, 41000, 99),
+(22, 21, 'Building a Real-time Chat App with Go', 'Go语言实战：构建实时聊天应用', '利用Go的并发能力和WebSocket技术，打造一个高性能的在线聊天室。', '802.7.11.7_cover.jpg', '1:05:00', 29000, 15000, 99),
+(23, 21, 'Nvidia RTX 4090 vs AMD RX 7900XTX', '显卡对决：Nvidia RTX 4090 vs AMD RX 7900XTX', '旗舰显卡的巅峰对决，游戏性能、生产力、光追表现全面对比。', '802.7.11.7_cover.jpg', '0:17:30', 110000, 72000, 99),
+(24, 21, 'Tech News Roundup: The Metaverse Reality', '每周科技快讯：元宇宙的现实与幻想', '探讨本周关于元宇宙的最新进展，是未来还是泡沫？', '802.7.11.7_cover.jpg', '0:14:00', 18000, 9000, 99),
+(25, 21, 'Binary Search Algorithm Explained', '算法动画：二分查找法', '在有序数组中进行高效查找的必备算法，包教包会。', '802.7.11.7_cover.jpg', '0:09:45', 98000, 61000, 99),
+(26, 21, 'Setup a Kubernetes Cluster on Local Machine', '在本地搭建Kubernetes集群 (K8s教程)', '使用Minikube或Kind，在你的电脑上快速搭建一个用于学习和测试的K8s环境。', '802.7.11.7_cover.jpg', '0:35:15', 33000, 16000, 99),
+(27, 21, 'Understanding Docker Containers', 'Docker核心概念：容器化技术详解', '什么是容器？它和虚拟机有什么区别？本视频将为你解答。', '802.7.11.7_cover.jpg', '0:20:00', 65000, 39000, 99),
+(28, 21, 'Create a REST API with Go and Gin', '使用Go和Gin框架创建REST API', '学习如何使用流行的Gin框架快速开发高性能的Web API。', '802.7.11.7_cover.jpg', '0:50:30', 22000, 11000, 91),
+(29, 21, 'React State Management: Context vs Redux', 'React状态管理：Context还是Redux？', '分析React内置Context API和第三方库Redux的差异，帮你做出正确的技术选型。', '802.7.11.7_cover.jpg', '0:24:00', 48000, 27000, 99),
+(30, 21, '[Draft] Unboxing the new Raspberry Pi 5', '[草稿] 树莓派5开箱初体验', '这是一个草稿视频，内容还未完成。', '802.7.11.7_cover.jpg', '0:00:00', 0, 0, 1);
 
 
 -- 5. 插入视频平台链接 (为每个视频内容生成3个平台的链接)
