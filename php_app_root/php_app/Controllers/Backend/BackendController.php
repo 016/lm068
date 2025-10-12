@@ -580,6 +580,7 @@ class BackendController extends Controller
 
     /**
      * 获取CSV文件必需的字段 - 从当前模型的 rules 中自动提取
+     *  - 特殊情况可以使用子类重写
      *
      * @return array
      */
