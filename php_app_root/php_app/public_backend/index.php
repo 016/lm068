@@ -103,6 +103,8 @@ $router->delete('/video-links/{id}', 'Backend\\VideoLinkController@destroy');
 
 // 管理员管理 (只有超级管理员可访问管理列表和编辑，所有管理员可访问个人信息管理)
 $router->get('/admin_users', 'Backend\\AdminUserController@index');
+$router->get('/admin_users/create', 'Backend\\AdminUserController@create');
+$router->post('/admin_users/create', 'Backend\\AdminUserController@create');
 $router->get('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');  // 个人信息管理(所有管理员可用)
 $router->post('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');
 $router->post('/admin_users/bulk-action', 'Backend\\AdminUserController@bulkAction');
