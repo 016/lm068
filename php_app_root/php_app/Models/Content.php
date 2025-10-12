@@ -582,4 +582,50 @@ class Content extends UploadableModel implements HasStatuses
         return $data;
     }
 
+    /**
+     * 重写父类方法，添加 tag_id 和 collection_id 的字段搜索策略
+     *
+     * @return array 字段搜索策略配置
+     */
+    protected static function getFieldSearchStrategies(): array
+    {
+        return array_merge(parent::getFieldSearchStrategies(), [
+            'tag_id' => 'custom',
+            'collection_id' => 'custom',
+            'content_type_id' => 'exact'
+        ]);
+    }
+
+    /**
+     * 重写父类方法，处理 tag_id 和 collection_id 的自定义过滤逻辑
+     *
+     * @param string $field 字段名
+     * @param mixed $value 搜索值
+     * @param array &$whereConditions WHERE条件数组
+     * @param array &$params 参数数组
+     */
+    protected static function handleCustomFieldFilter(string $field, $value, array &$whereConditions, array &$params): void
+    {
+        $table = static::getTableName();
+
+        switch ($field) {
+            case 'tag_id':
+                // 通过 content_tag 关联表筛选
+                $whereConditions[] = "{$table}.id IN (SELECT content_id FROM content_tag WHERE tag_id = :filter_tag_id)";
+                $params['filter_tag_id'] = (int)$value;
+                break;
+
+            case 'collection_id':
+                // 通过 content_collection 关联表筛选
+                $whereConditions[] = "{$table}.id IN (SELECT content_id FROM content_collection WHERE collection_id = :filter_collection_id)";
+                $params['filter_collection_id'] = (int)$value;
+                break;
+
+            default:
+                // 调用父类方法处理其他自定义字段
+                parent::handleCustomFieldFilter($field, $value, $whereConditions, $params);
+                break;
+        }
+    }
+
 }

@@ -115,6 +115,24 @@ use App\Constants\ContentType;
                 <i class="bi bi-list-ul chart-title-icon"></i>
                 <h3>📄 内容列表管理</h3>
             </div>
+            <?php if (!empty($filterDisplayInfo)): ?>
+            <div class="filter-status-display" style="margin-left: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
+                <i class="bi bi-funnel-fill"></i>
+                <span>当前筛选条件:</span>
+                <?php if (isset($filterDisplayInfo['tag'])): ?>
+                <span class="badge bg-primary">
+                    <i class="bi bi-tag-fill"></i>
+                    标签: <?= htmlspecialchars($filterDisplayInfo['tag']['name']) ?>
+                </span>
+                <?php endif; ?>
+                <?php if (isset($filterDisplayInfo['collection'])): ?>
+                <span class="badge bg-info">
+                    <i class="bi bi-collection-fill"></i>
+                    合集: <?= htmlspecialchars($filterDisplayInfo['collection']['name']) ?>
+                </span>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Action Buttons Row -->

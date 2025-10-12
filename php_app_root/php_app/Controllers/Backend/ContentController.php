@@ -29,17 +29,38 @@ class ContentController extends BackendController
 
     public function index(Request $request): void
     {
-        // 获取搜索过滤条件，支持所有搜索表单字段
-        $filters = $this->getSearchFilters(['id', 'title', 'code', 'author', 'content_type_id', 'view_cnt', 'status_id', 'order_by'], $request);
+        // 获取搜索过滤条件，支持所有搜索表单字段，包括tag_id和collection_id
+        $filters = $this->getSearchFilters(['id', 'title', 'code', 'author', 'content_type_id', 'view_cnt', 'status_id', 'tag_id', 'collection_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
         $content = Content::findAllWithFilters($filters);
         $stats = $this->curModel->getStats();
 
+        // 如果存在tag_id或collection_id筛选，获取对应的名称用于显示
+        $filterDisplayInfo = [];
+        if (!empty($filters['tag_id'])) {
+            $tag = $this->tagModel->find((int)$filters['tag_id']);
+            if ($tag) {
+                $filterDisplayInfo['tag'] = [
+                    'id' => $tag->id,
+                    'name' => $tag->name_cn ?: $tag->name_en
+                ];
+            }
+        }
+        if (!empty($filters['collection_id'])) {
+            $collection = $this->collectionModel->find((int)$filters['collection_id']);
+            if ($collection) {
+                $filterDisplayInfo['collection'] = [
+                    'id' => $collection->id,
+                    'name' => $collection->name_cn ?: $collection->name_en
+                ];
+            }
+        }
 
         $this->render('contents/index', [
             'content' => $content,
             'filters' => $filters,
+            'filterDisplayInfo' => $filterDisplayInfo,
             'stats' => $stats,
             'pageTitle' => '内容管理 - 视频分享网站管理后台',
             'css_files' => ['content_list_2.css'],

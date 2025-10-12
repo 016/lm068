@@ -1748,32 +1748,44 @@ class TableManager {
     
     /**
      * 应用筛选器
+     * 支持自定义保持参数配置，允许保持任意 URL 参数
      */
     applyFilters() {
         const filterParams = new URLSearchParams();
         const currentUrl = new URL(window.location);
-        
+
         const filterInputs = document.querySelectorAll('.table-filter-cell input[type="text"], .table-filter-cell select');
-        
+
         filterInputs.forEach(input => {
             const columnName = input.closest('[data-column]').getAttribute('data-column');
             const value = input.value.trim();
-            
+
             if (value && value !== '') {
                 filterParams.set(columnName, value);
             }
         });
-        
-        const preserveParams = ['page', 'limit'];
-        preserveParams.forEach(param => {
+
+        // 使用公共接口获取需要保持的参数
+        const persistentParams = this.getPersistentUrlParams();
+        persistentParams.forEach(param => {
             if (currentUrl.searchParams.has(param)) {
                 filterParams.set(param, currentUrl.searchParams.get(param));
             }
         });
-        
+
         const newUrl = `${currentUrl.pathname}?${filterParams.toString()}`;
         console.log('Applying filters with URL:', newUrl);
         window.location.href = newUrl;
+    }
+
+    /**
+     * 获取需要保持的 URL 参数列表（公共接口）
+     * 子类或配置可以重写此方法来扩展保持参数
+     * @returns {Array} 需要保持的参数名称数组
+     */
+    getPersistentUrlParams() {
+        // 从配置中读取，如果没有配置则使用默认值
+        return this.config.persistentUrlParams || ['page', 'limit', 'tag_id', 'collection_id'];
     }
     
     /**
