@@ -23,7 +23,7 @@ class AdminUserController extends BackendController
      */
     protected function checkManagePermission(): bool
     {
-        if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] < AdminUserRole::SUPER_ADMIN->value) {
+        if (!isset($_SESSION['admin_role_id']) || $_SESSION['admin_role_id'] < AdminUserRole::SUPER_ADMIN->value) {
             $this->redirect('/backend');
             return false;
         }
@@ -147,6 +147,82 @@ class AdminUserController extends BackendController
         $this->render('admin_users/edit', [
             'adminUser' => $adminUser,
             'pageTitle' => '编辑管理员 - 视频分享网站管理后台',
+            'css_files' => ['tag_edit_8.css'],
+            'js_files' => ['form_utils_2.js', 'tag_edit_12.js']
+        ]);
+    }
+
+    public function create(Request $request): void
+    {
+        // 1. 创建新的AdminUser实例
+        $adminUser = new AdminUser();
+
+        // 处理 POST 请求（表单提交）
+        if ($request->isPost()) {
+            // 4. 对 POST 的数值进行提取并填充回 $adminUser
+            $data = [
+                'username' => $request->post('username'),
+                'email' => $request->post('email'),
+                'real_name' => $request->post('real_name'),
+                'phone' => $request->post('phone'),
+                'role_id' => (int)($request->post('role_id') ?? AdminUserRole::NORMAL->value),
+                'status_id' => (int)($request->post('status_id') ?? AdminUserStatus::ENABLED->value)
+            ];
+
+            // 密码是必需的
+            $password = $request->post('password');
+            if (empty($password)) {
+                $adminUser->fill($data);
+                $adminUser->errors['password'] = '密码不能为空';
+                $this->renderCreateForm($adminUser);
+                return;
+            }
+
+            $confirmPassword = $request->post('confirm_password');
+            if ($password !== $confirmPassword) {
+                $adminUser->fill($data);
+                $adminUser->errors['confirm_password'] = '两次输入的密码不一致';
+                $this->renderCreateForm($adminUser);
+                return;
+            }
+
+            $data['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+            $adminUser->fill($data);
+
+            // 5. 使用 AdminUser 的 validate 对提取的 post 数值进行验证
+            if (!$adminUser->validate()) {
+                // 6. 如果验证失败，使用 $adminUser->errors 返回给 view
+                $this->renderCreateForm($adminUser);
+                return;
+            }
+
+            try {
+                // 7. 验证通过，写入数据库
+                if ($adminUser->save()) {
+                    // 成功后跳转到列表页面
+                    $this->setFlashMessage('管理员创建成功', 'success');
+                    $this->redirect('/admin_users');
+                } else {
+                    // 保存失败，返回创建页面并显示错误
+                    $this->renderCreateForm($adminUser);
+                }
+            } catch (\Exception $e) {
+                error_log("AdminUser creation error: " . $e->getMessage());
+                $adminUser->errors['general'] = '创建失败: ' . $e->getMessage();
+                $this->renderCreateForm($adminUser);
+            }
+            return;
+        }
+
+        // 2. 把 $adminUser 传递到 view 实现渲染（GET请求 - 显示表单）
+        $this->renderCreateForm($adminUser);
+    }
+
+    private function renderCreateForm(AdminUser $adminUser): void
+    {
+        $this->render('admin_users/create', [
+            'adminUser' => $adminUser,
+            'pageTitle' => '创建管理员 - 视频分享网站管理后台',
             'css_files' => ['tag_edit_8.css'],
             'js_files' => ['form_utils_2.js', 'tag_edit_12.js']
         ]);

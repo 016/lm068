@@ -105,10 +105,43 @@ use App\Constants\AdminUserRole;
         <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex gap-2 flex-wrap">
+                    <a href="/admin_users/create" class="btn btn-primary d-flex align-items-center gap-2">
+                        <i class="bi bi-plus-lg"></i>
+                        创建新管理员
+                    </a>
+                    <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="bulkImportBtn">
+                        <i class="bi bi-download"></i>
+                        批量导入
+                    </button>
+                    <div class="dropdown-container" style="position: relative;">
+                        <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="exportBtn">
+                            <i class="bi bi-upload"></i>
+                            导出数据
+                        </button>
+                        <div class="export-popup" id="exportPopup">
+                            <div class="popup-item" onclick="exportData('json')">
+                                <i class="bi bi-filetype-json"></i>
+                                <span>导出为 JSON</span>
+                            </div>
+                            <div class="popup-item" onclick="exportData('csv')">
+                                <i class="bi bi-filetype-csv"></i>
+                                <span>导出为 CSV</span>
+                            </div>
+                        </div>
+                    </div>
                     <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="refreshBtn">
                         <i class="bi bi-arrow-clockwise"></i>
                         刷新
                     </button>
+                    <div class="dropdown-container" style="position: relative;">
+                        <button class="btn btn-outline-primary d-flex align-items-center gap-2" id="columnSettingsBtn">
+                            <i class="bi bi-gear"></i>
+                            列设置
+                        </button>
+                        <div class="column-settings-popup" id="columnSettingsPopup">
+                            <!-- Column settings will be dynamically generated from table header -->
+                        </div>
+                    </div>
                 </div>
                 <div class="dropdown-container">
                     <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" id="bulkActionsBtn">
@@ -324,6 +357,11 @@ use App\Constants\AdminUserRole;
         </div>
     </div>
 </main>
+
+<?php
+// Include bulk import modal
+include __DIR__ . '/../common/_bulkImport.php';
+?>
 
 <script>
     // 显示Toast消息

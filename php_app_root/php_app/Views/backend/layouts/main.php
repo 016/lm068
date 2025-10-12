@@ -1,3 +1,8 @@
+<?php
+
+use App\Constants\AdminUserRole;
+
+?>
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
@@ -79,7 +84,7 @@
                         <span class="nav-text">内容审核</span>
                         <span class="tooltip">内容审核</span>
                     </a>
-                    <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] >= 99): ?>
+                    <?php if (isset($_SESSION['admin_role_id']) && $_SESSION['admin_role_id'] >= AdminUserRole::SUPER_ADMIN->value): ?>
                     <a href="/admin_users" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin_users') !== false && strpos($_SERVER['REQUEST_URI'], '/admin_users/self_update') === false ? 'active' : '' ?>">
                         <i class="bi bi-person-gear nav-icon"></i>
                         <span class="nav-text">管理员管理</span>

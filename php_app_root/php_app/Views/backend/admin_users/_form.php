@@ -101,6 +101,32 @@ use App\Constants\AdminUserRole;
                 </div>
 
                 <div class="row">
+                    <?php if ($adminUser->isNew): ?>
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
+                            <label for="password" class="form-label required">密码</label>
+                            <input type="password" class="form-control <?= !empty($adminUser->errors['password']) ? 'is-invalid' : '' ?>"
+                                   id="password" name="password" required
+                                   placeholder="请输入登录密码">
+                            <?php if (!empty($adminUser->errors['password'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['password']) ?></div>
+                            <?php endif; ?>
+                            <div class="form-text">管理员登录密码，至少6个字符</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
+                            <label for="confirm_password" class="form-label required">确认密码</label>
+                            <input type="password" class="form-control <?= !empty($adminUser->errors['confirm_password']) ? 'is-invalid' : '' ?>"
+                                   id="confirm_password" name="confirm_password" required
+                                   placeholder="请再次输入密码">
+                            <?php if (!empty($adminUser->errors['confirm_password'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['confirm_password']) ?></div>
+                            <?php endif; ?>
+                            <div class="form-text">请再次输入密码以确认</div>
+                        </div>
+                    </div>
+                    <?php else: ?>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="new_password" class="form-label">新密码</label>
@@ -109,6 +135,7 @@ use App\Constants\AdminUserRole;
                             <div class="form-text">留空则不修改密码</div>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -181,7 +208,7 @@ use App\Constants\AdminUserRole;
                 </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i>
-                    保存修改
+                    <?= !$adminUser->isNew ? '保存修改' : '创建管理员' ?>
                 </button>
             </div>
         </form>

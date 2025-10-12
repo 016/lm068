@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Backend;
 
+use App\Constants\AdminUserRole;
 use App\Core\Request;
 use App\Models\Tag;
 use App\Models\Content;
@@ -20,22 +21,6 @@ class TagController extends BackendController
         }
         $this->curModel = new Tag();
         $this->contentModel = new Content();
-    }
-
-    /**
-     * 自定义权限检查方法示例(已注释使用)
-     * 演示如何创建自定义过滤器方法
-     *
-     * @return bool
-     */
-    protected function checkDeletePermission(): bool
-    {
-        // 例如: 检查用户是否有删除权限
-        if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'super_admin') {
-            $this->jsonResponse(['success' => false, 'message' => '权限不足，只有超级管理员可以删除标签']);
-            return false;
-        }
-        return true;
     }
 
     public function index(Request $request): void
