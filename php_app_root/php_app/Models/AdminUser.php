@@ -53,7 +53,7 @@ class AdminUser extends Model implements HasStatuses
      * @param bool $isUpdate 是否为更新操作
      * @return array 验证规则
      */
-    protected function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false): array
     {
         $rules = [
             'username' => 'required|max:50|unique',
@@ -283,7 +283,7 @@ class AdminUser extends Model implements HasStatuses
     {
         return [
             'username' => $csvRowData['username'] ?? '',
-            'email' => $csvRowData['email'] ?? '',
+            'email' => $csvRowData['email'] ?? null,
             'real_name' => $csvRowData['real_name'] ?? '',
             'phone' => $csvRowData['phone'] ?? '',
             'role_id' => isset($csvRowData['role_id']) ? (int)$csvRowData['role_id'] : AdminUserRole::NORMAL->value,

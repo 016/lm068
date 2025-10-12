@@ -37,6 +37,19 @@ abstract class Model
     }
 
     /**
+     * 定义验证规则
+     * @param bool $isUpdate 是否为更新操作
+     * @return array 验证规则
+     */
+    public function rules(bool $isUpdate = false): array
+    {
+        $rules = [
+        ];
+
+        return $rules;
+    }
+
+    /**
      * 静态方法 - 查找所有记录，支持查询条件和输出格式化
      * 
      * @param array $conditions 查询条件数组 

@@ -68,7 +68,7 @@ class Content extends UploadableModel implements HasStatuses
      * @param bool $isUpdate 是否为更新操作
      * @return array 验证规则
      */
-    protected function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false): array
     {
         return [
             'content_type_id' => 'required|numeric',
