@@ -40,6 +40,7 @@
     - b-video_link-create: video_link create form page
     - b-video_link-edit: video_link edit form page
     - b-user-management: 用户管理模块
+    - b-admin_user-management: 管理员管理模块
     - b-comment-management: 评论管理模块
     - b-subscription-management: 订阅邮件管理模块
     - b-analytics: 视频数据分析模块
