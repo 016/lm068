@@ -278,7 +278,7 @@ use App\Constants\TagStatus;
                                     <td class="table-cell table-id" data-column="id"><?= htmlspecialchars($tag['id']) ?></td>
                                     <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($tag['name_cn'] ?: $tag['name_en']) ?></td>
                                     <td class="table-cell" data-column="content_cnt">
-                                        <a href="/backend/content?tag_id=<?= htmlspecialchars($tag['id']) ?>" class="content-link">
+                                        <a href="/contents?tag_id=<?= htmlspecialchars($tag['id']) ?>" class="content-link">
                                             <?= number_format($tag['content_cnt'] ?? 0) ?>
                                         </a>
                                     </td>

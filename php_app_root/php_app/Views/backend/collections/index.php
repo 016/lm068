@@ -290,7 +290,7 @@ use App\Constants\CollectionStatus;
                             <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($collection['name_cn']) ?></td>
                             <td class="table-cell" data-column="description"><?= htmlspecialchars($collection['short_desc_cn'] ?: $collection['short_desc_en'] ?: '') ?></td>
                             <td class="table-cell" data-column="content_cnt">
-                                <a href="/content?collection_id=<?= $collection['id'] ?>" class="content-link"><?= $collection['content_cnt'] ?></a>
+                                <a href="/contents?collection_id=<?= $collection['id'] ?>" class="content-link"><?= $collection['content_cnt'] ?></a>
                             </td>
                             <td class="table-cell" data-column="icon_class">
                                 <div class="icon-class-display">
