@@ -108,6 +108,7 @@ $router->post('/admin_users/create', 'Backend\\AdminUserController@create');
 $router->get('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');  // 个人信息管理(所有管理员可用)
 $router->post('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');
 $router->post('/admin_users/bulk-action', 'Backend\\AdminUserController@bulkAction');
+$router->post('/admin_users/bulk-import', 'Backend\\AdminUserController@bulkImport');
 $router->get('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
 $router->post('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
 $router->delete('/admin_users/{id}', 'Backend\\AdminUserController@destroy');

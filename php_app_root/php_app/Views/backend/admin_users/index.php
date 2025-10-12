@@ -267,7 +267,7 @@ use App\Constants\AdminUserRole;
                             <th class="table-filter-cell" data-column="actions"></th>
                         </tr>
                     </thead>
-                    <tbody id="tagTableBody">
+                    <tbody id="adminUserTableBody">
                         <?php if (!empty($adminUsers)): ?>
                             <?php foreach ($adminUsers as $adminUser): ?>
                                 <tr class="table-row" data-id="<?= htmlspecialchars($adminUser['id']) ?>">

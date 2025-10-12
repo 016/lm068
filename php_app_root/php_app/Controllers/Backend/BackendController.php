@@ -579,13 +579,44 @@ class BackendController extends Controller
     }
 
     /**
-     * 获取CSV文件必需的字段 - 需要子类重写
-     * 
+     * 获取CSV文件必需的字段 - 从当前模型的 rules 中自动提取
+     *
      * @return array
      */
     protected function getRequiredCSVFields(): array
     {
-        return ['name_cn', 'name_en']; // 默认字段，子类可以重写
+        if (!isset($this->curModel)) {
+            return []; // 如果当前模型未初始化，返回空数组
+        }
+
+        // 检查模型是否有 rules 方法
+        if (!method_exists($this->curModel, 'rules')) {
+            return []; // 如果模型没有 rules 方法，返回空数组
+        }
+
+        // 获取 create 模式的验证规则
+        $rules = $this->curModel->rules(false); // false 表示 create 模式
+
+        $requiredFields = [];
+
+        // 遍历规则，提取包含 required 规则的字段
+        foreach ($rules as $field => $ruleSet) {
+            // 规则可能是字符串（如 'required|max:50'）或数组
+            if (is_string($ruleSet)) {
+                $fieldRules = explode('|', $ruleSet);
+
+                // 检查是否包含 required 规则
+                foreach ($fieldRules as $rule) {
+                    $ruleName = explode(':', $rule)[0];
+                    if ($ruleName === 'required') {
+                        $requiredFields[] = $field;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $requiredFields;
     }
 
     /**

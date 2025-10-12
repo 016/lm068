@@ -77,12 +77,15 @@ function initAdminUserListPage() {
         });
     };
 
-    // 6. 初始化批量导入功能（如果需要）
-    // 管理员管理通常不需要批量导入，注释掉此功能
-    // if (window.AdminCommon.BulkImportUtils) {
-    //     window.AdminCommon.BulkImportUtils.setupBulkImport();
-    //     console.log('管理员批量导入功能已初始化');
-    // }
+    // 6. 初始化批量导入功能
+    if (window.AdminCommon.BulkImportUtils) {
+        // 为合集页面设置专门的批量导入配置
+        window.AdminCommon.BulkImportUtils.setupBulkImport({
+            endpoint: '/admin_users/bulk-import',
+            entityName: '合集'
+        });
+        console.log('合集批量导入功能已初始化');
+    }
 
     // 7. 设置删除按钮的事件监听器 - 使用通用的TableOperations删除功能
     window.AdminCommon.TableOperations.setupDeleteButtonEventListeners({
