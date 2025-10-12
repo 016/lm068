@@ -185,19 +185,21 @@ class Comment extends Model
 
         // 先处理顶级评论
         foreach ($rootRows as $row) {
-            $comment = new Comment();
-            $comment->setOriginal($row);
-            $comment->setNew(false);
+            $comment = new \stdClass();
+            foreach ($row as $key => $value) {
+                $comment->$key = $value;
+            }
             $comment->replies = []; // 初始化回复数组
             $comments[$row['id']] = $comment;
         }
 
-        // 再处理子评论
+        // 再处理子评论，并使用stdClass避免魔术方法问题
         $childComments = [];
         foreach ($childRows as $row) {
-            $comment = new Comment();
-            $comment->setOriginal($row);
-            $comment->setNew(false);
+            $comment = new \stdClass();
+            foreach ($row as $key => $value) {
+                $comment->$key = $value;
+            }
             $comment->replies = []; // 初始化回复数组
             $childComments[$row['id']] = $comment;
         }
