@@ -300,6 +300,93 @@ this.supportedLangs = ['zh', 'en', 'ja'];  // 添加 'ja'
 ✅ 字段为空时自动降级
 ✅ 预留扩展接口
 
+## 常见问题和解决方案
+
+### 问题1: i18n-helper.js 报错 "Cannot read properties of undefined (reading 'includes')"
+
+**原因**: 在构造函数中，`this.currentLang = this.detectLanguage()` 在 `this.supportedLangs = ['zh', 'en']` 之前执行，导致 `detectLanguage()` 方法中使用 `this.supportedLangs.includes()` 时 `supportedLangs` 还未定义。
+
+**解决方案**: 调整构造函数中的初始化顺序：
+```javascript
+constructor() {
+    // 必须先初始化支持的语言列表
+    this.supportedLangs = ['zh', 'en'];
+    // 然后再检测当前语言
+    this.currentLang = this.detectLanguage();
+}
+```
+
+### 问题2: 点击语言切换按钮报错 "Cannot read properties of undefined (reading 'switchLanguage')"
+
+**原因**: 由于问题1导致 `I18nHelper` 实例化失败，`window.i18n` 未正确创建，onclick 事件中调用 `window.i18n.switchLanguage()` 时报错。
+
+**解决方案**:
+1. 修复问题1确保实例正确创建
+2. 在 onclick 事件中添加安全检查：
+```html
+<a onclick="if(window.i18n) window.i18n.switchLanguage('zh')">
+    简体中文
+</a>
+```
+
+### 问题3: Layout 中的 topbar 和 footer 文本没有被翻译
+
+**原因**: 在 `layouts/main.php` 中的导航栏和页脚文本没有添加：
+1. PHP 服务端渲染的语言判断
+2. `data-i18n` 属性标记
+
+**解决方案**:
+1. 为所有文本添加 PHP 三元表达式：
+```php
+<a data-i18n="nav.home">
+    <?= ($currentLang ?? 'zh') === 'zh' ? '首页' : 'Home' ?>
+</a>
+```
+
+2. 为 i18n.js 添加缺失的翻译键：
+```javascript
+// zh
+'nav.site_name': '视频创作',
+'footer.navigation': '网站导航',
+// ...
+
+// en
+'nav.site_name': 'Video Creation',
+'footer.navigation': 'Navigation',
+// ...
+```
+
+3. 增强 i18n-helper.js 支持更多属性类型：
+```javascript
+// 处理 data-i18n-placeholder 属性
+document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const text = this.t(key);
+    el.placeholder = text;
+});
+
+// 处理 data-i18n-title 属性
+document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    const text = this.t(key);
+    el.title = text;
+});
+```
+
+## 更新历史
+
+### 2025-10-13 修复更新
+- ✅ 修复 i18n-helper.js 构造函数初始化顺序问题
+- ✅ 修复语言切换按钮 switchLanguage 未定义错误
+- ✅ 为 layout 的 topbar 和 footer 添加完整 i18n 支持
+- ✅ 增加 data-i18n-placeholder 和 data-i18n-title 属性支持
+- ✅ 在 i18n.js 中添加 nav.site_name 等缺失的翻译键
+- ✅ 更新本文档，添加常见问题和解决方案章节
+
+### 2025-10-13 初始版本
+- ✅ 实现基础 i18n 框架
+- ✅ 完成 f-video-list 页面的 i18n 功能
+
 ## 总结
 
 本实现采用了**双模式**i18n方案:
@@ -307,3 +394,5 @@ this.supportedLangs = ['zh', 'en', 'ja'];  // 添加 'ja'
 2. **客户端翻译** - JavaScript动态替换UI元素文本,提供流畅的用户体验
 
 这种方案既保证了首屏加载速度,又确保了搜索引擎可以索引不同语言版本,是一个完整且可扩展的i18n解决方案。
+
+所有已知问题已在 2025-10-13 的更新中修复，当前 i18n 功能运行稳定，可以作为其他页面开发的参考模板。

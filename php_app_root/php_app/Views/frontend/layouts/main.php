@@ -32,7 +32,7 @@
             <!-- Logo -->
             <a class="navbar-brand fw-bold" href="/">
                 <i class="bi bi-play-circle-fill me-2"></i>
-                视频创作
+                <span data-i18n="nav.site_name"><?= ($currentLang ?? 'zh') === 'zh' ? '视频创作' : 'Video Creation' ?></span>
             </a>
 
             <!-- 移动端切换按钮 -->
@@ -45,13 +45,13 @@
                 <!-- 主要导航 -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link <?= ($_SERVER['REQUEST_URI'] === '/' ? 'active' : '') ?>" href="/" data-i18n="nav.home">首页</a>
+                        <a class="nav-link <?= ($_SERVER['REQUEST_URI'] === '/' ? 'active' : '') ?>" href="/" data-i18n="nav.home"><?= ($currentLang ?? 'zh') === 'zh' ? '首页' : 'Home' ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/videos') === 0 ? 'active' : '') ?>" href="/videos" data-i18n="nav.videos">视频</a>
+                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/videos') === 0 ? 'active' : '') ?>" href="/videos" data-i18n="nav.videos"><?= ($currentLang ?? 'zh') === 'zh' ? '视频' : 'Videos' ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-i18n="nav.about">关于</a>
+                        <a class="nav-link" href="#" data-i18n="nav.about"><?= ($currentLang ?? 'zh') === 'zh' ? '关于' : 'About' ?></a>
                     </li>
                 </ul>
 
@@ -67,7 +67,7 @@
                                 <a class="dropdown-item lang-switch-item <?= ($currentLang ?? 'zh') === 'zh' ? 'active' : '' ?>"
                                    href="javascript:void(0)"
                                    data-lang="zh"
-                                   onclick="window.i18n.switchLanguage('zh')">
+                                   onclick="if(window.i18n) window.i18n.switchLanguage('zh')">
                                     简体中文
                                 </a>
                             </li>
@@ -75,7 +75,7 @@
                                 <a class="dropdown-item lang-switch-item <?= ($currentLang ?? 'zh') === 'en' ? 'active' : '' ?>"
                                    href="javascript:void(0)"
                                    data-lang="en"
-                                   onclick="window.i18n.switchLanguage('en')">
+                                   onclick="if(window.i18n) window.i18n.switchLanguage('en')">
                                     English
                                 </a>
                             </li>
@@ -84,18 +84,18 @@
 
                     <!-- 主题切换 -->
                     <div class="dropdown me-2">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" id="themeDropdown" type="button" data-bs-toggle="dropdown" title="主题切换">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" id="themeDropdown" type="button" data-bs-toggle="dropdown" data-i18n-title="theme.title">
                             <i class="bi bi-palette"></i>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" data-theme="dark"><i class="bi bi-moon me-2"></i>深色</a></li>
-                            <li><a class="dropdown-item" href="#" data-theme="light"><i class="bi bi-sun me-2"></i>浅色</a></li>
-                            <li><a class="dropdown-item" href="#" data-theme="auto"><i class="bi bi-circle-half me-2"></i>自动</a></li>
+                            <li><a class="dropdown-item" href="#" data-theme="dark"><i class="bi bi-moon me-2"></i><span data-i18n="theme.dark"><?= ($currentLang ?? 'zh') === 'zh' ? '深色' : 'Dark' ?></span></a></li>
+                            <li><a class="dropdown-item" href="#" data-theme="light"><i class="bi bi-sun me-2"></i><span data-i18n="theme.light"><?= ($currentLang ?? 'zh') === 'zh' ? '浅色' : 'Light' ?></span></a></li>
+                            <li><a class="dropdown-item" href="#" data-theme="auto"><i class="bi bi-circle-half me-2"></i><span data-i18n="theme.auto"><?= ($currentLang ?? 'zh') === 'zh' ? '自动' : 'Auto' ?></span></a></li>
                         </ul>
                     </div>
 
-                    <button class="btn btn-sm btn-outline-primary me-2 login-type-btn" type="button" data-i18n="nav.login">登录</button>
-                    <button class="btn btn-sm btn-primary login-type-btn" type="button" data-i18n="nav.register">注册</button>
+                    <button class="btn btn-sm btn-outline-primary me-2 login-type-btn" type="button" data-i18n="nav.login"><?= ($currentLang ?? 'zh') === 'zh' ? '登录' : 'Login' ?></button>
+                    <button class="btn btn-sm btn-primary login-type-btn" type="button" data-i18n="nav.register"><?= ($currentLang ?? 'zh') === 'zh' ? '注册' : 'Register' ?></button>
                 </div>
             </div>
         </div>
@@ -114,30 +114,30 @@
                 <div class="col-lg-9 mb-4">
                     <div class="row">
                         <div class="col-md-4">
-                            <h5 class="mb-3">网站导航</h5>
+                            <h5 class="mb-3" data-i18n="footer.navigation"><?= ($currentLang ?? 'zh') === 'zh' ? '网站导航' : 'Navigation' ?></h5>
                             <ul class="list-unstyled">
-                                <li><a href="/" class="text-light">首页</a></li>
-                                <li><a href="/videos" class="text-light">视频列表</a></li>
-                                <li><a href="#" class="text-light">用户中心</a></li>
-                                <li><a href="#" class="text-light">收藏夹</a></li>
+                                <li><a href="/" class="text-light" data-i18n="footer.home"><?= ($currentLang ?? 'zh') === 'zh' ? '首页' : 'Home' ?></a></li>
+                                <li><a href="/videos" class="text-light" data-i18n="footer.video_list"><?= ($currentLang ?? 'zh') === 'zh' ? '视频列表' : 'Video List' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.user_center"><?= ($currentLang ?? 'zh') === 'zh' ? '用户中心' : 'User Center' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.favorites"><?= ($currentLang ?? 'zh') === 'zh' ? '收藏夹' : 'Favorites' ?></a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
-                            <h5 class="mb-3">关于我们</h5>
+                            <h5 class="mb-3" data-i18n="footer.about_us"><?= ($currentLang ?? 'zh') === 'zh' ? '关于我们' : 'About Us' ?></h5>
                             <ul class="list-unstyled">
-                                <li><a href="#" class="text-light">公司介绍</a></li>
-                                <li><a href="#" class="text-light">联系我们</a></li>
-                                <li><a href="#" class="text-light">加入我们</a></li>
-                                <li><a href="#" class="text-light">隐私政策</a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.company_intro"><?= ($currentLang ?? 'zh') === 'zh' ? '公司介绍' : 'Company' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.contact"><?= ($currentLang ?? 'zh') === 'zh' ? '联系我们' : 'Contact' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.join_us"><?= ($currentLang ?? 'zh') === 'zh' ? '加入我们' : 'Join Us' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.privacy"><?= ($currentLang ?? 'zh') === 'zh' ? '隐私政策' : 'Privacy Policy' ?></a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
-                            <h5 class="mb-3">学习资源</h5>
+                            <h5 class="mb-3" data-i18n="footer.resources"><?= ($currentLang ?? 'zh') === 'zh' ? '学习资源' : 'Learning Resources' ?></h5>
                             <ul class="list-unstyled">
-                                <li><a href="#" class="text-light">编程教程</a></li>
-                                <li><a href="#" class="text-light">实战案例</a></li>
-                                <li><a href="#" class="text-light">技术博客</a></li>
-                                <li><a href="#" class="text-light">开发工具</a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.tutorials"><?= ($currentLang ?? 'zh') === 'zh' ? '编程教程' : 'Tutorials' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.cases"><?= ($currentLang ?? 'zh') === 'zh' ? '实战案例' : 'Cases' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.blog"><?= ($currentLang ?? 'zh') === 'zh' ? '技术博客' : 'Tech Blog' ?></a></li>
+                                <li><a href="#" class="text-light" data-i18n="footer.tools"><?= ($currentLang ?? 'zh') === 'zh' ? '开发工具' : 'Dev Tools' ?></a></li>
                             </ul>
                         </div>
                     </div>
@@ -147,22 +147,22 @@
                 <div class="col-lg-3 mb-4">
                     <!-- 邮件订阅 -->
                     <div class="mb-4">
-                        <h5 class="mb-1">邮件订阅</h5>
-                        <p class="mb-2 ms-2">加入邮件列表，获取最新视频更新和资讯</p>
+                        <h5 class="mb-1" data-i18n="footer.subscribe"><?= ($currentLang ?? 'zh') === 'zh' ? '邮件订阅' : 'Email Subscription' ?></h5>
+                        <p class="mb-2 ms-2" data-i18n="footer.subscribe_desc"><?= ($currentLang ?? 'zh') === 'zh' ? '加入邮件列表，获取最新视频更新和资讯' : 'Join our mailing list for latest video updates' ?></p>
                         <div class="input-group mail-list-quick-apply-input">
-                            <input type="email" class="form-control" placeholder="请输入您的邮箱地址">
-                            <button class="btn btn-primary" type="button">订阅</button>
+                            <input type="email" class="form-control" placeholder="<?= ($currentLang ?? 'zh') === 'zh' ? '请输入您的邮箱地址' : 'Enter your email address' ?>" data-i18n-placeholder="footer.subscribe_placeholder">
+                            <button class="btn btn-primary" type="button" data-i18n="footer.subscribe_btn"><?= ($currentLang ?? 'zh') === 'zh' ? '订阅' : 'Subscribe' ?></button>
                         </div>
                     </div>
 
                     <!-- 社交媒体 -->
                     <div>
-                        <h5 class="mb-0 mt-2">社交媒体</h5>
+                        <h5 class="mb-0 mt-2" data-i18n="footer.social"><?= ($currentLang ?? 'zh') === 'zh' ? '社交媒体' : 'Social Media' ?></h5>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="#" class="text-light"><i class="bi bi-youtube me-1"></i>YT</a>
-                            <a href="#" class="text-light"><i class="bi bi-tv me-1"></i>Bilibili</a>
-                            <a href="#" class="text-light"><i class="bi bi-tiktok me-1"></i>抖音</a>
-                            <a href="#" class="text-light"><i class="bi bi-wechat me-1"></i>微信</a>
+                            <a href="#" class="text-light"><i class="bi bi-youtube me-1"></i><span data-i18n="footer.youtube">YT</span></a>
+                            <a href="#" class="text-light"><i class="bi bi-tv me-1"></i><span data-i18n="footer.bilibili">Bilibili</span></a>
+                            <a href="#" class="text-light"><i class="bi bi-tiktok me-1"></i><span data-i18n="footer.douyin"><?= ($currentLang ?? 'zh') === 'zh' ? '抖音' : 'Douyin' ?></span></a>
+                            <a href="#" class="text-light"><i class="bi bi-wechat me-1"></i><span data-i18n="footer.wechat"><?= ($currentLang ?? 'zh') === 'zh' ? '微信' : 'WeChat' ?></span></a>
                         </div>
                     </div>
                 </div>
@@ -172,10 +172,10 @@
             <hr class="my-4">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2024 视频创作展示网站. 保留所有权利. |
-                        <a href="#" class="text-light">使用条款</a> |
-                        <a href="#" class="text-light">隐私政策</a> |
-                        <a href="#" class="text-light">Cookie政策</a>
+                    <p class="mb-0">&copy; 2024 <span data-i18n="footer.copyright"><?= ($currentLang ?? 'zh') === 'zh' ? '视频创作展示网站. 保留所有权利.' : 'Video Creation Platform. All rights reserved.' ?></span> |
+                        <a href="#" class="text-light" data-i18n="footer.terms"><?= ($currentLang ?? 'zh') === 'zh' ? '使用条款' : 'Terms of Use' ?></a> |
+                        <a href="#" class="text-light" data-i18n="footer.privacy"><?= ($currentLang ?? 'zh') === 'zh' ? '隐私政策' : 'Privacy Policy' ?></a> |
+                        <a href="#" class="text-light" data-i18n="footer.cookies"><?= ($currentLang ?? 'zh') === 'zh' ? 'Cookie政策' : 'Cookie Policy' ?></a>
                     </p>
                 </div>
             </div>
@@ -185,12 +185,12 @@
     <!-- 悬浮按钮 -->
     <div class="floating-buttons">
         <!-- 回到顶部 -->
-        <button class="btn btn-primary float-btn" id="backToTop" title="回到顶部">
+        <button class="btn btn-primary float-btn" id="backToTop" data-i18n-title="float.back_to_top">
             <i class="bi bi-arrow-up"></i>
         </button>
 
         <!-- 联系我们 -->
-        <button class="btn btn-success float-btn" id="contactUs" title="联系我们">
+        <button class="btn btn-success float-btn" id="contactUs" data-i18n-title="float.contact">
             <i class="bi bi-chat-dots"></i>
         </button>
     </div>

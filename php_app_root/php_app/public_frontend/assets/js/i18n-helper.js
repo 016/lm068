@@ -3,8 +3,10 @@
 
 class I18nHelper {
     constructor() {
-        this.currentLang = this.detectLanguage();
+        // 必须先初始化支持的语言列表
         this.supportedLangs = ['zh', 'en'];
+        // 然后再检测当前语言
+        this.currentLang = this.detectLanguage();
     }
 
     /**
@@ -107,6 +109,20 @@ class I18nHelper {
                 // 普通元素设置textContent
                 el.textContent = text;
             }
+        });
+
+        // 处理 data-i18n-placeholder 属性
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            const text = this.t(key);
+            el.placeholder = text;
+        });
+
+        // 处理 data-i18n-title 属性
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            const key = el.getAttribute('data-i18n-title');
+            const text = this.t(key);
+            el.title = text;
         });
 
         // 特殊处理: 更新语言切换按钮显示

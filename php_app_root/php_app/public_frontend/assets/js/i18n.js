@@ -5,6 +5,7 @@ const I18N_CONFIG = {
     // 中文文本
     zh: {
         // ===== 导航栏 =====
+        'nav.site_name': '视频创作',
         'nav.home': '首页',
         'nav.videos': '视频',
         'nav.about': '关于',
@@ -82,6 +83,7 @@ const I18N_CONFIG = {
     // 英文文本
     en: {
         // ===== Navigation =====
+        'nav.site_name': 'Video Creation',
         'nav.home': 'Home',
         'nav.videos': 'Videos',
         'nav.about': 'About',
