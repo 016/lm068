@@ -32,11 +32,13 @@ function initContentListPage() {
         rowCheckboxSelector: '.row-checkbox',
         columnSettingsPopupSelector: '#columnSettingsPopup',
         currentDisplaySelector: '#currentDisplay',
-        defaultItemsPerPage: 10, // 内容列表默认显示5条
+        defaultItemsPerPage: 10, // 内容列表默认显示10条
         enableSort: true,
         enablePagination: true,
         enableColumnSettings: true,
-        enableSearch: true
+        enableSearch: true,
+        // 配置需要在筛选时保持的URL参数
+        persistentUrlParams: ['page', 'limit', 'tag_id', 'collection_id']
     });
     
     // 2. 初始化表格管理器
