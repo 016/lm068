@@ -223,11 +223,11 @@ function buildCommentPaginationUrl(int $page, string $lang): string {
                                 </div>
                                 <div class="comment-content">
                                     <div class="comment-header">
-                                        <strong><?= $currentLang === 'zh' ? '用户' : 'User' ?> #<?= $comment['user_id'] ?></strong>
-                                        <small class="text-muted ms-2"><?= date('Y-m-d H:i', strtotime($comment['created_at'])) ?></small>
+                                        <strong><?= $currentLang === 'zh' ? '用户' : 'User' ?> #<?= $comment->user_id ?></strong>
+                                        <small class="text-muted ms-2"><?= date('Y-m-d H:i', strtotime($comment->created_at)) ?></small>
                                     </div>
                                     <div class="comment-text">
-                                        <?= nl2br(htmlspecialchars($comment['content'])) ?>
+                                        <?= nl2br(htmlspecialchars($comment->content)) ?>
                                     </div>
                                     <div class="comment-actions">
                                         <button class="btn btn-outline-secondary btn-sm">
