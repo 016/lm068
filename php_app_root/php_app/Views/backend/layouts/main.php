@@ -79,6 +79,13 @@
                         <span class="nav-text">内容审核</span>
                         <span class="tooltip">内容审核</span>
                     </a>
+                    <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] >= 99): ?>
+                    <a href="/admin_users" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin_users') !== false && strpos($_SERVER['REQUEST_URI'], '/admin_users/self_update') === false ? 'active' : '' ?>">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span class="nav-text">管理员管理</span>
+                        <span class="tooltip">管理员管理</span>
+                    </a>
+                    <?php endif; ?>
                     <a href="#" class="nav-item">
                         <i class="bi bi-gear nav-icon"></i>
                         <span class="nav-text">系统设置</span>
@@ -176,10 +183,10 @@
                                         <div class="user-email"><?= htmlspecialchars($_SESSION['admin_email'] ?? 'admin@example.com') ?></div>
                                     </div>
                                 </div>
-                                <div class="dropdown-item">
+                                <a href="/admin_users/self_update" class="dropdown-item text-decoration-none">
                                     <i class="bi bi-person" style="font-size: 16px;"></i>
                                     个人资料
-                                </div>
+                                </a>
                                 <div class="dropdown-item">
                                     <i class="bi bi-gear" style="font-size: 16px;"></i>
                                     账户设置

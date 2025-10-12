@@ -217,7 +217,7 @@ CREATE TABLE `admin_user` (
     `avatar` VARCHAR(255) COMMENT '管理员头像',
     `phone` VARCHAR(20),
     `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
-    `role_id` TINYINT UNSIGNED NOT NULL COMMENT '角色权限id: 99-超级管理员',
+    `role_id` TINYINT UNSIGNED NOT NULL COMMENT '角色权限id: 1-普通管理员, 99-超级管理员',
     `last_login_time` DATETIME,
     `last_login_ip` VARCHAR(45),
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,

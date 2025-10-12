@@ -101,6 +101,15 @@ $router->get('/video-links/{id}/edit', 'Backend\\VideoLinkController@edit');
 $router->post('/video-links/{id}/edit', 'Backend\\VideoLinkController@edit');  // 编辑路由，GET显示表单，POST处理数据
 $router->delete('/video-links/{id}', 'Backend\\VideoLinkController@destroy');
 
+// 管理员管理 (只有超级管理员可访问管理列表和编辑，所有管理员可访问个人信息管理)
+$router->get('/admin_users', 'Backend\\AdminUserController@index');
+$router->get('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');  // 个人信息管理(所有管理员可用)
+$router->post('/admin_users/self_update', 'Backend\\AdminUserController@selfUpdate');
+$router->post('/admin_users/bulk-action', 'Backend\\AdminUserController@bulkAction');
+$router->get('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
+$router->post('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
+$router->delete('/admin_users/{id}', 'Backend\\AdminUserController@destroy');
+
 // 404页面
 $router->notFound(function() {
     http_response_code(404);
