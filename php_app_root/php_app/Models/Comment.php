@@ -13,13 +13,12 @@ class Comment extends Model
     ];
     protected $timestamps = true;
 
-    // Äº¶8Ï (9npn“ schema)
-    const STATUS_HIDDEN = 0;      // òÏ
-    const STATUS_PENDING = 1;     // …¡8
-    const STATUS_APPROVED = 99;   // ¡8Ç
+    const STATUS_HIDDEN = 0;
+    const STATUS_PENDING = 1;
+    const STATUS_APPROVED = 99;
 
     /**
-     * ·ÖÄº¶ß¡
+     * ï¿½ï¿½Äºï¿½ß¡
      *
      * @return array ['total' => int, 'pending' => int, 'approved' => int, 'hidden' => int]
      */
@@ -27,22 +26,18 @@ class Comment extends Model
     {
         $db = \App\Core\Database::getInstance();
 
-        // ;p
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName();
         $result = $db->fetch($sql, []);
         $total = (int)$result['count'];
 
-        // …¡8
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE status_id = :status_id";
         $result = $db->fetch($sql, ['status_id' => self::STATUS_PENDING]);
         $pending = (int)$result['count'];
 
-        // ¡8Ç
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE status_id = :status_id";
         $result = $db->fetch($sql, ['status_id' => self::STATUS_APPROVED]);
         $approved = (int)$result['count'];
 
-        // òÏ
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE status_id = :status_id";
         $result = $db->fetch($sql, ['status_id' => self::STATUS_HIDDEN]);
         $hidden = (int)$result['count'];
@@ -56,7 +51,7 @@ class Comment extends Model
     }
 
     /**
-     * 9n¶·ÖÄºpÏ
+     * 9nï¿½ï¿½ï¿½Äºpï¿½
      *
      * @param int $statusId
      * @return int
@@ -67,7 +62,7 @@ class Comment extends Model
     }
 
     /**
-     * ·Öš…¹„Äºh
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äºh
      *
      * @param int $contentId
      * @param int $limit
@@ -85,7 +80,7 @@ class Comment extends Model
     }
 
     /**
-     * ·Ö…¡8Äºh
+     * ï¿½Ö…ï¿½8Äºh
      *
      * @param int $limit
      * @param int $offset
@@ -102,7 +97,6 @@ class Comment extends Model
     }
 
     /**
-     * ¡8ÇÄº
      *
      * @param int $commentId
      * @return bool
@@ -113,7 +107,6 @@ class Comment extends Model
     }
 
     /**
-     * ÏÄº
      *
      * @param int $commentId
      * @return bool

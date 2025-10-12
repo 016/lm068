@@ -32,7 +32,7 @@ $router = new Router();
 $router->get('/', 'Frontend\\HomeController@index');
 $router->get('/test', 'Frontend\\HomeController@test');
 $router->get('/videos', 'Frontend\\VideoController@index');
-$router->get('/videos/{id}', 'Frontend\\VideoController@view');
+$router->get('/videos/{id}', 'Frontend\\VideoController@show');
 $router->get('/login', 'Frontend\\AuthController@showLogin');
 $router->post('/login', 'Frontend\\AuthController@login');
 $router->get('/register', 'Frontend\\AuthController@showRegister');

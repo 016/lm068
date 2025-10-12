@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Frontend;
 
+use App\Core\Request;
 use App\Models\Content;
 use App\Models\Tag;
 use App\Models\Collection;
@@ -103,8 +104,9 @@ class VideoController extends FrontendController
     /**
      * 视频详情页面
      */
-    public function view(int $id): void
+    public function show( Request $request): void
     {
+        $id = (int)$request->getParam(0);
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
 
