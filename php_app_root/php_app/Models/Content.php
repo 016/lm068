@@ -583,6 +583,171 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
+     * 获取视频列表（带筛选、搜索、分页功能）
+     * 返回Content对象数组
+     *
+     * @param array $filters 筛选条件
+     * @param int $page 页码
+     * @param int $perPage 每页数量
+     * @return array ['items' => Content[], 'total' => int, 'totalPages' => int]
+     */
+    public static function getVideoList(array $filters = [], int $page = 1, int $perPage = 12): array
+    {
+        $db = \App\Core\Database::getInstance();
+        $offset = ($page - 1) * $perPage;
+
+        // 构建SQL查询
+        $sql = "SELECT c.* FROM content c WHERE 1=1";
+        $params = [];
+        $whereClauses = [];
+
+        // 状态过滤 - 只显示已发布的内容
+        $whereClauses[] = "c.status_id = :status_id";
+        $params['status_id'] = ContentStatus::PUBLISHED->value;
+
+        // 内容类型过滤
+        if (!empty($filters['content_type_ids'])) {
+            $placeholders = [];
+            foreach ($filters['content_type_ids'] as $idx => $typeId) {
+                $key = "content_type_id_{$idx}";
+                $placeholders[] = ":{$key}";
+                $params[$key] = (int)$typeId;
+            }
+            $whereClauses[] = "c.content_type_id IN (" . implode(',', $placeholders) . ")";
+        } else {
+            // 默认只显示视频类型
+            $whereClauses[] = "c.content_type_id = :default_content_type";
+            $params['default_content_type'] = ContentType::VIDEO->value;
+        }
+
+        // 关键词搜索
+        if (!empty($filters['search'])) {
+            $whereClauses[] = "(c.title_cn LIKE :search_cn OR c.title_en LIKE :search_en OR c.short_desc_cn LIKE :search_desc_cn OR c.short_desc_en LIKE :search_desc_en)";
+            $search = $filters['search'];
+            $params['search_cn'] = "%{$search}%";
+            $params['search_en'] = "%{$search}%";
+            $params['search_desc_cn'] = "%{$search}%";
+            $params['search_desc_en'] = "%{$search}%";
+        }
+
+        // 标签过滤
+        if (!empty($filters['tag_ids'])) {
+            $tagPlaceholders = [];
+            foreach ($filters['tag_ids'] as $idx => $tagId) {
+                $key = "tag_id_{$idx}";
+                $tagPlaceholders[] = ":{$key}";
+                $params[$key] = (int)$tagId;
+            }
+            $whereClauses[] = "c.id IN (SELECT content_id FROM content_tag WHERE tag_id IN (" . implode(',', $tagPlaceholders) . "))";
+        }
+
+        // 合集过滤
+        if (!empty($filters['collection_ids'])) {
+            $collectionPlaceholders = [];
+            foreach ($filters['collection_ids'] as $idx => $collectionId) {
+                $key = "collection_id_{$idx}";
+                $collectionPlaceholders[] = ":{$key}";
+                $params[$key] = (int)$collectionId;
+            }
+            $whereClauses[] = "c.id IN (SELECT content_id FROM content_collection WHERE collection_id IN (" . implode(',', $collectionPlaceholders) . "))";
+        }
+
+        // 组装完整SQL
+        if (!empty($whereClauses)) {
+            $sql .= " AND " . implode(" AND ", $whereClauses);
+        }
+
+        // 计算总数
+        $countSql = "SELECT COUNT(*) as total FROM content c WHERE 1=1";
+        if (!empty($whereClauses)) {
+            $countSql .= " AND " . implode(" AND ", $whereClauses);
+        }
+        $totalResult = $db->fetch($countSql, $params);
+        $total = (int)$totalResult['total'];
+        $totalPages = ceil($total / $perPage);
+
+        // 添加排序和分页
+        $sql .= " ORDER BY c.created_at DESC LIMIT :limit OFFSET :offset";
+        $params['limit'] = $perPage;
+        $params['offset'] = $offset;
+
+        // 执行查询
+        $stmt = $db->query($sql, $params);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // 将数组转换为Content对象
+        $items = [];
+        foreach ($rows as $row) {
+            $content = new static();
+            $content->setOriginal($row);
+            $content->setNew(false);
+            $items[] = $content;
+        }
+
+        return [
+            'items' => $items,
+            'total' => $total,
+            'totalPages' => $totalPages
+        ];
+    }
+
+    /**
+     * 为Content对象批量加载关联的标签和合集
+     *
+     * @param array $contents Content对象数组
+     * @return void
+     */
+    public static function loadRelations(array $contents): void
+    {
+        if (empty($contents)) {
+            return;
+        }
+
+        $db = \App\Core\Database::getInstance();
+        $contentIds = array_map(fn($c) => $c->id, $contents);
+
+        // 批量加载所有标签关联
+        $tagPlaceholders = implode(',', array_fill(0, count($contentIds), '?'));
+        $tagSql = "SELECT ct.content_id, t.id, t.name_cn, t.name_en, t.color_class, t.icon_class, t.status_id
+                   FROM tag t
+                   INNER JOIN content_tag ct ON t.id = ct.tag_id
+                   WHERE ct.content_id IN ({$tagPlaceholders})
+                   ORDER BY t.name_cn";
+        $tagsResult = $db->fetchAll($tagSql, $contentIds);
+
+        // 组织标签数据
+        $tagsByContentId = [];
+        foreach ($tagsResult as $tag) {
+            $contentId = $tag['content_id'];
+            unset($tag['content_id']);
+            $tagsByContentId[$contentId][] = $tag;
+        }
+
+        // 批量加载所有合集关联
+        $collectionPlaceholders = implode(',', array_fill(0, count($contentIds), '?'));
+        $collectionSql = "SELECT cc.content_id, c.id, c.name_cn, c.name_en, c.color_class, c.status_id
+                          FROM collection c
+                          INNER JOIN content_collection cc ON c.id = cc.collection_id
+                          WHERE cc.content_id IN ({$collectionPlaceholders})
+                          ORDER BY c.name_cn";
+        $collectionsResult = $db->fetchAll($collectionSql, $contentIds);
+
+        // 组织合集数据
+        $collectionsByContentId = [];
+        foreach ($collectionsResult as $collection) {
+            $contentId = $collection['content_id'];
+            unset($collection['content_id']);
+            $collectionsByContentId[$contentId][] = $collection;
+        }
+
+        // 将关联数据附加到Content对象
+        foreach ($contents as $content) {
+            $content->tags = $tagsByContentId[$content->id] ?? [];
+            $content->collections = $collectionsByContentId[$content->id] ?? [];
+        }
+    }
+
+    /**
      * 重写父类方法，添加 tag_id 和 collection_id 的字段搜索策略
      *
      * @return array 字段搜索策略配置

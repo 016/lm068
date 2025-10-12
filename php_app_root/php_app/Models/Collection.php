@@ -245,7 +245,7 @@ class Collection extends Model implements HasStatuses
 
     /**
      * 重写父类方法，为Collection模型准备CSV导入数据
-     * 
+     *
      * @param array $csvRowData CSV行数据
      * @return array 处理后的数据
      */
@@ -267,7 +267,7 @@ class Collection extends Model implements HasStatuses
 
     /**
      * 重写父类方法 - 为Collection定义简单的验证逻辑
-     * 
+     *
      * @param array $data 导入数据
      * @return bool 是否验证通过
      */
@@ -277,8 +277,20 @@ class Collection extends Model implements HasStatuses
         if (empty($data['name_cn']) || empty($data['name_en'])) {
             return false;
         }
-        
+
         return true;
+    }
+
+    /**
+     * 获取所有启用的合集（用于前端筛选）
+     *
+     * @return array
+     */
+    public static function getEnabledCollections(): array
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT * FROM " . static::getTableName() . " WHERE status_id = :status_id ORDER BY name_cn";
+        return $db->fetchAll($sql, ['status_id' => CollectionStatus::ENABLED->value]);
     }
 
 }

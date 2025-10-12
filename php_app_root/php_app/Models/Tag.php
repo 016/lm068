@@ -240,7 +240,7 @@ class Tag extends Model implements HasStatuses
 
     /**
      * 重写父类方法，为Tag模型准备CSV导入数据
-     * 
+     *
      * @param array $csvRowData CSV行数据
      * @return array 处理后的数据
      */
@@ -258,6 +258,18 @@ class Tag extends Model implements HasStatuses
             'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : TagStatus::ENABLED->value,
             'content_cnt' => 0
         ];
+    }
+
+    /**
+     * 获取所有启用的标签（用于前端筛选）
+     *
+     * @return array
+     */
+    public static function getEnabledTags(): array
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT * FROM " . static::getTableName() . " WHERE status_id = :status_id ORDER BY name_cn";
+        return $db->fetchAll($sql, ['status_id' => TagStatus::ENABLED->value]);
     }
 
 }

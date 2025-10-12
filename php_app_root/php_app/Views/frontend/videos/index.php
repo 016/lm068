@@ -169,41 +169,37 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                 <div class="col-lg-3 col-md-4 col-sm-6 video-card-container">
                     <div class="card h-100 video-card">
                         <div class="position-relative">
-                            <a class="video-thumbnail" href="/videos/<?= $video['id'] ?>">
-                                <?php if (!empty($video['thumbnail'])): ?>
-                                    <img src="<?= htmlspecialchars($video['thumbnail']) ?>"
-                                         alt="<?= htmlspecialchars($video['title_cn']) ?>"
-                                         class="card-img-top">
-                                <?php else: ?>
-                                    <img src="https://picsum.photos/304/171?random=<?= $video['id'] ?>"
-                                         alt="<?= htmlspecialchars($video['title_cn']) ?>"
+                            <a class="video-thumbnail" href="/videos/<?= $video->id ?>">
+                                <?php if (!empty($video->thumbnail)): ?>
+                                    <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
+                                         alt="<?= htmlspecialchars($video->getDisplayTitle()) ?>"
                                          class="card-img-top">
                                 <?php endif; ?>
                             </a>
                         </div>
                         <div class="card-body p-3">
                             <h5 class="card-title video-title">
-                                <a href="/videos/<?= $video['id'] ?>" class="text-decoration-none">
-                                    <?= htmlspecialchars($video['title_cn'] ?: $video['title_en']) ?>
+                                <a href="/videos/<?= $video->id ?>" class="text-decoration-none">
+                                    <?= htmlspecialchars($video->getDisplayTitle()) ?>
                                 </a>
                             </h5>
                             <div class="video-meta mb-2">
                                 <small class="text-muted">
-                                    <i class="bi bi-calendar3 me-1"></i><?= date('Y-m-d', strtotime($video['created_at'])) ?>
-                                    <?php if (!empty($video['author'])): ?>
-                                        <i class="bi bi-person ms-2 me-1"></i><?= htmlspecialchars($video['author']) ?>
+                                    <i class="bi bi-calendar3 me-1"></i><?= date('Y-m-d', strtotime($video->created_at)) ?>
+                                    <?php if (!empty($video->author)): ?>
+                                        <i class="bi bi-person ms-2 me-1"></i><?= htmlspecialchars($video->author) ?>
                                     <?php endif; ?>
                                 </small>
                             </div>
                             <p class="card-text video-description text-muted small">
-                                <?= htmlspecialchars($video['short_desc_cn'] ?: $video['short_desc_en'] ?: '') ?>
+                                <?= htmlspecialchars($video->getDisplayShortDescription()) ?>
                             </p>
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="video-tags">
                                     <?php
-                                    $displayTags = array_slice($video['tags'], 0, 2);
+                                    $displayTags = array_slice($video->tags, 0, 2);
                                     foreach ($displayTags as $tag):
                                     ?>
                                         <a href="/videos?tag_id=<?= $tag['id'] ?>"
@@ -214,8 +210,8 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                 </div>
                                 <div class="video-collection">
                                     <?php
-                                    if (!empty($video['collections'])):
-                                        $collection = $video['collections'][0];
+                                    if (!empty($video->collections)):
+                                        $collection = $video->collections[0];
                                     ?>
                                         <a href="/videos?collection_id=<?= $collection['id'] ?>"
                                            class="btn btn-outline-success btn-sm">
