@@ -31,7 +31,7 @@ $router = new Router();
 // 定义前端路由
 $router->get('/', 'Frontend\\HomeController@index');
 $router->get('/test', 'Frontend\\HomeController@test');
-$router->get('/videos', 'Frontend\\VideoController@list');
+$router->get('/videos', 'Frontend\\VideoController@index');
 $router->get('/videos/{id}', 'Frontend\\VideoController@show');
 $router->get('/login', 'Frontend\\AuthController@showLogin');
 $router->post('/login', 'Frontend\\AuthController@login');
