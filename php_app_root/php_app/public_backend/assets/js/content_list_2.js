@@ -38,7 +38,7 @@ function initContentListPage() {
         enableColumnSettings: true,
         enableSearch: true,
         // 配置需要在筛选时保持的URL参数
-        persistentUrlParams: ['page', 'limit', 'tag_id', 'collection_id']
+        persistentUrlParams: ['tag_id', 'collection_id']
     });
     
     // 2. 初始化表格管理器
