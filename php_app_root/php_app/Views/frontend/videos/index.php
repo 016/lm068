@@ -204,7 +204,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                     ?>
                                         <a href="/videos?tag_id=<?= $tag['id'] ?>"
                                            class="btn btn-outline-primary btn-sm me-1">
-                                            #<?= htmlspecialchars($tag['name_cn']) ?>
+                                            <?= htmlspecialchars($tag['name_cn']) ?>
                                         </a>
                                     <?php endforeach; ?>
                                 </div>
