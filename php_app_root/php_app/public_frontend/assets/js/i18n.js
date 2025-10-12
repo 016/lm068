@@ -68,6 +68,7 @@ const I18N_CONFIG = {
         'footer.cookies': 'Cookie政策',
 
         // ===== 主题切换 =====
+        'theme.title': '切换主题',
         'theme.dark': '深色',
         'theme.light': '浅色',
         'theme.auto': '自动',
@@ -146,6 +147,7 @@ const I18N_CONFIG = {
         'footer.cookies': 'Cookie Policy',
 
         // ===== Theme toggle =====
+        'theme.title': 'Switch Theme',
         'theme.dark': 'Dark',
         'theme.light': 'Light',
         'theme.auto': 'Auto',
