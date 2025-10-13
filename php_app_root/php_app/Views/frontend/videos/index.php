@@ -20,30 +20,10 @@
  * - $selectedContentTypeIds: 选中的内容类型ID数组
  * - $allTags: 所有可用标签
  * - $allCollections: 所有可用合集
+ * - $currentParams: 当前查询参数数组
+ * - $videoListJsData: JavaScript数据
  * - $resourceUrl: 资源URL前缀
  */
-
-// 构建查询字符串辅助函数
-function buildQueryParams(array $params): string {
-    $filteredParams = array_filter($params, function($value) {
-        return !empty($value) || $value === '0' || $value === 0;
-    });
-    return !empty($filteredParams) ? '?' . http_build_query($filteredParams) : '';
-}
-
-// 构建分页链接
-function buildPaginationUrl(int $page, array $currentParams): string {
-    $params = $currentParams;
-    $params['page'] = $page;
-    return '/videos' . buildQueryParams($params);
-}
-
-// 当前查询参数
-$currentParams = [];
-if (!empty($search)) $currentParams['search'] = $search;
-if (!empty($selectedTagIds)) $currentParams['tag_id'] = implode(',', $selectedTagIds);
-if (!empty($selectedCollectionIds)) $currentParams['collection_id'] = implode(',', $selectedCollectionIds);
-if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode(',', $selectedContentTypeIds);
 ?>
 
 <!-- 视频筛选区域 -->
@@ -178,7 +158,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
             <div class="pagination-wrapper d-flex justify-content-center align-items-center">
                 <!-- 上一页 -->
                 <?php if ($currentPage > 1): ?>
-                    <a href="<?= buildPaginationUrl($currentPage - 1, $currentParams) ?>"
+                    <a href="<?= $this->buildPaginationUrl($currentPage - 1, $currentParams) ?>"
                        class="pagination-btn pagination-btn-prev"
                        title="<?= $currentLang === 'zh' ? '上一页' : 'Previous' ?>"
                        data-i18n-title="pagination.prev">
@@ -201,7 +181,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                         <?php if ($i === $currentPage): ?>
                             <span class="pagination-btn active"><?= $i ?></span>
                         <?php else: ?>
-                            <a href="<?= buildPaginationUrl($i, $currentParams) ?>"
+                            <a href="<?= $this->buildPaginationUrl($i, $currentParams) ?>"
                                class="pagination-btn">
                                 <?= $i ?>
                             </a>
@@ -211,7 +191,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
 
                 <!-- 下一页 -->
                 <?php if ($currentPage < $totalPages): ?>
-                    <a href="<?= buildPaginationUrl($currentPage + 1, $currentParams) ?>"
+                    <a href="<?= $this->buildPaginationUrl($currentPage + 1, $currentParams) ?>"
                        class="pagination-btn pagination-btn-next"
                        title="<?= $currentLang === 'zh' ? '下一页' : 'Next' ?>"
                        data-i18n-title="pagination.next">
@@ -245,33 +225,6 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
 <?php endif; ?>
 
 <script>
-// 将PHP数据传递给JavaScript
-window.videoListData = {
-    // 标签数据
-    allTags: <?= json_encode(array_map(function($tag) use ($currentLang) {
-        return [
-            'id' => $tag['id'],
-            'text' => $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en']
-        ];
-    }, $allTags)) ?>,
-    selectedTagIds: <?= json_encode(array_map('strval', $selectedTagIds)) ?>,
-
-    // 合集数据
-    allCollections: <?= json_encode(array_map(function($collection) use ($currentLang) {
-        return [
-            'id' => $collection['id'],
-            'text' => $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en']
-        ];
-    }, $allCollections)) ?>,
-    selectedCollectionIds: <?= json_encode(array_map('strval', $selectedCollectionIds)) ?>,
-
-    // 语言相关
-    currentLang: <?= json_encode($currentLang) ?>,
-    placeholders: {
-        tag: <?= json_encode($currentLang === 'zh' ? '请选择标签' : 'Select Tags') ?>,
-        tagSearch: <?= json_encode($currentLang === 'zh' ? '搜索标签...' : 'Search tags...') ?>,
-        collection: <?= json_encode($currentLang === 'zh' ? '请选择合集' : 'Select Collections') ?>,
-        collectionSearch: <?= json_encode($currentLang === 'zh' ? '搜索合集...' : 'Search collections...') ?>
-    }
-};
+// 将PHP数据传递给JavaScript (由Controller准备)
+window.videoListData = <?= json_encode($videoListJsData) ?>;
 </script>

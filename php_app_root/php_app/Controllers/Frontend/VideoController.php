@@ -57,6 +57,12 @@ class VideoController extends FrontendController
         $allTags = Tag::getEnabledTags();
         $allCollections = Collection::getEnabledCollections();
 
+        // 准备当前查询参数 (供View使用)
+        $currentParams = $this->getCurrentParams($search, $tagIds, $collectionIds, $contentTypeIds);
+
+        // 准备JavaScript数据 (供View使用)
+        $videoListJsData = $this->prepareVideoListJsData($allTags, $tagIds, $allCollections, $collectionIds, $currentLang);
+
         // 准备视图数据
         $data = [
             'videos' => $videos,
@@ -70,6 +76,8 @@ class VideoController extends FrontendController
             'selectedContentTypeIds' => $contentTypeIds,
             'allTags' => $allTags,
             'allCollections' => $allCollections,
+            'currentParams' => $currentParams,  // 新增：当前查询参数
+            'videoListJsData' => $videoListJsData,  // 新增：JavaScript数据
             'resourceUrl' => '/assets', // 前端资源URL前缀
             'pageCss' => [
                 'f-video-list.css',
@@ -300,5 +308,69 @@ class VideoController extends FrontendController
         });
 
         return !empty($params) ? '?' . http_build_query($params) : '';
+    }
+
+    /**
+     * 构建查询参数字符串 (供View调用)
+     */
+    public function buildQueryParams(array $params): string
+    {
+        $filteredParams = array_filter($params, function($value) {
+            return !empty($value) || $value === '0' || $value === 0;
+        });
+        return !empty($filteredParams) ? '?' . http_build_query($filteredParams) : '';
+    }
+
+    /**
+     * 构建分页链接URL (供View调用)
+     */
+    public function buildPaginationUrl(int $page, array $currentParams): string
+    {
+        $params = $currentParams;
+        $params['page'] = $page;
+        return '/videos' . $this->buildQueryParams($params);
+    }
+
+    /**
+     * 获取当前查询参数 (供View调用)
+     */
+    public function getCurrentParams(string $search, array $selectedTagIds, array $selectedCollectionIds, array $selectedContentTypeIds): array
+    {
+        $currentParams = [];
+        if (!empty($search)) $currentParams['search'] = $search;
+        if (!empty($selectedTagIds)) $currentParams['tag_id'] = implode(',', $selectedTagIds);
+        if (!empty($selectedCollectionIds)) $currentParams['collection_id'] = implode(',', $selectedCollectionIds);
+        if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode(',', $selectedContentTypeIds);
+        return $currentParams;
+    }
+
+    /**
+     * 准备用于JavaScript的视频列表数据 (供View调用)
+     */
+    public function prepareVideoListJsData(array $allTags, array $selectedTagIds, array $allCollections, array $selectedCollectionIds, string $currentLang): array
+    {
+        return [
+            'allTags' => array_map(function($tag) use ($currentLang) {
+                return [
+                    'id' => $tag['id'],
+                    'text' => $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en']
+                ];
+            }, $allTags),
+            'selectedTagIds' => array_map('strval', $selectedTagIds),
+            'allCollections' => array_map(function($collection) use ($currentLang) {
+                return [
+                    'id' => $collection['id'],
+                    'text' => $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en']
+                ];
+            }, $allCollections),
+            'selectedCollectionIds' => array_map('strval', $selectedCollectionIds),
+            'currentLang' => $currentLang,
+            'placeholders' => [
+                'tag' => $currentLang === 'zh' ? '请选择标签' : 'Select Tags',
+                'tagSearch' => $currentLang === 'zh' ? '搜索标签...' : 'Search tags...',
+                'collection' => $currentLang === 'zh' ? '请选择合集' : 'Select Collections',
+                'collectionSearch' => $currentLang === 'zh' ? '搜索合集...' : 'Search collections...'
+            ]
+        ];
     }
 }
