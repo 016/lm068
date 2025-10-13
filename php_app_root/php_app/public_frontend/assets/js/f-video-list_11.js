@@ -47,11 +47,8 @@ function initTagMultiSelect(data) {
         allowClear: true
     });
 
-    // 监听标签变更事件 - 自动提交表单
-    document.getElementById('tagMultiSelect').addEventListener('multiselect:change', (e) => {
-        // 提交表单以重新加载页面
-        submitSearchForm();
-    });
+    // 标签变更不会立即提交表单，需要点击搜索按钮才会提交
+    // 移除了自动提交逻辑，改为用户点击搜索按钮时才提交
 }
 
 /**
@@ -75,22 +72,12 @@ function initCollectionMultiSelect(data) {
         allowClear: true
     });
 
-    // 监听合集变更事件 - 自动提交表单
-    document.getElementById('collectionMultiSelect').addEventListener('multiselect:change', (e) => {
-        // 提交表单以重新加载页面
-        submitSearchForm();
-    });
+    // 合集变更不会立即提交表单，需要点击搜索按钮才会提交
+    // 移除了自动提交逻辑，改为用户点击搜索按钮时才提交
 }
 
 /**
- * 提交搜索表单
- * 当多选组件变更时自动提交表单
+ * 注意：表单提交现在由搜索按钮触发
+ * 多选组件的选择状态会通过hidden input自动包含在表单提交中
+ * 用户可以多次调整标签和合集的选择，只有点击搜索按钮时才会刷新页面获取数据
  */
-function submitSearchForm() {
-    // 找到表单并提交
-    const form = document.querySelector('form[action="/videos"]');
-    if (form) {
-        // 使用GET方法提交表单
-        form.submit();
-    }
-}
