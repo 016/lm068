@@ -11,14 +11,26 @@
 $isReply = $level > 0;
 $marginClass = $level > 0 ? 'ms-4 mt-3' : '';
 $itemClass = $isReply ? 'reply-item' : '';
+
+// 用户头像处理：优先使用用户头像，如果为空则使用默认占位符
+$userAvatar = !empty($comment->user_avatar)
+    ? htmlspecialchars($comment->user_avatar)
+    : 'https://via.placeholder.com/40?text=U';
+
+// 用户名称处理：优先使用昵称，如果为空则使用用户名
+$userName = !empty($comment->user_nickname)
+    ? htmlspecialchars($comment->user_nickname)
+    : (!empty($comment->user_username)
+        ? htmlspecialchars($comment->user_username)
+        : ($currentLang === 'zh' ? '匿名用户' : 'Anonymous'));
 ?>
 <div class="comment-item <?= $itemClass ?>">
     <div class="comment-avatar">
-        <img src="https://via.placeholder.com/40?text=U" alt="<?= $currentLang === 'zh' ? '用户头像' : 'User Avatar' ?>">
+        <img src="<?= $userAvatar ?>" alt="<?= $currentLang === 'zh' ? '用户头像' : 'User Avatar' ?>">
     </div>
     <div class="comment-content">
         <div class="comment-header">
-            <strong><?= $currentLang === 'zh' ? '用户' : 'User' ?> #<?= $comment->user_id ?></strong>
+            <strong><?= $userName ?></strong>
             <small class="text-muted ms-2"><?= date('Y-m-d H:i', strtotime($comment->created_at)) ?></small>
         </div>
         <div class="comment-text">

@@ -151,13 +151,18 @@ class Comment extends Model
         $rootTotal = (int)$rootCountResult['count'];
         $totalPages = (int)ceil($rootTotal / $perPage);
 
-        // 3. 查询当前页的顶级评论
+        // 3. 查询当前页的顶级评论（关联用户信息）
         $offset = ($page - 1) * $perPage;
-        $rootSql = "SELECT * FROM " . static::getTableName() . "
-                    WHERE content_id = :content_id
-                    AND status_id = :status_id
-                    AND parent_id IS NULL
-                    ORDER BY created_at DESC
+        $rootSql = "SELECT c.*,
+                           u.avatar as user_avatar,
+                           u.nickname as user_nickname,
+                           u.username as user_username
+                    FROM " . static::getTableName() . " c
+                    LEFT JOIN user u ON c.user_id = u.id
+                    WHERE c.content_id = :content_id
+                    AND c.status_id = :status_id
+                    AND c.parent_id IS NULL
+                    ORDER BY c.created_at DESC
                     LIMIT {$perPage} OFFSET {$offset}";
         $rootRows = $db->fetchAll($rootSql, [
             'content_id' => $contentId,
@@ -173,7 +178,7 @@ class Comment extends Model
             ];
         }
 
-        // 5. 获取所有子评论（基于root_id）
+        // 5. 获取所有子评论（基于root_id，关联用户信息）
         $rootIds = array_column($rootRows, 'id');
         $rootIdsPlaceholders = [];
         $params = [];
@@ -183,10 +188,15 @@ class Comment extends Model
             $params[$key] = $rootId;
         }
 
-        $childSql = "SELECT * FROM " . static::getTableName() . "
-                     WHERE root_id IN (" . implode(',', $rootIdsPlaceholders) . ")
-                     AND status_id = :status_id
-                     ORDER BY created_at ASC";
+        $childSql = "SELECT c.*,
+                            u.avatar as user_avatar,
+                            u.nickname as user_nickname,
+                            u.username as user_username
+                     FROM " . static::getTableName() . " c
+                     LEFT JOIN user u ON c.user_id = u.id
+                     WHERE c.root_id IN (" . implode(',', $rootIdsPlaceholders) . ")
+                     AND c.status_id = :status_id
+                     ORDER BY c.created_at ASC";
         $params['status_id'] = $statusId;
         $childRows = $db->fetchAll($childSql, $params);
 

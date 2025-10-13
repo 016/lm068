@@ -227,7 +227,7 @@
                                     for ($i = $paginationRange['start']; $i <= $paginationRange['end']; $i++):
                                     ?>
                                         <a href="<?= $this->buildCommentPaginationUrl($i, $video->id, $currentLang) ?>"
-                                           class="btn <?= $i === $commentPage ? 'btn-primary' : 'btn-outline-secondary' ?> btn-sm pagination-page">
+                                           class="btn <?= $i === $commentPage ? 'text-bg-primary' : 'btn-outline-secondary' ?> btn-sm pagination-page">
                                             <?= $i ?>
                                         </a>
                                     <?php endfor; ?>
