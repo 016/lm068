@@ -39,6 +39,7 @@ class HashId
      */
     public function encode(int $id): string
     {
+
         if ($id <= 0) {
             throw new \InvalidArgumentException('ID must be a positive integer');
         }

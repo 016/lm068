@@ -85,6 +85,39 @@ foreach ($videoIds as $videoId) {
     echo "Video ID: $videoId -> URL: /videos/$hash\n";
 }
 
+echo "\n测试配置开关功能:\n";
+echo "----------------------------------------\n";
+
+// 模拟Controller中的逻辑
+$testVideoId = 123;
+
+// 测试开启状态
+$hashIdEnabled = true;
+if ($hashIdEnabled) {
+    $result = $hashId->encode($testVideoId);
+} else {
+    $result = (string)$testVideoId;
+}
+echo "HashID开启 - Video ID: $testVideoId -> URL参数: $result\n";
+
+// 测试关闭状态
+$hashIdEnabled = false;
+if ($hashIdEnabled) {
+    $result = $hashId->encode($testVideoId);
+} else {
+    $result = (string)$testVideoId;
+}
+echo "HashID关闭 - Video ID: $testVideoId -> URL参数: $result\n";
+
+echo "\n配置说明:\n";
+echo "----------------------------------------\n";
+echo "在 config/main.php 中设置:\n";
+echo "'hashid' => [\n";
+echo "    'enabled' => true,  // true=启用hash, false=使用数字ID\n";
+echo "    'salt' => 'lm068_video_site_2025',\n";
+echo "    'min_length' => 6,\n";
+echo "]\n";
+
 echo "\n========================================\n";
 echo "测试完成！\n";
 echo "========================================\n";

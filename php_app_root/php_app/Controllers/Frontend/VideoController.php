@@ -4,6 +4,7 @@ namespace App\Controllers\Frontend;
 
 use App\Core\Request;
 use App\Core\HashId;
+use App\Core\Config;
 use App\Models\Content;
 use App\Models\Tag;
 use App\Models\Collection;
@@ -119,16 +120,28 @@ class VideoController extends FrontendController
      */
     public function show( Request $request): void
     {
-        // 获取hash参数并解码为ID
-        $hashId = $request->getParam(0);
-        $hashIdHelper = HashId::getInstance();
-        $id = $hashIdHelper->decode($hashId);
+        // 获取URL参数
+        $param = $request->getParam(0);
+        $hashIdEnabled = Config::get('hashid.enabled', false);
 
-        // 如果解码失败，返回404
-        if ($id === null) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Video not found']);
-            return;
+        // 根据配置决定如何处理参数
+        if ($hashIdEnabled) {
+            // HashID功能开启：尝试解码hash
+            $hashIdHelper = HashId::getInstance();
+            $id = $hashIdHelper->decode($param);
+
+            // 如果解码失败，尝试作为数字ID（向后兼容）
+            if ($id === null && is_numeric($param)) {
+                $id = (int)$param;
+            } elseif ($id === null) {
+                // 既不是有效hash也不是数字，返回404
+                http_response_code(404);
+                echo json_encode(['error' => 'Video not found']);
+                return;
+            }
+        } else {
+            // HashID功能关闭：直接使用数字ID
+            $id = (int)$param;
         }
 
         // 获取当前语言
@@ -403,12 +416,20 @@ class VideoController extends FrontendController
      * 获取视频的Hash ID (供View调用)
      *
      * @param int $videoId 视频数字ID
-     * @return string Hash ID
+     * @return string Hash ID或数字ID（根据配置）
      */
     public function getVideoHashId(int $videoId): string
     {
-        $hashIdHelper = HashId::getInstance();
-        return $hashIdHelper->encode($videoId);
+        $hashIdEnabled = Config::get('hashid.enabled', false);
+
+        if ($hashIdEnabled) {
+            // HashID功能开启：返回编码后的hash
+            $hashIdHelper = HashId::getInstance();
+            return $hashIdHelper->encode($videoId);
+        } else {
+            // HashID功能关闭：返回原始数字ID
+            return (string)$videoId;
+        }
     }
 
     /**
