@@ -13,7 +13,13 @@
     <!-- 自定义CSS -->
     <link href="<?= $resourceUrl ?? '/assets' ?>/css/main.css" rel="stylesheet">
     <?php if (isset($pageCss)): ?>
-        <link href="<?= $resourceUrl ?? '/assets' ?>/css/<?= $pageCss ?>" rel="stylesheet">
+        <?php if (is_array($pageCss)): ?>
+            <?php foreach ($pageCss as $css): ?>
+                <link href="<?= $resourceUrl ?? '/assets' ?>/css/<?= $css ?>" rel="stylesheet">
+            <?php endforeach; ?>
+        <?php else: ?>
+            <link href="<?= $resourceUrl ?? '/assets' ?>/css/<?= $pageCss ?>" rel="stylesheet">
+        <?php endif; ?>
     <?php endif; ?>
 
     <!-- i18n配置 - 必须在i18n-helper.js之前加载 -->
@@ -205,7 +211,13 @@
     <!-- 自定义JavaScript -->
     <script src="<?= $resourceUrl ?? '/assets' ?>/js/main.js"></script>
     <?php if (isset($pageJs)): ?>
-        <script src="<?= $resourceUrl ?? '/assets' ?>/js/<?= $pageJs ?>"></script>
+        <?php if (is_array($pageJs)): ?>
+            <?php foreach ($pageJs as $js): ?>
+                <script src="<?= $resourceUrl ?? '/assets' ?>/js/<?= $js ?>"></script>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <script src="<?= $resourceUrl ?? '/assets' ?>/js/<?= $pageJs ?>"></script>
+        <?php endif; ?>
     <?php endif; ?>
 </body>
 </html>

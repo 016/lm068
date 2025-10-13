@@ -9,7 +9,8 @@
       "Bash(rm:*)",
       "Bash(php:*)",
       "Read(//home/node/.claude/hooks/**)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

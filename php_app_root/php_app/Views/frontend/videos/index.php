@@ -57,98 +57,12 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
         <div class="row g-3 mb-3">
             <!-- 标签筛选 -->
             <div class="col-md-6">
-                <div class="custom-multiselect" data-name="tag_id">
-                    <div class="multiselect-display" data-placeholder="<?= $currentLang === 'zh' ? '请选择标签' : 'Select Tags' ?>">
-                        <?php if (!empty($selectedTagIds)): ?>
-                            <div class="selected-items">
-                                <?php
-                                $displayCount = min(count($selectedTagIds), 5);
-                                foreach (array_slice($selectedTagIds, 0, $displayCount) as $tagId):
-                                    $tag = array_filter($allTags, fn($t) => $t['id'] == $tagId);
-                                    $tag = reset($tag);
-                                    if ($tag):
-                                        $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
-                                ?>
-                                    <span class="selected-item">
-                                        <?= htmlspecialchars($tagName) ?>
-                                        <button type="button" class="remove-btn" data-value="<?= $tagId ?>">
-                                            <i class="bi bi-x"></i>
-                                        </button>
-                                    </span>
-                                <?php
-                                    endif;
-                                endforeach;
-                                ?>
-                                <span class="selected-count" data-i18n="filter.selected_count" data-i18n-vars='{"count":<?= count($selectedTagIds) ?>}'>共<?= count($selectedTagIds) ?>个</span>
-                            </div>
-                        <?php else: ?>
-                            <span class="placeholder-text" data-i18n="filter.tag_placeholder"><?= $currentLang === 'zh' ? '请选择标签' : 'Select Tags' ?></span>
-                        <?php endif; ?>
-                        <i class="bi bi-chevron-down arrow-icon"></i>
-                    </div>
-                    <div class="multiselect-dropdown">
-                        <?php foreach ($allTags as $tag):
-                            $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
-                        ?>
-                            <div class="dropdown-option" data-value="<?= $tag['id'] ?>">
-                                <input type="checkbox"
-                                       id="tag-<?= $tag['id'] ?>"
-                                       name="tag_id[]"
-                                       value="<?= $tag['id'] ?>"
-                                       <?= in_array($tag['id'], $selectedTagIds) ? 'checked' : '' ?>>
-                                <label for="tag-<?= $tag['id'] ?>"><?= htmlspecialchars($tagName) ?></label>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
+                <div id="tagMultiSelect" class="multi-select-container"></div>
             </div>
 
             <!-- 合集筛选 -->
             <div class="col-md-6">
-                <div class="custom-multiselect" data-name="collection_id">
-                    <div class="multiselect-display" data-placeholder="<?= $currentLang === 'zh' ? '请选择合集' : 'Select Collections' ?>">
-                        <?php if (!empty($selectedCollectionIds)): ?>
-                            <div class="selected-items">
-                                <?php
-                                $displayCount = min(count($selectedCollectionIds), 5);
-                                foreach (array_slice($selectedCollectionIds, 0, $displayCount) as $collectionId):
-                                    $collection = array_filter($allCollections, fn($c) => $c['id'] == $collectionId);
-                                    $collection = reset($collection);
-                                    if ($collection):
-                                        $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
-                                ?>
-                                    <span class="selected-item">
-                                        <?= htmlspecialchars($collectionName) ?>
-                                        <button type="button" class="remove-btn" data-value="<?= $collectionId ?>">
-                                            <i class="bi bi-x"></i>
-                                        </button>
-                                    </span>
-                                <?php
-                                    endif;
-                                endforeach;
-                                ?>
-                                <span class="selected-count" data-i18n="filter.selected_count" data-i18n-vars='{"count":<?= count($selectedCollectionIds) ?>}'>共<?= count($selectedCollectionIds) ?>个</span>
-                            </div>
-                        <?php else: ?>
-                            <span class="placeholder-text" data-i18n="filter.collection_placeholder"><?= $currentLang === 'zh' ? '请选择合集' : 'Select Collections' ?></span>
-                        <?php endif; ?>
-                        <i class="bi bi-chevron-down arrow-icon"></i>
-                    </div>
-                    <div class="multiselect-dropdown">
-                        <?php foreach ($allCollections as $collection):
-                            $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
-                        ?>
-                            <div class="dropdown-option" data-value="<?= $collection['id'] ?>">
-                                <input type="checkbox"
-                                       id="collection-<?= $collection['id'] ?>"
-                                       name="collection_id[]"
-                                       value="<?= $collection['id'] ?>"
-                                       <?= in_array($collection['id'], $selectedCollectionIds) ? 'checked' : '' ?>>
-                                <label for="collection-<?= $collection['id'] ?>"><?= htmlspecialchars($collectionName) ?></label>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
+                <div id="collectionMultiSelect" class="multi-select-container"></div>
             </div>
         </div>
 
@@ -329,3 +243,35 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
         <p data-i18n="empty.desc"><?= $currentLang === 'zh' ? '没有找到符合条件的视频，请尝试调整筛选条件' : 'No videos found matching your criteria. Try adjusting your filters.' ?></p>
     </div>
 <?php endif; ?>
+
+<script>
+// 将PHP数据传递给JavaScript
+window.videoListData = {
+    // 标签数据
+    allTags: <?= json_encode(array_map(function($tag) use ($currentLang) {
+        return [
+            'id' => $tag['id'],
+            'text' => $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en']
+        ];
+    }, $allTags)) ?>,
+    selectedTagIds: <?= json_encode(array_map('strval', $selectedTagIds)) ?>,
+
+    // 合集数据
+    allCollections: <?= json_encode(array_map(function($collection) use ($currentLang) {
+        return [
+            'id' => $collection['id'],
+            'text' => $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en']
+        ];
+    }, $allCollections)) ?>,
+    selectedCollectionIds: <?= json_encode(array_map('strval', $selectedCollectionIds)) ?>,
+
+    // 语言相关
+    currentLang: <?= json_encode($currentLang) ?>,
+    placeholders: {
+        tag: <?= json_encode($currentLang === 'zh' ? '请选择标签' : 'Select Tags') ?>,
+        tagSearch: <?= json_encode($currentLang === 'zh' ? '搜索标签...' : 'Search tags...') ?>,
+        collection: <?= json_encode($currentLang === 'zh' ? '请选择合集' : 'Select Collections') ?>,
+        collectionSearch: <?= json_encode($currentLang === 'zh' ? '搜索合集...' : 'Search collections...') ?>
+    }
+};
+</script>
