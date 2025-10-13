@@ -32,52 +32,77 @@ class HashId
     }
 
     /**
-     * 编码ID为hash字符串
+     * 编码ID为hash字符串（或根据配置返回原始数字）
+     * 根据配置自动决定：启用时返回hash，禁用时返回数字字符串
      *
      * @param int $id 要编码的数字ID
-     * @return string 编码后的hash字符串
+     * @return string 编码后的字符串
      */
-    public function encode(int $id): string
+    public static function encode(int $id): string
     {
-
         if ($id <= 0) {
             throw new \InvalidArgumentException('ID must be a positive integer');
         }
 
+        // 检查配置是否启用HashID
+        $enabled = Config::get('hashid.enabled', false);
+
+        if (!$enabled) {
+            // 功能未启用，直接返回数字字符串
+            return (string)$id;
+        }
+
+        // 功能已启用，执行编码
+        $instance = self::getInstance();
+
         // 第一步：添加混淆
-        $obfuscated = $this->obfuscate($id);
+        $obfuscated = $instance->obfuscate($id);
 
         // 第二步：Base62编码
-        $encoded = $this->base62Encode($obfuscated);
+        $encoded = $instance->base62Encode($obfuscated);
 
         // 第三步：填充到最小长度
-        $encoded = $this->pad($encoded);
+        $encoded = $instance->pad($encoded);
 
         return $encoded;
     }
 
     /**
-     * 解码hash字符串为ID
+     * 解码hash字符串为ID（或根据配置解析数字）
+     * 根据配置自动决定：启用时解码hash，禁用时转换数字
+     * 支持向后兼容：即使启用hash，也能识别纯数字ID
      *
-     * @param string $hash 要解码的hash字符串
+     * @param string $value 要解码的字符串（hash或数字）
      * @return int|null 解码后的ID，失败返回null
      */
-    public function decode(string $hash): ?int
+    public static function decode(string $value): ?int
     {
-        if (empty($hash)) {
+        if (empty($value)) {
             return null;
         }
 
+        // 检查配置是否启用HashID
+        $enabled = Config::get('hashid.enabled', false);
+
+        if (!$enabled) {
+            // 功能未启用，直接转换为数字
+            return is_numeric($value) ? (int)$value : null;
+        }
+
+        // 功能已启用，尝试解码
         try {
+            $instance = self::getInstance();
+
             // 第一步：Base62解码
-            $obfuscated = $this->base62Decode($hash);
+            $obfuscated = $instance->base62Decode($value);
 
             if ($obfuscated === null) {
-                return null;
+                // 解码失败，尝试作为数字处理（向后兼容）
+                return is_numeric($value) ? (int)$value : null;
             }
 
             // 第二步：去除混淆
-            $id = $this->deobfuscate($obfuscated);
+            $id = $instance->deobfuscate($obfuscated);
 
             // 验证ID的合理性
             if ($id <= 0 || $id > PHP_INT_MAX) {
@@ -86,7 +111,8 @@ class HashId
 
             return $id;
         } catch (\Exception $e) {
-            return null;
+            // 发生异常，尝试作为数字处理
+            return is_numeric($value) ? (int)$value : null;
         }
     }
 
@@ -210,11 +236,11 @@ class HashId
     }
 
     /**
-     * 获取单例实例
+     * 获取单例实例（内部使用）
      *
      * @return self
      */
-    public static function getInstance(): self
+    private static function getInstance(): self
     {
         static $instance = null;
 
@@ -228,57 +254,6 @@ class HashId
         }
 
         return $instance;
-    }
-
-    /**
-     * 静态方法：根据配置智能编码ID
-     * 如果配置启用HashID，返回hash；否则返回原始数字ID字符串
-     *
-     * @param int $id 数字ID
-     * @return string 编码后的字符串（hash或数字）
-     */
-    public static function encodeId(int $id): string
-    {
-        $enabled = Config::get('hashid.enabled', false);
-
-        if ($enabled) {
-            $instance = self::getInstance();
-            return $instance->encode($id);
-        }
-
-        return (string)$id;
-    }
-
-    /**
-     * 静态方法：根据配置智能解码
-     * 如果配置启用HashID，尝试解码hash；否则直接转换为数字
-     * 支持向后兼容：即使开启hash，也能识别纯数字ID
-     *
-     * @param string $value 要解码的字符串（hash或数字）
-     * @return int|null 解码后的ID，失败返回null
-     */
-    public static function decodeId(string $value): ?int
-    {
-        if (empty($value)) {
-            return null;
-        }
-
-        $enabled = Config::get('hashid.enabled', false);
-
-        if ($enabled) {
-            $instance = self::getInstance();
-            $decoded = $instance->decode($value);
-
-            // 如果解码失败但是纯数字，尝试作为数字ID（向后兼容）
-            if ($decoded === null && is_numeric($value)) {
-                return (int)$value;
-            }
-
-            return $decoded;
-        }
-
-        // HashID功能未启用，直接转换为数字
-        return is_numeric($value) ? (int)$value : null;
     }
 
     /**

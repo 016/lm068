@@ -17,18 +17,15 @@ echo "========================================\n";
 echo "HashId 功能测试\n";
 echo "========================================\n\n";
 
-// 创建HashId实例
-$hashId = new HashId('lm068_video_site_2025', 6);
-
 // 测试用例
 $testIds = [1, 5, 10, 100, 999, 1234, 9999, 12345];
 
-echo "测试编码和解码:\n";
+echo "测试编码和解码（使用静态方法）:\n";
 echo "----------------------------------------\n";
 
 foreach ($testIds as $id) {
-    $encoded = $hashId->encode($id);
-    $decoded = $hashId->decode($encoded);
+    $encoded = HashId::encode($id);
+    $decoded = HashId::decode($encoded);
 
     $status = ($decoded === $id) ? '✓ 成功' : '✗ 失败';
 
@@ -44,7 +41,7 @@ foreach ($testIds as $id) {
 echo "\n测试Hash长度:\n";
 echo "----------------------------------------\n";
 foreach ($testIds as $id) {
-    $encoded = $hashId->encode($id);
+    $encoded = HashId::encode($id);
     echo sprintf("ID: %5d -> Hash: %10s (长度: %d)\n", $id, $encoded, strlen($encoded));
 }
 
@@ -53,7 +50,7 @@ echo "----------------------------------------\n";
 $hashes = [];
 $hasDuplicates = false;
 foreach ($testIds as $id) {
-    $encoded = $hashId->encode($id);
+    $encoded = HashId::encode($id);
     if (in_array($encoded, $hashes)) {
         echo "✗ 发现重复的Hash: $encoded (ID: $id)\n";
         $hasDuplicates = true;
@@ -70,7 +67,7 @@ echo "----------------------------------------\n";
 // 测试无效的hash字符串
 $invalidHashes = ['', 'invalid', '!@#$%', '123abc@@@'];
 foreach ($invalidHashes as $hash) {
-    $decoded = $hashId->decode($hash);
+    $decoded = HashId::decode($hash);
     $status = ($decoded === null) ? '✓ 正确返回null' : '✗ 应该返回null';
     echo sprintf("Hash: '%s' -> Decoded: %s [%s]\n", $hash, var_export($decoded, true), $status);
 }
@@ -81,37 +78,37 @@ echo "----------------------------------------\n";
 $videoIds = [1, 2, 3, 15, 27, 42, 88, 156];
 echo "生成的视频Hash URL:\n";
 foreach ($videoIds as $videoId) {
-    $hash = $hashId->encode($videoId);
+    $hash = HashId::encode($videoId);
     echo "Video ID: $videoId -> URL: /videos/$hash\n";
 }
 
-echo "\n测试配置开关功能（使用静态方法）:\n";
+echo "\n测试配置开关功能（简化版）:\n";
 echo "----------------------------------------\n";
 
 $testVideoId = 123;
 
 echo "当前配置: HashID " . (HashId::isEnabled() ? "已启用" : "未启用") . "\n\n";
 
-// 使用新的静态方法 - 自动根据配置处理
-$encoded = HashId::encodeId($testVideoId);
-echo "编码: HashId::encodeId($testVideoId) = $encoded\n";
+// 使用统一的静态方法 - 自动根据配置处理
+$encoded = HashId::encode($testVideoId);
+echo "编码: HashId::encode($testVideoId) = $encoded\n";
 
-$decoded = HashId::decodeId($encoded);
-echo "解码: HashId::decodeId('$encoded') = $decoded\n";
+$decoded = HashId::decode($encoded);
+echo "解码: HashId::decode('$encoded') = $decoded\n";
 
 // 测试向后兼容（传入数字字符串）
 $numericId = '456';
-$decoded2 = HashId::decodeId($numericId);
-echo "兼容: HashId::decodeId('$numericId') = $decoded2 （支持纯数字）\n";
+$decoded2 = HashId::decode($numericId);
+echo "兼容: HashId::decode('$numericId') = $decoded2 （支持纯数字）\n";
 
 echo "\n在Controller中的使用示例:\n";
 echo "----------------------------------------\n";
 echo "// 编码（生成URL）:\n";
-echo "\$hash = HashId::encodeId(\$videoId);\n";
+echo "\$hash = HashId::encode(\$videoId);\n";
 echo "\$url = \"/videos/{\$hash}\";\n\n";
 echo "// 解码（接收URL参数）:\n";
 echo "\$param = \$request->getParam(0);\n";
-echo "\$id = HashId::decodeId(\$param);\n";
+echo "\$id = HashId::decode(\$param);\n";
 
 echo "\n配置说明:\n";
 echo "----------------------------------------\n";
@@ -121,10 +118,11 @@ echo "    'enabled' => true,  // true=启用hash, false=使用数字ID\n";
 echo "    'salt' => 'lm068_video_site_2025',\n";
 echo "    'min_length' => 6,\n";
 echo "]\n\n";
-echo "优势:\n";
-echo "- 所有配置逻辑封装在HashId类中\n";
-echo "- Controller层代码简洁，只需调用静态方法\n";
-echo "- 符合单一职责原则和封装原则\n";
+echo "设计优势:\n";
+echo "- 只有一组方法：encode() 和 decode()\n";
+echo "- 配置逻辑内置，使用者无需关心\n";
+echo "- 简单直观，符合KISS原则\n";
+echo "- 避免了 encode vs encodeId 的选择困惑\n";
 
 echo "\n========================================\n";
 echo "测试完成！\n";

@@ -119,9 +119,9 @@ class VideoController extends FrontendController
      */
     public function show( Request $request): void
     {
-        // 获取URL参数并解码为ID（HashId类内部会根据配置处理）
+        // 获取URL参数并解码为ID（HashId::decode会根据配置自动处理）
         $param = $request->getParam(0);
-        $id = HashId::decodeId($param);
+        $id = HashId::decode($param);
 
         // 如果解码失败，返回404
         if ($id === null) {
@@ -400,14 +400,14 @@ class VideoController extends FrontendController
 
     /**
      * 获取视频的Hash ID (供View调用)
-     * HashId类内部会根据配置决定返回hash或原始数字ID
+     * HashId::encode会根据配置自动决定返回hash或原始数字ID
      *
      * @param int $videoId 视频数字ID
      * @return string Hash ID或数字ID（根据配置）
      */
     public function getVideoHashId(int $videoId): string
     {
-        return HashId::encodeId($videoId);
+        return HashId::encode($videoId);
     }
 
     /**
