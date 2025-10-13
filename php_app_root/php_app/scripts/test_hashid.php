@@ -1,0 +1,90 @@
+<?php
+/**
+ * HashId 功能测试脚本
+ *
+ * 用途：测试HashId编码和解码功能
+ * 运行：php scripts/test_hashid.php
+ */
+
+// 设置include路径
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../Core/Config.php';
+require_once __DIR__ . '/../Core/HashId.php';
+
+use App\Core\HashId;
+
+echo "========================================\n";
+echo "HashId 功能测试\n";
+echo "========================================\n\n";
+
+// 创建HashId实例
+$hashId = new HashId('lm068_video_site_2025', 6);
+
+// 测试用例
+$testIds = [1, 5, 10, 100, 999, 1234, 9999, 12345];
+
+echo "测试编码和解码:\n";
+echo "----------------------------------------\n";
+
+foreach ($testIds as $id) {
+    $encoded = $hashId->encode($id);
+    $decoded = $hashId->decode($encoded);
+
+    $status = ($decoded === $id) ? '✓ 成功' : '✗ 失败';
+
+    echo sprintf(
+        "ID: %5d -> Hash: %10s -> Decoded: %5d [%s]\n",
+        $id,
+        $encoded,
+        $decoded,
+        $status
+    );
+}
+
+echo "\n测试Hash长度:\n";
+echo "----------------------------------------\n";
+foreach ($testIds as $id) {
+    $encoded = $hashId->encode($id);
+    echo sprintf("ID: %5d -> Hash: %10s (长度: %d)\n", $id, $encoded, strlen($encoded));
+}
+
+echo "\n测试Hash唯一性:\n";
+echo "----------------------------------------\n";
+$hashes = [];
+$hasDuplicates = false;
+foreach ($testIds as $id) {
+    $encoded = $hashId->encode($id);
+    if (in_array($encoded, $hashes)) {
+        echo "✗ 发现重复的Hash: $encoded (ID: $id)\n";
+        $hasDuplicates = true;
+    }
+    $hashes[] = $encoded;
+}
+if (!$hasDuplicates) {
+    echo "✓ 所有Hash都是唯一的\n";
+}
+
+echo "\n测试无效输入:\n";
+echo "----------------------------------------\n";
+
+// 测试无效的hash字符串
+$invalidHashes = ['', 'invalid', '!@#$%', '123abc@@@'];
+foreach ($invalidHashes as $hash) {
+    $decoded = $hashId->decode($hash);
+    $status = ($decoded === null) ? '✓ 正确返回null' : '✗ 应该返回null';
+    echo sprintf("Hash: '%s' -> Decoded: %s [%s]\n", $hash, var_export($decoded, true), $status);
+}
+
+echo "\n测试实际视频ID示例:\n";
+echo "----------------------------------------\n";
+// 假设我们有一些视频ID
+$videoIds = [1, 2, 3, 15, 27, 42, 88, 156];
+echo "生成的视频Hash URL:\n";
+foreach ($videoIds as $videoId) {
+    $hash = $hashId->encode($videoId);
+    echo "Video ID: $videoId -> URL: /videos/$hash\n";
+}
+
+echo "\n========================================\n";
+echo "测试完成！\n";
+echo "========================================\n";

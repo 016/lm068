@@ -3,6 +3,7 @@
 namespace App\Controllers\Frontend;
 
 use App\Core\Request;
+use App\Core\HashId;
 use App\Models\Content;
 use App\Models\Tag;
 use App\Models\Collection;
@@ -118,7 +119,18 @@ class VideoController extends FrontendController
      */
     public function show( Request $request): void
     {
-        $id = (int)$request->getParam(0);
+        // 获取hash参数并解码为ID
+        $hashId = $request->getParam(0);
+        $hashIdHelper = HashId::getInstance();
+        $id = $hashIdHelper->decode($hashId);
+
+        // 如果解码失败，返回404
+        if ($id === null) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Video not found']);
+            return;
+        }
+
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
 
@@ -383,7 +395,20 @@ class VideoController extends FrontendController
      */
     public function buildCommentPaginationUrl(int $page, int $videoId, string $lang): string
     {
-        return "/videos/{$videoId}?comment_page={$page}&lang={$lang}";
+        $hashId = $this->getVideoHashId($videoId);
+        return "/videos/{$hashId}?comment_page={$page}&lang={$lang}";
+    }
+
+    /**
+     * 获取视频的Hash ID (供View调用)
+     *
+     * @param int $videoId 视频数字ID
+     * @return string Hash ID
+     */
+    public function getVideoHashId(int $videoId): string
+    {
+        $hashIdHelper = HashId::getInstance();
+        return $hashIdHelper->encode($videoId);
     }
 
     /**

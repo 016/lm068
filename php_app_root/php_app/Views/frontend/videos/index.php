@@ -87,7 +87,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 video-card-container">
                     <div class="card h-100 video-card">
                         <div class="position-relative">
-                            <a class="video-thumbnail" href="/videos/<?= $video->id ?>">
+                            <a class="video-thumbnail" href="/videos/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>">
                                 <?php if (!empty($video->thumbnail)): ?>
                                     <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
                                          alt="<?= htmlspecialchars($video->getDisplayTitle()) ?>"
@@ -97,7 +97,7 @@
                         </div>
                         <div class="card-body p-3">
                             <h5 class="card-title video-title">
-                                <a href="/videos/<?= $video->id ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
+                                <a href="/videos/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
                                     <?= htmlspecialchars($video->getTitle($currentLang)) ?>
                                 </a>
                             </h5>

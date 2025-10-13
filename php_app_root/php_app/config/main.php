@@ -51,5 +51,11 @@ return [
         'enabled' => true,
         'level' => 'error', // debug, info, warning, error
         'path' => __DIR__ . '/../runtime/logs/',
+    ],
+
+    // HashID配置 - 用于URL中ID的混淆
+    'hashid' => [
+        'salt' => 'lm068_video_site_2025', // 盐值，用于生成唯一的hash
+        'min_length' => 6, // 最小长度
     ]
 ];
