@@ -1,0 +1,245 @@
+/* 前端主题适配 - Multi-Select Dropdown Frontend Theme Overrides */
+/*
+ * 此文件用于覆盖 multi_select_dropdown_1.css 的样式
+ * 目的：将后台组件的通用样式适配到前端Bootstrap主题系统
+ *
+ * 主题变量映射:
+ * 后台 -> 前台
+ * --bg-primary -> --white / --dark-color
+ * --bg-secondary -> --gray-50 / --gray-800
+ * --accent-primary -> --brand-color
+ * --text-muted -> --text-secondary
+ * --border-light -> --border-color
+ */
+
+/* ========== 浅色主题适配 ========== */
+
+/* 显示区域 */
+.multi-select-display {
+    background: var(--white, #ffffff);
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 0.5rem;
+    color: var(--text-primary, #1f2937);
+}
+
+.multi-select-display:hover {
+    border-color: var(--brand-color, #2563eb);
+}
+
+.multi-select-display:focus,
+.multi-select-display[aria-expanded="true"] {
+    border-color: var(--brand-color, #2563eb);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+/* 占位符 */
+.multi-select-placeholder {
+    color: var(--text-secondary, #6b7280);
+}
+
+/* 箭头图标 */
+.multi-select-arrow {
+    color: var(--text-secondary, #6b7280);
+}
+
+.multi-select-display:hover .multi-select-arrow {
+    color: var(--brand-color, #2563eb);
+}
+
+/* 选中标签 */
+.multi-select-tag {
+    background: var(--brand-color, #2563eb);
+    border-radius: 0.375rem;
+}
+
+/* 数量显示 */
+.multi-select-count {
+    background: var(--gray-200, #e5e7eb);
+    color: var(--text-primary, #1f2937);
+    border-radius: 0.375rem;
+}
+
+/* 下拉面板 */
+.multi-select-dropdown {
+    background: var(--white, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 搜索区域 */
+.multi-select-search {
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    background: var(--gray-50, #f9fafb);
+}
+
+.multi-select-search-input {
+    background: var(--white, #ffffff);
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 0.5rem;
+    color: var(--text-primary, #1f2937);
+}
+
+.multi-select-search-input:focus {
+    border-color: var(--brand-color, #2563eb);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+.multi-select-search-input::placeholder {
+    color: var(--text-secondary, #6b7280);
+}
+
+.multi-select-search-icon {
+    color: var(--text-secondary, #6b7280);
+}
+
+.multi-select-clear-btn {
+    color: var(--text-secondary, #6b7280);
+}
+
+.multi-select-clear-btn:hover {
+    background: var(--gray-200, #e5e7eb);
+    color: var(--danger-color, #dc3545);
+}
+
+/* 选项列表滚动条 */
+.multi-select-list::-webkit-scrollbar-track {
+    background: var(--gray-100, #f3f4f6);
+}
+
+.multi-select-list::-webkit-scrollbar-thumb {
+    background: var(--border-color, #e5e7eb);
+}
+
+.multi-select-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary, #6b7280);
+}
+
+/* 选项项目 */
+.multi-select-item:hover {
+    background: var(--gray-100, #f3f4f6);
+}
+
+.multi-select-item.selected {
+    background: rgba(37, 99, 235, 0.1);
+    border-bottom-color: var(--brand-color, #2563eb);
+}
+
+.multi-select-item.selected:hover {
+    background: rgba(37, 99, 235, 0.15);
+}
+
+.multi-select-checkbox {
+    accent-color: var(--brand-color, #2563eb);
+}
+
+.multi-select-item-text {
+    color: var(--text-primary, #1f2937);
+}
+
+.multi-select-item.selected .multi-select-item-text {
+    color: var(--brand-color, #2563eb);
+}
+
+/* ========== 深色主题适配 ========== */
+
+[data-bs-theme="dark"] .multi-select-display {
+    background: var(--dark-color, #1f2937);
+    border-color: var(--border-color, #4b5563);
+    color: var(--text-primary, #f9fafb);
+}
+
+[data-bs-theme="dark"] .multi-select-placeholder {
+    color: var(--text-secondary, #d1d5db);
+}
+
+[data-bs-theme="dark"] .multi-select-arrow {
+    color: var(--text-secondary, #d1d5db);
+}
+
+[data-bs-theme="dark"] .multi-select-display:hover .multi-select-arrow {
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .multi-select-count {
+    background: var(--gray-700, #374151);
+    color: var(--text-primary, #f9fafb);
+}
+
+[data-bs-theme="dark"] .multi-select-dropdown {
+    background: var(--dark-color, #1f2937);
+    border-color: var(--border-color, #4b5563);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+[data-bs-theme="dark"] .multi-select-search {
+    background: var(--gray-800, #1f2937);
+    border-bottom-color: var(--border-color, #4b5563);
+}
+
+[data-bs-theme="dark"] .multi-select-search-input {
+    background: var(--gray-700, #374151);
+    border-color: var(--border-color, #4b5563);
+    color: var(--text-primary, #f9fafb);
+}
+
+[data-bs-theme="dark"] .multi-select-search-input::placeholder {
+    color: var(--text-secondary, #d1d5db);
+}
+
+[data-bs-theme="dark"] .multi-select-search-icon {
+    color: var(--text-secondary, #d1d5db);
+}
+
+[data-bs-theme="dark"] .multi-select-clear-btn {
+    color: var(--text-secondary, #d1d5db);
+}
+
+[data-bs-theme="dark"] .multi-select-clear-btn:hover {
+    background: var(--gray-700, #374151);
+}
+
+[data-bs-theme="dark"] .multi-select-item {
+    color: var(--text-primary, #f9fafb);
+}
+
+[data-bs-theme="dark"] .multi-select-item:hover {
+    background: var(--gray-700, #374151);
+}
+
+[data-bs-theme="dark"] .multi-select-item.selected {
+    background: rgba(37, 99, 235, 0.2);
+}
+
+[data-bs-theme="dark"] .multi-select-item.selected:hover {
+    background: rgba(37, 99, 235, 0.3);
+}
+
+[data-bs-theme="dark"] .multi-select-item-text {
+    color: var(--text-primary, #f9fafb);
+}
+
+[data-bs-theme="dark"] .multi-select-item.selected .multi-select-item-text {
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .multi-select-list::-webkit-scrollbar-track {
+    background: var(--gray-800, #1f2937);
+}
+
+[data-bs-theme="dark"] .multi-select-list::-webkit-scrollbar-thumb {
+    background: var(--border-color, #4b5563);
+}
+
+/* ========== 优先级增强（如需要） ========== */
+/* 如果发现某些样式未生效，可以取消下面注释并使用更具体的选择器 */
+
+/*
+.multi-select-wrapper .multi-select-display {
+    background: var(--white, #ffffff);
+}
+
+[data-bs-theme="dark"] .multi-select-wrapper .multi-select-display {
+    background: var(--dark-color, #1f2937);
+}
+*/

@@ -71,7 +71,11 @@ class VideoController extends FrontendController
             'allTags' => $allTags,
             'allCollections' => $allCollections,
             'resourceUrl' => '/assets', // 前端资源URL前缀
-            'pageCss' => ['f-video-list.css', 'multi_select_dropdown_1.css'],  // 页面专用CSS
+            'pageCss' => [
+                'f-video-list.css',
+                'multi_select_dropdown_1.css',        // 基础组件样式
+                'multi_select_dropdown_frontend.css'  // 前端主题适配
+            ],
             'pageJs' => ['multi_select_dropdown_3.js', 'f-video-list_11.js'],    // 页面专用JS
             // i18n相关数据
             'currentLang' => $currentLang,

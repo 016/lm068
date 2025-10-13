@@ -10,9 +10,9 @@
 
 /* ========== 显示区域 ========== */
 .multi-select-display {
-    background: var(--white, #ffffff);
-    border: 2px solid var(--border-color, #e5e7eb);
-    border-radius: 0.5rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 0.75rem 1rem;
     min-height: 44px;
     display: flex;
@@ -21,23 +21,22 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    color: var(--text-primary, #1f2937);
 }
 
 .multi-select-display:hover {
-    border-color: var(--brand-color, #2563eb);
+    border-color: var(--accent-primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .multi-select-display:focus {
     outline: none;
-    border-color: var(--brand-color, #2563eb);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
 }
 
 .multi-select-display[aria-expanded="true"] {
-    border-color: var(--brand-color, #2563eb);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
 }
 
 .multi-select-content {
@@ -50,19 +49,19 @@
 }
 
 .multi-select-arrow {
-    color: var(--text-secondary, #6b7280);
+    color: var(--text-muted);
     transition: transform 0.2s ease, color 0.2s ease;
     font-size: 14px;
     margin-left: 0.5rem;
 }
 
 .multi-select-display:hover .multi-select-arrow {
-    color: var(--brand-color, #2563eb);
+    color: var(--accent-primary);
 }
 
 /* ========== 占位符 ========== */
 .multi-select-placeholder {
-    color: var(--text-secondary, #6b7280);
+    color: var(--text-muted);
     font-size: 0.875rem;
     user-select: none;
 }
@@ -77,9 +76,9 @@
 }
 
 .multi-select-tag {
-    background: var(--brand-color, #2563eb);
+    background: var(--accent-primary);
     color: white;
-    border-radius: 0.375rem;
+    border-radius: calc(var(--radius) - 2px);
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     display: flex;
@@ -116,9 +115,9 @@
 
 /* ========== 数量显示 ========== */
 .multi-select-count {
-    background: var(--gray-200, #e5e7eb);
-    color: var(--text-primary, #1f2937);
-    border-radius: 0.375rem;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: calc(var(--radius) - 2px);
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     font-weight: 500;
@@ -131,10 +130,10 @@
     top: calc(100% + 4px);
     left: 0;
     right: 0;
-    background: var(--white, #ffffff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    border-radius: 0.5rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
     z-index: 1050;
     opacity: 0;
     visibility: hidden;
@@ -154,8 +153,8 @@
 /* ========== 搜索区域 ========== */
 .multi-select-search {
     padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
-    background: var(--gray-50, #f9fafb);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-secondary);
 }
 
 .multi-select-search-wrapper {
@@ -166,29 +165,29 @@
 
 .multi-select-search-input {
     width: 100%;
-    background: var(--white, #ffffff);
-    border: 2px solid var(--border-color, #e5e7eb);
-    border-radius: 0.5rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 0.5rem 0.75rem 0.5rem 2.25rem;
     font-size: 0.875rem;
-    color: var(--text-primary, #1f2937);
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 
 .multi-select-search-input:focus {
     outline: none;
-    border-color: var(--brand-color, #2563eb);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgb(99 102 241 / 0.1);
 }
 
 .multi-select-search-input::placeholder {
-    color: var(--text-secondary, #6b7280);
+    color: var(--text-muted);
 }
 
 .multi-select-search-icon {
     position: absolute;
     left: 0.75rem;
-    color: var(--text-secondary, #6b7280);
+    color: var(--text-muted);
     font-size: 14px;
     pointer-events: none;
 }
@@ -198,7 +197,7 @@
     right: 0.5rem;
     background: none;
     border: none;
-    color: var(--text-secondary, #6b7280);
+    color: var(--text-muted);
     cursor: pointer;
     padding: 0.25rem;
     border-radius: 50%;
@@ -212,8 +211,8 @@
 }
 
 .multi-select-clear-btn:hover {
-    background: var(--gray-200, #e5e7eb);
-    color: var(--danger-color, #dc3545);
+    background: var(--bg-tertiary);
+    color: var(--danger);
 }
 
 /* ========== 选项列表 ========== */
@@ -233,16 +232,16 @@
 }
 
 .multi-select-list::-webkit-scrollbar-track {
-    background: var(--gray-100, #f3f4f6);
+    background: var(--bg-secondary);
 }
 
 .multi-select-list::-webkit-scrollbar-thumb {
-    background: var(--border-color, #e5e7eb);
+    background: var(--border-medium);
     border-radius: 3px;
 }
 
 .multi-select-list::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary, #6b7280);
+    background: var(--text-muted);
 }
 
 /* ========== 选项项目 ========== */
@@ -256,16 +255,16 @@
 
 
 .multi-select-item:hover {
-    background: var(--gray-100, #f3f4f6);
+    background: var(--bg-tertiary);
 }
 
 .multi-select-item.selected {
-    background: rgba(37, 99, 235, 0.1);
-    border-bottom-color: var(--brand-color, #2563eb);
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom-color: var(--accent-primary);
 }
 
 .multi-select-item.selected:hover {
-    background: rgba(37, 99, 235, 0.15);
+    background: rgba(99, 102, 241, 0.15);
 }
 
 .multi-select-item-label {
@@ -281,21 +280,21 @@
 .multi-select-checkbox {
     width: 16px;
     height: 16px;
-    accent-color: var(--brand-color, #2563eb);
+    accent-color: var(--accent-primary);
     cursor: pointer;
     margin: 0;
 }
 
 .multi-select-item-text {
     flex: 1;
-    color: var(--text-primary, #1f2937);
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .multi-select-item.selected .multi-select-item-text {
-    color: var(--brand-color, #2563eb);
+    color: var(--accent-primary);
     font-weight: 500;
 }
 
@@ -330,88 +329,43 @@
 }
 
 /* ========== 深色主题适配 ========== */
-[data-bs-theme="dark"] .multi-select-display {
-    background: var(--dark-color, #1f2937);
-    border-color: var(--border-color, #4b5563);
-    color: var(--text-primary, #f9fafb);
+[data-theme="dark"] .multi-select-display {
+    background: var(--bg-secondary);
+    border-color: var(--border-light);
+    color: var(--text-primary);
 }
 
-[data-bs-theme="dark"] .multi-select-placeholder {
-    color: var(--text-secondary, #d1d5db);
+[data-theme="dark"] .multi-select-dropdown {
+    background: var(--bg-primary);
+    border-color: var(--border-light);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-[data-bs-theme="dark"] .multi-select-arrow {
-    color: var(--text-secondary, #d1d5db);
+[data-theme="dark"] .multi-select-search {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-light);
 }
 
-[data-bs-theme="dark"] .multi-select-count {
-    background: var(--gray-700, #374151);
-    color: var(--text-primary, #f9fafb);
+[data-theme="dark"] .multi-select-search-input {
+    background: var(--bg-tertiary);
+    border-color: var(--border-light);
+    color: var(--text-primary);
 }
 
-[data-bs-theme="dark"] .multi-select-dropdown {
-    background: var(--dark-color, #1f2937);
-    border-color: var(--border-color, #4b5563);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+[data-theme="dark"] .multi-select-search-input::placeholder {
+    color: var(--text-muted);
 }
 
-[data-bs-theme="dark"] .multi-select-search {
-    background: var(--gray-800, #1f2937);
-    border-bottom-color: var(--border-color, #4b5563);
+[data-theme="dark"] .multi-select-item:hover {
+    background: var(--bg-tertiary);
 }
 
-[data-bs-theme="dark"] .multi-select-search-input {
-    background: var(--gray-700, #374151);
-    border-color: var(--border-color, #4b5563);
-    color: var(--text-primary, #f9fafb);
+[data-theme="dark"] .multi-select-item.selected {
+    background: rgba(129, 140, 248, 0.1);
 }
 
-[data-bs-theme="dark"] .multi-select-search-input::placeholder {
-    color: var(--text-secondary, #d1d5db);
-}
-
-[data-bs-theme="dark"] .multi-select-search-icon {
-    color: var(--text-secondary, #d1d5db);
-}
-
-[data-bs-theme="dark"] .multi-select-clear-btn {
-    color: var(--text-secondary, #d1d5db);
-}
-
-[data-bs-theme="dark"] .multi-select-clear-btn:hover {
-    background: var(--gray-700, #374151);
-}
-
-[data-bs-theme="dark"] .multi-select-item {
-    color: var(--text-primary, #f9fafb);
-}
-
-[data-bs-theme="dark"] .multi-select-item:hover {
-    background: var(--gray-700, #374151);
-}
-
-[data-bs-theme="dark"] .multi-select-item.selected {
-    background: rgba(37, 99, 235, 0.2);
-}
-
-[data-bs-theme="dark"] .multi-select-item.selected:hover {
-    background: rgba(37, 99, 235, 0.3);
-}
-
-[data-bs-theme="dark"] .multi-select-item-text {
-    color: var(--text-primary, #f9fafb);
-}
-
-[data-bs-theme="dark"] .multi-select-item.selected .multi-select-item-text {
-    color: #60a5fa;
-}
-
-[data-bs-theme="dark"] .multi-select-list::-webkit-scrollbar-track {
-    background: var(--gray-800, #1f2937);
-}
-
-[data-bs-theme="dark"] .multi-select-list::-webkit-scrollbar-thumb {
-    background: var(--border-color, #4b5563);
+[data-theme="dark"] .multi-select-item.selected:hover {
+    background: rgba(129, 140, 248, 0.15);
 }
 
 /* ========== 响应式设计 ========== */
