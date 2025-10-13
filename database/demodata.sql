@@ -120,7 +120,7 @@ VALUES (1, 'Python for Data Science', 'Python数据科学入门', 'A beginner-fr
 --
 -- 4. 插入内容数据 (50条, 与合集和标签高度关联)
 --
-INSERT INTO `content` (`id`, `content_type_id`, `code`, `title_en`, `title_cn`, `short_desc_en`, `short_desc_cn`,
+INSERT INTO `content` (`id`, `content_type_id`, `code`, `title_en`, `title_cn`, `desc_en`, `desc_cn`,
                        `thumbnail`, `duration`, `view_cnt`, `status_id`)
 VALUES
 -- Collection 1: Python for Data Science
