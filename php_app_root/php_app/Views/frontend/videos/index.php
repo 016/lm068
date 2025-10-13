@@ -2,7 +2,7 @@
 
 /**
  * @var $this \App\Controllers\Frontend\VideoController //$this->funcName() will auto work in IDE
- * @var $content \App\Models\Content //$content->id will auto work in IDE
+ * @var $video \App\Models\Content //$content->id will auto work in IDE
  */
 
 /**
