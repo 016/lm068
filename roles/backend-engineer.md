@@ -105,6 +105,8 @@
 - 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
   - www.a.com 已指向 php_app_root/php_app/public_frontend
   - admin.a.com 已指向 php_app_root/php_app/public_backend
+- 如果需要对 URI 中的 ID 进行encode/decode，已经实现了 hashId class 可以直接使用
+  - php_app_root/php_app/Core/HashId.php
 - backend
   - list page 使用 index关键词
   - create page 使用 create关键词 

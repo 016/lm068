@@ -55,7 +55,7 @@ return [
 
     // HashID配置 - 用于URL中ID的混淆
     'hashid' => [
-        'enabled' => true, // 是否启用HashID功能
+        'enabled' => false, // 是否启用HashID功能
         'salt' => 'lm068_video_site_2025', // 盐值，用于生成唯一的hash
         'min_length' => 6, // 最小长度
     ]
