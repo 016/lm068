@@ -129,19 +129,29 @@ class Comment extends Model
     {
         $db = \App\Core\Database::getInstance();
 
-        // 1. 先查询所有顶级评论（root_id为NULL或parent_id为NULL的评论）的总数
+        // 1. 先查询所有评论的总数（包括顶级评论和嵌套评论）
         $countSql = "SELECT COUNT(*) as count FROM " . static::getTableName() . "
                      WHERE content_id = :content_id
-                     AND status_id = :status_id
-                     AND parent_id IS NULL";
+                     AND status_id = :status_id";
         $countResult = $db->fetch($countSql, [
             'content_id' => $contentId,
             'status_id' => $statusId
         ]);
         $total = (int)$countResult['count'];
-        $totalPages = (int)ceil($total / $perPage);
 
-        // 2. 查询当前页的顶级评论
+        // 2. 统计顶级评论数量（用于分页）
+        $rootCountSql = "SELECT COUNT(*) as count FROM " . static::getTableName() . "
+                         WHERE content_id = :content_id
+                         AND status_id = :status_id
+                         AND parent_id IS NULL";
+        $rootCountResult = $db->fetch($rootCountSql, [
+            'content_id' => $contentId,
+            'status_id' => $statusId
+        ]);
+        $rootTotal = (int)$rootCountResult['count'];
+        $totalPages = (int)ceil($rootTotal / $perPage);
+
+        // 3. 查询当前页的顶级评论
         $offset = ($page - 1) * $perPage;
         $rootSql = "SELECT * FROM " . static::getTableName() . "
                     WHERE content_id = :content_id
@@ -154,7 +164,7 @@ class Comment extends Model
             'status_id' => $statusId
         ]);
 
-        // 3. 如果没有顶级评论，直接返回
+        // 4. 如果没有顶级评论，直接返回
         if (empty($rootRows)) {
             return [
                 'items' => [],
@@ -163,7 +173,7 @@ class Comment extends Model
             ];
         }
 
-        // 4. 获取所有子评论（基于root_id）
+        // 5. 获取所有子评论（基于root_id）
         $rootIds = array_column($rootRows, 'id');
         $rootIdsPlaceholders = [];
         $params = [];
@@ -180,7 +190,7 @@ class Comment extends Model
         $params['status_id'] = $statusId;
         $childRows = $db->fetchAll($childSql, $params);
 
-        // 5. 构建评论树结构
+        // 6. 构建评论树结构
         $comments = [];
 
         // 先处理顶级评论
