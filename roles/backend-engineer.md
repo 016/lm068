@@ -84,6 +84,14 @@
     - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容已存放在布局文件内, 不需要重复渲染
   - backend form page
     - create and edit form page 相同的表单部分使用 _form.php 文件来实现共享
+  - view页面变量IDE引入指南
+    - View中使用的变量, 需要通过以下格式引入变量对应的源，方便 IDE 实现提示。demo 见 IDE 引物指南
+```IDE引入指南
+/**
+ * @var $this \App\Controllers\Frontend\VideoController //$this->funcName() will auto work in IDE
+ * @var $content \App\Models\Content //$content->id will auto work in IDE
+ */
+```
 
 ### 常亮使用约定
 - 原则上所有定义在 DDL 语句里的数值都需要转化为常量。然后以常量的形式使用到代码中。禁止直接 hardcode
