@@ -2,67 +2,23 @@
 /**
  * 前端视频详情视图
  *
- * 可用变量:
- * - $video: 视频对象
- * - $videoTags: 视频标签数组
- * - $videoCollections: 视频合集数组
- * - $videoLinks: 视频第三方平台链接数组
- * - $comments: 评论数组
- * - $commentPage: 当前评论页码
- * - $commentsTotalPages: 评论总页数
- * - $commentsTotalCount: 评论总数
- * - $announcements: 公告数组
- * - $relatedVideos: 关联视频数组
- * - $recommendedVideos: 推荐视频数组
- * - $resourceUrl: 资源URL前缀
- * - $currentLang: 当前语言
- * - $supportedLangs: 支持的语言列表
+ * @var $this \App\Controllers\Frontend\VideoController
+ * @var $video \App\Models\Content
+ * @var $videoTags array
+ * @var $videoCollections array
+ * @var $videoLinks array
+ * @var $videoLinkStats array
+ * @var $comments array
+ * @var $commentPage int
+ * @var $commentsTotalPages int
+ * @var $commentsTotalCount int
+ * @var $announcements array
+ * @var $relatedVideos array
+ * @var $recommendedVideos array
+ * @var $resourceUrl string
+ * @var $currentLang string
+ * @var $supportedLangs array
  */
-
-// 构建评论分页链接
-function buildCommentPaginationUrl(int $page, string $lang): string {
-    return "/videos/{$GLOBALS['video']->id}?comment_page={$page}&lang={$lang}";
-}
-
-// 递归渲染评论及其回复
-function renderComment($comment, string $currentLang, int $level = 0): void {
-    $isReply = $level > 0;
-    $marginClass = $level > 0 ? 'ms-4 mt-3' : '';
-    $itemClass = $isReply ? 'reply-item' : '';
-?>
-    <div class="comment-item <?= $itemClass ?>">
-        <div class="comment-avatar">
-            <img src="https://via.placeholder.com/40?text=U" alt="<?= $currentLang === 'zh' ? '用户头像' : 'User Avatar' ?>">
-        </div>
-        <div class="comment-content">
-            <div class="comment-header">
-                <strong><?= $currentLang === 'zh' ? '用户' : 'User' ?> #<?= $comment->user_id ?></strong>
-                <small class="text-muted ms-2"><?= date('Y-m-d H:i', strtotime($comment->created_at)) ?></small>
-            </div>
-            <div class="comment-text">
-                <?= nl2br(htmlspecialchars($comment->content)) ?>
-            </div>
-            <div class="comment-actions">
-                <button class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-reply me-1"></i><?= $currentLang === 'zh' ? '回复' : 'Reply' ?>
-                </button>
-                <button class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-hand-thumbs-up me-1"></i>0
-                </button>
-            </div>
-
-            <?php if (!empty($comment->replies)): ?>
-                <!-- 渲染子回复 -->
-                <div class="comment-replies <?= $marginClass ?>">
-                    <?php foreach ($comment->replies as $reply): ?>
-                        <?php renderComment($reply, $currentLang, $level + 1); ?>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-<?php
-}
 ?>
 
 <!-- 主要内容 -->
@@ -155,28 +111,19 @@ function renderComment($comment, string $currentLang, int $level = 0): void {
                             </div>
                         </div>
                         <?php if (!empty($videoLinks)): ?>
-                            <?php
-                            // 计算统计数据
-                            $totalPlays = array_sum(array_column($videoLinks, 'play_cnt'));
-                            $totalLikes = array_sum(array_column($videoLinks, 'like_cnt'));
-                            $totalFavorites = array_sum(array_column($videoLinks, 'favorite_cnt'));
-                            $totalDownloads = array_sum(array_column($videoLinks, 'download_cnt'));
-                            $totalComments = array_sum(array_column($videoLinks, 'comment_cnt'));
-                            $totalShares = array_sum(array_column($videoLinks, 'share_cnt'));
-                            ?>
-                            <?php if ($totalDownloads > 0): ?>
+                            <?php if ($videoLinkStats['totalDownloads'] > 0): ?>
                             <div class="col-6">
                                 <div class="meta-item">
                                     <i class="bi bi-download me-2"></i>
-                                    <?= $currentLang === 'zh' ? '下载次数' : 'Downloads' ?>: <?= number_format($totalDownloads) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
+                                    <?= $currentLang === 'zh' ? '下载次数' : 'Downloads' ?>: <?= number_format($videoLinkStats['totalDownloads']) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
                                 </div>
                             </div>
                             <?php endif; ?>
-                            <?php if ($totalShares > 0): ?>
+                            <?php if ($videoLinkStats['totalShares'] > 0): ?>
                             <div class="col-6">
                                 <div class="meta-item">
                                     <i class="bi bi-share me-2"></i>
-                                    <?= $currentLang === 'zh' ? '分享次数' : 'Shares' ?>: <?= number_format($totalShares) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
+                                    <?= $currentLang === 'zh' ? '分享次数' : 'Shares' ?>: <?= number_format($videoLinkStats['totalShares']) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
                                 </div>
                             </div>
                             <?php endif; ?>
@@ -257,7 +204,11 @@ function renderComment($comment, string $currentLang, int $level = 0): void {
                 <?php if (!empty($comments)): ?>
                     <div class="comments-list">
                         <?php foreach ($comments as $comment): ?>
-                            <?php renderComment($comment, $currentLang, 0); ?>
+                            <?php echo $this->view('videos._comment_item', [
+                                'comment' => $comment,
+                                'currentLang' => $currentLang,
+                                'level' => 0
+                            ]); ?>
                         <?php endforeach; ?>
                     </div>
 
@@ -265,24 +216,23 @@ function renderComment($comment, string $currentLang, int $level = 0): void {
                     <?php if ($commentsTotalPages > 1): ?>
                         <nav class="mt-4">
                             <div class="custom-pagination d-flex justify-content-center align-items-center">
-                                <a href="<?= $commentPage > 1 ? buildCommentPaginationUrl($commentPage - 1, $currentLang) : '#' ?>"
+                                <a href="<?= $commentPage > 1 ? $this->buildCommentPaginationUrl($commentPage - 1, $video->id, $currentLang) : '#' ?>"
                                    class="btn btn-outline-secondary btn-sm pagination-btn"
                                    <?= $commentPage <= 1 ? 'disabled' : '' ?>>
                                     <i class="bi bi-chevron-left"></i>
                                 </a>
                                 <div class="pagination-pages mx-3">
                                     <?php
-                                    $startPage = max(1, $commentPage - 2);
-                                    $endPage = min($commentsTotalPages, $commentPage + 2);
-                                    for ($i = $startPage; $i <= $endPage; $i++):
+                                    $paginationRange = $this->calculateCommentPaginationRange($commentPage, $commentsTotalPages);
+                                    for ($i = $paginationRange['start']; $i <= $paginationRange['end']; $i++):
                                     ?>
-                                        <a href="<?= buildCommentPaginationUrl($i, $currentLang) ?>"
+                                        <a href="<?= $this->buildCommentPaginationUrl($i, $video->id, $currentLang) ?>"
                                            class="btn <?= $i === $commentPage ? 'btn-primary' : 'btn-outline-secondary' ?> btn-sm pagination-page">
                                             <?= $i ?>
                                         </a>
                                     <?php endfor; ?>
                                 </div>
-                                <a href="<?= $commentPage < $commentsTotalPages ? buildCommentPaginationUrl($commentPage + 1, $currentLang) : '#' ?>"
+                                <a href="<?= $commentPage < $commentsTotalPages ? $this->buildCommentPaginationUrl($commentPage + 1, $video->id, $currentLang) : '#' ?>"
                                    class="btn btn-outline-secondary btn-sm pagination-btn"
                                    <?= $commentPage >= $commentsTotalPages ? 'disabled' : '' ?>>
                                     <i class="bi bi-chevron-right"></i>

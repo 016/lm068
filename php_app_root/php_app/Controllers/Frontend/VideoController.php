@@ -173,12 +173,16 @@ class VideoController extends FrontendController
         // 获取推荐视频（随机推荐，取4条）
         $recommendedVideos = $this->getRecommendedVideos($id, 4);
 
+        // 计算视频链接统计数据
+        $videoLinkStats = $this->calculateVideoLinkStats($videoLinks);
+
         // 准备视图数据
         $data = [
             'video' => $video,
             'videoTags' => $videoTags,
             'videoCollections' => $videoCollections,
             'videoLinks' => $videoLinks,
+            'videoLinkStats' => $videoLinkStats,
             'comments' => $comments,
             'commentPage' => $commentPage,
             'commentsTotalPages' => $commentsTotalPages,
@@ -371,6 +375,40 @@ class VideoController extends FrontendController
                 'collection' => $currentLang === 'zh' ? '请选择合集' : 'Select Collections',
                 'collectionSearch' => $currentLang === 'zh' ? '搜索合集...' : 'Search collections...'
             ]
+        ];
+    }
+
+    /**
+     * 构建评论分页链接 (供View调用)
+     */
+    public function buildCommentPaginationUrl(int $page, int $videoId, string $lang): string
+    {
+        return "/videos/{$videoId}?comment_page={$page}&lang={$lang}";
+    }
+
+    /**
+     * 计算视频链接统计数据 (供View调用)
+     */
+    public function calculateVideoLinkStats(array $videoLinks): array
+    {
+        return [
+            'totalPlays' => array_sum(array_column($videoLinks, 'play_cnt')),
+            'totalLikes' => array_sum(array_column($videoLinks, 'like_cnt')),
+            'totalFavorites' => array_sum(array_column($videoLinks, 'favorite_cnt')),
+            'totalDownloads' => array_sum(array_column($videoLinks, 'download_cnt')),
+            'totalComments' => array_sum(array_column($videoLinks, 'comment_cnt')),
+            'totalShares' => array_sum(array_column($videoLinks, 'share_cnt')),
+        ];
+    }
+
+    /**
+     * 计算评论分页范围 (供View调用)
+     */
+    public function calculateCommentPaginationRange(int $currentPage, int $totalPages, int $range = 2): array
+    {
+        return [
+            'start' => max(1, $currentPage - $range),
+            'end' => min($totalPages, $currentPage + $range)
         ];
     }
 }
