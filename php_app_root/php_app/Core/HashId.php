@@ -229,4 +229,65 @@ class HashId
 
         return $instance;
     }
+
+    /**
+     * 静态方法：根据配置智能编码ID
+     * 如果配置启用HashID，返回hash；否则返回原始数字ID字符串
+     *
+     * @param int $id 数字ID
+     * @return string 编码后的字符串（hash或数字）
+     */
+    public static function encodeId(int $id): string
+    {
+        $enabled = Config::get('hashid.enabled', false);
+
+        if ($enabled) {
+            $instance = self::getInstance();
+            return $instance->encode($id);
+        }
+
+        return (string)$id;
+    }
+
+    /**
+     * 静态方法：根据配置智能解码
+     * 如果配置启用HashID，尝试解码hash；否则直接转换为数字
+     * 支持向后兼容：即使开启hash，也能识别纯数字ID
+     *
+     * @param string $value 要解码的字符串（hash或数字）
+     * @return int|null 解码后的ID，失败返回null
+     */
+    public static function decodeId(string $value): ?int
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        $enabled = Config::get('hashid.enabled', false);
+
+        if ($enabled) {
+            $instance = self::getInstance();
+            $decoded = $instance->decode($value);
+
+            // 如果解码失败但是纯数字，尝试作为数字ID（向后兼容）
+            if ($decoded === null && is_numeric($value)) {
+                return (int)$value;
+            }
+
+            return $decoded;
+        }
+
+        // HashID功能未启用，直接转换为数字
+        return is_numeric($value) ? (int)$value : null;
+    }
+
+    /**
+     * 检查HashID功能是否启用
+     *
+     * @return bool
+     */
+    public static function isEnabled(): bool
+    {
+        return (bool)Config::get('hashid.enabled', false);
+    }
 }

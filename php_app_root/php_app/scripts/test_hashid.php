@@ -85,29 +85,33 @@ foreach ($videoIds as $videoId) {
     echo "Video ID: $videoId -> URL: /videos/$hash\n";
 }
 
-echo "\n测试配置开关功能:\n";
+echo "\n测试配置开关功能（使用静态方法）:\n";
 echo "----------------------------------------\n";
 
-// 模拟Controller中的逻辑
 $testVideoId = 123;
 
-// 测试开启状态
-$hashIdEnabled = true;
-if ($hashIdEnabled) {
-    $result = $hashId->encode($testVideoId);
-} else {
-    $result = (string)$testVideoId;
-}
-echo "HashID开启 - Video ID: $testVideoId -> URL参数: $result\n";
+echo "当前配置: HashID " . (HashId::isEnabled() ? "已启用" : "未启用") . "\n\n";
 
-// 测试关闭状态
-$hashIdEnabled = false;
-if ($hashIdEnabled) {
-    $result = $hashId->encode($testVideoId);
-} else {
-    $result = (string)$testVideoId;
-}
-echo "HashID关闭 - Video ID: $testVideoId -> URL参数: $result\n";
+// 使用新的静态方法 - 自动根据配置处理
+$encoded = HashId::encodeId($testVideoId);
+echo "编码: HashId::encodeId($testVideoId) = $encoded\n";
+
+$decoded = HashId::decodeId($encoded);
+echo "解码: HashId::decodeId('$encoded') = $decoded\n";
+
+// 测试向后兼容（传入数字字符串）
+$numericId = '456';
+$decoded2 = HashId::decodeId($numericId);
+echo "兼容: HashId::decodeId('$numericId') = $decoded2 （支持纯数字）\n";
+
+echo "\n在Controller中的使用示例:\n";
+echo "----------------------------------------\n";
+echo "// 编码（生成URL）:\n";
+echo "\$hash = HashId::encodeId(\$videoId);\n";
+echo "\$url = \"/videos/{\$hash}\";\n\n";
+echo "// 解码（接收URL参数）:\n";
+echo "\$param = \$request->getParam(0);\n";
+echo "\$id = HashId::decodeId(\$param);\n";
 
 echo "\n配置说明:\n";
 echo "----------------------------------------\n";
@@ -116,7 +120,11 @@ echo "'hashid' => [\n";
 echo "    'enabled' => true,  // true=启用hash, false=使用数字ID\n";
 echo "    'salt' => 'lm068_video_site_2025',\n";
 echo "    'min_length' => 6,\n";
-echo "]\n";
+echo "]\n\n";
+echo "优势:\n";
+echo "- 所有配置逻辑封装在HashId类中\n";
+echo "- Controller层代码简洁，只需调用静态方法\n";
+echo "- 符合单一职责原则和封装原则\n";
 
 echo "\n========================================\n";
 echo "测试完成！\n";
