@@ -137,6 +137,14 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.btn-xs {
+    --bs-btn-padding-y: 0.15rem;
+    --bs-btn-padding-x: 0.3rem;
+    --bs-btn-font-size: 0.75rem;
+    --bs-btn-border-radius: var(--bs-border-radius-sm);
+}
+
+
 .login-type-btn {
     min-width: 66px;
     padding: 0.25rem 1rem;

@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * @var $this \App\Controllers\Frontend\VideoController //$this->funcName() will auto work in IDE
+ * @var $content \App\Models\Content //$content->id will auto work in IDE
+ */
+
 /**
  * 前端视频列表视图
  *
@@ -222,7 +228,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                         $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                     ?>
                                         <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
-                                           class="btn btn-outline-primary btn-sm me-1">
+                                           class="btn btn-outline-primary btn-xs me-1">
                                             <?= htmlspecialchars($tagName) ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -234,7 +240,7 @@ if (!empty($selectedContentTypeIds)) $currentParams['content_type_id'] = implode
                                         $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                     ?>
                                         <a href="/videos?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
-                                           class="btn btn-outline-success btn-sm">
+                                           class="btn btn-outline-success btn-xs">
                                             <?= htmlspecialchars($collectionName) ?>
                                         </a>
                                     <?php endif; ?>
