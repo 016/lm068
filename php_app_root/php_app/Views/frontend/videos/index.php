@@ -69,8 +69,8 @@
             </div>
 
             <!-- 搜索结果显示 -->
-            <div class="col-md-2 d-flex align-items-end">
-                <div class="w-100">
+            <div class="col-md-2">
+                <div class="search-result-container">
                     <span class="text-muted">
                         <?php if ($currentLang === 'zh'): ?>
                             搜索结果: 共找到 <strong><?= $totalVideos ?></strong> 个

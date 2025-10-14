@@ -5,6 +5,18 @@
     margin-top: 2rem;
 }
 
+/* 筛选区域样式 - 统一高度 */
+.card-body .input-group .form-control {
+    min-height: 38px;
+}
+
+/* 搜索结果区域 - 垂直居中对齐 */
+.search-result-container {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+}
+
 /* 自定义多选下拉框样式 */
 .custom-multiselect {
     position: relative;
