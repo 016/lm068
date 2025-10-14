@@ -671,11 +671,8 @@ class Content extends UploadableModel implements HasStatuses
                 $params[$key] = (int)$typeId;
             }
             $whereClauses[] = "c.content_type_id IN (" . implode(',', $placeholders) . ")";
-        } else {
-            // 默认只显示视频类型
-            $whereClauses[] = "c.content_type_id = :default_content_type";
-            $params['default_content_type'] = ContentType::VIDEO->value;
         }
+        // 如果没有指定content_type_ids，则显示所有内容类型（不添加额外的WHERE条件）
 
         // 关键词搜索
         if (!empty($filters['search'])) {
