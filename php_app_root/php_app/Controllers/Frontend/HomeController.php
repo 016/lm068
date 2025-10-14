@@ -12,7 +12,7 @@ class HomeController extends FrontendController
         $this->redirect('content');
         exit;
 
-        $content = $this->view('videos.list', [
+        $content = $this->view('contents.list', [
             'videos' => [],
             'message' => 'Welcome to Video Content Site'
         ]);

@@ -94,7 +94,7 @@ class ContentController extends FrontendController
         ];
 
         // 渲染视图
-        $content = $this->view('videos.index', $data);
+        $content = $this->view('contents.index', $data);
         $pageTitle = $currentLang === 'zh' ? '视频列表' : 'Video List';
         echo $this->layout($content, $pageTitle, $data);
     }
@@ -212,7 +212,7 @@ class ContentController extends FrontendController
         ];
 
         // 渲染视图
-        $content = $this->view('videos.view', $data);
+        $content = $this->view('contents.view', $data);
         $pageTitle = $video->getTitle($currentLang);
         echo $this->layout($content, $pageTitle, $data);
     }

@@ -18,8 +18,8 @@
 
 ## 模块示例
 - 用户前端模块
-    - f-video-list: 视频列表页面
-    - f-video-detail: 视频详情页面
+    - f-content-list: 内容列表页面
+    - f-content-detail: 内容详情页面
     - f-user-login: 用户登录页面
     - f-user-comments: 评论展示页面
     - f-subscribe-email: 邮件订阅页面

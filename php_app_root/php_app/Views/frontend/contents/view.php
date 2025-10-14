@@ -205,7 +205,7 @@
                 <?php if (!empty($comments)): ?>
                     <div class="comments-list">
                         <?php foreach ($comments as $comment): ?>
-                            <?php echo $this->view('videos._comment_item', [
+                            <?php echo $this->view('contents._comment_item', [
                                 'comment' => $comment,
                                 'currentLang' => $currentLang,
                                 'level' => 0

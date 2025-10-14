@@ -49,7 +49,7 @@ $userName = !empty($comment->user_nickname)
             <!-- 渲染子回复 -->
             <div class="comment-replies <?= $marginClass ?>">
                 <?php foreach ($comment->replies as $reply): ?>
-                    <?php echo $this->view('videos._comment_item', [
+                    <?php echo $this->view('contents._comment_item', [
                         'comment' => $reply,
                         'currentLang' => $currentLang,
                         'level' => $level + 1
