@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? '视频创作展示网站') ?></title>
 
-    <!-- Bootstrap CSS 5.3.7 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS 5.3.8 -->
+    <link href="/assets/lib/bootstrap-5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons 1.13.1 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets/lib/bootstrap-icons-1.13.1/bootstrap-icons.css" rel="stylesheet">
 
     <!-- 自定义CSS -->
     <link href="<?= $resourceUrl ?? '/assets' ?>/css/main.css" rel="stylesheet">
@@ -38,7 +38,7 @@
             <!-- Logo -->
             <a class="navbar-brand fw-bold" href="/">
                 <i class="bi bi-play-circle-fill me-2"></i>
-                <span data-i18n="nav.site_name"><?= ($currentLang ?? 'zh') === 'zh' ? '视频创作' : 'Video Creation' ?></span>
+                <span data-i18n="nav.site_name"><?= ($currentLang ?? 'zh') === 'zh' ? 'DP_IT ' : 'DP_IT' ?></span>
             </a>
 
             <!-- 移动端切换按钮 -->
@@ -202,7 +202,7 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/lib/bootstrap-5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- i18n脚本 - 必须按顺序加载 -->
     <script src="<?= $resourceUrl ?? '/assets' ?>/js/i18n.js"></script>
