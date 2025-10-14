@@ -1,5 +1,23 @@
 /* 视频详情页面专用样式 - f-video-detail_5.css */
 
+/* 深色模式下的card背景色增强 - 确保与body背景有明显区分 */
+[data-bs-theme="dark"] .card {
+    background-color: #2d3748 !important; /* 比body背景(#111827)更亮的灰蓝色 */
+    border: 1px solid #4a5568 !important;
+}
+
+/* 深色模式下的list-group-item背景色 */
+[data-bs-theme="dark"] .list-group-item {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+}
+
+/* 深色模式下的嵌套card背景色 - 关联视频内的小卡片 */
+[data-bs-theme="dark"] .card-body .card {
+    background-color: #374151 !important;
+    border: 1px solid #4b5563 !important;
+}
+
 /* 视频封面容器 - 移除播放按钮 */
 .video-cover-container {
     position: relative;

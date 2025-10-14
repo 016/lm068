@@ -59,6 +59,11 @@ body {
     background-color: var(--gray-200);
 }
 
+/* 深色模式下 body 背景颜色 */
+[data-bs-theme="dark"] body {
+    background-color: #111827; /* 深灰色背景，确保与card有明显区分 */
+}
+
 /* 导航栏样式 */
 .navbar {
     transition: all 0.3s ease;
