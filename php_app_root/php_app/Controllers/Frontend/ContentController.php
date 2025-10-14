@@ -422,6 +422,44 @@ class ContentController extends FrontendController
     }
 
     /**
+     * 构建视频详情页面URL (供View调用)
+     * 统一管理视频详情页面URL的生成，方便后续调整
+     *
+     * @param int $videoId 视频数字ID
+     * @param string $title 视频标题（用于SEO友好URL）
+     * @param array $queryParams 可选的查询参数（如 lang 等）
+     * @return string 完整的视频详情页面URL
+     */
+    public function buildVideoDetailUrl(int $videoId, string $title = '', array $queryParams = []): string
+    {
+        $hashId = $this->getVideoHashId($videoId);
+
+        // 如果提供了标题，进行URL友好化处理
+        $urlTitle = '';
+        if (!empty($title)) {
+            // 移除特殊字符，保留字母、数字、中文和连字符
+            $urlTitle = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $title);
+            // 将空格替换为连字符
+            $urlTitle = preg_replace('/\s+/', '-', trim($urlTitle));
+            // 移除多余的连字符
+            $urlTitle = preg_replace('/-+/', '-', $urlTitle);
+            // 限制长度（避免URL过长）
+            $urlTitle = mb_substr($urlTitle, 0, 100);
+            $urlTitle = '/' . $urlTitle;
+        }
+
+        // 构建基础URL
+        $url = "/content/{$hashId}{$urlTitle}";
+
+        // 添加查询参数
+        if (!empty($queryParams)) {
+            $url .= '?' . http_build_query($queryParams);
+        }
+
+        return $url;
+    }
+
+    /**
      * 计算视频链接统计数据 (供View调用)
      */
     public function calculateVideoLinkStats(array $videoLinks): array
