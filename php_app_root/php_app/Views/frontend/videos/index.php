@@ -35,25 +35,25 @@
 
     <div class="card-body">
         <div class="row g-3 mb-3">
-            <!-- 内容类型筛选 -->
-            <div class="col-md-4">
-                <div id="contentTypeMultiSelect" class="multi-select-container"></div>
-            </div>
 
             <!-- 标签筛选 -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div id="tagMultiSelect" class="multi-select-container"></div>
             </div>
 
             <!-- 合集筛选 -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div id="collectionMultiSelect" class="multi-select-container"></div>
             </div>
         </div>
 
         <div class="row g-3">
-            <!-- 关键词搜索 -->
+            <!-- 内容类型筛选 -->
             <div class="col-md-6">
+                <div id="contentTypeMultiSelect" class="multi-select-container"></div>
+            </div>
+            <!-- 关键词搜索 -->
+            <div class="col-md-4">
                 <div class="input-group">
                     <input type="text"
                            class="form-control"
@@ -69,7 +69,7 @@
             </div>
 
             <!-- 搜索结果显示 -->
-            <div class="col-md-6 d-flex align-items-end">
+            <div class="col-md-2 d-flex align-items-end">
                 <div class="w-100">
                     <span class="text-muted">
                         <?php if ($currentLang === 'zh'): ?>
