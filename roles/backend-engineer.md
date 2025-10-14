@@ -86,10 +86,12 @@
     - create and edit form page 相同的表单部分使用 _form.php 文件来实现共享
   - view页面变量IDE引入指南
     - View中使用的变量(覆盖 Controller 和 Model), 需要通过以下格式引入变量对应的源，方便实现 IDE 提示。demo 见 "IDE引入指南"
+    - 当出现指南中 array 包裹 active record 的情形 (like \$video in \$videos)，需要为包裹的 active record (\$video) 也设置对应的注释变量
 ```IDE引入指南
 /**
  * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
- * @var $content \App\Models\Content //$content->id will auto work in IDE
+ * @var $videos array
+ * @var $video \App\Models\Content //$content->id will auto work in IDE
  */
 ```
 
