@@ -14,7 +14,7 @@
 .search-result-container {
     display: flex;
     align-items: center;
-    min-height: 52px;
+    min-height: 45px;
 }
 
 /* 自定义多选下拉框样式 */

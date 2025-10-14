@@ -86,7 +86,7 @@ const I18N_CONFIG = {
         // ===== Navigation =====
         'nav.site_name': 'DP_IT',
         'nav.home': 'Home',
-        'nav.content': 'Videos',
+        'nav.content': 'Content',
         'nav.about': 'About',
         'nav.login': 'Login',
         'nav.register': 'Register',
@@ -109,7 +109,7 @@ const I18N_CONFIG = {
         'pagination.info_total_pages': '',
 
         // ===== Empty state =====
-        'empty.title': 'No Videos',
+        'empty.title': 'No Content',
         'empty.desc': 'No content found matching your criteria. Try adjusting your filters.',
 
         // ===== Footer =====

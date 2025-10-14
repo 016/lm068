@@ -54,7 +54,7 @@
             </div>
             <!-- 关键词搜索 -->
             <div class="col-md-4">
-                <div class="input-group  mt-2">
+                <div class="input-group  mt-1">
                     <input type="text"
                            class="form-control"
                            placeholder="<?= $currentLang === 'zh' ? '输入关键词搜索...' : 'Search keywords...' ?>"
