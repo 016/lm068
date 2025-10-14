@@ -49,4 +49,31 @@ enum ContentType: int
             self::VIDEO->value => self::VIDEO->label(),
         ];
     }
+
+    /**
+     * 获取所有内容类型（用于前端筛选）
+     * 返回格式: [['id' => 1, 'name_cn' => '网站公告', 'name_en' => 'Announcement'], ...]
+     *
+     * @return array
+     */
+    public static function getAllContentTypes(): array
+    {
+        return [
+            [
+                'id' => self::ANNOUNCEMENT->value,
+                'name_cn' => self::ANNOUNCEMENT->label(),
+                'name_en' => self::ANNOUNCEMENT->englishLabel()
+            ],
+            [
+                'id' => self::ARTICLE->value,
+                'name_cn' => self::ARTICLE->label(),
+                'name_en' => self::ARTICLE->englishLabel()
+            ],
+            [
+                'id' => self::VIDEO->value,
+                'name_cn' => self::VIDEO->label(),
+                'name_en' => self::VIDEO->englishLabel()
+            ]
+        ];
+    }
 }

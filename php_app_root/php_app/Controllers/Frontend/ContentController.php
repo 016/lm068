@@ -54,15 +54,16 @@ class ContentController extends FrontendController
         // 批量加载关联数据
         Content::loadRelations($videos);
 
-        // 加载所有可用的标签和合集(用于筛选表单)
+        // 加载所有可用的标签、合集和内容类型(用于筛选表单)
         $allTags = Tag::getEnabledTags();
         $allCollections = Collection::getEnabledCollections();
+        $allContentTypes = ContentType::getAllContentTypes();
 
         // 准备当前查询参数 (供View使用)
         $currentParams = $this->getCurrentParams($search, $tagIds, $collectionIds, $contentTypeIds);
 
         // 准备JavaScript数据 (供View使用)
-        $videoListJsData = $this->prepareVideoListJsData($allTags, $tagIds, $allCollections, $collectionIds, $currentLang);
+        $videoListJsData = $this->prepareVideoListJsData($allTags, $tagIds, $allCollections, $collectionIds, $allContentTypes, $contentTypeIds, $currentLang);
 
         // 准备视图数据
         $data = [
@@ -77,6 +78,7 @@ class ContentController extends FrontendController
             'selectedContentTypeIds' => $contentTypeIds,
             'allTags' => $allTags,
             'allCollections' => $allCollections,
+            'allContentTypes' => $allContentTypes,
             'currentParams' => $currentParams,  // 新增：当前查询参数
             'videoListJsData' => $videoListJsData,  // 新增：JavaScript数据
             'resourceUrl' => '/assets', // 前端资源URL前缀
@@ -362,7 +364,7 @@ class ContentController extends FrontendController
     /**
      * 准备用于JavaScript的视频列表数据 (供View调用)
      */
-    public function prepareVideoListJsData(array $allTags, array $selectedTagIds, array $allCollections, array $selectedCollectionIds, string $currentLang): array
+    public function prepareVideoListJsData(array $allTags, array $selectedTagIds, array $allCollections, array $selectedCollectionIds, array $allContentTypes, array $selectedContentTypeIds, string $currentLang): array
     {
         return [
             'allTags' => array_map(function($tag) use ($currentLang) {
@@ -379,12 +381,21 @@ class ContentController extends FrontendController
                 ];
             }, $allCollections),
             'selectedCollectionIds' => array_map('strval', $selectedCollectionIds),
+            'allContentTypes' => array_map(function($contentType) use ($currentLang) {
+                return [
+                    'id' => $contentType['id'],
+                    'text' => $currentLang === 'zh' ? $contentType['name_cn'] : $contentType['name_en']
+                ];
+            }, $allContentTypes),
+            'selectedContentTypeIds' => array_map('strval', $selectedContentTypeIds),
             'currentLang' => $currentLang,
             'placeholders' => [
                 'tag' => $currentLang === 'zh' ? '请选择标签' : 'Select Tags',
                 'tagSearch' => $currentLang === 'zh' ? '搜索标签...' : 'Search tags...',
                 'collection' => $currentLang === 'zh' ? '请选择合集' : 'Select Collections',
-                'collectionSearch' => $currentLang === 'zh' ? '搜索合集...' : 'Search collections...'
+                'collectionSearch' => $currentLang === 'zh' ? '搜索合集...' : 'Search collections...',
+                'contentType' => $currentLang === 'zh' ? '请选择内容类型' : 'Select Content Types',
+                'contentTypeSearch' => $currentLang === 'zh' ? '搜索内容类型...' : 'Search content types...'
             ]
         ];
     }

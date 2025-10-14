@@ -19,11 +19,39 @@ function initMultiSelectComponents() {
 
     const data = window.videoListData;
 
+    // 初始化内容类型多选组件
+    initContentTypeMultiSelect(data);
+
     // 初始化标签多选组件
     initTagMultiSelect(data);
 
     // 初始化合集多选组件
     initCollectionMultiSelect(data);
+}
+
+/**
+ * 初始化内容类型多选组件
+ */
+function initContentTypeMultiSelect(data) {
+    // 找到已选中的内容类型对象
+    const selectedContentTypes = data.allContentTypes.filter(contentType =>
+        data.selectedContentTypeIds.includes(String(contentType.id))
+    );
+
+    // 创建内容类型多选组件实例
+    const contentTypeSelector = new MultiSelectDropdown('#contentTypeMultiSelect', {
+        placeholder: data.placeholders.contentType,
+        searchPlaceholder: data.placeholders.contentTypeSearch,
+        hiddenInputName: 'content_type_id',
+        maxDisplayItems: 3,
+        columns: 2,
+        data: data.allContentTypes,
+        selected: selectedContentTypes,
+        allowClear: true
+    });
+
+    // 内容类型变更不会立即提交表单，需要点击搜索按钮才会提交
+    // 移除了自动提交逻辑，改为用户点击搜索按钮时才提交
 }
 
 /**

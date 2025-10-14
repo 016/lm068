@@ -35,13 +35,18 @@
 
     <div class="card-body">
         <div class="row g-3 mb-3">
+            <!-- 内容类型筛选 -->
+            <div class="col-md-4">
+                <div id="contentTypeMultiSelect" class="multi-select-container"></div>
+            </div>
+
             <!-- 标签筛选 -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div id="tagMultiSelect" class="multi-select-container"></div>
             </div>
 
             <!-- 合集筛选 -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div id="collectionMultiSelect" class="multi-select-container"></div>
             </div>
         </div>
