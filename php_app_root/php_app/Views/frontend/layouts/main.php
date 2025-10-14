@@ -54,7 +54,7 @@
                         <a class="nav-link <?= ($_SERVER['REQUEST_URI'] === '/' ? 'active' : '') ?>" href="/" data-i18n="nav.home"><?= ($currentLang ?? 'zh') === 'zh' ? '首页' : 'Home' ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/videos') === 0 ? 'active' : '') ?>" href="/videos" data-i18n="nav.videos"><?= ($currentLang ?? 'zh') === 'zh' ? '视频' : 'Videos' ?></a>
+                        <a class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/content') === 0 ? 'active' : '') ?>" href="/content" data-i18n="nav.content"><?= ($currentLang ?? 'zh') === 'zh' ? '内容' : 'Content' ?></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-i18n="nav.about"><?= ($currentLang ?? 'zh') === 'zh' ? '关于' : 'About' ?></a>

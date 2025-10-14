@@ -5,9 +5,9 @@ const I18N_CONFIG = {
     // 中文文本
     zh: {
         // ===== 导航栏 =====
-        'nav.site_name': '视频创作',
+        'nav.site_name': '内容创作',
         'nav.home': '首页',
-        'nav.videos': '视频',
+        'nav.content': '内容',
         'nav.about': '关于',
         'nav.login': '登录',
         'nav.register': '注册',
@@ -17,7 +17,7 @@ const I18N_CONFIG = {
         'filter.collection_placeholder': '请选择合集',
         'filter.search_placeholder': '输入关键词搜索...',
         'filter.search_result': '搜索结果: 共找到',
-        'filter.search_result_count': '个视频',
+        'filter.search_result_count': '个内容',
         'filter.selected_count': '共{count}个',
         'filter.search_btn': '搜索',
 
@@ -25,18 +25,18 @@ const I18N_CONFIG = {
         'pagination.prev': '上一页',
         'pagination.next': '下一页',
         'pagination.info_total': '共',
-        'pagination.info_videos': '个视频，当前第',
+        'pagination.info_content': '个内容，当前第',
         'pagination.info_page': '页，共',
         'pagination.info_total_pages': '页',
 
         // ===== 空状态 =====
-        'empty.title': '暂无视频',
-        'empty.desc': '没有找到符合条件的视频，请尝试调整筛选条件',
+        'empty.title': '暂无内容',
+        'empty.desc': '没有找到符合条件的内容，请尝试调整筛选条件',
 
         // ===== Footer =====
         'footer.navigation': '网站导航',
         'footer.home': '首页',
-        'footer.video_list': '视频列表',
+        'footer.video_list': '内容列表',
         'footer.user_center': '用户中心',
         'footer.favorites': '收藏夹',
 
@@ -53,7 +53,7 @@ const I18N_CONFIG = {
         'footer.tools': '开发工具',
 
         'footer.subscribe': '邮件订阅',
-        'footer.subscribe_desc': '加入邮件列表，获取最新视频更新和资讯',
+        'footer.subscribe_desc': '加入邮件列表，获取最新内容更新和资讯',
         'footer.subscribe_placeholder': '请输入您的邮箱地址',
         'footer.subscribe_btn': '订阅',
 
@@ -63,7 +63,7 @@ const I18N_CONFIG = {
         'footer.douyin': '抖音',
         'footer.wechat': '微信',
 
-        'footer.copyright': '视频创作展示网站. 保留所有权利.',
+        'footer.copyright': '内容创作展示网站. 保留所有权利.',
         'footer.terms': '使用条款',
         'footer.cookies': 'Cookie政策',
 
@@ -77,7 +77,7 @@ const I18N_CONFIG = {
         'float.back_to_top': '回到顶部',
         'float.contact': '联系我们',
 
-        // ===== 视频卡片 =====
+        // ===== 内容卡片 =====
         'video.author': '作者',
     },
 
@@ -86,7 +86,7 @@ const I18N_CONFIG = {
         // ===== Navigation =====
         'nav.site_name': 'Video Creation',
         'nav.home': 'Home',
-        'nav.videos': 'Videos',
+        'nav.content': 'Videos',
         'nav.about': 'About',
         'nav.login': 'Login',
         'nav.register': 'Register',
@@ -96,7 +96,7 @@ const I18N_CONFIG = {
         'filter.collection_placeholder': 'Select Collections',
         'filter.search_placeholder': 'Search keywords...',
         'filter.search_result': 'Search Results: Found',
-        'filter.search_result_count': 'videos',
+        'filter.search_result_count': 'content',
         'filter.selected_count': 'Total {count}',
         'filter.search_btn': 'Search',
 
@@ -104,13 +104,13 @@ const I18N_CONFIG = {
         'pagination.prev': 'Previous',
         'pagination.next': 'Next',
         'pagination.info_total': 'Total',
-        'pagination.info_videos': 'videos, Page',
+        'pagination.info_content': 'content, Page',
         'pagination.info_page': 'of',
         'pagination.info_total_pages': '',
 
         // ===== Empty state =====
         'empty.title': 'No Videos',
-        'empty.desc': 'No videos found matching your criteria. Try adjusting your filters.',
+        'empty.desc': 'No content found matching your criteria. Try adjusting your filters.',
 
         // ===== Footer =====
         'footer.navigation': 'Navigation',

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \App\Controllers\Frontend\VideoController //$this->funcName() will auto work in IDE
+ * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
  * @var $video \App\Models\Content //$content->id will auto work in IDE
  */
 
@@ -27,7 +27,7 @@
 ?>
 
 <!-- 视频筛选区域 -->
-<form class="card mb-4" method="GET" action="/videos">
+<form class="card mb-4" method="GET" action="/content">
     <!-- 保持语言参数 -->
     <?php if (!empty($currentLang)): ?>
         <input type="hidden" name="lang" value="<?= $currentLang ?>">
@@ -68,9 +68,9 @@
                 <div class="w-100">
                     <span class="text-muted">
                         <?php if ($currentLang === 'zh'): ?>
-                            搜索结果: 共找到 <strong><?= $totalVideos ?></strong> 个视频
+                            搜索结果: 共找到 <strong><?= $totalVideos ?></strong> 个
                         <?php else: ?>
-                            Search Results: Found <strong><?= $totalVideos ?></strong> videos
+                            Search Results: Found <strong><?= $totalVideos ?></strong>
                         <?php endif; ?>
                     </span>
                 </div>
@@ -87,7 +87,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 video-card-container">
                     <div class="card h-100 video-card">
                         <div class="position-relative">
-                            <a class="video-thumbnail" href="/videos/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>">
+                            <a class="video-thumbnail" href="/content/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>">
                                 <?php if (!empty($video->thumbnail)): ?>
                                     <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
                                          alt="<?= htmlspecialchars($video->getDisplayTitle()) ?>"
@@ -97,7 +97,7 @@
                         </div>
                         <div class="card-body p-3">
                             <h5 class="card-title video-title">
-                                <a href="/videos/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
+                                <a href="/content/<?= $this->getVideoHashId($video->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
                                     <?= htmlspecialchars($video->getTitle($currentLang)) ?>
                                 </a>
                             </h5>
@@ -121,7 +121,7 @@
                                     foreach ($displayTags as $tag):
                                         $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                     ?>
-                                        <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                        <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
                                            class="btn btn-outline-primary btn-xs me-1">
                                             <?= htmlspecialchars($tagName) ?>
                                         </a>
@@ -133,7 +133,7 @@
                                         $collection = $video->collections[0];
                                         $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                     ?>
-                                        <a href="/videos?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                                        <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
                                            class="btn btn-outline-success btn-xs">
                                             <?= htmlspecialchars($collectionName) ?>
                                         </a>
@@ -154,7 +154,7 @@
             $currentParams['lang'] = $currentLang;
         }
     ?>
-        <nav aria-label="<?= $currentLang === 'zh' ? '视频列表分页' : 'Video List Pagination' ?>" class="mt-5">
+        <nav aria-label="<?= $currentLang === 'zh' ? '列表分页' : 'Video List Pagination' ?>" class="mt-5">
             <div class="pagination-wrapper d-flex justify-content-center align-items-center">
                 <!-- 上一页 -->
                 <?php if ($currentPage > 1): ?>
@@ -206,9 +206,9 @@
             <div class="text-center mt-3">
                 <small class="text-muted">
                     <?php if ($currentLang === 'zh'): ?>
-                        共 <?= $totalVideos ?> 个视频，当前第 <?= $currentPage ?> 页，共 <?= $totalPages ?> 页
+                        共 <?= $totalVideos ?> 个，当前第 <?= $currentPage ?> 页，共 <?= $totalPages ?> 页
                     <?php else: ?>
-                        Total <?= $totalVideos ?> videos, Page <?= $currentPage ?> of <?= $totalPages ?>
+                        Total <?= $totalVideos ?> , Page <?= $currentPage ?> of <?= $totalPages ?>
                     <?php endif; ?>
                 </small>
             </div>
@@ -219,8 +219,8 @@
     <!-- 空状态 -->
     <div class="empty-state">
         <i class="bi bi-film"></i>
-        <h3 data-i18n="empty.title"><?= $currentLang === 'zh' ? '暂无视频' : 'No Videos' ?></h3>
-        <p data-i18n="empty.desc"><?= $currentLang === 'zh' ? '没有找到符合条件的视频，请尝试调整筛选条件' : 'No videos found matching your criteria. Try adjusting your filters.' ?></p>
+        <h3 data-i18n="empty.title"><?= $currentLang === 'zh' ? '暂无内容' : 'No Contents' ?></h3>
+        <p data-i18n="empty.desc"><?= $currentLang === 'zh' ? '没有找到符合条件的内容，请尝试调整筛选条件' : 'No Contents found matching your criteria. Try adjusting your filters.' ?></p>
     </div>
 <?php endif; ?>
 

@@ -32,7 +32,7 @@
   - 新增 `getDescription($lang)` - 根据语言获取合集描述
 
 #### Controller层改造
-- **`php_app/Controllers/Frontend/VideoController.php`**
+- **`php_app/Controllers/Frontend/ContentController.php`**
   - 在 `index()` 方法中获取当前语言
   - 将语言信息传递到视图层
   - 根据语言设置页面标题

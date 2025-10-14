@@ -2,7 +2,7 @@
 /**
  * 评论组件 - 支持递归渲染
  *
- * @var $this \App\Controllers\Frontend\VideoController
+ * @var $this \App\Controllers\Frontend\ContentController
  * @var $comment object 评论对象
  * @var $currentLang string 当前语言
  * @var $level int 嵌套层级

@@ -10,7 +10,7 @@ use App\Models\Collection;
 use App\Constants\ContentType;
 use App\Constants\ContentStatus;
 
-class VideoController extends FrontendController
+class ContentController extends FrontendController
 {
     /**
      * 视频列表页面
@@ -137,7 +137,7 @@ class VideoController extends FrontendController
         $video = Content::findOrFail($id);
 
         // 检查是否是视频类型且已发布
-        if (!$video->isVideoType() || !$video->isPublished()) {
+        if (!$video->isPublished()) {
             http_response_code(404);
             echo json_encode(['error' => 'Video not found']);
             return;
@@ -343,7 +343,7 @@ class VideoController extends FrontendController
     {
         $params = $currentParams;
         $params['page'] = $page;
-        return '/videos' . $this->buildQueryParams($params);
+        return '/content' . $this->buildQueryParams($params);
     }
 
     /**

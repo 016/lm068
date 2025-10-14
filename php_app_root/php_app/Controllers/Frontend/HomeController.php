@@ -9,7 +9,7 @@ class HomeController extends FrontendController
     public function index(Request $request): void
     {
         //force to videos
-        $this->redirect('videos');
+        $this->redirect('content');
         exit;
 
         $content = $this->view('videos.list', [

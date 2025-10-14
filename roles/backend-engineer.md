@@ -88,7 +88,7 @@
     - View中使用的变量(覆盖 Controller 和 Model), 需要通过以下格式引入变量对应的源，方便实现 IDE 提示。demo 见 "IDE引入指南"
 ```IDE引入指南
 /**
- * @var $this \App\Controllers\Frontend\VideoController //$this->funcName() will auto work in IDE
+ * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
  * @var $content \App\Models\Content //$content->id will auto work in IDE
  */
 ```

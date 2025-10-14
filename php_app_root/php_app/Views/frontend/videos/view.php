@@ -2,8 +2,9 @@
 /**
  * 前端视频详情视图
  *
- * @var $this \App\Controllers\Frontend\VideoController
+ * @var $this \App\Controllers\Frontend\ContentController
  * @var $video \App\Models\Content
+ * @var $announcement \App\Models\Content
  * @var $videoTags array
  * @var $videoCollections array
  * @var $videoLinks array
@@ -138,7 +139,7 @@
                         <?php foreach ($videoTags as $tag):
                             $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                         ?>
-                            <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                            <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
                                class="btn btn-outline-success btn-sm me-1">
                                 <?= htmlspecialchars($tagName) ?>
                             </a>
@@ -148,7 +149,7 @@
                         <?php foreach ($videoCollections as $collection):
                             $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                         ?>
-                            <a href="/videos?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                            <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
                                class="btn btn-outline-success btn-sm">
                                 <?= htmlspecialchars($collectionName) ?>
                             </a>
@@ -163,7 +164,7 @@
             <div class="card-header text-center">
                 <h5 class="mb-0">
                     <i class="bi bi-file-text me-2"></i>
-                    <?= $currentLang === 'zh' ? '视频详情' : 'Video Details' ?>
+                    <?= $currentLang === 'zh' ? '详情' : 'Details' ?>
                 </h5>
             </div>
             <div class="card-body">
@@ -271,7 +272,7 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-semibold">
                                         <i class="bi bi-exclamation-circle text-warning me-2"></i>
-                                        <a href="/videos?content_type_id=1&lang=<?= $currentLang ?>" class="text-decoration-none">
+                                        <a href="/content/<?= $announcement->id ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
                                             <?= htmlspecialchars($announcementTitle) ?>
                                         </a>
                                     </h6>
@@ -290,7 +291,7 @@
                     <?php endforeach; ?>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="/videos?content_type_id=1&lang=<?= $currentLang ?>" class="btn btn-outline-primary btn-sm">
+                    <a href="/content?content_type_id=1&lang=<?= $currentLang ?>" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-arrow-right me-1"></i><?= $currentLang === 'zh' ? '查看更多公告' : 'View More' ?>
                     </a>
                 </div>
@@ -303,7 +304,7 @@
                 <div class="card-header text-center">
                     <h6 class="mb-0">
                         <i class="bi bi-collection-play text-info me-2"></i>
-                        <?= $currentLang === 'zh' ? '关联视频' : 'Related Videos' ?>
+                        <?= $currentLang === 'zh' ? '关联内容' : 'Related Contents' ?>
                     </h6>
                 </div>
                 <div class="card-body p-0">
@@ -313,7 +314,7 @@
                         <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
                                 <div class="col-5 d-flex align-items-center">
-                                    <a href="/videos/<?= $this->getVideoHashId($relatedVideo->id) ?>?lang=<?= $currentLang ?>" class="d-block w-100">
+                                    <a href="/content/<?= $this->getVideoHashId($relatedVideo->id) ?>?lang=<?= $currentLang ?>" class="d-block w-100">
                                         <div class="video-thumbnail-container">
                                             <?php if (!empty($relatedVideo->thumbnail)): ?>
                                                 <img src="<?= htmlspecialchars($relatedVideo->getThumbnailUrl()) ?>"
@@ -330,7 +331,7 @@
                                 <div class="col-7">
                                     <div class="card-body p-2">
                                         <h6 class="card-title mb-1 small">
-                                            <a href="/videos/<?= $this->getVideoHashId($relatedVideo->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
+                                            <a href="/content/<?= $this->getVideoHashId($relatedVideo->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
                                                 <?= htmlspecialchars(mb_substr($relatedTitle, 0, 30)) ?><?= mb_strlen($relatedTitle) > 30 ? '...' : '' ?>
                                             </a>
                                         </h6>
@@ -344,7 +345,7 @@
                                             foreach ($displayTags as $tag):
                                                 $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                             ?>
-                                                <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                                <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
                                                    class="btn btn-outline-primary btn-sm me-1">
                                                     <?= htmlspecialchars($tagName) ?>
                                                 </a>
@@ -380,7 +381,7 @@
                         ?>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
                                 <div class="card h-100 shadow-sm border-1">
-                                    <a href="/videos/<?= $this->getVideoHashId($recommendedVideo->id) ?>?lang=<?= $currentLang ?>">
+                                    <a href="/content/<?= $this->getVideoHashId($recommendedVideo->id) ?>?lang=<?= $currentLang ?>">
                                         <?php if (!empty($recommendedVideo->thumbnail)): ?>
                                             <img src="<?= htmlspecialchars($recommendedVideo->getThumbnailUrl()) ?>"
                                                  alt="<?= htmlspecialchars($recommendedTitle) ?>"
@@ -393,7 +394,7 @@
                                     </a>
                                     <div class="card-body">
                                         <h6 class="card-title">
-                                            <a href="/videos/<?= $this->getVideoHashId($recommendedVideo->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
+                                            <a href="/content/<?= $this->getVideoHashId($recommendedVideo->id) ?>?lang=<?= $currentLang ?>" class="text-decoration-none">
                                                 <?= htmlspecialchars(mb_substr($recommendedTitle, 0, 30)) ?><?= mb_strlen($recommendedTitle) > 30 ? '...' : '' ?>
                                             </a>
                                         </h6>
@@ -413,7 +414,7 @@
                                                 foreach ($displayTags as $tag):
                                                     $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                                 ?>
-                                                    <a href="/videos?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                                    <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
                                                        class="btn btn-outline-success btn-sm me-1">
                                                         <?= htmlspecialchars($tagName) ?>
                                                     </a>
@@ -423,7 +424,7 @@
                                                 $collection = $recommendedVideo->collections[0];
                                                 $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                             ?>
-                                                <a href="/videos?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                                                <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
                                                    class="btn btn-outline-success btn-md">
                                                     <?= htmlspecialchars($collectionName) ?>
                                                 </a>
