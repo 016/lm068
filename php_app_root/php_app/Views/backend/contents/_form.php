@@ -177,7 +177,7 @@ use App\Constants\ContentType;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="short_desc_cn" class="form-label">中文简介</label>
-                            <input type="text" class="form-control <?= isset($content->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" value="<?= htmlspecialchars($content->short_desc_cn ?? '') ?>" maxlength="300">
+                            <textarea class="form-control <?= isset($content->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" maxlength="300"><?= htmlspecialchars($content->short_desc_cn ?? '') ?></textarea>
                             <?php if (isset($content->errors['short_desc_cn'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_cn']) ?></div>
                             <?php endif; ?>
@@ -187,7 +187,7 @@ use App\Constants\ContentType;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="short_desc_en" class="form-label">英文简介</label>
-                            <input type="text" class="form-control <?= isset($content->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" value="<?= htmlspecialchars($content->short_desc_en ?? '') ?>" maxlength="300">
+                            <textarea class="form-control <?= isset($content->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" maxlength="300"><?= htmlspecialchars($content->short_desc_en ?? '') ?></textarea>
                             <?php if (isset($content->errors['short_desc_en'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_en']) ?></div>
                             <?php endif; ?>
