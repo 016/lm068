@@ -31,7 +31,7 @@ CREATE TABLE `content` (
   `short_desc_en` VARCHAR(300) COMMENT '英文简介',
   `short_desc_cn` VARCHAR(300) COMMENT '中文简介',
   `thumbnail` VARCHAR(255) COMMENT '缩略图URL',
-  `duration` VARCHAR(10) COMMENT '视频时长 格式 1:20:18 (1小时20分18秒)(仅视频类型使用)',
+  `duration` MEDIUMINT UNSIGNED COMMENT '视频时长秒数 (仅视频类型使用)',
   `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT 'PV计数',
   `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看/阅读次数',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
