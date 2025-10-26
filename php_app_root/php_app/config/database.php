@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'host' => 'localhost',
-    'database' => 'content_site',
+    'host' => 'ee-mysql-5.7.40',
+    'database' => 'lm068',
     'username' => 'root',
     'password' => 'root',
     'charset' => 'utf8mb4',
