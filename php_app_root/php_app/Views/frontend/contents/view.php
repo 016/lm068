@@ -20,6 +20,10 @@
  * @var $currentLang string
  * @var $supportedLangs array
  */
+
+use App\Helpers\TextHelper;
+use App\Helpers\TimeHelper;
+
 ?>
 
 <!-- 主要内容 -->
@@ -28,17 +32,15 @@
     <div class="col-lg-8">
         <!-- 视频封面和信息区域 -->
         <div class="card mb-4">
+
+            <?php if (!empty($video->thumbnail)): ?>
             <div class="video-cover-container card-img-top">
-                <?php if (!empty($video->thumbnail)): ?>
-                    <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
-                         alt="<?= htmlspecialchars($video->getTitle($currentLang)) ?>"
-                         class="video-cover">
-                <?php else: ?>
-                    <img src="https://via.placeholder.com/856x481?text=No+Image"
-                         alt="<?= htmlspecialchars($video->getTitle($currentLang)) ?>"
-                         class="video-cover">
-                <?php endif; ?>
+                <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
+                     alt="<?= htmlspecialchars($video->getTitle($currentLang)) ?>"
+                     class="video-cover">
             </div>
+            <?php endif; ?>
+
             <div class="card-body">
                 <!-- 视频标题行 -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -101,14 +103,14 @@
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-clock me-2"></i>
-                                <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= htmlspecialchars($video->duration) ?>
+                                <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= TimeHelper::formatTime($video->duration) ?>
                             </div>
                         </div>
                         <?php endif; ?>
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-eye me-2"></i>
-                                <?= $currentLang === 'zh' ? '浏览数' : 'Views' ?>: <?= number_format($video->view_cnt) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
+                                <?= $currentLang === 'zh' ? '浏览数' : 'Views' ?>: <?= number_format($video->pv_cnt) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
                             </div>
                         </div>
                         <?php if (!empty($videoLinks)): ?>
@@ -169,7 +171,7 @@
             </div>
             <div class="card-body">
                 <div class="video-content" id="markdown-content">
-                    <?= nl2br(htmlspecialchars($video->getDescription($currentLang))) ?>
+                    <?= (htmlspecialchars(TextHelper::renderMarkdown($video->getDescription($currentLang)))) ?>
                 </div>
             </div>
         </div>
@@ -336,7 +338,7 @@
                                             </a>
                                         </h6>
                                         <small class="text-muted d-block">
-                                            <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= htmlspecialchars($relatedVideo->duration ?: 'N/A') ?>
+                                            <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= TimeHelper::formatTime($relatedVideo->duration ?: 'N/A') ?>
                                             | <i class="bi bi-person me-1"></i><?= htmlspecialchars($relatedVideo->author) ?>
                                         </small>
                                         <div class="mt-2">
@@ -399,8 +401,8 @@
                                             </a>
                                         </h6>
                                         <small class="text-muted">
-                                            <?= htmlspecialchars($recommendedVideo->duration ?: 'N/A') ?>
-                                            | <?= number_format($recommendedVideo->view_cnt) ?><?= $currentLang === 'zh' ? '次' : '' ?>
+                                            <?= TimeHelper::formatTime($recommendedVideo->duration ?: 'N/A') ?>
+                                            | <?= number_format($recommendedVideo->pv_cnt) ?><?= $currentLang === 'zh' ? '次' : '' ?>
                                         </small>
                                         <p class="card-text">
                                             <?= htmlspecialchars(mb_substr($recommendedDesc, 0, 50)) ?><?= mb_strlen($recommendedDesc) > 50 ? '...' : '' ?>

@@ -24,7 +24,7 @@ class Content extends UploadableModel implements HasStatuses
     protected array $uploadableAttributes = [
         'thumbnail' => [
             'type' => 'image',
-            'path_key' => 'thumbnails_path',
+            'path_key' => 'pics_path',
             'required' => false,
             'replace_old' => true,  // 启用旧文件替换，只保留最新的缩略图
         ]
@@ -77,11 +77,11 @@ class Content extends UploadableModel implements HasStatuses
             'title_cn' => 'required|max:255|unique',
             'desc_en' => 'max:65535', // TEXT类型
             'desc_cn' => 'max:65535', // TEXT类型
-            'short_desc_en' => 'max:300',
-            'short_desc_cn' => 'max:300',
+            'short_desc_en' => 'max:1000',
+            'short_desc_cn' => 'max:1000',
             'author' => 'max:255',
             'thumbnail' => 'max:255',
-            'duration' => 'max:10',
+            'duration' => 'numeric',
             'status_id' => 'numeric'
         ];
     }
@@ -160,6 +160,8 @@ class Content extends UploadableModel implements HasStatuses
     public function getDescription(?string $lang = null): string
     {
         $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+
+        //load desc
         $desc = $lang === 'zh' ? $this->desc_cn : $this->desc_en;
 
         // 如果指定语言的描述为空,降级到另一个语言
@@ -167,7 +169,21 @@ class Content extends UploadableModel implements HasStatuses
             $desc = $lang === 'zh' ? $this->desc_en : $this->desc_cn;
         }
 
-        return $desc ?? '';
+        //load sum
+        $sum = $lang === 'zh' ? $this->sum_cn : $this->sum_en;
+
+        //split title
+        $splitTitle = $lang === 'zh' ? 'X. 内容总结' : 'X. Content Summary';
+        $contentTitle = $lang === 'zh' ? $this->title_cn : $this->title_en;
+
+        $returnString = '';
+        if (!empty($desc)) {
+            $returnString .= $desc . " \n\n <br/> \n\n --- \n\n";
+        }
+        //return string
+        $returnString .= " ## $splitTitle \n  # " . $contentTitle . " \n\n ". $sum;
+
+        return $returnString ?? '';
     }
 
     /**
@@ -506,10 +522,10 @@ class Content extends UploadableModel implements HasStatuses
     /**
      * 增加观看次数
      */
-    public function incrementViewCount(int $contentId): bool
+    public function incrementPVCount(int $contentId): bool
     {
         $table = static::getTableName();
-        $sql = "UPDATE {$table} SET view_cnt = view_cnt + 1 WHERE id = :id";
+        $sql = "UPDATE {$table} SET pv_cnt = pv_cnt + 1 WHERE id = :id";
         $this->db->query($sql, ['id' => $contentId]);
         return true;
     }
@@ -648,7 +664,7 @@ class Content extends UploadableModel implements HasStatuses
      * @param int $perPage 每页数量
      * @return array ['items' => Content[], 'total' => int, 'totalPages' => int]
      */
-    public static function getVideoList(array $filters = [], int $page = 1, int $perPage = 12): array
+    public static function getContentList(array $filters = [], int $page = 1, int $perPage = 12): array
     {
         $db = \App\Core\Database::getInstance();
         $offset = ($page - 1) * $perPage;
@@ -721,7 +737,7 @@ class Content extends UploadableModel implements HasStatuses
         $totalPages = ceil($total / $perPage);
 
         // 添加排序和分页
-        $sql .= " ORDER BY c.created_at DESC LIMIT :limit OFFSET :offset";
+        $sql .= " ORDER BY c.updated_at DESC LIMIT :limit OFFSET :offset";
         $params['limit'] = $perPage;
         $params['offset'] = $offset;
 

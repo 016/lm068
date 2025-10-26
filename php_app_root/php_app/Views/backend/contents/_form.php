@@ -1,6 +1,8 @@
 <?php
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
+use App\Helpers\HtmlHelper;
+
 ?>
 <!-- Shared Content Form Content -->
 <div class="form-container">
@@ -177,28 +179,28 @@ use App\Constants\ContentType;
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="short_desc_cn" class="form-label">中文简介</label>
-                            <textarea class="form-control <?= isset($content->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" maxlength="300"><?= htmlspecialchars($content->short_desc_cn ?? '') ?></textarea>
+                            <textarea class="form-control <?= isset($content->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" maxlength="1000"><?= HtmlHelper::escape($content->short_desc_cn ?? '') ?></textarea>
                             <?php if (isset($content->errors['short_desc_cn'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_cn']) ?></div>
                             <?php endif; ?>
-                            <div class="form-text">内容的简短中文描述(最多300字符)</div>
+                            <div class="form-text">内容的简短中文描述(最多1000字符)</div>
                         </div>
                     </div>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="short_desc_en" class="form-label">英文简介</label>
-                            <textarea class="form-control <?= isset($content->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" maxlength="300"><?= htmlspecialchars($content->short_desc_en ?? '') ?></textarea>
+                            <textarea class="form-control <?= isset($content->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" maxlength="1000"><?= HtmlHelper::escape($content->short_desc_en ?? '') ?></textarea>
                             <?php if (isset($content->errors['short_desc_en'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_en']) ?></div>
                             <?php endif; ?>
-                            <div class="form-text">内容的简短英文描述(最多300字符)</div>
+                            <div class="form-text">内容的简短英文描述(最多1000字符)</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="desc_cn" class="form-label">中文描述</label>
-                    <textarea class="form-control <?= isset($content->errors['desc_cn']) ? 'is-invalid' : '' ?>" id="desc_cn" name="desc_cn" rows="4" placeholder="请输入内容的详细中文描述..." maxlength="65535"><?= htmlspecialchars($content->desc_cn ?? '') ?></textarea>
+                    <textarea class="form-control <?= isset($content->errors['desc_cn']) ? 'is-invalid' : '' ?>" id="desc_cn" name="desc_cn" rows="8" placeholder="请输入内容的详细中文描述..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->desc_cn ?? '') ?></textarea>
                     <?php if (isset($content->errors['desc_cn'])): ?>
                         <div class="invalid-feedback"><?= htmlspecialchars($content->errors['desc_cn']) ?></div>
                     <?php endif; ?>
@@ -207,7 +209,7 @@ use App\Constants\ContentType;
 
                 <div class="form-group">
                     <label for="desc_en" class="form-label">英文描述</label>
-                    <textarea class="form-control <?= isset($content->errors['desc_en']) ? 'is-invalid' : '' ?>" id="desc_en" name="desc_en" rows="4" placeholder="Please enter the detailed English description of the content..." maxlength="65535"><?= htmlspecialchars($content->desc_en ?? '') ?></textarea>
+                    <textarea class="form-control <?= isset($content->errors['desc_en']) ? 'is-invalid' : '' ?>" id="desc_en" name="desc_en" rows="8" placeholder="Please enter the detailed English description of the content..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->desc_en ?? '') ?></textarea>
                     <?php if (isset($content->errors['desc_en'])): ?>
                         <div class="invalid-feedback"><?= htmlspecialchars($content->errors['desc_en']) ?></div>
                     <?php endif; ?>
