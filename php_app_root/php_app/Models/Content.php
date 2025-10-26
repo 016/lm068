@@ -13,7 +13,7 @@ class Content extends UploadableModel implements HasStatuses
     protected $primaryKey = 'id';
     protected $fillable = [
         'content_type_id', 'author', 'code', 'title_en', 'title_cn',
-        'desc_en', 'desc_cn', 'short_desc_en', 'short_desc_cn',
+        'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
         'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id'
     ];
     protected $timestamps = true;
@@ -39,6 +39,8 @@ class Content extends UploadableModel implements HasStatuses
         'title_cn' => '',
         'desc_en' => '',
         'desc_cn' => '',
+        'sum_en' => '',
+        'sum_cn' => '',
         'short_desc_en' => '',
         'short_desc_cn' => '',
         'thumbnail' => '',
@@ -77,6 +79,8 @@ class Content extends UploadableModel implements HasStatuses
             'title_cn' => 'required|max:255|unique',
             'desc_en' => 'max:65535', // TEXT类型
             'desc_cn' => 'max:65535', // TEXT类型
+            'sum_en' => 'max:65535', // TEXT类型
+            'sum_cn' => 'max:65535', // TEXT类型
             'short_desc_en' => 'max:1000',
             'short_desc_cn' => 'max:1000',
             'author' => 'max:255',
@@ -100,6 +104,8 @@ class Content extends UploadableModel implements HasStatuses
             'title_cn' => '中文标题',
             'desc_en' => '英文描述',
             'desc_cn' => '中文描述',
+            'sum_en' => '英文总结',
+            'sum_cn' => '中文总结',
             'short_desc_en' => '英文简介',
             'short_desc_cn' => '中文简介',
             'thumbnail' => '缩略图',
@@ -114,22 +120,6 @@ class Content extends UploadableModel implements HasStatuses
     public function getDisplayTitle(): string
     {
         return $this->title_cn ?: $this->title_en;
-    }
-
-    /**
-     * 获取显示描述（优先中文）
-     */
-    public function getDisplayDescription(): string
-    {
-        return $this->desc_cn ?: $this->desc_en;
-    }
-
-    /**
-     * 获取显示简介（优先中文）
-     */
-    public function getDisplayShortDescription(): string
-    {
-        return $this->short_desc_cn ?: $this->short_desc_en;
     }
 
     /**
@@ -546,6 +536,8 @@ class Content extends UploadableModel implements HasStatuses
             'title_cn' => $csvRowData['title_cn'] ?? '',
             'desc_en' => $csvRowData['desc_en'] ?? '',
             'desc_cn' => $csvRowData['desc_cn'] ?? '',
+            'sum_en' => $csvRowData['sum_en'] ?? '',
+            'sum_cn' => $csvRowData['sum_cn'] ?? '',
             'short_desc_en' => $csvRowData['short_desc_en'] ?? '',
             'short_desc_cn' => $csvRowData['short_desc_cn'] ?? '',
             'thumbnail' => $csvRowData['thumbnail'] ?? '',

@@ -99,6 +99,8 @@ class ContentController extends BackendController
                 'short_desc_en' => $request->post('short_desc_en'),
                 'desc_cn' => $request->post('desc_cn'),
                 'desc_en' => $request->post('desc_en'),
+                'sum_cn' => $request->post('sum_cn'),
+                'sum_en' => $request->post('sum_en'),
                 'duration' => $request->post('duration'),
                 'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value)
             ];
@@ -215,6 +217,8 @@ class ContentController extends BackendController
                 'short_desc_en' => $request->post('short_desc_en') ?? '',
                 'desc_cn' => $request->post('desc_cn') ?? '',
                 'desc_en' => $request->post('desc_en') ?? '',
+                'sum_cn' => $request->post('sum_cn') ?? '',
+                'sum_en' => $request->post('sum_en') ?? '',
                 'duration' => $request->post('duration') ?? '',
                 'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
                 'pv_cnt' => 0,

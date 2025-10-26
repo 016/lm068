@@ -219,6 +219,24 @@ use App\Helpers\HtmlHelper;
                     <?php endif; ?>
                     <div class="form-text">内容的详细英文说明(支持Markdown格式)</div>
                 </div>
+
+                <div class="form-group">
+                    <label for="sum_cn" class="form-label">中文总结</label>
+                    <textarea class="form-control <?= isset($content->errors['sum_cn']) ? 'is-invalid' : '' ?>" id="sum_cn" name="sum_cn" rows="8" placeholder="请输入内容的详细中文总结..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->sum_cn ?? '') ?></textarea>
+                    <?php if (isset($content->errors['sum_cn'])): ?>
+                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['sum_cn']) ?></div>
+                    <?php endif; ?>
+                    <div class="form-text">内容的详细中文总结(支持Markdown格式)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sum_en" class="form-label">英文总结</label>
+                    <textarea class="form-control <?= isset($content->errors['sum_en']) ? 'is-invalid' : '' ?>" id="sum_en" name="sum_en" rows="8" placeholder="Please enter the detailed English summary of the content..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->sum_en ?? '') ?></textarea>
+                    <?php if (isset($content->errors['sum_en'])): ?>
+                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['sum_en']) ?></div>
+                    <?php endif; ?>
+                    <div class="form-text">内容的详细英文总结(支持Markdown格式)</div>
+                </div>
             </div>
 
             <!-- 状态设置 -->
