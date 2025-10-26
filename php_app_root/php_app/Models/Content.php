@@ -619,7 +619,7 @@ class Content extends UploadableModel implements HasStatuses
 
             // 当日发布视频数量
             $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() .
-                   " WHERE status_id = :status_id AND updated_at >= :current_day AND updated_at < :next_day";
+                   " WHERE status_id = :status_id AND pub_at >= :current_day AND pub_at < :next_day";
             $result = $db->fetch($sql, [
                 'status_id' => ContentStatus::PUBLISHED->value,
                 'current_day' => $dateStr . ' 00:00:00',

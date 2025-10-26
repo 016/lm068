@@ -37,8 +37,6 @@ class DashboardStats
     }
 
     /**
-     * ��content-grid:Wpn
-     * tContent, Comment�ߡpn
      *
      * @return array
      */
