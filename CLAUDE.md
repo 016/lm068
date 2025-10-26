@@ -86,6 +86,7 @@ php_app/
 │   ├── Database.php          # 数据库连接
 │   ├── Controller.php        # 基础控制器
 │   └── Model.php             # 基础模型
+├── Helpers/                  # 无状态的工具类存放位置, 提供可复用的静态方法
 ├── Interfaces/               # Interface 存放位置
 ├── Constants/                # Constant 存放位置
 ├── config/                   # 配置文件
