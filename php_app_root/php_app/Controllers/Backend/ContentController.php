@@ -245,6 +245,7 @@ class ContentController extends BackendController
                 return;
             }
 
+
             try {
                 // 7. 验证通过，写入数据库
                 if ($content->save()) {
@@ -260,6 +261,7 @@ class ContentController extends BackendController
                     $this->setFlashMessage('内容创建成功', 'success');
                     $this->redirect('/contents');
                 } else {
+//                    var_dump('ee12  ');
                     // 保存失败，返回创建页面并显示错误
                     $postedTagIds = $request->post('tag_ids');
                     $postedCollectionIds = $request->post('collection_ids');
@@ -267,6 +269,7 @@ class ContentController extends BackendController
                 }
             } catch (\Exception $e) {
                 error_log("Content creation error: " . $e->getMessage());
+//                var_dump('ee11');
                 $content->errors['general'] = '创建失败: ' . $e->getMessage();
                 $postedTagIds = $request->post('tag_ids');
                 $postedCollectionIds = $request->post('collection_ids');

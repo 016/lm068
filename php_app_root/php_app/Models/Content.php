@@ -14,7 +14,7 @@ class Content extends UploadableModel implements HasStatuses
     protected $fillable = [
         'content_type_id', 'author', 'code', 'title_en', 'title_cn',
         'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
-        'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id'
+        'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
     ];
     protected $timestamps = true;
 
@@ -44,7 +44,7 @@ class Content extends UploadableModel implements HasStatuses
         'short_desc_en' => '',
         'short_desc_cn' => '',
         'thumbnail' => '',
-        'duration' => '',
+        'duration' => 0,
         'pv_cnt' => 0,
         'view_cnt' => 0,
         'status_id' => 1
@@ -424,26 +424,6 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
-     * 关联合集
-     */
-    public function attachCollection(int $contentId, int $collectionId): bool
-    {
-        $sql = "INSERT IGNORE INTO content_collection (content_id, collection_id) VALUES (:content_id, :collection_id)";
-        $this->db->query($sql, ['content_id' => $contentId, 'collection_id' => $collectionId]);
-        return true;
-    }
-
-    /**
-     * 移除合集关联
-     */
-    public function detachCollection(int $contentId, int $collectionId): bool
-    {
-        $sql = "DELETE FROM content_collection WHERE content_id = :content_id AND collection_id = :collection_id";
-        $this->db->query($sql, ['content_id' => $contentId, 'collection_id' => $collectionId]);
-        return true;
-    }
-
-    /**
      * 同步合集关联
      */
     public function syncCollectionAssociations(int $contentId, array $collectionIds): bool
@@ -518,6 +498,19 @@ class Content extends UploadableModel implements HasStatuses
         $sql = "UPDATE {$table} SET pv_cnt = pv_cnt + 1 WHERE id = :id";
         $this->db->query($sql, ['id' => $contentId]);
         return true;
+    }
+
+    public function beforeSave(): bool
+    {
+        if ($this->status_id == ContentStatus::PUBLISHED->value) {
+            if ($this->isNew || $this->original['status_id'] != $this->status_id){
+                $this->attributes['pub_at'] = date('Y-m-d H:i:s');
+            }
+
+            return true;
+        }
+
+        return parent::beforeSave();
     }
 
     /**

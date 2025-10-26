@@ -2,7 +2,9 @@
 
 namespace App\Core;
 
+use App\Constants\ContentStatus;
 use App\Core\Database;
+use App\Models\Content;
 
 abstract class Model
 {
@@ -436,6 +438,10 @@ abstract class Model
     {
         $data = $this->filterFillable($data);
 
+        if (!$this->beforeSave()){
+            return false;
+        }
+
         if ($this->timestamps) {
             $data['updated_at'] = date('Y-m-d H:i:s');
         }
@@ -502,13 +508,23 @@ abstract class Model
     }
 
     /**
+     * always run b4 save to db.
+     * @return bool
+     */
+    public function beforeSave(): bool
+    {
+        // add b4 save code, change bool return.
+        return true;
+    }
+
+    /**
      * 保存模型（新增或更新）
      */
     public function save(): bool
     {
         // 验证数据
         $this->errors = [];
-        if (!$this->validate()) {
+        if (!$this->validate() || !$this->beforeSave()) {
             return false;
         }
 
@@ -718,6 +734,11 @@ abstract class Model
             $placeholders = implode(',', array_fill(0, count($chunk), '?'));
             $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
 
+            //support content.pub_at auto update
+            if (static::getTableName() == Content::getTableName() && $status == ContentStatus::PUBLISHED->value){
+                $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW(), pub_at = NOW() WHERE id IN ({$placeholders})";
+            }
+
             $params = array_merge([$status], $chunk);
 
             // 累加每次成功更新的数量
@@ -833,83 +854,5 @@ abstract class Model
             error_log("Import single record error: " . $e->getMessage());
             return false;
         }
-    }
-
-    /**
-     * 分页查询方法
-     *
-     * @param array $conditions 查询条件数组
-     * @param int $perPage 每页记录数
-     * @param int $page 当前页码
-     * @param string|null $orderBy 排序规则
-     * @return array 返回包含items、total、totalPages的数组
-     */
-    public function paginate(array $conditions = [], int $perPage = 15, int $page = 1, ?string $orderBy = null): array
-    {
-        $db = Database::getInstance();
-        $table = static::getTableName();
-
-        // 确保页码从1开始
-        $page = max(1, $page);
-
-        // 计算偏移量
-        $offset = ($page - 1) * $perPage;
-
-        // 构建查询参数
-        $params = [];
-        $whereClause = [];
-
-        // 处理查询条件
-        if (!empty($conditions)) {
-            foreach ($conditions as $field => $value) {
-                if (is_array($value)) {
-                    $placeholders = implode(',', array_fill(0, count($value), '?'));
-                    $whereClause[] = "{$field} IN ({$placeholders})";
-                    $params = array_merge($params, $value);
-                } else {
-                    $whereClause[] = "{$field} = :{$field}";
-                    $params[$field] = $value;
-                }
-            }
-        }
-
-        $whereString = !empty($whereClause) ? ' WHERE ' . implode(' AND ', $whereClause) : '';
-
-        // 查询总记录数
-        $countSql = "SELECT COUNT(*) as total FROM {$table}{$whereString}";
-        $totalResult = $db->fetch($countSql, $params);
-        $total = (int)$totalResult['total'];
-
-        // 计算总页数
-        $totalPages = $total > 0 ? (int)ceil($total / $perPage) : 1;
-
-        // 构建数据查询SQL
-        $sql = "SELECT * FROM {$table}{$whereString}";
-
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
-        }
-
-        $sql .= " LIMIT {$perPage} OFFSET {$offset}";
-
-        // 执行查询
-        $rows = $db->fetchAll($sql, $params);
-
-        // 转换为Model对象数组
-        $items = [];
-        foreach ($rows as $row) {
-            $instance = new static();
-            $instance->setOriginal($row);
-            $instance->setNew(false);
-            $items[] = $instance;
-        }
-
-        return [
-            'items' => $items,
-            'total' => $total,
-            'totalPages' => $totalPages,
-            'currentPage' => $page,
-            'perPage' => $perPage
-        ];
     }
 }

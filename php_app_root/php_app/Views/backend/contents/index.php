@@ -267,6 +267,15 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
+                            <th class="table-cell sortable-header" data-column="pub_at">
+                                <div class="d-flex align-items-center">
+                                    发布日期
+                                    <div class="sort-icons-container">
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="pub_at" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="pub_at" data-direction="desc"></i>
+                                    </div>
+                                </div>
+                            </th>
                             <th class="table-cell sortable-header" data-column="status_id">
                                 <div class="d-flex align-items-center">
                                     状态
@@ -302,6 +311,9 @@ use App\Constants\ContentType;
                             </th>
                             <th class="table-filter-cell" data-column="pv_cnt">
                                 <input type="text" class="form-control form-control-sm" placeholder="观看范围" value="<?= htmlspecialchars($filters['pv_cnt'] ?? '') ?>">
+                            </th>
+                            <th class="table-filter-cell" data-column="pub_at">
+                                <input type="text" class="form-control form-control-sm" placeholder="发布日期范围" value="<?= htmlspecialchars($filters['pub_at'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
@@ -356,6 +368,7 @@ use App\Constants\ContentType;
                                     <td class="table-cell" data-column="code"><?= htmlspecialchars($item['code'] ?? '') ?></td>
                                     <td class="table-cell" data-column="author"><?= htmlspecialchars($item['author'] ?? 'DP') ?></td>
                                     <td class="table-cell" data-column="pv_cnt"><?= number_format($item['pv_cnt'] ?? 0) ?></td>
+                                    <td class="table-cell" data-column="pub_at"><?= htmlspecialchars($item['pub_at'] ?? '') ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php 
                                         $status = ContentStatus::tryFrom($item['status_id']);
