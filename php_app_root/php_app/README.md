@@ -53,17 +53,26 @@ php_app/
 - MySQL >= 5.7
 - Nginx (推荐)
 
-### 2. 配置数据库
-1. 导入 `database/schema.sql` 到MySQL数据库
-2. 复制 `config/database.php` 为 `config/database.local.php`
-3. 修改 `config/database.local.php` 中的数据库连接信息
+### 2. init
+1. cd pathTo/php_app/
+2. composer install
+3. change db in
 
-### 3. 配置Web服务器
+### 3. 配置数据库+配置
+1. 导入 `database/schema.sql` 到MySQL数据库 // 也可以手动导入初始 MYSQL数据
+2. 修改 `config/database.local.php` 中的数据库连接信息
+3. 修改 `config/main.local.php` 中的静态资源域名
+4. 手动导入配套资源. 如: 对应content的封面图片等
+5. 修改默认管理员账号，系统默认初始化账号为 admin/admin
+
+### 4. 配置Web服务器
 - 前台入口: 将 `public_frontend/` 目录配置为网站根目录
 - 后台入口: 将 `public_backend/` 目录配置为管理后台根目录
 - 资源目录: 将 `../public_resources/uploads/` 配置为资源访问目录
 
-### 4. 测试访问
+
+
+### 5. 测试访问
 - 访问前台: `http://your-domain.com/test` 查看 Hello World 测试页面
 - 访问后台: `http://admin.your-domain.com/dashboard`
 
