@@ -46,7 +46,7 @@ class ContentController extends FrontendController
         }
 
         // 使用Model层方法获取视频列表
-        $result = Content::getVideoList($filters, $page, $perPage);
+        $result = Content::getContentList($filters, $page, $perPage);
         $videos = $result['items'];
         $totalVideos = $result['total'];
         $totalPages = $result['totalPages'];
@@ -146,7 +146,7 @@ class ContentController extends FrontendController
         }
 
         // 增加浏览次数
-        $video->incrementViewCount($id);
+        $video->incrementPVCount($id);
 
         // 获取视频的标签和合集
         $videoTags = $video->getRelatedTags($id);
@@ -173,7 +173,7 @@ class ContentController extends FrontendController
         $commentsTotalCount = $commentsResult['total'];
 
         // 获取最新公告（content_type_id = 1, 取3条）
-        $announcementsResult = Content::getVideoList(
+        $announcementsResult = Content::getContentList(
             ['content_type_ids' => [1]],
             1,
             3

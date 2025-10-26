@@ -275,7 +275,7 @@ class ContentController extends BackendController
         $this->renderCreateForm($content);
     }
 
-    private function renderCreateForm(Content $content, ?array $postedTagIds = null, ?array $postedCollectionIds = null): void
+    private function renderCreateForm(Content $content, array|string|null $postedTagIds = null, array|string|null $postedCollectionIds = null): void
     {
         $allTags = $this->tagModel->findAll([
             'status_id' => TagStatus::getVisibleStatuses()
