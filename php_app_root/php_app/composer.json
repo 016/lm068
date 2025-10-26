@@ -14,7 +14,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
+        "post-autoload-dump": [
             "php -r \"copy('config/database.php', 'config/database.local.php');\""
         ]
     }
