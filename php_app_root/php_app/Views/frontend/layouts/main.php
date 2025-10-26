@@ -203,6 +203,7 @@
 
     <!-- Bootstrap JS -->
     <script src="/assets/lib/bootstrap-5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/lib/marked-15.0.12/js/marked.min.js"></script>
 
     <!-- i18n脚本 - 必须按顺序加载 -->
     <script src="<?= $resourceUrl ?? '/assets' ?>/js/i18n.js"></script>
