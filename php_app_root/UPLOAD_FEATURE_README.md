@@ -45,7 +45,7 @@
 
     // 上传路径配置
     'base_path' => '../public_resources/uploads/',
-    'thumbnails_path' => '../public_resources/uploads/thumbnails/',
+    'pics_path' => '../public_resources/uploads/pics/',
     'videos_preview_path' => '../public_resources/uploads/videos_preview/',
     'avatars_path' => '../public_resources/uploads/avatars/',
     'files_path' => '../public_resources/uploads/files/',
@@ -76,7 +76,7 @@ class Content extends UploadableModel
     protected array $uploadableAttributes = [
         'thumbnail' => [
             'type' => 'image',              // 文件类型: image, video, file
-            'path_key' => 'thumbnails_path', // 配置文件中的路径键
+            'path_key' => 'pics_path', // 配置文件中的路径键
             'required' => false,             // 是否必需
         ]
     ];
@@ -192,7 +192,7 @@ return [
 protected array $uploadableAttributes = [
     'thumbnail' => [
         'type' => 'image',
-        'path_key' => 'thumbnails_path',
+        'path_key' => 'pics_path',
     ],
     'cover_image' => [
         'type' => 'image',

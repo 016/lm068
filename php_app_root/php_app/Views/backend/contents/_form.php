@@ -3,6 +3,10 @@ use App\Constants\ContentStatus;
 use App\Constants\ContentType;
 use App\Helpers\HtmlHelper;
 
+/**
+ * @var $content App\Models\Content
+ */
+
 ?>
 <!-- Shared Content Form Content -->
 <div class="form-container">

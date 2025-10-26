@@ -21,7 +21,7 @@ abstract class UploadableModel extends Model
      * 格式: [
      *     'thumbnail' => [
      *         'type' => 'image',           // 文件类型: image, video, file
-     *         'path_key' => 'thumbnails_path', // 配置文件中的路径键
+     *         'path_key' => 'pics_path', // 配置文件中的路径键
      *         'required' => false,          // 是否必需
      *         'replace_old' => true,        // 是否替换旧文件（删除旧文件后再上传新文件）
      *     ]
@@ -249,16 +249,11 @@ abstract class UploadableModel extends Model
         $config = $this->uploadableAttributes[$attribute] ?? [];
         $pathKey = $config['path_key'] ?? 'base_path';
 
-        // 根据路径键构建URL路径
-        $urlPath = match($pathKey) {
-            'thumbnails_path' => 'thumbnails/',
-            'videos_preview_path' => 'videos_preview/',
-            'avatars_path' => 'avatars/',
-            'files_path' => 'files/',
-            default => ''
-        };
+        $pathLinkedFolder = Config::get('upload.path_linked_folder', []);
+        $urlLinkedFolder = $pathLinkedFolder[$pathKey] ?? '';
 
-        return rtrim($baseUrl, '/') . '/' . $urlPath . $fileName;
+
+        return rtrim($baseUrl, '/') . '/' . $urlLinkedFolder . $fileName;
     }
 
     /**

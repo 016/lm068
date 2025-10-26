@@ -25,10 +25,20 @@ return [
 
         // 上传路径配置 - 基于项目根目录的相对路径
         'base_path' =>  __DIR__.'/../../public_resources/uploads/',
-        'thumbnails_path' => __DIR__.'/../../public_resources/uploads/thumbnails/',
+        'pics_path' => __DIR__.'/../../public_resources/uploads/pics/',
         'videos_preview_path' =>  __DIR__.'/../../public_resources/uploads/videos_preview/',
         'avatars_path' =>  __DIR__.'/../../public_resources/uploads/avatars/',
         'files_path' =>  __DIR__.'/../../public_resources/uploads/files/',
+
+        // linked folder name. working with base_url. change with upload.*_path
+        'path_linked_folder' => [
+            'base_path' =>  '',
+            'pics_path' => 'pics/',
+            'videos_preview_path' =>  'videos_preview/',
+            'avatars_path' =>  'avatars/',
+            'files_path' =>  'files/',
+        ],
+
 
         // 资源URL前缀配置
         'base_url' => 'https://dp-t-static.lib00.com/',
