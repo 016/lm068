@@ -18,21 +18,51 @@ document.addEventListener('DOMContentLoaded', function() {
 // 初始化Markdown渲染功能
 function initMarkdownRendering() {
     const markdownContent = document.getElementById('markdown-content');
+    // console.log(markdownContent);
     if (markdownContent && typeof marked !== 'undefined') {
-        // 配置marked选项
-        marked.setOptions({
+
+        const CDN_DOMAIN = 'http://dp-t-068.lib00.com/';
+
+        marked.use({
             breaks: true,
             gfm: true,
             headerIds: true,
-            sanitize: false
+            sanitize: false,
+            renderer: {
+                link(inputObj) {
+                    const link = marked.Renderer.prototype.link.call(this, inputObj);
+                    return link.replace('<a', '<a target="_blank" rel="noopener noreferrer"');
+                },
+                image(inputObj) {
+                    // 类型检查和转换
+                    href = inputObj.href;
+                    title = inputObj.title;
+                    text = inputObj.text;
+
+                    // 如果是相对路径，添加域名前缀
+                    if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
+                        href = CDN_DOMAIN + href;
+                    }
+
+                    // 构建 img 标签
+                    let out = `<img src="${href}" alt="${text}"`;
+                    if (title) {
+                        out += ` title="${title}"`;
+                    }
+                    out += '>';
+                    return out;
+                }
+            }
         });
         
         // 获取原始Markdown内容
         const markdownText = markdownContent.textContent || markdownContent.innerText;
+        // console.log(markdownText);
         
         // 渲染为HTML
         try {
             const htmlContent = marked.parse(markdownText);
+            // console.log(htmlContent)
             markdownContent.innerHTML = htmlContent;
             markdownContent.classList.add('markdown-rendered');
         } catch (error) {
