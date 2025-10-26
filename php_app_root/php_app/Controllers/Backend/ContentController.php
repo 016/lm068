@@ -30,7 +30,7 @@ class ContentController extends BackendController
     public function index(Request $request): void
     {
         // 获取搜索过滤条件，支持所有搜索表单字段，包括tag_id和collection_id
-        $filters = $this->getSearchFilters(['id', 'title', 'code', 'author', 'content_type_id', 'view_cnt', 'status_id', 'tag_id', 'collection_id', 'order_by'], $request);
+        $filters = $this->getSearchFilters(['id', 'title', 'code', 'author', 'content_type_id', 'pv_cnt', 'status_id', 'tag_id', 'collection_id', 'order_by'], $request);
 
         // 根据过滤条件获取所有符合条件的内容数据（不分页，由JS处理分页）
         $content = Content::findAllWithFilters($filters);

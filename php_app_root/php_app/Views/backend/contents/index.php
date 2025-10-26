@@ -258,12 +258,12 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="view_cnt">
+                            <th class="table-cell sortable-header" data-column="pv_cnt">
                                 <div class="d-flex align-items-center">
                                     观看数
                                     <div class="sort-icons-container">
-                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="view_cnt" data-direction="asc"></i>
-                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="view_cnt" data-direction="desc"></i>
+                                        <i class="bi bi-caret-up-fill sort-icon" data-sort="pv_cnt" data-direction="asc"></i>
+                                        <i class="bi bi-caret-down-fill sort-icon sort-icon-up" data-sort="pv_cnt" data-direction="desc"></i>
                                     </div>
                                 </div>
                             </th>
@@ -300,8 +300,8 @@ use App\Constants\ContentType;
                             <th class="table-filter-cell" data-column="author">
                                 <input type="text" class="form-control form-control-sm" placeholder="搜索作者" value="<?= htmlspecialchars($filters['author'] ?? '') ?>">
                             </th>
-                            <th class="table-filter-cell" data-column="view_cnt">
-                                <input type="text" class="form-control form-control-sm" placeholder="观看范围" value="<?= htmlspecialchars($filters['view_cnt'] ?? '') ?>">
+                            <th class="table-filter-cell" data-column="pv_cnt">
+                                <input type="text" class="form-control form-control-sm" placeholder="观看范围" value="<?= htmlspecialchars($filters['pv_cnt'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
                                 <select class="form-control form-select form-select-sm">
@@ -355,7 +355,7 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell" data-column="code"><?= htmlspecialchars($item['code'] ?? '') ?></td>
                                     <td class="table-cell" data-column="author"><?= htmlspecialchars($item['author'] ?? 'DP') ?></td>
-                                    <td class="table-cell" data-column="view_cnt"><?= number_format($item['view_cnt'] ?? 0) ?></td>
+                                    <td class="table-cell" data-column="pv_cnt"><?= number_format($item['pv_cnt'] ?? 0) ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php 
                                         $status = ContentStatus::tryFrom($item['status_id']);
