@@ -293,7 +293,7 @@ abstract class Model
         }
 
         // 排序
-        $orderBy = $filters['order_by'] ?? 'created_at DESC';
+        $orderBy = $filters['order_by'] ?? 'id DESC';
         $sql .= " ORDER BY {$orderBy}";
 
         return $db->fetchAll($sql, $params);
