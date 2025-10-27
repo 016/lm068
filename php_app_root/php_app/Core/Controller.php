@@ -10,7 +10,19 @@ abstract class Controller
 
     public function __construct()
     {
+
         $this->request = new Request();
+
+        $this->init();
+    }
+
+    /**
+     * run init
+     * @return void
+     */
+    public function init()
+    {
+
     }
 
     protected function view(string $template, array $data = []): string

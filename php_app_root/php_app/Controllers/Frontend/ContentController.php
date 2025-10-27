@@ -4,11 +4,13 @@ namespace App\Controllers\Frontend;
 
 use App\Core\Request;
 use App\Core\HashId;
+use App\Helpers\UrlHelper;
 use App\Models\Content;
 use App\Models\Tag;
 use App\Models\Collection;
 use App\Constants\ContentType;
 use App\Constants\ContentStatus;
+use http\Url;
 
 class ContentController extends FrontendController
 {
@@ -19,6 +21,29 @@ class ContentController extends FrontendController
     {
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
+
+        $tmpFilter = $_GET;
+        unset($tmpFilter['s']);
+        unset($tmpFilter['lang']);
+
+        //SEO params
+        $this->seo_param['title'] = $currentLang == 'zh' ? '内容列表' : 'Content List' ;
+        $this->seo_param['desc'] = $currentLang == 'zh' ? '内容列表页' : 'Content list page, can use URI parameters to filter';
+        if (count($tmpFilter) > 0) {
+            $tmpQuery = http_build_query($tmpFilter, '', '&');
+            $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前筛选条件为: ' : ', current filter by: ';
+            $this->seo_param['desc'] .= $tmpQuery;
+        }else{
+            $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前无筛选条件' : ', currently no filters';
+        }
+
+        $this->curAction_zh = '/content';
+        $this->curAction_en = '/content';
+
+
+
+
+
 
         // 获取GET参数
         $page = max(1, (int)($this->request->getInput('page', 1)));
@@ -121,6 +146,8 @@ class ContentController extends FrontendController
      */
     public function show( Request $request): void
     {
+        //@ee1 check title in url, if it's wrong use 403 or 30x to jump to correct url
+
         // 获取URL参数并解码为ID（HashId::decode会根据配置自动处理）
         $param = $request->getParam(0);
         $id = HashId::decode($param);
@@ -144,6 +171,17 @@ class ContentController extends FrontendController
             echo json_encode(['error' => 'Video not found']);
             return;
         }
+
+
+
+        //SEO
+        $this->seo_param['title'] = $video->getTitle() ;
+        $this->seo_param['desc'] = $video->getShortDescription();
+        $this->curAction_zh = substr($_GET['s'], 0, strrpos($_GET['s'], '/') + 1) . $video->title_cn;
+        $this->curAction_en = substr($_GET['s'], 0, strrpos($_GET['s'], '/') + 1) . $video->title_en;
+
+
+
 
         // 增加浏览次数
         $video->incrementPVCount($id);

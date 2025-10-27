@@ -1,6 +1,11 @@
 <?php
 
 use App\Core\Config;
+use App\Helpers\UrlHelper;
+
+/**
+ * @var $this \App\Controllers\Frontend\FrontendController
+ */
 
 ?>
 <!DOCTYPE html>
@@ -8,7 +13,16 @@ use App\Core\Config;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? '视频创作展示网站') ?></title>
+
+    <title><?= htmlspecialchars($this->seo_param['title']) ?></title>
+    <meta name="description" content="<?= htmlspecialchars($this->seo_param['desc']) ?>" />
+    <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($_GET['s'], $_GET))?>" />
+
+    <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_zh, array_merge($_GET, ['lang' => 'zh'])))?>" />
+    <link rel="alternate" hreflang="en" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'en'])))?>" />
+    <link rel="alternate" hreflang="x-default" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'en'])))?>" />
+
+
 
     <!-- Bootstrap CSS 5.3.8 -->
     <link href="/assets/lib/bootstrap-5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
