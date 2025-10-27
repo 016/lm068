@@ -21,6 +21,8 @@ class ContentController extends FrontendController
     {
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
+        var_dump($_GET);
+        exit;
 
         $tmpFilter = $_GET;
         unset($tmpFilter['s']);
