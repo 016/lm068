@@ -32,7 +32,7 @@ function initContentListPage() {
         rowCheckboxSelector: '.row-checkbox',
         columnSettingsPopupSelector: '#columnSettingsPopup',
         currentDisplaySelector: '#currentDisplay',
-        defaultItemsPerPage: 10, // 内容列表默认显示10条
+        defaultItemsPerPage: 20, // 内容列表默认显示10条
         enableSort: true,
         enablePagination: true,
         enableColumnSettings: true,

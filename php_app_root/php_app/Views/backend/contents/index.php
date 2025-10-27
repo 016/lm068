@@ -258,7 +258,7 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="pv_cnt">
+                            <th class="table-cell sortable-header" data-column="pv_cnt" data-type="number">
                                 <div class="d-flex align-items-center">
                                     观看数
                                     <div class="sort-icons-container">

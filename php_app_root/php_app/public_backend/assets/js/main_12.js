@@ -868,7 +868,7 @@ const TableOperations = {
         }
         
         this.cellAttributeStore.set(cellKey, cellInfo);
-        console.log(`Saved attributes for cell: ${cellKey}`);
+        // console.log(`Saved attributes for cell: ${cellKey}`);
     },
     
     /**
@@ -917,6 +917,14 @@ const TableOperations = {
      * @returns {string} 数据类型：'number', 'text', 'status_id', 'actions'
      */
     detectColumnType: function(columnId, headerCell) {
+
+        //support define col-type via data-type in html
+        let col_type = headerCell.getAttribute('data-type');
+        if (col_type !== undefined) {
+            return col_type;
+        }
+
+        //normal define way
         const typeMapping = {
             'id': 'number',
             'content_cnt': 'number',
@@ -1075,7 +1083,7 @@ const TableOperations = {
                 
                 if (savedCellInfo) {
                     // 完美复原：使用保存的属性信息
-                    console.log(`Restoring cell attributes for: ${cellKey}`);
+                    // console.log(`Restoring cell attributes for: ${cellKey}`);
                     
                     // 恢复所有 HTML 属性
                     Object.entries(savedCellInfo.attributes).forEach(([attrName, attrValue]) => {
