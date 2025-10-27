@@ -21,9 +21,11 @@
  * @var $supportedLangs array
  */
 
+use App\Core\Config;
 use App\Helpers\TextHelper;
 use App\Helpers\TimeHelper;
 
+//var_dump(Config::get('upload.base_url', ''));
 ?>
 
 <!-- 主要内容 -->
@@ -161,20 +163,39 @@ use App\Helpers\TimeHelper;
             </div>
         </div>
 
-        <!-- 视频正文内容 -->
+        <!-- 视频正文内容-支持文档 -->
+        <?php if (!empty($video->getDescription($currentLang))): ?>
         <div class="card mb-4">
             <div class="card-header text-center">
                 <h5 class="mb-0">
                     <i class="bi bi-file-text me-2"></i>
-                    <?= $currentLang === 'zh' ? '详情' : 'Details' ?>
+                    <?= $currentLang === 'zh' ? '支持内容' : 'Support Content' ?>
                 </h5>
             </div>
             <div class="card-body">
-                <div class="video-content" id="markdown-content">
+                <div class="video-content" id="markdown-content-support">
                     <?= (htmlspecialchars(TextHelper::renderMarkdown($video->getDescription($currentLang)))) ?>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
+
+        <!-- 视频正文内容-总结文档 -->
+        <?php if (!empty($video->getSummary($currentLang))): ?>
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-text me-2"></i>
+                    <?= $currentLang === 'zh' ? '总结内容' : 'Summary Content' ?>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="video-content" id="markdown-content-summary">
+                    <?= (htmlspecialchars(TextHelper::renderMarkdown($video->getSummary($currentLang)))) ?>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <?php if (0):
             // 临时关闭评论
@@ -448,3 +469,10 @@ use App\Helpers\TimeHelper;
         </div>
     </div>
 <?php endif; ?>
+
+<script>
+    // 将动态数据传递给JS
+    window.inputData = {
+        CND_URL : "<?= Config::get('upload.base_url', '') ?>"
+    }
+</script>

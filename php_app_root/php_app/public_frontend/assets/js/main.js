@@ -206,3 +206,7 @@ function initWeChatQRCode() {
         }
     });
 }
+
+
+// ========== GLOBAL EXPORTS ==========
+// window.inputData = {};

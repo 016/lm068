@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 初始化Markdown渲染功能
 function initMarkdownRendering() {
-    const markdownContent = document.getElementById('markdown-content');
-    // console.log(markdownContent);
-    if (markdownContent && typeof marked !== 'undefined') {
+    //support text
+    const markdownContent_support = document.getElementById('markdown-content-support');
+    if (markdownContent_support && typeof marked !== 'undefined') {
 
-        const CDN_DOMAIN = 'http://dp-t-068.lib00.com/';
+        const CDN_DOMAIN = window.inputData.CND_URL;
 
         marked.use({
             breaks: true,
@@ -56,21 +56,80 @@ function initMarkdownRendering() {
         });
         
         // 获取原始Markdown内容
-        const markdownText = markdownContent.textContent || markdownContent.innerText;
+        const markdownText = markdownContent_support.textContent || markdownContent_support.innerText;
         // console.log(markdownText);
         
         // 渲染为HTML
         try {
             const htmlContent = marked.parse(markdownText);
             // console.log(htmlContent)
-            markdownContent.innerHTML = htmlContent;
-            markdownContent.classList.add('markdown-rendered');
+            markdownContent_support.innerHTML = htmlContent;
+            markdownContent_support.classList.add('markdown-rendered');
         } catch (error) {
             console.error('Markdown渲染失败:', error);
             // 保持原始文本格式
-            markdownContent.style.whiteSpace = 'pre-wrap';
+            markdownContent_support.style.whiteSpace = 'pre-wrap';
         }
     }
+
+    // summary text
+    const markdownContent_summary = document.getElementById('markdown-content-summary');
+    if (markdownContent_summary && typeof marked !== 'undefined') {
+
+        const CDN_DOMAIN = window.inputData.CND_URL;
+
+        marked.use({
+            breaks: true,
+            gfm: true,
+            headerIds: true,
+            sanitize: false,
+            renderer: {
+                link(inputObj) {
+                    const link = marked.Renderer.prototype.link.call(this, inputObj);
+                    return link.replace('<a', '<a target="_blank" rel="noopener noreferrer"');
+                },
+                image(inputObj) {
+                    // 类型检查和转换
+                    href = inputObj.href;
+                    title = inputObj.title;
+                    text = inputObj.text;
+
+                    // 如果是相对路径，添加域名前缀
+                    if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
+                        href = CDN_DOMAIN + href;
+                    }
+
+                    // 构建 img 标签
+                    let out = `<img src="${href}" alt="${text}"`;
+                    if (title) {
+                        out += ` title="${title}"`;
+                    }
+                    out += '>';
+                    return out;
+                }
+            }
+        });
+
+        // 获取原始Markdown内容
+        const markdownText = markdownContent_summary.textContent || markdownContent_summary.innerText;
+        // console.log(markdownText);
+
+        // 渲染为HTML
+        try {
+            const htmlContent = marked.parse(markdownText);
+            // console.log(htmlContent)
+            markdownContent_summary.innerHTML = htmlContent;
+            markdownContent_summary.classList.add('markdown-rendered');
+        } catch (error) {
+            console.error('Markdown渲染失败:', error);
+            // 保持原始文本格式
+            markdownContent_summary.style.whiteSpace = 'pre-wrap';
+        }
+    }
+
+
+
+
 }
 
 // 初始化交互按钮

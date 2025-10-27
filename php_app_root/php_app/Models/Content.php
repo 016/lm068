@@ -159,21 +159,31 @@ class Content extends UploadableModel implements HasStatuses
             $desc = $lang === 'zh' ? $this->desc_en : $this->desc_cn;
         }
 
+        return $desc ?? '';
+    }
+    /**
+     * 根据指定语言获取总结
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的描述
+     */
+    public function getSummary(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+
         //load sum
         $sum = $lang === 'zh' ? $this->sum_cn : $this->sum_en;
+        if (empty($sum)) {
+            return '';
+        }
 
         //split title
-        $splitTitle = $lang === 'zh' ? 'X. 内容总结' : 'X. Content Summary';
         $contentTitle = $lang === 'zh' ? $this->title_cn : $this->title_en;
 
-        $returnString = '';
-        if (!empty($desc)) {
-            $returnString .= $desc . " \n\n <br/> \n\n --- \n\n";
-        }
         //return string
-        $returnString .= " ## $splitTitle \n  # " . $contentTitle . " \n\n ". $sum;
+        $returnString = "# " . $contentTitle . " \n\n ". $sum;
 
-        return $returnString ?? '';
+        return $returnString;
     }
 
     /**

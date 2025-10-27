@@ -1,3 +1,8 @@
+<?php
+
+use App\Core\Config;
+
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
