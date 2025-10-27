@@ -3,6 +3,7 @@ vendor/
 
 # Ignore local configuration files
 config/database.local.php
+
 config/main.local.php
 
 # Ignore log files
