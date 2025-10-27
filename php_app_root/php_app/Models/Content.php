@@ -732,7 +732,7 @@ class Content extends UploadableModel implements HasStatuses
         $totalPages = ceil($total / $perPage);
 
         // 添加排序和分页
-        $sql .= " ORDER BY c.updated_at DESC LIMIT :limit OFFSET :offset";
+        $sql .= " ORDER BY c.pub_at DESC LIMIT :limit OFFSET :offset";
         $params['limit'] = $perPage;
         $params['offset'] = $offset;
 
