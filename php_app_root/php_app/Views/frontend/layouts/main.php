@@ -220,5 +220,15 @@
             <script src="<?= $resourceUrl ?? '/assets' ?>/js/<?= $pageJs ?>"></script>
         <?php endif; ?>
     <?php endif; ?>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYWS2Q7CHL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-JYWS2Q7CHL');
+    </script>
 </body>
 </html>
