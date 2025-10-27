@@ -8,6 +8,7 @@ class FrontendController extends Controller
 {
 
     public $base_url = 'https://dpit.lib00.com';
+    public $curAction = '';
     public $curAction_zh = '';
     public $curAction_en = '';
     public $curLang = '';
