@@ -15,7 +15,8 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "php -r \"copy('config/database.php', 'config/database.local.php');\""
+            "php -r \"copy('config/database.php', 'config/database.local.php');\"",
+            "php -r \"copy('config/main.local_demo.php', 'config/main.local.php');\""
         ]
     }
 }
