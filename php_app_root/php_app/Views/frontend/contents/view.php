@@ -176,7 +176,10 @@ use App\Helpers\TimeHelper;
             </div>
         </div>
 
-        <!-- 评论区域 -->
+        <?php if (0):
+            // 临时关闭评论
+        ?>
+        <!-- 评论区域  -->
         <div class="card">
             <div class="card-header text-center">
                 <h5 class="mb-0">
@@ -251,6 +254,9 @@ use App\Helpers\TimeHelper;
                 <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
+
+
     </div>
 
     <!-- 侧边栏 -->
