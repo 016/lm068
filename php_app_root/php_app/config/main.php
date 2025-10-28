@@ -15,7 +15,10 @@ return [
     // 语言配置
     'default_language' => 'cn',
     'supported_languages' => ['cn', 'en'],
-    
+    'request' =>[
+        'base_url' => 'https://dpit.lib00.com',
+    ],
+
     // 文件上传配置
     'upload' => [
         'max_file_size' => 10 * 1024 * 1024, // 10MB
@@ -52,7 +55,7 @@ return [
     
     // 分页配置
     'pagination' => [
-        'per_page' => 20,
+        'per_page' => 12,
         'max_per_page' => 100,
     ],
     

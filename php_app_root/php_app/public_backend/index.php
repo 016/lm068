@@ -113,6 +113,9 @@ $router->get('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
 $router->post('/admin_users/{id}/edit', 'Backend\\AdminUserController@edit');
 $router->delete('/admin_users/{id}', 'Backend\\AdminUserController@destroy');
 
+// sitemap
+$router->get('/sitemap/generate', 'Backend\\SitemapController@generate');
+
 // 404页面
 $router->notFound(function() {
     http_response_code(404);

@@ -819,4 +819,11 @@ class Content extends UploadableModel implements HasStatuses
         }
     }
 
+
+    public static function countByContentTypeId($contentTypeId): int
+    {
+        // 真实SQL: SELECT COUNT(id) FROM videos WHERE content_type_id = ?
+        return 25;
+    }
+
 }

@@ -475,19 +475,11 @@ class ContentController extends FrontendController
         // 如果提供了标题，进行URL友好化处理
         $urlTitle = '';
         if (!empty($title)) {
-            // 移除特殊字符，保留字母、数字、中文和连字符
-            $urlTitle = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $title);
-            // 将空格替换为连字符
-            $urlTitle = preg_replace('/\s+/', '-', trim($urlTitle));
-            // 移除多余的连字符
-            $urlTitle = preg_replace('/-+/', '-', $urlTitle);
-            // 限制长度（避免URL过长）
-            $urlTitle = mb_substr($urlTitle, 0, 100);
-            $urlTitle = '/' . $urlTitle;
+            $urlTitle = UrlHelper::formatString($title);
         }
 
         // 构建基础URL
-        $url = "/content/{$hashId}{$urlTitle}";
+        $url = "/content/{$hashId}/{$urlTitle}";
 
         // 添加查询参数
         if (!empty($queryParams)) {

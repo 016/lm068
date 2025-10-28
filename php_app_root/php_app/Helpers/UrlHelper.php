@@ -52,4 +52,35 @@ class UrlHelper
         // 组合完整 URI
         return '/' . $action . '?' . $queryString;
     }
+
+    /**
+     * format string in url to url friendly, like "a new book" => "a-new-book"
+     * @param string $string
+     * @return string
+     */
+    public static function formatString(string $string): string
+    {
+        $urlString = trim($string);
+        // 将要保留的符号[+ . / ,]替换为连字符
+        $urlString = preg_replace(['/\++/', '/\.+/', '/\/+/', '/,+/'], '-', $urlString);
+
+        // 将要保留的符号$替换为USD
+        $urlString = preg_replace(['/\$+/'], 'USD', $urlString);
+
+        // 移除特殊字符，保留字母、数字、中文和连字符
+        $urlString = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $urlString);
+        // 将空格替换为连字符
+        $urlString = preg_replace('/\s+/', '-', $urlString);
+
+        // 移除多余的连字符
+        $urlString = preg_replace('/-+/', '-', $urlString);
+        // 限制长度（避免URL过长）
+        $urlString = mb_substr($urlString, 0, 100);
+
+        // encode url
+        $urlString = rawurlencode($urlString);
+
+        return $urlString;
+
+    }
 }
