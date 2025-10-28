@@ -16,8 +16,14 @@ use App\Helpers\UrlHelper;
 
     <title><?= htmlspecialchars($this->seo_param['title']) ?></title>
     <meta name="description" content="<?= htmlspecialchars($this->seo_param['desc']) ?>" />
+
     <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateCanonicalUrl($_GET['s'], $_GET))?>" />
-    
+    <?php if ($this->seo_param['index']): ?>
+        <meta name="robots" content="index, follow">
+    <?php else: ?>
+        <meta name="robots" content="noindex, follow">
+    <?php endif; ?>
+
 
     <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'zh'])))?>" />
     <link rel="alternate" hreflang="en" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'en'])))?>" />

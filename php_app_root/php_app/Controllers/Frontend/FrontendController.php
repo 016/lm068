@@ -12,7 +12,7 @@ class FrontendController extends Controller
     public $curAction_zh = '';
     public $curAction_en = '';
     public $curLang = '';
-    public $seo_param = ['title' => '', 'desc' => '', 'canonical' => ''];
+    public $seo_param = ['title' => '', 'desc' => '', 'canonical' => '', 'index'=>true];
 
     public function init(){
 //        $this->curUri = $this->request->getUri();
