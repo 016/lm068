@@ -3,3 +3,4 @@ no-use
 .DS_Store
 .idea
 /php_app_root/public_resources/
+php_app_root/php_app/public_frontend/sitemap.xml
