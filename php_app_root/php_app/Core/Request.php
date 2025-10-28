@@ -18,7 +18,20 @@ class Request
         $this->params = [];
         $this->query = $_GET;
         $this->body = $_POST;
-        $this->headers = getallheaders() ?: [];
+
+        // 兼容 CLI 模式
+        if (function_exists('getallheaders')) {
+            $this->headers = getallheaders() ?: [];
+        } else {
+            // CLI 模式下手动构建 headers
+            $this->headers = [];
+            foreach ($_SERVER as $key => $value) {
+                if (strpos($key, 'HTTP_') === 0) {
+                    $headerKey = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                    $this->headers[$headerKey] = $value;
+                }
+            }
+        }
     }
 
     public function getUri(): string

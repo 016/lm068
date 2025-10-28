@@ -1,5 +1,13 @@
 <?php
 
+// 检测 CLI 模式
+if (php_sapi_name() === 'cli') {
+    // 模拟 HTTP 环境
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    $_SERVER['REQUEST_URI'] = $argv[1] ?? '/sitemap/generate';
+    $_SERVER['HTTP_HOST'] = 'localhost';
+}
+
 // 后端入口文件 - admin.yourdomain.com 指向这里
 require_once __DIR__ . '/../vendor/autoload.php';
 
