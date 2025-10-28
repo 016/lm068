@@ -162,7 +162,7 @@ class ContentController extends BackendController
         $this->renderEditForm($content);
     }
 
-    private function renderEditForm(Content $content, ?array $postedTagIds = null, ?array $postedCollectionIds = null): void
+    private function renderEditForm(Content $content, null|array|string $postedTagIds = null, null|array|string $postedCollectionIds = null): void
     {
         // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
         if ($postedTagIds !== null) {

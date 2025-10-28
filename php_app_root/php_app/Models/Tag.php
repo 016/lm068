@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\ContentStatus;
 use App\Core\Model;
 use App\Constants\TagStatus;
 use App\Interfaces\HasStatuses;
@@ -29,6 +30,7 @@ class Tag extends Model implements HasStatuses
         'color_class' => 'btn-outline-primary',
         'icon_class' => 'bi-tag',
         'content_cnt' => 0,
+        'published_content_cnt' => 0,
         'status_id' => 1
     ];
 
@@ -250,24 +252,23 @@ class Tag extends Model implements HasStatuses
                 WHERE id = :tag_id2";
 
         $this->db->query($sql, ['tag_id1' => $tagId, 'tag_id2' => $tagId]);
-        return true;
-    }
 
-    public function attachContent(int $tagId, int $contentId): bool
-    {
-        $sql = "INSERT IGNORE INTO content_tag (tag_id, content_id) VALUES (:tag_id, :content_id)";
-        $this->db->query($sql, ['tag_id' => $tagId, 'content_id' => $contentId]);
-        
-        $this->updateContentCount($tagId);
-        return true;
-    }
+        $sql = "UPDATE {$table}
+        SET published_content_cnt = (
+            SELECT COUNT(ct.content_id)
+            FROM content_tag AS ct
+            INNER JOIN content AS c ON ct.content_id = c.id
+            WHERE ct.tag_id = :tag_id_for_join AND c.status_id = :status_id
+        )
+        WHERE id = :tag_id_for_where";
 
-    public function detachContent(int $tagId, int $contentId): bool
-    {
-        $sql = "DELETE FROM content_tag WHERE tag_id = :tag_id AND content_id = :content_id";
-        $this->db->query($sql, ['tag_id' => $tagId, 'content_id' => $contentId]);
-        
-        $this->updateContentCount($tagId);
+        $this->db->query($sql, [
+            'tag_id_for_join'  => $tagId,
+            'tag_id_for_where' => $tagId, // 绑定同一个变量值
+            'status_id'        => ContentStatus::PUBLISHED->value
+        ]);
+
+
         return true;
     }
 

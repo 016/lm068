@@ -353,32 +353,6 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
-     * 关联标签
-     */
-    public function attachTag(int $contentId, int $tagId): bool
-    {
-        $sql = "INSERT IGNORE INTO content_tag (content_id, tag_id) VALUES (:content_id, :tag_id)";
-        $this->db->query($sql, ['content_id' => $contentId, 'tag_id' => $tagId]);
-        
-        // 更新标签的内容计数
-        $this->updateTagContentCount($tagId);
-        return true;
-    }
-
-    /**
-     * 移除标签关联
-     */
-    public function detachTag(int $contentId, int $tagId): bool
-    {
-        $sql = "DELETE FROM content_tag WHERE content_id = :content_id AND tag_id = :tag_id";
-        $this->db->query($sql, ['content_id' => $contentId, 'tag_id' => $tagId]);
-        
-        // 更新标签的内容计数
-        $this->updateTagContentCount($tagId);
-        return true;
-    }
-
-    /**
      * 同步标签关联
      */
     public function syncTagAssociations(int $contentId, array $tagIds): bool
@@ -422,7 +396,8 @@ class Content extends UploadableModel implements HasStatuses
             // 更新所有相关标签的内容计数（只更新有变化的标签）
             $affectedTagIds = array_unique(array_merge($tagsToRemove, $tagsToAdd));
             foreach ($affectedTagIds as $tagId) {
-                $this->updateTagContentCount($tagId);
+                $tmpTag = new Tag();
+                $tmpTag->updateContentCount($tagId);
             }
             
             $this->db->commit();
@@ -472,6 +447,9 @@ class Content extends UploadableModel implements HasStatuses
                     "INSERT INTO content_collection (content_id, collection_id) VALUES (:content_id, :collection_id)",
                     ['content_id' => $contentId, 'collection_id' => $collectionId]
                 );
+
+                $tmpCollection = new Collection();
+                $tmpCollection->updateContentCount($collectionId);
             }
 
             $this->db->commit();
@@ -480,23 +458,6 @@ class Content extends UploadableModel implements HasStatuses
             $this->db->rollback();
             throw $e;
         }
-    }
-
-    /**
-     * 更新标签的内容计数
-     */
-    private function updateTagContentCount(int $tagId): bool
-    {
-        $sql = "UPDATE tag 
-                SET content_cnt = (
-                    SELECT COUNT(*) 
-                    FROM content_tag 
-                    WHERE tag_id = :tag_id1
-                )
-                WHERE id = :tag_id2";
-
-        $this->db->query($sql, ['tag_id1' => $tagId, 'tag_id2' => $tagId]);
-        return true;
     }
 
     /**

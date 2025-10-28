@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\ContentStatus;
 use App\Core\Model;
 use App\Constants\CollectionStatus;
 use App\Interfaces\HasStatuses;
@@ -28,6 +29,7 @@ class Collection extends Model implements HasStatuses
         'color_class' => 'btn-outline-primary',
         'icon_class' => 'bi-collection',
         'content_cnt' => 0,
+        'published_content_cnt' => 0,
         'status_id' => 1
     ];
 
@@ -253,6 +255,22 @@ class Collection extends Model implements HasStatuses
                 WHERE id = :collection_id_2";
         
         $this->db->query($sql, ['collection_id_1' => $collectionId, 'collection_id_2' => $collectionId]);
+
+        $sql = "UPDATE {$table}
+        SET published_content_cnt = (
+            SELECT COUNT(cc.content_id)
+            FROM content_collection AS cc
+            INNER JOIN content AS c ON cc.content_id = c.id
+            WHERE cc.collection_id = :collection_id_for_join AND c.status_id = :status_id
+        )
+        WHERE id = :collection_id_for_where";
+
+        $this->db->query($sql, [
+            'collection_id_for_join'  => $collectionId,
+            'collection_id_for_where' => $collectionId, // 绑定同一个变量值
+            'status_id' => ContentStatus::PUBLISHED->value
+        ]);
+
         return true;
     }
 
