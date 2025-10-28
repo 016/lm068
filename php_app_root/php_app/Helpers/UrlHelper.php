@@ -46,6 +46,9 @@ class UrlHelper
             return '/' . $action;
         }
 
+        // format url string
+        $action = UrlHelper::formatString($action);
+
         // 构建查询字符串（自动处理 URL 编码）
         $queryString = http_build_query($filteredParams, '', '&', PHP_QUERY_RFC3986);
 

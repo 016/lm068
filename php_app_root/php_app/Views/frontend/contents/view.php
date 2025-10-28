@@ -213,7 +213,9 @@ use App\Helpers\TimeHelper;
                 <!-- 发表评论 -->
                 <div class="comment-form mb-4">
                     <div class="mb-2">
+                        <label class="d-none" for="detail-comment"></label>
                         <textarea class="form-control"
+                                  id="detail-comment"
                                   rows="3"
                                   placeholder="<?= $currentLang === 'zh' ? '写下你的评论...' : 'Write your comment...' ?>"></textarea>
                     </div>
@@ -301,7 +303,7 @@ use App\Helpers\TimeHelper;
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-semibold">
                                         <i class="bi bi-exclamation-circle text-warning me-2"></i>
-                                        <a href="<?= $this->buildVideoDetailUrl($announcement->id, $announcement->getTitle($currentLang), ['lang' => $currentLang]) ?>" class="text-decoration-none">
+                                        <a href="<?= $this->buildVideoDetailUrl($announcement->id, $announcement->getTitle('en'), ['lang' => $currentLang]) ?>" class="text-decoration-none">
                                             <?= htmlspecialchars($announcementTitle) ?>
                                         </a>
                                     </h6>
@@ -343,7 +345,7 @@ use App\Helpers\TimeHelper;
                         <div class="card m-2 border-0 shadow-sm">
                             <div class="row g-0">
                                 <div class="col-5 d-flex align-items-center">
-                                    <a href="<?= $this->buildVideoDetailUrl($relatedVideo->id, $relatedVideo->getTitle($currentLang), ['lang' => $currentLang]) ?>" class="d-block w-100">
+                                    <a href="<?= $this->buildVideoDetailUrl($relatedVideo->id, $relatedVideo->getTitle('en'), ['lang' => $currentLang]) ?>" class="d-block w-100">
                                         <div class="video-thumbnail-container">
                                             <?php if (!empty($relatedVideo->thumbnail)): ?>
                                                 <img src="<?= htmlspecialchars($relatedVideo->getThumbnailUrl()) ?>"
@@ -360,7 +362,7 @@ use App\Helpers\TimeHelper;
                                 <div class="col-7">
                                     <div class="card-body p-2">
                                         <h6 class="card-title mb-1 small">
-                                            <a href="<?= $this->buildVideoDetailUrl($relatedVideo->id, $relatedVideo->getTitle($currentLang), ['lang' => $currentLang]) ?>" class="text-decoration-none">
+                                            <a href="<?= $this->buildVideoDetailUrl($relatedVideo->id, $relatedVideo->getTitle('en'), ['lang' => $currentLang]) ?>" class="text-decoration-none">
                                                 <?= htmlspecialchars(mb_substr($relatedTitle, 0, 30)) ?><?= mb_strlen($relatedTitle) > 30 ? '...' : '' ?>
                                             </a>
                                         </h6>
@@ -410,7 +412,7 @@ use App\Helpers\TimeHelper;
                         ?>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-6">
                                 <div class="card h-100 shadow-sm border-1">
-                                    <a href="<?= $this->buildVideoDetailUrl($recommendedVideo->id, $recommendedVideo->getTitle($currentLang), ['lang' => $currentLang]) ?>">
+                                    <a href="<?= $this->buildVideoDetailUrl($recommendedVideo->id, $recommendedVideo->getTitle('en'), ['lang' => $currentLang]) ?>">
                                         <?php if (!empty($recommendedVideo->thumbnail)): ?>
                                             <img src="<?= htmlspecialchars($recommendedVideo->getThumbnailUrl()) ?>"
                                                  alt="<?= htmlspecialchars($recommendedTitle) ?>"
@@ -423,7 +425,7 @@ use App\Helpers\TimeHelper;
                                     </a>
                                     <div class="card-body">
                                         <h6 class="card-title">
-                                            <a href="<?= $this->buildVideoDetailUrl($recommendedVideo->id, $recommendedVideo->getTitle($currentLang), ['lang' => $currentLang]) ?>" class="text-decoration-none">
+                                            <a href="<?= $this->buildVideoDetailUrl($recommendedVideo->id, $recommendedVideo->getTitle('en'), ['lang' => $currentLang]) ?>" class="text-decoration-none">
                                                 <?= htmlspecialchars(mb_substr($recommendedTitle, 0, 30)) ?><?= mb_strlen($recommendedTitle) > 30 ? '...' : '' ?>
                                             </a>
                                         </h6>

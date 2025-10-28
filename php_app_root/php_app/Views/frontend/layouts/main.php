@@ -18,7 +18,7 @@ use App\Helpers\UrlHelper;
     <meta name="description" content="<?= htmlspecialchars($this->seo_param['desc']) ?>" />
     <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($_GET['s'], $_GET))?>" />
 
-    <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_zh, array_merge($_GET, ['lang' => 'zh'])))?>" />
+    <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'zh'])))?>" />
     <link rel="alternate" hreflang="en" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'en'])))?>" />
     <link rel="alternate" hreflang="x-default" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, array_merge($_GET, ['lang' => 'en'])))?>" />
 
