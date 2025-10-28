@@ -56,6 +56,13 @@ class UrlHelper
         return '/' . $action . '?' . $queryString;
     }
 
+    public static function generateCanonicalUrl(string $action, array $params = [], bool $filterEmpty = true): string
+    {
+        unset($params['page']);
+        return self::generateUri($action, $params, $filterEmpty);
+    }
+
+
     /**
      * format string in url to url friendly, like "a new book" => "a-new-book"
      * @param string $string
