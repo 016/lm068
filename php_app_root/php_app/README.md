@@ -76,7 +76,10 @@ php_app/
 
 ### 6. 其他支持
 - Sitemap 生成命令
-    php php_app_root/php_app/public_backend/index.php /sitemap/generate > php_app_root/php_app/public_frontend/sitemap.xml
+    - php php_app_root/php_app/public_backend/index.php /sitemap/generate > php_app_root/php_app/public_frontend/sitemap.xml
+    - crontab -e
+    - 0 4 * * * docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /sitemap/generate > /pathToProject/php_app_root/php_app/public_frontend/sitemap.xml 2>&1
+    - crontab -l
 
 ## 开发规范
 
