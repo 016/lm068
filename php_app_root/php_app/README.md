@@ -70,11 +70,13 @@ php_app/
 - 后台入口: 将 `public_backend/` 目录配置为管理后台根目录
 - 资源目录: 将 `../public_resources/uploads/` 配置为资源访问目录
 
-
-
 ### 5. 测试访问
 - 访问前台: `http://your-domain.com/test` 查看 Hello World 测试页面
 - 访问后台: `http://admin.your-domain.com/dashboard`
+
+### 6. 其他支持
+- Sitemap 生成命令
+    php php_app_root/php_app/public_backend/index.php /sitemap/generate > php_app_root/php_app/public_frontend/sitemap.xml
 
 ## 开发规范
 
