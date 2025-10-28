@@ -2,8 +2,10 @@
 
 namespace App\Controllers\Frontend;
 
+use App\Core\Config;
 use App\Core\Request;
 use App\Core\HashId;
+use App\Helpers\ArrayHelper;
 use App\Helpers\UrlHelper;
 use App\Models\Content;
 use App\Models\Tag;
@@ -14,35 +16,80 @@ use http\Url;
 
 class ContentController extends FrontendController
 {
+    public $curAction_zh = '/content';
+    public $curAction_en = '/content';
+
+    /**
+     * set SEO param in function
+     * @return void
+     */
+    public function setSEOParam($action, $data=null, array $params = []): void
+    {
+        $params = $params ?: $_GET; // 便于测试
+
+        $currentLang = \App\Core\I18n::getCurrentLang();
+
+
+
+        if ($action == 'index') {
+            $tmpFilter = array_diff_key($params, array_flip(['s', 'lang']) );
+
+            //check tag_id for show linked title
+            if (!empty($params['tag_id'])) {
+                //load tag
+                $linkedTags = Tag::findAll(['id' => explode(',', $params['tag_id'])]);
+                $tmpName = ArrayHelper::getLocalizedNames($linkedTags, 'name_cn', 'name_en');
+                $this->seo_param['title'] .= $currentLang == 'zh' ? '标签: '.$tmpName.' - ' : 'Tag: '.$tmpName.' - ' ;
+            }
+            //check collection_id for show linked title
+            if (!empty($params['collection_id'])) {
+                //load collection
+                $linkedCollections = Collection::findAll(['id' => explode(',', $params['collection_id'])]);
+                $tmpName = ArrayHelper::getLocalizedNames($linkedCollections, 'name_cn', 'name_en');
+                $this->seo_param['title'] .= $currentLang == 'zh' ? '合集: '.$tmpName.' - ' : 'Collection: '.$tmpName.' - ' ;
+            }
+            //check search kw for show linked title
+            if (!empty($params['search'])) {
+                $this->seo_param['title'] .= $currentLang == 'zh' ? '搜索: '.$params['search'].' - ' : 'Search: '.$params['search'].' - ' ;
+            }
+
+            //SEO params
+            $this->seo_param['title'] .= $currentLang == 'zh' ? '内容列表' : 'Content List' ;
+            $this->seo_param['desc'] .= $currentLang == 'zh' ? '内容列表页' : 'Content list page, can use URI parameters to filter';
+            if (count($tmpFilter) > 0) {
+                $tmpQuery = http_build_query($tmpFilter, '', '&');
+                $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前筛选条件为: ' : ', current filter by: ';
+                $this->seo_param['desc'] .= $tmpQuery;
+            }else{
+                $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前无筛选条件' : ', currently no filters';
+            }
+
+            if (isset($params['page']) && $params['page'] > 1){
+                $this->seo_param['index'] = false;
+            }//if index page have $params['page'] >=2 set index to noindex
+        }
+
+
+        if ($action == 'view') {
+            //SEO
+            $this->seo_param['title'] = $data->getTitle() ;
+            $this->seo_param['desc'] = $data->getShortDescription();
+            $this->curAction_zh = substr($params['s'], 0, strrpos($params['s'], '/') + 1) . $data->title_cn;
+            $this->curAction_en = substr($params['s'], 0, strrpos($params['s'], '/') + 1) . $data->title_en;
+        }
+
+    }
+
+
     /**
      * 视频列表页面
      */
     public function index(): void
     {
+        $this->setSEOParam('index');
+
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
-
-        $tmpFilter = $_GET;
-        unset($tmpFilter['s']);
-        unset($tmpFilter['lang']);
-
-        //SEO params
-        $this->seo_param['title'] = $currentLang == 'zh' ? '内容列表' : 'Content List' ;
-        $this->seo_param['desc'] = $currentLang == 'zh' ? '内容列表页' : 'Content list page, can use URI parameters to filter';
-        if (count($tmpFilter) > 0) {
-            $tmpQuery = http_build_query($tmpFilter, '', '&');
-            $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前筛选条件为: ' : ', current filter by: ';
-            $this->seo_param['desc'] .= $tmpQuery;
-        }else{
-            $this->seo_param['desc'] .= $currentLang == 'zh' ? ', 当前无筛选条件' : ', currently no filters';
-        }
-
-        $this->curAction_zh = '/content';
-        $this->curAction_en = '/content';
-
-
-
-
 
 
         // 获取GET参数
@@ -53,7 +100,7 @@ class ContentController extends FrontendController
         $contentTypeIds = $this->parseIdsParam($this->request->getInput('content_type_id', ''));
 
         // 分页配置
-        $perPage = 12; // 每页显示12个视频
+        $perPage = Config::get('pagination.per_page'); // 每页显示12个视频
 
         // 构建筛选条件
         $filters = [];
@@ -172,16 +219,8 @@ class ContentController extends FrontendController
             return;
         }
 
-
-
-        //SEO
-        $this->seo_param['title'] = $video->getTitle() ;
-        $this->seo_param['desc'] = $video->getShortDescription();
-        $this->curAction_zh = substr($_GET['s'], 0, strrpos($_GET['s'], '/') + 1) . $video->title_cn;
-        $this->curAction_en = substr($_GET['s'], 0, strrpos($_GET['s'], '/') + 1) . $video->title_en;
-
-
-
+        // set SEO params
+        $this->setSEOParam('view', $video);
 
         // 增加浏览次数
         $video->incrementPVCount($id);
