@@ -56,6 +56,13 @@ class UrlHelper
         return '/' . $action . '?' . $queryString;
     }
 
+    /**
+     * for frontend generate canonical url , just remove $_GET['page'] out.
+     * @param string $action
+     * @param array $params
+     * @param bool $filterEmpty
+     * @return string
+     */
     public static function generateCanonicalUrl(string $action, array $params = [], bool $filterEmpty = true): string
     {
         unset($params['page']);
@@ -86,6 +93,9 @@ class UrlHelper
         $urlString = preg_replace('/-+/', '-', $urlString);
         // 限制长度（避免URL过长）
         $urlString = mb_substr($urlString, 0, 100);
+
+        //CASE to case
+        $urlString = strtolower($urlString);
 
         // encode url
         $urlString = rawurlencode($urlString);
