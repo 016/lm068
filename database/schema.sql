@@ -63,7 +63,7 @@ CREATE TABLE `content_pv_log` (
   `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
   `user_id` INT UNSIGNED COMMENT '用户ID(可选,用于UV统计), 当前未启用用户系统',
-  `ip_address` BINARY(16) COMMENT 'IPv4/IPv6 地址(可选,用于UV统计) use INET6_ATON()',
+  `ip` BINARY(16) COMMENT 'IPv4/IPv6 地址(可选,用于UV统计) use INET6_ATON()',
   `accessed_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '访问时间',
 
   -- 不保存完整 user_agent，而是解析后的结构化字段. 保留设计，当前程序不使用
