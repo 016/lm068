@@ -123,6 +123,8 @@ $router->delete('/admin_users/{id}', 'Backend\\AdminUserController@destroy');
 
 // sitemap
 $router->get('/sitemap/generate', 'Backend\\SitemapController@generate');
+// sitemap
+$router->get('/t', 'Backend\\TController@index');
 
 // 404页面
 $router->notFound(function() {
