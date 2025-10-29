@@ -80,7 +80,14 @@ php_app/
     - crontab -e
     - 0 4 * * * docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /sitemap/generate > /pathToProject/php_app_root/php_app/public_frontend/sitemap.xml 2>&1
     - crontab -l
-
+- content.pv 定时更新任务
+    - php php_app_root/php_app/public_backend/index.php /statistics/daily-pv-cal?date=2025-10-30 //指定时间
+    - php php_app_root/php_app/public_backend/index.php /statistics/daily-pv-cal //默认时间前一天
+    - php php_app_root/php_app/public_backend/index.php /statistics/repair-full-pv-cal
+    - crontab -e
+    - 0 2 * * * docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /statistics/daily-pv-cal >> /pathToLog/daily_pv_cal.log 2>&1
+    - 0 3 * * 0 docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /statistics/repair-full-pv-cal >> /pathToLog/weekly_full_pv_cal.log 2>&1
+    - crontab -l
 ## 开发规范
 
 ### 命名规范
