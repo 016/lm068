@@ -6,6 +6,12 @@ if (php_sapi_name() === 'cli') {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['REQUEST_URI'] = $argv[1] ?? '/sitemap/generate';
     $_SERVER['HTTP_HOST'] = 'localhost';
+
+    // 解析 URL 中的查询参数到 $_GET
+    $urlParts = parse_url($_SERVER['REQUEST_URI']);
+    if (isset($urlParts['query'])) {
+        parse_str($urlParts['query'], $_GET);
+    }
 }
 
 // 后端入口文件 - admin.yourdomain.com 指向这里
