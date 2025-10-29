@@ -4,6 +4,7 @@ namespace App\Core;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 
 class Database
 {
@@ -63,6 +64,38 @@ class Database
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
+            return $stmt;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
+    public function queryOne(string $sql, array $params = []): ?array
+    {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute($params);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result !== false ? $result : null;
+        } catch (\PDOException $e) {
+            throw new \PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
+
+    /**
+     * 准备 SQL 语句用于流式读取
+     *
+     * @param string $sql SQL 查询语句
+     * @return PDOStatement
+     * @throws PDOException
+     */
+    public function prepare(string $sql): PDOStatement
+    {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            // 设置为非缓冲查询模式，实现真正的流式读取
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
             return $stmt;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());

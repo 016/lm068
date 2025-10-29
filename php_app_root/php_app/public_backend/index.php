@@ -123,7 +123,12 @@ $router->delete('/admin_users/{id}', 'Backend\\AdminUserController@destroy');
 
 // sitemap
 $router->get('/sitemap/generate', 'Backend\\SitemapController@generate');
-// sitemap
+
+// statistics
+$router->get('/statistics/daily-pv-cal', 'Backend\\StatisticsController@dailyPVCal');
+$router->get('/statistics/repair-full-pv-cal', 'Backend\\StatisticsController@repairFullPVCal');
+
+// test controller *
 $router->get('/t', 'Backend\\TController@index');
 
 // 404页面
