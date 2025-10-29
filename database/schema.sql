@@ -68,8 +68,8 @@ CREATE TABLE `content_pv_log` (
 
   -- 不保存完整 user_agent，而是解析后的结构化字段. 保留设计，当前程序不使用
   `device_type` TINYINT COMMENT '1-Desktop, 2-Mobile, 3-Tablet, 4-Bot',
-  `os_family` VARCHAR(20) COMMENT 'Windows, iOS, Android, Linux, Mac',
-  `browser_family` VARCHAR(20) COMMENT 'Chrome, Safari, Firefox, Edge',
+  `os_family` TINYINT UNSIGNED DEFAULT 0 COMMENT '-- 操作系统类型枚举, 0  = Unknown/Other, 1  = Windows, 2  = iOS, 3  = Android, 4  = Linux, 5  = Mac/macOS, 6  = ChromeOS, 7  = Unix, 8  = BSD, 9  = Symbian, 10 = BlackBerry, 11 = Windows Phone, 12 = Fire OS, 13-255 = 保留',
+  `browser_family` TINYINT UNSIGNED DEFAULT 0 COMMENT '-- 浏览器类型枚举, 0  = Unknown/Other, 1  = Chrome, 2  = Safari, 3  = Firefox, 4  = Edge, 5  = IE/Internet Explorer, 6  = Opera, 7  = Samsung Browser, 8  = UC Browser, 9  = QQ Browser, 10 = WeChat/MicroMessenger, 11 = Alipay, 12 = Brave, 13 = Vivaldi, 14 = Yandex, 15 = Sogou Explorer, 16 = 360 Browser, 17-255 = 保留',
   `is_bot` BOOLEAN DEFAULT 0 COMMENT '是否爬虫',
 
   INDEX `idx_accessed_at` (`accessed_at`)
