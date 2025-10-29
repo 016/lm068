@@ -34,7 +34,7 @@ CREATE TABLE `content` (
   `sum_cn` TEXT COMMENT '中文 AI总结内容, 支持markdown格式纯文本存储',
   `thumbnail` VARCHAR(255) COMMENT '缩略图URL',
   `duration` MEDIUMINT UNSIGNED COMMENT '视频时长秒数 (仅视频类型使用)',
-  `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT 'PV计数',
+  `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '网站内PV计数',
   `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看/阅读次数',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
   `pub_at` DATETIME COMMENT '发布时间',
@@ -43,6 +43,37 @@ CREATE TABLE `content` (
   INDEX `idx_status_id` (`status_id`),
   INDEX `idx_content_type_id` (`content_type_id`)
 ) ENGINE=InnoDB;
+
+-- 内容 PV 每日统计表 (主要查询表)
+CREATE TABLE `content_pv_daily` (
+    `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
+    `stat_date` DATE NOT NULL COMMENT '统计日期',
+    `pv_count` BIGINT UNSIGNED DEFAULT 0 COMMENT '当日新增PV数',
+    `uv_count` BIGINT UNSIGNED DEFAULT 0 COMMENT '当日独立访客数',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_content_date` (`content_id`, `stat_date`),
+    INDEX `idx_stat_date` (`stat_date`),
+    FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB COMMENT='内容每日PV统计表';
+
+-- 原始 PV 访问日志表 (用于实时记录和重算)
+CREATE TABLE `content_pv_log` (
+  `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `content_id` INT UNSIGNED NOT NULL COMMENT '关联内容ID',
+  `user_id` INT UNSIGNED COMMENT '用户ID(可选,用于UV统计), 当前未启用用户系统',
+  `ip_address` BINARY(16) COMMENT 'IPv4/IPv6 地址(可选,用于UV统计) use INET6_ATON()',
+  `accessed_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '访问时间',
+
+  -- 不保存完整 user_agent，而是解析后的结构化字段. 保留设计，当前程序不使用
+  `device_type` TINYINT COMMENT '1-Desktop, 2-Mobile, 3-Tablet, 4-Bot',
+  `os_family` VARCHAR(20) COMMENT 'Windows, iOS, Android, Linux, Mac',
+  `browser_family` VARCHAR(20) COMMENT 'Chrome, Safari, Firefox, Edge',
+  `is_bot` BOOLEAN DEFAULT 0 COMMENT '是否爬虫',
+
+  INDEX `idx_accessed_at` (`accessed_at`)
+) ENGINE=InnoDB COMMENT='内容PV原始访问日志';
 
 -- 视频第三方平台表
 CREATE TABLE `platform` (
