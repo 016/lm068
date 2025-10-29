@@ -223,7 +223,7 @@ class ContentController extends FrontendController
         $this->setSEOParam('view', $video);
 
         // 增加浏览次数
-        $video->incrementPVCount($id);
+        $video->logPVAccess($id);
 
         // 获取视频的标签和合集
         $videoTags = $video->getRelatedTags($id);

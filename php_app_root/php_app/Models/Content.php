@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Core\UploadableModel;
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
+use App\Helpers\RequestHelper;
 use App\Interfaces\HasStatuses;
 
 class Content extends UploadableModel implements HasStatuses
@@ -461,13 +462,54 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
-     * 增加观看次数
+     * 记录 PV 访问日志
+     * @param int $contentId 内容ID
+     * @param int|null $userId 用户ID（可选）
+     * @return bool
      */
-    public function incrementPVCount(int $contentId): bool
+    public function logPVAccess(int $contentId, ?int $userId = null): bool
     {
-        $table = static::getTableName();
-        $sql = "UPDATE {$table} SET pv_cnt = pv_cnt + 1 WHERE id = :id";
-        $this->db->query($sql, ['id' => $contentId]);
+        $table = 'content_pv_log';
+
+        // 自动获取客户端信息
+        $ip =  RequestHelper::getClientIp();
+
+        // 解析 User Agent
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $deviceInfo = RequestHelper::parseUserAgent($userAgent);
+
+        // 准备插入数据
+        $data = [
+            'content_id' => $contentId,
+            'user_id' => $userId,
+            'ip' => "INET6_ATON('{$ip}')",
+            'accessed_at' => date('Y-m-d H:i:s'),
+            'device_type' => $deviceInfo['device_type'],
+            'os_family' => $deviceInfo['os_family'],
+            'browser_family' => $deviceInfo['browser_family'],
+            'is_bot' => $deviceInfo['is_bot']
+        ];
+
+        // 构建 SQL
+        $fields = [];
+        $values = [];
+        $params = [];
+
+        foreach ($data as $key => $value) {
+            if ($value !== null) {
+                $fields[] = $key;
+                if ($key === 'ip' && str_contains($value, 'INET6_ATON')) {
+                    $values[] = $value; // 直接使用函数
+                } else {
+                    $values[] = ":{$key}";
+                    $params[$key] = $value;
+                }
+            }
+        }
+
+        $sql = "INSERT INTO {$table} (" . implode(', ', $fields) . ") VALUES (" . implode(', ', $values) . ")";
+
+        $this->db->query($sql, $params);
         return true;
     }
 
