@@ -12,9 +12,27 @@ namespace App\Core;
  */
 class I18n
 {
-    private static ?string $currentLang = null;
     private const DEFAULT_LANG = 'zh'; // 默认中文
     private const SUPPORTED_LANGS = ['zh', 'en'];
+
+    public static function initLang(): void{
+        $requestUri = $_SERVER['REQUEST_URI'];
+
+        $lang = self::DEFAULT_LANG; // 默认语言
+
+        // 使用正则表达式从 URI 路径的开头匹配语言代码
+        if (preg_match('#^/(' . implode('|', self::SUPPORTED_LANGS) . ')/#', $requestUri, $matches)) {
+            $lang = $matches[1];
+
+            // 可选：从 REQUEST_URI 中移除语言前缀，以便后续路由处理
+            // 很多框架的路由器依赖于不含语言前缀的路径
+            $_SERVER['REQUEST_URI'] = substr($requestUri, strlen($matches[0]) - 1);
+        }
+
+        // 定义一个全局常量或变量来存储当前语言
+        define('CURRENT_LANG', $lang);
+
+    }
 
     /**
      * 从请求中获取当前语言
@@ -24,19 +42,11 @@ class I18n
      */
     public static function getCurrentLang(): string
     {
-        if (self::$currentLang === null) {
-            // 优先从URL参数获取
-            $lang = $_GET['lang'] ?? null;
-
-            // 验证语言是否支持
-            if (!in_array($lang, self::SUPPORTED_LANGS, true)) {
-                $lang = self::DEFAULT_LANG;
-            }
-
-            self::$currentLang = $lang;
+        if (defined('CURRENT_LANG')) {
+            return CURRENT_LANG;
         }
 
-        return self::$currentLang;
+        return self::DEFAULT_LANG;
     }
 
     /**
@@ -48,7 +58,7 @@ class I18n
     public static function setCurrentLang(string $lang): void
     {
         if (in_array($lang, self::SUPPORTED_LANGS, true)) {
-            self::$currentLang = $lang;
+            define('CURRENT_LANG', $lang);
         }
     }
 

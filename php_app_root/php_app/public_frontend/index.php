@@ -3,6 +3,10 @@
 // 前端入口文件 - www.yourdomain.com 指向这里
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// lang init, lang is in url
+\App\Core\I18n::initLang();
+
+
 use App\Core\Router;
 use App\Core\Request;
 use App\Core\Config;

@@ -74,8 +74,9 @@ class ContentController extends FrontendController
             //SEO
             $this->seo_param['title'] = $data->getTitle() ;
             $this->seo_param['desc'] = $data->getShortDescription();
-            $this->curAction_zh = substr($params['s'], 0, strrpos($params['s'], '/') + 1) . $data->title_cn;
-            $this->curAction_en = substr($params['s'], 0, strrpos($params['s'], '/') + 1) . $data->title_en;
+            $this->curAction_zh = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . $data->title_cn;
+            $this->curAction_en = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . $data->title_en;
+
         }
 
     }
@@ -90,6 +91,7 @@ class ContentController extends FrontendController
 
         // 获取当前语言
         $currentLang = \App\Core\I18n::getCurrentLang();
+
 
 
         // 获取GET参数
@@ -482,50 +484,8 @@ class ContentController extends FrontendController
      */
     public function buildCommentPaginationUrl(int $page, int $videoId, string $lang): string
     {
-        $hashId = $this->getVideoHashId($videoId);
-        return "/videos/{$hashId}?comment_page={$page}&lang={$lang}";
-    }
-
-    /**
-     * 获取视频的Hash ID (供View调用)
-     * HashId::encode会根据配置自动决定返回hash或原始数字ID
-     *
-     * @param int $videoId 视频数字ID
-     * @return string Hash ID或数字ID（根据配置）
-     */
-    public function getVideoHashId(int $videoId): string
-    {
-        return HashId::encode($videoId);
-    }
-
-    /**
-     * 构建视频详情页面URL (供View调用)
-     * 统一管理视频详情页面URL的生成，方便后续调整
-     *
-     * @param int $videoId 视频数字ID
-     * @param string $title 视频标题（用于SEO友好URL）
-     * @param array $queryParams 可选的查询参数（如 lang 等）
-     * @return string 完整的视频详情页面URL
-     */
-    public function buildVideoDetailUrl(int $videoId, string $title = '', array $queryParams = []): string
-    {
-        $hashId = $this->getVideoHashId($videoId);
-
-        // 如果提供了标题，进行URL友好化处理
-        $urlTitle = '';
-        if (!empty($title)) {
-            $urlTitle = UrlHelper::formatString($title);
-        }
-
-        // 构建基础URL
-        $url = "/content/{$hashId}/{$urlTitle}";
-
-        // 添加查询参数
-        if (!empty($queryParams)) {
-            $url .= '?' . http_build_query($queryParams);
-        }
-
-        return $url;
+        $hashId = HashId::encode($videoId);
+        return "/contents/{$hashId}?comment_page={$page}&lang={$lang}";
     }
 
     /**

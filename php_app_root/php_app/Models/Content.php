@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Core\HashId;
 use App\Core\UploadableModel;
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
 use App\Helpers\RequestHelper;
+use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
 class Content extends UploadableModel implements HasStatuses
@@ -116,11 +118,18 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
-     * 获取显示标题（优先中文）
+     * 构建视频详情页面URL (供View调用)
+     * 统一管理视频详情页面URL的生成，方便后续调整
+     * @param string|null $targetLang 目标跳转语言
+     * @param array $queryParams
+     * @return string
      */
-    public function getDisplayTitle(): string
+    public function buildContentDetailUrl(?string $targetLang = null, array $queryParams = []): string
     {
-        return $this->title_cn ?: $this->title_en;
+        // 构建基础URL 前缀
+        $urlPrefix = "/content/".HashId::encode($this->id)."/".UrlHelper::formatString($this->getTitle('en'));
+
+        return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
     }
 
     /**

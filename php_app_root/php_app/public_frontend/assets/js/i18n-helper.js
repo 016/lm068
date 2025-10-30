@@ -3,33 +3,32 @@
 
 class I18nHelper {
     constructor() {
-        // 必须先初始化支持的语言列表
-        this.supportedLangs = ['zh', 'en'];
-        // 然后再检测当前语言
+        // 优先级: PHP后端变量 > localStorage > 默认值
+        // 利用PHP在视图中输出的全局配置，这是最可靠的信息源
+        this.supportedLangs = window.PHP_I18N_CONFIG?.supportedLangs || ['zh', 'en'];
         this.currentLang = this.detectLanguage();
     }
 
     /**
      * 检测当前语言
-     * 优先级: URL参数 > localStorage > 默认中文
+     * 优先级: PHP后端变量 > localStorage > 默认中文
      */
     detectLanguage() {
-        // 优先从URL参数读取
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlLang = urlParams.get('lang');
-        if (urlLang && this.supportedLangs.includes(urlLang)) {
-            // 同步到localStorage
-            localStorage.setItem('i18n_lang', urlLang);
-            return urlLang;
+        // 1. 优先从PHP后端传递的全局变量读取，这是最准确的
+        const phpLang = window.PHP_I18N_CONFIG?.currentLang;
+        if (phpLang && this.supportedLangs.includes(phpLang)) {
+            // 同步到localStorage，以便在纯前端或无后端变量的页面中使用
+            localStorage.setItem('i18n_lang', phpLang);
+            return phpLang;
         }
 
-        // 从localStorage读取
+        // 2. 从localStorage读取作为备用
         const storedLang = localStorage.getItem('i18n_lang');
         if (storedLang && this.supportedLangs.includes(storedLang)) {
             return storedLang;
         }
 
-        // 默认中文
+        // 3. 默认中文
         return 'zh';
     }
 
@@ -59,22 +58,37 @@ class I18nHelper {
     }
 
     /**
-     * 切换语言
+     * [修改] 切换语言
      * @param {string} lang - 目标语言代码 (zh/en)
      */
     switchLanguage(lang) {
-        if (!this.supportedLangs.includes(lang)) {
-            console.error(`[i18n] Unsupported language: ${lang}`);
+        if (!this.supportedLangs.includes(lang) || lang === this.currentLang) {
+            console.warn(`[i18n] Language not supported or already active: ${lang}`);
             return;
         }
 
-        // 保存到localStorage
+        // 保存到localStorage，以便下次打开时记忆
         localStorage.setItem('i18n_lang', lang);
 
-        // 更新URL参数并刷新页面
-        const url = new URL(window.location.href);
-        url.searchParams.set('lang', lang);
-        window.location.href = url.toString();
+        const currentPath = window.location.pathname;
+        const currentLangPrefix = `/${this.currentLang}`;
+        let newPath;
+
+        // 检查当前路径是否以旧语言代码开头
+        if (currentPath.startsWith(currentLangPrefix + '/') || currentPath === currentLangPrefix) {
+            // 如果是 /zh/content 或 /zh，则替换语言部分
+            const basePath = currentPath.substring(currentLangPrefix.length);
+            newPath = `/${lang}${basePath || '/'}`; // 如果basePath为空(原路径为/zh), 补上'/'
+        } else {
+            // 如果路径不含语言前缀 (例如根路径 '/' 默认显示中文内容), 则直接在前面添加
+            // 确保不会出现 //content 这样的双斜杠
+            newPath = `/${lang}${currentPath === '/' ? '' : currentPath}`;
+        }
+
+        // 重新构建URL，并保留原有的查询参数和哈希值
+        const newUrl = `${window.location.origin}${newPath}${window.location.search}${window.location.hash}`;
+
+        window.location.href = newUrl;
     }
 
     /**
@@ -172,46 +186,6 @@ class I18nHelper {
     isEnglish() {
         return this.currentLang === 'en';
     }
-
-    /**
-     * 为URL添加语言参数
-     * @param {string} url - 原始URL
-     * @returns {string} 添加了语言参数的URL
-     */
-    addLangParam(url) {
-        try {
-            const urlObj = new URL(url, window.location.origin);
-            urlObj.searchParams.set('lang', this.currentLang);
-            return urlObj.toString();
-        } catch (e) {
-            // 如果URL解析失败,返回原始URL
-            return url;
-        }
-    }
-
-    /**
-     * 保持当前URL的语言参数
-     * 用于表单提交、分页链接等场景
-     */
-    preserveLangParam() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentLang = urlParams.get('lang');
-
-        if (currentLang && this.supportedLangs.includes(currentLang)) {
-            // 为所有表单添加隐藏的lang参数
-            document.querySelectorAll('form').forEach(form => {
-                // 检查是否已经有lang参数
-                const existingLangInput = form.querySelector('input[name="lang"]');
-                if (!existingLangInput) {
-                    const langInput = document.createElement('input');
-                    langInput.type = 'hidden';
-                    langInput.name = 'lang';
-                    langInput.value = currentLang;
-                    form.appendChild(langInput);
-                }
-            });
-        }
-    }
 }
 
 // 创建全局实例
@@ -221,10 +195,8 @@ window.i18n = new I18nHelper();
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         window.i18n.applyTranslations();
-        window.i18n.preserveLangParam();
     });
 } else {
     // DOM已经加载完成
     window.i18n.applyTranslations();
-    window.i18n.preserveLangParam();
 }

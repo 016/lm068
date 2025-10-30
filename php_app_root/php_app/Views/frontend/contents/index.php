@@ -27,11 +27,7 @@
 ?>
 
 <!-- 视频筛选区域 -->
-<form class="card mb-4" method="GET" action="/content">
-    <!-- 保持语言参数 -->
-    <?php if (!empty($currentLang)): ?>
-        <input type="hidden" name="lang" value="<?= $currentLang ?>">
-    <?php endif; ?>
+<form class="card mb-4" method="GET" action="/<?= CURRENT_LANG ?>/content">
 
     <div class="card-body">
         <div class="row g-3 mb-3">
@@ -92,17 +88,17 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 video-card-container">
                     <div class="card h-100 video-card">
                         <div class="position-relative">
-                            <a class="video-thumbnail" href="<?= $this->buildVideoDetailUrl($video->id, $video->getTitle('en'), ['lang' => $currentLang]) ?>">
+                            <a class="video-thumbnail" href="<?= $video->buildContentDetailUrl() ?>">
                                 <?php if (!empty($video->thumbnail)): ?>
                                     <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
-                                         alt="<?= htmlspecialchars($video->getDisplayTitle()) ?>"
+                                         alt="11<?= htmlspecialchars($video->getTitle()) ?>"
                                          class="card-img-top">
                                 <?php endif; ?>
                             </a>
                         </div>
                         <div class="card-body p-3">
                             <h5 class="card-title video-title">
-                                <a href="<?= $this->buildVideoDetailUrl($video->id, $video->getTitle('en'), ['lang' => $currentLang]) ?>" class="text-decoration-none">
+                                <a href="<?= $video->buildContentDetailUrl() ?>" class="text-decoration-none">
                                     <?= htmlspecialchars($video->getTitle($currentLang)) ?>
                                 </a>
                             </h5>

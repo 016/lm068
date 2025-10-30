@@ -17,10 +17,20 @@ class UrlHelper
      * @param bool $filterEmpty 是否过滤空值参数，默认 true
      * @return string 完整的 URI 路径
      */
-    public static function generateUri(string $action, array $params = [], bool $filterEmpty = true): string
+    public static function generateUri(string $action, ?string $targetLang = null, array $params = [], bool $filterEmpty = true): string
     {
+        $returnUrl = '';
+
+        //set default targetLang to current lang, for default let's think no lang change request.
+        if (empty($targetLang)) {
+            $targetLang = defined('CURRENT_LANG') ? CURRENT_LANG : 'zh' ;
+        }
+
         // 规范化 action，移除前导斜杠
         $action = ltrim($action, '/');
+        // format url string
+        $returnUrl .=  '/'.$targetLang . '/' . $action;
+
 
         //remove s output
         unset($params['s']);
@@ -43,30 +53,29 @@ class UrlHelper
 
         // 如果没有有效参数，直接返回 action
         if (empty($filteredParams)) {
-            return '/' . $action;
+            return $returnUrl;
         }
-
-        // format url string
-        $action = UrlHelper::formatString($action);
 
         // 构建查询字符串（自动处理 URL 编码）
         $queryString = http_build_query($filteredParams, '', '&', PHP_QUERY_RFC3986);
+        $returnUrl .= '?' . $queryString;
 
         // 组合完整 URI
-        return '/' . $action . '?' . $queryString;
+        return $returnUrl;
     }
 
     /**
      * for frontend generate canonical url , just remove $_GET['page'] out.
-     * @param string $action
+     * @param string $urlPrefix
      * @param array $params
      * @param bool $filterEmpty
      * @return string
      */
-    public static function generateCanonicalUrl(string $action, array $params = [], bool $filterEmpty = true): string
+    public static function generateCanonicalUrl(string $urlPrefix, string $targetLang, array $params = [], bool $filterEmpty = true): string
     {
         unset($params['page']);
-        return self::generateUri($action, $params, $filterEmpty);
+        $urlPrefix = substr($urlPrefix, strpos($urlPrefix, '/', 2));
+        return self::generateUri($urlPrefix, $targetLang, $params, $filterEmpty);
     }
 
 
