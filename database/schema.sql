@@ -39,7 +39,7 @@ CREATE TABLE `content` (
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
   `pub_at` DATETIME COMMENT '发布时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP removed because pv_cnt update will rise this field update, sitemap will show wrong date, keep update logic in php code
   INDEX `idx_status_id` (`status_id`),
   INDEX `idx_content_type_id` (`content_type_id`)
 ) ENGINE=InnoDB;

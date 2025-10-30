@@ -234,11 +234,10 @@ class ContentPvDaily extends Model
             return;
         }
 
-        $tableName_content = Content::getTableName();
         $placeholders = implode(',', array_fill(0, count($todayContentIds), '?'));
 
         $sql = "
-            UPDATE {$tableName_content} c
+            UPDATE content c
             INNER JOIN (
                 SELECT 
                     content_id,
@@ -248,8 +247,7 @@ class ContentPvDaily extends Model
                 GROUP BY content_id
             ) cpd ON c.id = cpd.content_id
             SET 
-                c.pv_cnt = cpd.total_pv,
-                c.updated_at = NOW()
+                c.pv_cnt = cpd.total_pv
         ";
 
         $this->db->query($sql, $todayContentIds);
@@ -262,22 +260,18 @@ class ContentPvDaily extends Model
     {
         $startTime = microtime(true);
 
-        $tableName_content = Content::getTableName();
-        $tableName_contentPVDaily = ContentPvDaily::getTableName();
-
         // 使用纯 SQL 全量更新
         $sql = "
-            UPDATE {$tableName_content} c
+            UPDATE content c
             INNER JOIN (
                 SELECT 
                     content_id,
                     SUM(pv_count) as total_pv
-                FROM {$tableName_contentPVDaily}
+                FROM content_pv_daily
                 GROUP BY content_id
             ) cpd ON c.id = cpd.content_id
             SET 
-                c.pv_cnt = cpd.total_pv,
-                c.updated_at = NOW()
+                c.pv_cnt = cpd.total_pv
         ";
 
         $this->db->query($sql);
@@ -287,7 +281,7 @@ class ContentPvDaily extends Model
             SELECT 
                 COUNT(*) as repaired_count,
                 SUM(pv_cnt) as total_pv
-            FROM {$tableName_content}
+            FROM content
             WHERE pv_cnt > 0
         ");
 
