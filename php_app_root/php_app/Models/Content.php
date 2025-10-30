@@ -640,32 +640,21 @@ class Content extends UploadableModel implements HasStatuses
             ]);
             $publishedVideos = (int)$result['count'];
 
-            //当日站内pv数
-            $sql = "SELECT SUM(pv_count) as count FROM " . ContentPvDaily::getTableName() .
-                " WHERE stat_date >= :current_day AND stat_date < :next_day";
-            $result = $db->fetch($sql, [
-                'current_day' => $dateStr . ' 00:00:00',
-                'next_day' => $nextDayStr . ' 00:00:00'
-            ]);
-            $inSitePVCount = (int)$result['count'];
+            //当日站内pv, uv数
+            $siteStatsDaily = new SiteStatsDaily();
+            $dailySiteStats = $siteStatsDaily->getStatsByDate($dateStr);
+            if (!$dailySiteStats) {
+                $dailySiteStats = ['pv_count'=>0, 'uv_count'=>0];
+            }
 
-            //@ee6 UV count need add new logic
-            //当日站内uv数
-            $sql = "SELECT SUM(uv_count) as count FROM " . ContentPvDaily::getTableName() .
-                " WHERE stat_date >= :current_day AND stat_date < :next_day";
-            $result = $db->fetch($sql, [
-                'current_day' => $dateStr . ' 00:00:00',
-                'next_day' => $nextDayStr . ' 00:00:00'
-            ]);
-            $inSiteUVCount = (int)$result['count'];
 
             $data[] = [
                 'date' => $dateStr,
                 'total_videos' => $totalVideos,
                 'new_videos' => $newVideos,
                 'published_videos' => $publishedVideos,
-                'in_site_pv' => $inSitePVCount,
-                'in_site_uv' => $inSiteUVCount
+                'site_pv' => (int)$dailySiteStats['pv_count'],
+                'site_uv' => (int)$dailySiteStats['uv_count']
             ];
 
             $currentDate->modify('+1 day');

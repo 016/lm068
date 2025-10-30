@@ -237,7 +237,7 @@ function createChart(data) {
                 {
                     type: 'line',
                     label: '当日站内总PV数量',
-                    data: data.map(d => d.in_site_pv),
+                    data: data.map(d => d.site_pv),
                     borderColor: '#68f163',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     tension: 0.4,
@@ -254,7 +254,7 @@ function createChart(data) {
                 {
                     type: 'line',
                     label: '当日站内总UV数量',
-                    data: data.map(d => d.in_site_uv),
+                    data: data.map(d => d.site_uv),
                     borderColor: '#f1de63',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     tension: 0.4,
