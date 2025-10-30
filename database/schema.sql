@@ -75,6 +75,39 @@ CREATE TABLE `content_pv_log` (
   INDEX `idx_accessed_at` (`accessed_at`)
 ) ENGINE=InnoDB COMMENT='内容PV原始访问日志';
 
+-- 全站每日统计表
+CREATE TABLE `site_stats_daily` (
+    `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `stat_date` DATE NOT NULL COMMENT '统计日期',
+
+    -- 核心指标 (必填，使用 DEFAULT 0)
+    `pv_count` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '全站当日总PV数',
+    `uv_count` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '全站当日独立访客数',
+
+    -- 扩展指标 (预留字段，使用 DEFAULT NULL)
+    `session_count` BIGINT UNSIGNED DEFAULT NULL COMMENT '会话数(预留)',
+    `new_visitor_count` BIGINT UNSIGNED DEFAULT NULL COMMENT '新访客数(预留)',
+    `bounce_count` BIGINT UNSIGNED DEFAULT NULL COMMENT '跳出次数(预留)',
+    `avg_session_duration` INT UNSIGNED DEFAULT NULL COMMENT '平均会话时长/秒(预留)',
+
+    -- 内容分类统计 (预留，使用 DEFAULT NULL)
+    `announcement_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '公告类PV(预留)',
+    `article_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '文章类PV(预留)',
+    `video_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '视频类PV(预留)',
+
+    -- 设备分类统计 (预留，使用 DEFAULT NULL)
+    `desktop_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '桌面端PV(预留)',
+    `mobile_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '移动端PV(预留)',
+    `tablet_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '平板端PV(预留)',
+    `bot_pv` BIGINT UNSIGNED DEFAULT NULL COMMENT '爬虫PV(预留)',
+
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `uk_stat_date` (`stat_date`),
+    INDEX `idx_created_at` (`created_at`)
+) ENGINE=InnoDB COMMENT='全站每日统计汇总表';
+
 -- 视频第三方平台表
 CREATE TABLE `platform` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
