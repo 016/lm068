@@ -128,9 +128,19 @@ class SitemapController extends BackendController
 
         // 3. 处理 Content Types (来自常量)
         foreach (ContentType::getAllContentTypes() as $oneContentType) {
+
+            // load this type's last updated content
+            $lastChangedContent = Content::findOne(['content_type_id'=>$oneContentType['id']], 'updated_at DESC');
+
+            //for no content type, use 2025-01-01 as last update date.
+            $lastmod = date('c', strtotime('2025-10-01 00:00:00'));
+            if ($lastChangedContent) {
+                $lastmod = date('c', strtotime($lastChangedContent['updated_at']));
+            }
+
             $list_url_cn = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, date('c'), 'daily', 0.8);
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'daily', 0.8);
         }
     }
 
