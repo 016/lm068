@@ -54,14 +54,15 @@ class ContentPvDaily extends Model
      * 完整的每日统计流程（增量更新版本）
      * @throws \Exception
      */
-    public function calculateDailyPVStatistics(string $statDate): array
+    public function calculateDailyStatistics(string $statDate): array
     {
         $startTime = microtime(true);
 
         $tableName_contentPvLog = ContentPvLog::getTableName();
+
         // 1. 从日志表统计当日数据
         $sql = "
-            SELECT content_id, ip
+            SELECT content_id, ip, device_type, is_bot
             FROM {$tableName_contentPvLog}
             WHERE accessed_at >= :start_date 
               AND accessed_at < :end_date
@@ -75,12 +76,32 @@ class ContentPvDaily extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
+        // 内容统计数据
         $stats = [];
-        $totalPV = 0;
 
+        // 全站统计数据
+        $siteStats = [
+            'total_pv' => 0,
+            'total_uv_ips' => [],
+            'device_stats' => [
+                'desktop' => 0,
+                'mobile' => 0,
+                'tablet' => 0,
+                'bot' => 0  // 爬虫单独统计
+            ]
+        ];
+
+        // 2. 内存中分组统计
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // 爬虫直接跳过，不参与业务统计
+            if ($row['is_bot']) {
+                $siteStats['device_stats']['bot']++;
+                continue;
+            }
+
             $contentId = $row['content_id'];
 
+            // 统计内容维度数据
             if (!isset($stats[$contentId])) {
                 $stats[$contentId] = [
                     'pv_count' => 0,
@@ -89,15 +110,31 @@ class ContentPvDaily extends Model
             }
 
             $stats[$contentId]['pv_count']++;
-            $totalPV++;
+            $siteStats['total_pv']++;
 
+            // UV 统计（基于 IP 去重）
             if ($row['ip']) {
                 $ipKey = bin2hex($row['ip']);
                 $stats[$contentId]['uv_ips'][$ipKey] = 1;
+                $siteStats['total_uv_ips'][$ipKey] = 1;
+            }
+
+            // 设备类型统计
+            $deviceType = (int)$row['device_type'];
+            switch ($deviceType) {
+                case 1:
+                    $siteStats['device_stats']['desktop']++;
+                    break;
+                case 2:
+                    $siteStats['device_stats']['mobile']++;
+                    break;
+                case 3:
+                    $siteStats['device_stats']['tablet']++;
+                    break;
             }
         }
 
-        // 4. 批量插入结果
+        // 3. 批量插入内容统计结果
         $insertData = [];
         foreach ($stats as $contentId => $data) {
             $insertData[] = [
@@ -108,10 +145,20 @@ class ContentPvDaily extends Model
             ];
         }
 
-        // 2. 更新 content_pv_daily
-        $this->batchUpsertDailyStats($insertData);
+        $this->batchUpsertContentDailyStats($insertData);
 
-        // 3. 增量更新 content.pv_cnt（只更新今天有变化的）
+        // 4. 插入/更新全站统计数据
+        $siteStatsDaily = new SiteStatsDaily();
+        $siteStatsDaily->upsertSiteDailyStats($statDate, [
+            'pv_count' => $siteStats['total_pv'],
+            'uv_count' => count($siteStats['total_uv_ips']),
+            'desktop_pv' => $siteStats['device_stats']['desktop'],
+            'mobile_pv' => $siteStats['device_stats']['mobile'],
+            'tablet_pv' => $siteStats['device_stats']['tablet'],
+            'bot_pv' => $siteStats['device_stats']['bot']
+        ]);
+
+        // 5. 增量更新 content.pv_cnt, 只更新今天有变化的
         $todayContentIds = array_keys($stats);
         $this->updateContentTotalPVIncremental($todayContentIds);
 
@@ -121,7 +168,10 @@ class ContentPvDaily extends Model
             'success' => true,
             'stat_date' => $statDate,
             'processed_contents' => count($stats),
-            'total_pv' => $totalPV,
+            'valid_pv' => $siteStats['total_pv'],  // 有效 PV（排除爬虫）
+            'valid_uv' => count($siteStats['total_uv_ips']),
+            'bot_pv' => $siteStats['device_stats']['bot'],  // 爬虫 PV
+            'device_breakdown' => $siteStats['device_stats'],
             'exec_time_seconds' => round($execTime, 2),
             'memory_peak_mb' => round(memory_get_peak_usage(true) / 1024 / 1024, 2)
         ];
@@ -132,7 +182,7 @@ class ContentPvDaily extends Model
      * 批量插入/更新统计数据
      * @throws \Exception
      */
-    private function batchUpsertDailyStats(array $data): void
+    private function batchUpsertContentDailyStats(array $data): void
     {
         if (empty($data)) {
             return;

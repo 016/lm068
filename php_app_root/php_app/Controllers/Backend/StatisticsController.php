@@ -46,7 +46,7 @@ class StatisticsController extends BackendController
 //        exit;
 
         $contentModel = new ContentPvDaily();
-        $result = $contentModel->calculateDailyPVStatistics($statDate);
+        $result = $contentModel->calculateDailyStatistics($statDate);
         $result['run-date'] = date('Y-m-d h:i:s');
 
         header('Content-Type: application/json');
