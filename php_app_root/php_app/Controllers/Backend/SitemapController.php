@@ -91,8 +91,8 @@ class SitemapController extends BackendController
 
     private function generateHomepageUrls(): void
     {
-        $homepage_cn = $this->base_url . '/content?lang=zh';
-        $homepage_en = $this->base_url . '/content?lang=en';
+        $homepage_cn = $this->base_url . '/zh/content';
+        $homepage_en = $this->base_url . '/en/content';
         $this->generateUrlEntry($homepage_cn, $homepage_en, date('c'), 'daily', 1.0);
     }
 
@@ -101,8 +101,8 @@ class SitemapController extends BackendController
         $contents = Content::findAll(['status_id' => ContentStatus::PUBLISHED->value]);
 
         foreach ($contents as $oneContent) {
-            $detail_url_cn = $this->base_url . "/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']) ."?lang=zh";
-            $detail_url_en = $this->base_url . "/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']) ."?lang=en";
+            $detail_url_cn = $this->base_url . "/zh/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
+            $detail_url_en = $this->base_url . "/en/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
             $lastmod = date('c', strtotime($oneContent['updated_at']));
             $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, 'monthly', 1.0);
         }
@@ -113,8 +113,8 @@ class SitemapController extends BackendController
         // 1. 处理 Tags
         $tags = Tag::findAll(['status_id'=>TagStatus::ENABLED->value]);
         foreach ($tags as $tag) {
-            $list_url_cn = $this->base_url . "/content?tag_id={$tag['id']}&lang=zh";
-            $list_url_en = $this->base_url . "/content?tag_id={$tag['id']}&lang=en";
+            $list_url_cn = $this->base_url . Tag::buildListUrl($tag['id'], 'zh');
+            $list_url_en = $this->base_url . Tag::buildListUrl($tag['id'], 'en');
 
             $lastmod = date('c', strtotime($tag['updated_at']));
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
@@ -123,8 +123,8 @@ class SitemapController extends BackendController
         // 2. 处理 Collections
         $collections = Collection::findAll(['status_id'=>CollectionStatus::ENABLED->value]);
         foreach ($collections as $collection) {
-            $list_url_cn = $this->base_url . "/content?collection_id={$collection['id']}&lang=zh";
-            $list_url_en = $this->base_url . "/content?collection_id={$collection['id']}&lang=en";
+            $list_url_cn = $this->base_url  . Collection::buildListUrl($collection['id'], 'zh');
+            $list_url_en = $this->base_url  . Collection::buildListUrl($collection['id'], 'en');
 
             $lastmod = date('c', strtotime($collection['updated_at']));
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
@@ -142,8 +142,8 @@ class SitemapController extends BackendController
                 $lastmod = date('c', strtotime($lastChangedContent['updated_at']));
             }
 
-            $list_url_cn = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=zh";
-            $list_url_en = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=en";
+            $list_url_cn = $this->base_url . "/zh/content?content_type_id={$oneContentType['id']}";
+            $list_url_en = $this->base_url . "/en/content?content_type_id={$oneContentType['id']}";
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.8);
         }
     }
