@@ -115,7 +115,7 @@ class SitemapController extends BackendController
         foreach ($tags as $tag) {
             $list_url_cn = $this->base_url . "/content?tag_id={$tag['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?tag_id={$tag['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, date('c'), 'daily', 0.6);
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $tag['updated_at'], 'daily', 0.6);
         }
 
         // 2. 处理 Collections
@@ -123,7 +123,7 @@ class SitemapController extends BackendController
         foreach ($collections as $collection) {
             $list_url_cn = $this->base_url . "/content?collection_id={$collection['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?collection_id={$collection['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, date('c'), 'daily', 0.6);
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $collection['updated_at'], 'daily', 0.6);
         }
 
         // 3. 处理 Content Types (来自常量)
