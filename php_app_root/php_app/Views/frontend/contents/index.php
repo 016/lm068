@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Collection;
+use \App\Models\Tag;
+
 /**
  * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
  * @var $video \App\Models\Content //$content->id will auto work in IDE
@@ -122,7 +125,7 @@
                                     foreach ($displayTags as $tag):
                                         $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                     ?>
-                                        <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                        <a href="<?= Tag::buildListUrl($tag['id']) ?>"
                                            class="btn btn-outline-primary btn-xs me-1">
                                             <?= htmlspecialchars($tagName) ?>
                                         </a>
@@ -134,7 +137,7 @@
                                         $collection = $video->collections[0];
                                         $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                     ?>
-                                        <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                                        <a href="<?= Collection::buildListUrl($collection['id']) ?>"
                                            class="btn btn-outline-success btn-xs">
                                             <?= htmlspecialchars($collectionName) ?>
                                         </a>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Constants\ContentStatus;
 use App\Core\Model;
 use App\Constants\CollectionStatus;
+use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
 class Collection extends Model implements HasStatuses
@@ -87,19 +88,18 @@ class Collection extends Model implements HasStatuses
     }
 
     /**
-     * 获取显示名称（优先中文）
+     * tag 列表页 URL (供View调用)
+     * 统一管理URL的生成，方便后续调整
+     * @param string|null $targetLang 目标跳转语言
+     * @param array $queryParams
+     * @return string
      */
-    public function getDisplayName(): string
+    public static function buildListUrl(int $id, ?string $targetLang = null, array $queryParams = []): string
     {
-        return $this->name_cn ?: $this->name_en;
-    }
+        // 构建基础URL 前缀
+        $urlPrefix = "/content/?collection_id=".$id;
 
-    /**
-     * 获取显示描述（优先中文）
-     */
-    public function getDisplayDescription(): string
-    {
-        return $this->desc_cn ?: $this->desc_en;
+        return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
     }
 
     /**

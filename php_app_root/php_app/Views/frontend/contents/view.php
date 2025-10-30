@@ -24,6 +24,8 @@
 use App\Core\Config;
 use App\Helpers\TextHelper;
 use App\Helpers\TimeHelper;
+use App\Models\Tag;
+use App\Models\Collection;
 
 //var_dump(Config::get('upload.base_url', ''));
 ?>
@@ -143,7 +145,7 @@ use App\Helpers\TimeHelper;
                         <?php foreach ($videoTags as $tag):
                             $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                         ?>
-                            <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                            <a href="<?= Tag::buildListUrl($tag['id']) ?>"
                                class="btn btn-outline-success btn-sm me-1">
                                 <?= htmlspecialchars($tagName) ?>
                             </a>
@@ -153,7 +155,7 @@ use App\Helpers\TimeHelper;
                         <?php foreach ($videoCollections as $collection):
                             $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                         ?>
-                            <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                            <a href="<?= Collection::buildListUrl($collection['id']) ?>"
                                class="btn btn-outline-success btn-sm">
                                 <?= htmlspecialchars($collectionName) ?>
                             </a>
@@ -376,7 +378,7 @@ use App\Helpers\TimeHelper;
                                             foreach ($displayTags as $tag):
                                                 $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                             ?>
-                                                <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                                <a href="<?= Tag::buildListUrl($tag['id']) ?>"
                                                    class="btn btn-outline-primary btn-sm me-1">
                                                     <?= htmlspecialchars($tagName) ?>
                                                 </a>
@@ -445,7 +447,7 @@ use App\Helpers\TimeHelper;
                                                 foreach ($displayTags as $tag):
                                                     $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                                 ?>
-                                                    <a href="/content?tag_id=<?= $tag['id'] ?>&lang=<?= $currentLang ?>"
+                                                    <a href="<?= Tag::buildListUrl($tag['id']) ?>"
                                                        class="btn btn-outline-success btn-sm me-1">
                                                         <?= htmlspecialchars($tagName) ?>
                                                     </a>
@@ -455,7 +457,7 @@ use App\Helpers\TimeHelper;
                                                 $collection = $recommendedVideo->collections[0];
                                                 $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                             ?>
-                                                <a href="/content?collection_id=<?= $collection['id'] ?>&lang=<?= $currentLang ?>"
+                                                <a href="<?= Collection::buildListUrl($collection['id']) ?>"
                                                    class="btn btn-outline-success btn-md">
                                                     <?= htmlspecialchars($collectionName) ?>
                                                 </a>
