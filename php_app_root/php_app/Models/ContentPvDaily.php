@@ -263,6 +263,7 @@ class ContentPvDaily extends Model
         $startTime = microtime(true);
 
         $tableName_content = Content::getTableName();
+        $tableName_contentPVDaily = ContentPvDaily::getTableName();
 
         // 使用纯 SQL 全量更新
         $sql = "
@@ -271,7 +272,7 @@ class ContentPvDaily extends Model
                 SELECT 
                     content_id,
                     SUM(pv_count) as total_pv
-                FROM content_pv_daily
+                FROM {$tableName_contentPVDaily}
                 GROUP BY content_id
             ) cpd ON c.id = cpd.content_id
             SET 
