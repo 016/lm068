@@ -640,11 +640,32 @@ class Content extends UploadableModel implements HasStatuses
             ]);
             $publishedVideos = (int)$result['count'];
 
+            //当日站内pv数
+            $sql = "SELECT SUM(pv_count) as count FROM " . ContentPvDaily::getTableName() .
+                " WHERE stat_date >= :current_day AND stat_date < :next_day";
+            $result = $db->fetch($sql, [
+                'current_day' => $dateStr . ' 00:00:00',
+                'next_day' => $nextDayStr . ' 00:00:00'
+            ]);
+            $inSitePVCount = (int)$result['count'];
+
+            //@ee6 UV count need add new logic
+            //当日站内uv数
+            $sql = "SELECT SUM(uv_count) as count FROM " . ContentPvDaily::getTableName() .
+                " WHERE stat_date >= :current_day AND stat_date < :next_day";
+            $result = $db->fetch($sql, [
+                'current_day' => $dateStr . ' 00:00:00',
+                'next_day' => $nextDayStr . ' 00:00:00'
+            ]);
+            $inSiteUVCount = (int)$result['count'];
+
             $data[] = [
                 'date' => $dateStr,
                 'total_videos' => $totalVideos,
                 'new_videos' => $newVideos,
-                'published_videos' => $publishedVideos
+                'published_videos' => $publishedVideos,
+                'in_site_pv' => $inSitePVCount,
+                'in_site_uv' => $inSiteUVCount
             ];
 
             $currentDate->modify('+1 day');

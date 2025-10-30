@@ -230,7 +230,42 @@ function createChart(data) {
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
                     fill: false,
-                    yAxisID: 'y'
+                    yAxisID: 'y-right',
+                    // hidden: true // 默认隐藏，因为暂无数据
+                },
+                // 折线图 - 当日总PV数量
+                {
+                    type: 'line',
+                    label: '当日站内总PV数量',
+                    data: data.map(d => d.in_site_pv),
+                    borderColor: '#68f163',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#68f163',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y-left'
+                },
+                // 折线图 - 当日总UV数量
+                {
+                    type: 'line',
+                    label: '当日站内总UV数量',
+                    data: data.map(d => d.in_site_uv),
+                    borderColor: '#f1de63',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#f1de63',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y-left'
                 },
                 // 柱状图 - 当日新增视频数量
                 {
@@ -240,7 +275,7 @@ function createChart(data) {
                     backgroundColor: 'rgba(245, 158, 11, 0.7)',
                     borderColor: '#f59e0b',
                     borderWidth: 1,
-                    yAxisID: 'y'
+                    yAxisID: 'y-left'
                 },
                 // 柱状图 - 当日发布视频数量
                 {
@@ -250,7 +285,7 @@ function createChart(data) {
                     backgroundColor: 'rgba(16, 185, 129, 0.7)',
                     borderColor: '#10b981',
                     borderWidth: 1,
-                    yAxisID: 'y'
+                    yAxisID: 'y-left'
                 },
                 // 折线图 - 当日播放视频数量 (TODO: 暂无数据)
                 {
@@ -267,7 +302,7 @@ function createChart(data) {
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
                     fill: false,
-                    yAxisID: 'y',
+                    yAxisID: 'y-left',
                     hidden: true // 默认隐藏，因为暂无数据
                 },
                 // 折线图 - 当日网站注册人数 (TODO: 暂无数据)
@@ -285,7 +320,7 @@ function createChart(data) {
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
                     fill: false,
-                    yAxisID: 'y',
+                    yAxisID: 'y-left',
                     hidden: true // 默认隐藏，因为暂无数据
                 }
             ]
@@ -334,7 +369,7 @@ function createChart(data) {
                         }
                     }
                 },
-                y: {
+                'y-left': {
                     type: 'linear',
                     position: 'left',
                     grid: {
@@ -346,12 +381,36 @@ function createChart(data) {
                         font: {
                             size: 10
                         },
+                    },
+                    title: {
+                        display: true,
+                        text: '新增数量',
+                        color: textColor
+                    }
+                },
+                // 右侧Y轴 - 大数值（累积数据）
+                'y-right': {
+                    type: 'linear',
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false,  // 不绘制网格线，避免重复
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 10
+                        },
                         callback: function(value) {
-                            if (value >= 1000) {
-                                return (value / 1000).toFixed(1) + 'K';
+                            if (value >= 100) {
+                                return (value / 100).toFixed(3) + 'x100';
                             }
                             return value;
                         }
+                    },
+                    title: {
+                        display: true,
+                        text: '累积/总量',
+                        color: textColor
                     }
                 }
             }
