@@ -29,7 +29,7 @@ class User extends Model
 
     public function getActiveUsers(int $limit = 20, int $offset = 0): array
     {
-        return $this->findAll(['status_id' => UserStatus::ACTIVE->value], $limit, $offset, 'created_at DESC');
+        return $this->findAll(['status_id' => UserStatus::ACTIVE->value], 'created_at DESC', $limit, $offset);
     }
 
     public function createUser(array $data): int

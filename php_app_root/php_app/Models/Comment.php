@@ -73,9 +73,9 @@ class Comment extends Model
     {
         return $this->findAll(
             ['content_id' => $contentId, 'status_id' => self::STATUS_APPROVED],
+            'created_at DESC',
             $limit,
-            $offset,
-            'created_at DESC'
+            $offset
         );
     }
 
@@ -90,9 +90,9 @@ class Comment extends Model
     {
         return $this->findAll(
             ['status_id' => self::STATUS_PENDING],
+            'created_at DESC',
             $limit,
-            $offset,
-            'created_at DESC'
+            $offset
         );
     }
 

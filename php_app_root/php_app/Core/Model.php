@@ -58,7 +58,7 @@ abstract class Model
      * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
      * @return array 格式化后的数组结果
      */
-    public static function findAll(array $conditions = [], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null, callable|array|null $formatter = null): array
+    public static function findAll(array $conditions = [], ?string $orderBy = null, ?int $limit = null, ?int $offset = 0, callable|array|null $formatter = null): array
     {
         $db = Database::getInstance();
         $table = static::getTableName();
@@ -209,6 +209,71 @@ abstract class Model
         return null;
     }
 
+    /**
+     * 静态方法 - 查找单条记录，支持查询条件和输出格式化
+     *
+     * @param array $conditions 查询条件数组
+     * @param int|null $offset 结果集的偏移量
+     * @param string|null $orderBy 排序方式
+     * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
+     * @return array|null 格式化后的单条记录数组，未找到则返回 null
+     */
+    public static function findOne(array $conditions = [], ?string $orderBy = null, ?int $offset = 0, callable|array|null $formatter = null): ?array
+    {
+        $db = Database::getInstance();
+        $table = static::getTableName();
+
+        $sql = "SELECT * FROM {$table}";
+        $params = [];
+
+        // 处理查询条件
+        if (!empty($conditions)) {
+            $whereClause = [];
+            foreach ($conditions as $field => $value) {
+                if (is_array($value)) {
+                    $placeholders = implode(',', array_fill(0, count($value), '?'));
+                    $whereClause[] = "{$field} IN ({$placeholders})";
+                    $params = array_merge($params, $value);
+                } else {
+                    $whereClause[] = "{$field} = :{$field}";
+                    $params[$field] = $value;
+                }
+            }
+            $sql .= " WHERE " . implode(" AND ", $whereClause);
+        }
+
+        if ($orderBy) {
+            $sql .= " ORDER BY {$orderBy}";
+        }
+
+        // 强制限制只查找一条记录
+        $sql .= " LIMIT 1";
+        if ($offset > 0) {
+            $sql .= " OFFSET {$offset}";
+        }
+
+        // 执行查询，获取单条记录
+        $result = $db->fetch($sql, $params);
+
+        // 如果没有找到记录，直接返回 null
+        if (!$result) {
+            return null;
+        }
+
+        // 应用格式化
+        if ($formatter !== null) {
+            if (is_array($formatter)) {
+                // 字段名数组模式：筛选指定字段
+                $result = array_intersect_key($result, array_flip($formatter));
+            } elseif (is_callable($formatter)) {
+                // 格式化函数模式：使用自定义格式化函数
+                $result = $formatter($result);
+            }
+        }
+
+        return $result;
+    }
+
     public static function findById(int $id): ?self
     {
         return static::find($id);
@@ -313,7 +378,7 @@ abstract class Model
      */
     public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
-        $models = static::findAll($conditions, $limit,$offset,$orderBy);
+        $models = static::findAll($conditions, $orderBy, $limit, $offset);
 
         $returnArray = [];
         foreach ($models as $oneModel) {
