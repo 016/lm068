@@ -104,7 +104,7 @@ class SitemapController extends BackendController
             $detail_url_cn = $this->base_url . "/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']) ."?lang=zh";
             $detail_url_en = $this->base_url . "/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']) ."?lang=en";
             $lastmod = date('c', strtotime($oneContent['updated_at']));
-            $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, 'weekly', 1.0);
+            $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, 'monthly', 1.0);
         }
     }
 
@@ -115,7 +115,9 @@ class SitemapController extends BackendController
         foreach ($tags as $tag) {
             $list_url_cn = $this->base_url . "/content?tag_id={$tag['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?tag_id={$tag['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $tag['updated_at'], 'daily', 0.6);
+
+            $lastmod = date('c', strtotime($tag['updated_at']));
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
         }
 
         // 2. 处理 Collections
@@ -123,7 +125,9 @@ class SitemapController extends BackendController
         foreach ($collections as $collection) {
             $list_url_cn = $this->base_url . "/content?collection_id={$collection['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?collection_id={$collection['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $collection['updated_at'], 'daily', 0.6);
+
+            $lastmod = date('c', strtotime($collection['updated_at']));
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
         }
 
         // 3. 处理 Content Types (来自常量)
@@ -140,7 +144,7 @@ class SitemapController extends BackendController
 
             $list_url_cn = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=zh";
             $list_url_en = $this->base_url . "/content?content_type_id={$oneContentType['id']}&lang=en";
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'daily', 0.8);
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.8);
         }
     }
 
