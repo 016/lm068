@@ -88,6 +88,46 @@ php_app/
     - 0 2 * * * docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /statistics/daily-pv-cal >> /pathToLog/daily_pv_cal.log 2>&1
     - 0 3 * * 0 docker exec ee-php-fpm-8.4.13 php /pathToProject/php_app_root/php_app/public_backend/index.php /statistics/repair-full-pv-cal >> /pathToLog/weekly_full_pv_cal.log 2>&1
     - crontab -l
+- Nginx 配置 支持i18n url format
+```nginx
+# ==================== 修正的重定向规则 ====================
+# 301 重定向规则 (放在 try_files 之前)
+# 当查询字符串中包含 lang=(zh或en) 时触发
+set $lang_code "";
+if ($arg_lang ~* ^(zh|en)$) {
+    set $lang_code $arg_lang; # 将 lang 参数值存入变量
+}
+
+# 构造新的查询字符串，移除 lang 参数
+set $new_args $args;
+if ($new_args ~* (.*)lang=[^&]*(?:&(.*)|$)) {
+    set $new_args $1$2; # 使用正则捕获 lang 参数前后内容，并拼接
+}
+
+# 如果新参数串以'&'开头，则移除
+if ($new_args ~ "^&") {
+    set $new_args_cleaned $1;
+}
+
+
+# 移除结尾的 &
+if ($new_args ~ "^(.*)&$") {
+    set $new_args $1;
+}
+
+# 如果新参数串不为空，前面加上 '?'
+set $prefix "";
+if ($new_args) {
+    set $prefix "?";
+}
+
+
+if ($arg_lang ~* ^(zh|en)$) {
+    # 执行301永久重定向
+    return 301 $scheme://$host/$lang_code$uri$prefix$new_args;    
+}
+# =========================================================
+```
 ## 开发规范
 
 ### 命名规范
