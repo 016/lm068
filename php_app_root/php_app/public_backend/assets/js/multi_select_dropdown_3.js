@@ -13,6 +13,9 @@ class MultiSelectDropdown {
             data: options.data || [],
             selected: options.selected || [],
             allowClear: options.allowClear !== false,
+            // 新增:下拉面板宽度配置
+            dropdownWidth: null,        // 下拉面板宽度,如 '300px', '100%', null表示跟随显示区域
+            dropdownAlign: 'left',      // 延展方向: 'left'(向右延展), 'right'(向左延展), 'center'(居中)
             ...options
         };
 
@@ -45,6 +48,9 @@ class MultiSelectDropdown {
     }
 
     render() {
+        // 计算下拉面板的定位样式
+        const dropdownStyle = this.getDropdownStyle();
+
         this.container.innerHTML = `
             <div class="multi-select-wrapper">
                 <!-- 隐藏的input用于表单提交 -->
@@ -63,7 +69,7 @@ class MultiSelectDropdown {
                 </div>
 
                 <!-- 下拉面板 -->
-                <div class="multi-select-dropdown">
+                <div class="multi-select-dropdown" style="${dropdownStyle}">
                     <div class="multi-select-search">
                         <div class="multi-select-search-wrapper">
                             <i class="bi bi-search multi-select-search-icon"></i>
@@ -91,6 +97,38 @@ class MultiSelectDropdown {
             arrow: this.container.querySelector('.multi-select-arrow'),
             clearBtn: this.container.querySelector('.multi-select-clear-btn')
         };
+    }
+
+    // 新增方法:计算下拉面板样式
+    getDropdownStyle() {
+        const styles = [];
+
+        // 设置宽度
+        if (this.options.dropdownWidth) {
+            styles.push(`width: ${this.options.dropdownWidth}`);
+        }
+
+        // 设置对齐方式
+        switch (this.options.dropdownAlign) {
+            case 'right':
+                // 向左延展:右边对齐
+                styles.push('left: auto');
+                styles.push('right: 0');
+                break;
+            case 'center':
+                // 居中对齐
+                styles.push('left: 50%');
+                styles.push('transform: translateX(-50%)');
+                break;
+            case 'left':
+            default:
+                // 向右延展:左边对齐(默认)
+                styles.push('left: 0');
+                styles.push('right: auto');
+                break;
+        }
+
+        return styles.join('; ');
     }
 
     renderItems() {

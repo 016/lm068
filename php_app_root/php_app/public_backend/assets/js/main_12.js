@@ -1753,10 +1753,10 @@ class TableManager {
             });
         });
     }
-    
+
     /**
      * 应用筛选器
-     * 支持自定义保持参数配置，允许保持任意 URL 参数
+     * 支持自定义保持参数配置,允许保持任意 URL 参数
      * 支持多选组件的筛选参数
      */
     applyFilters() {
@@ -1774,13 +1774,13 @@ class TableManager {
             }
         });
 
-        // 特殊处理：检查是否有多选组件（如状态多选）
+        // 特殊处理:检查是否有多选组件(如状态多选)
         // 查找 status_id 列的多选组件
         const statusCell = document.querySelector('.table-filter-cell[data-column="status_id"]');
         if (statusCell) {
             const statusMultiSelectContainer = statusCell.querySelector('#statusMultiSelect');
             if (statusMultiSelectContainer && window.statusMultiSelectInstance) {
-                // 获取多选组件的值（逗号分隔的ID字符串）
+                // 获取多选组件的值(逗号分隔的ID字符串)
                 const statusValue = window.statusMultiSelectInstance.getValue();
                 if (statusValue && statusValue !== '') {
                     filterParams.set('status_id', statusValue);
@@ -1796,7 +1796,16 @@ class TableManager {
             }
         });
 
-        const newUrl = `${currentUrl.pathname}?${filterParams.toString()}`;
+        const queryString = decodeURIComponent(filterParams.toString());
+        const newUrl = `${currentUrl.pathname}?${queryString}`;
+
+        // 对比新旧 URL,如果相同则不执行刷新
+        const currentPathAndQuery = `${currentUrl.pathname}${currentUrl.search}`;
+        if (newUrl === currentPathAndQuery) {
+            console.log('URL 未变化,跳过刷新');
+            return;
+        }
+
         console.log('Applying filters with URL:', newUrl);
         window.location.href = newUrl;
     }

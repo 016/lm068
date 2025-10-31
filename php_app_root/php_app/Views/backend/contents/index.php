@@ -276,7 +276,7 @@ use App\Constants\ContentType;
                                     </div>
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="status_id">
+                            <th class="table-cell sortable-header" data-column="status_id" style="min-width: 130px;">
                                 <div class="d-flex align-items-center">
                                     状态
                                     <div class="sort-icons-container">

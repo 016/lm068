@@ -165,17 +165,27 @@ function initStatusMultiSelect() {
         hiddenInputName: 'status_ids',
         data: statusList,
         selected: selectedStatuses,
-        allowClear: true
+        allowClear: true,
+        dropdownWidth: '500px',
+        dropdownAlign: 'center'  // 居中
     });
 
-    // 监听多选组件的变化，当下拉框关闭时自动触发搜索
-    document.getElementById('statusMultiSelect').addEventListener('multiselect:close', function(e) {
+    /**
+     * 处理多选框变化事件，触发表格筛选
+     */
+    function handleMultiSelectChange(e) {
         // 获取 TableManager 实例并触发筛选
         if (window.contentListManager && window.contentListManager.tableManager) {
             console.log('状态多选框关闭，自动触发筛选');
             window.contentListManager.tableManager.applyFilters();
         }
-    });
+    }
+
+    // 监听多选组件的变化，当下拉框关闭时自动触发搜索
+    const element = document.getElementById('statusMultiSelect');
+    element.addEventListener('multiselect:close', handleMultiSelectChange);
+    // not open because each time change will rise reload
+    // element.addEventListener('multiselect:change', handleMultiSelectChange);
 
     // 保存到全局以便访问
     window.statusMultiSelectInstance = statusMultiSelect;

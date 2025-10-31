@@ -128,8 +128,8 @@
 .multi-select-dropdown {
     position: absolute;
     top: calc(100% + 4px);
-    left: 0;
-    right: 0;
+    /*left: 0;*/
+    /*right: 0;*/
     background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: var(--radius);
@@ -142,6 +142,16 @@
     max-height: 320px;
     display: flex;
     flex-direction: column;
+    min-width: 200px; /* 添加最小宽度防止过窄 */
+}
+
+/* 当使用居中对齐时的动画修正 */
+.multi-select-dropdown[style*="translateX"] {
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.multi-select-dropdown.show[style*="translateX"] {
+    transform: translateX(-50%) translateY(0);
 }
 
 .multi-select-dropdown.show {
