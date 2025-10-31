@@ -63,8 +63,8 @@ class ContentController extends BackendController
             'filterDisplayInfo' => $filterDisplayInfo,
             'stats' => $stats,
             'pageTitle' => '内容管理 - 视频分享网站管理后台',
-            'css_files' => ['content_list_2.css'],
-            'js_files' => ['content_list_2.js']
+            'css_files' => ['content_list_2.css', 'multi_select_dropdown_1.css'],
+            'js_files' => ['multi_select_dropdown_3.js', 'content_list_2.js']
         ]);
     }
 
