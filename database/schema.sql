@@ -36,7 +36,7 @@ CREATE TABLE `content` (
   `duration` MEDIUMINT UNSIGNED COMMENT '视频时长秒数 (仅视频类型使用)',
   `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '网站内PV计数',
   `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看/阅读次数',
-  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 0-隐藏, 1-草稿, 11-创意, 18-脚本开, 19-脚本完, 21-开拍, 29-拍完, 31-开剪, 39-剪完, 91-待发布, 99-已发布',
+  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 9-隐藏, 11-草稿, 51-创意, 56-脚本开, 59-脚本完, 61-开拍, 69-拍完, 71-开剪, 79-剪完, 91-待发布, 99-已发布',
   `pub_at` DATETIME COMMENT '发布时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP removed because pv_cnt update will rise this field update, sitemap will show wrong date, keep update logic in php code

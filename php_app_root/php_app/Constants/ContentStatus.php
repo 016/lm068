@@ -4,15 +4,15 @@ namespace App\Constants;
 
 enum ContentStatus: int
 {
-    case HIDDEN = 0;           // 隐藏
-    case DRAFT = 1;            // 草稿
-    case CREATIVE = 11;        // 创意
-    case SCRIPT_START = 18;    // 脚本开
-    case SCRIPT_DONE = 19;     // 脚本完
-    case SHOOTING_START = 21;  // 开拍
-    case SHOOTING_DONE = 29;   // 拍完
-    case EDITING_START = 31;   // 开剪
-    case EDITING_DONE = 39;    // 剪完
+    case HIDDEN = 9;           // 隐藏
+    case DRAFT = 11;            // 草稿
+    case CREATIVE = 51;        // 创意
+    case SCRIPT_START = 58;    // 脚本开
+    case SCRIPT_DONE = 59;     // 脚本完
+    case SHOOTING_START = 61;  // 开拍
+    case SHOOTING_DONE = 69;   // 拍完
+    case EDITING_START = 71;   // 开剪
+    case EDITING_DONE = 79;    // 剪完
     case PENDING_PUBLISH = 91; // 待发布
     case PUBLISHED = 99;       // 已发布
 
