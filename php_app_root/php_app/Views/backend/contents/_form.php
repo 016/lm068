@@ -323,9 +323,9 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
             </div>
             <?php endif; ?>
 
-            <?php if (!$isCopyMode): ?>
-            <!-- 时间信息 (仅在非复制模式下显示) -->
-            <?php if (!$content->isNew): ?>
+
+            <!-- 时间信息 (仅在复制模式+编辑模式下显示) -->
+            <?php if (($isCopyMode)||(!$isCopyMode&&!$content->isNew)): ?>
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-clock form-section-icon"></i>
@@ -333,6 +333,8 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
+
+                    <?php if ((!$isCopyMode&&!$content->isNew)): ?>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="created_at" class="form-label">创建时间</label>
@@ -345,6 +347,7 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                             <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= htmlspecialchars($content->updated_at ?? '') ?>" disabled>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
                             <label for="pub_at" class="form-label">发布时间</label>
@@ -353,7 +356,6 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                     </div>
                 </div>
             </div>
-            <?php endif; ?>
             <?php endif; ?>
 
             <!-- 表单操作按钮 -->

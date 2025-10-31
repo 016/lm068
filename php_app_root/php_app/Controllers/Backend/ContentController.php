@@ -456,7 +456,7 @@ class ContentController extends BackendController
         $this->renderCopyForm($sourceContent);
     }
 
-    private function renderCopyForm(Content $sourceContent, Content $newContent = null, null|array|string $postedTagIds = null, null|array|string $postedCollectionIds = null): void
+    private function renderCopyForm(Content $sourceContent, ?Content $newContent = null, null|array|string $postedTagIds = null, null|array|string $postedCollectionIds = null): void
     {
         // 如果没有提供新内容实例，创建一个并从源内容复制数据
         if ($newContent === null) {

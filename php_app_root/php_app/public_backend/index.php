@@ -76,6 +76,8 @@ $router->post('/contents/bulk-action', 'Backend\\ContentController@bulkAction');
 $router->post('/contents/bulk-import', 'Backend\\ContentController@bulkImport');
 $router->get('/contents/{id}/edit', 'Backend\\ContentController@edit');
 $router->post('/contents/{id}/edit', 'Backend\\ContentController@edit');  // 编辑路由，GET显示表单，POST处理数据
+$router->get('/contents/{id}/copy', 'Backend\\ContentController@copy');
+$router->post('/contents/{id}/copy', 'Backend\\ContentController@copy');  // copy路由，GET显示表单，POST处理数据
 $router->delete('/contents/{id}', 'Backend\\ContentController@destroy');
 
 // 用户管理
