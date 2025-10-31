@@ -1797,7 +1797,8 @@ class TableManager {
         });
 
         const queryString = decodeURIComponent(filterParams.toString());
-        const newUrl = `${currentUrl.pathname}?${queryString}`;
+
+        const newUrl = queryString ? `${currentUrl.pathname}?${queryString}` : currentUrl.pathname;
 
         // 对比新旧 URL,如果相同则不执行刷新
         const currentPathAndQuery = `${currentUrl.pathname}${currentUrl.search}`;

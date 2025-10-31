@@ -160,14 +160,14 @@ function initStatusMultiSelect() {
     const statusMultiSelect = new MultiSelectDropdown('#statusMultiSelect', {
         placeholder: '全部状态',
         maxDisplayItems: 2,
-        columns: 1,
+        columns: 4,
         searchPlaceholder: '搜索状态...',
         hiddenInputName: 'status_ids',
         data: statusList,
         selected: selectedStatuses,
         allowClear: true,
         dropdownWidth: '500px',
-        dropdownAlign: 'center'  // 居中
+        dropdownAlign: 'right'  // 居中
     });
 
     /**
