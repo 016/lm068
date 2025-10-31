@@ -370,4 +370,148 @@ class ContentController extends BackendController
             'relatedCollections' => $relatedCollections
         ]);
     }
+
+    public function copy(Request $request): void
+    {
+        $id = (int)$request->getParam(0);
+
+        // 1. 通过ID查找要复制的Content实例
+        $sourceContent = Content::find($id);
+        if (!$sourceContent) {
+            $this->redirect('/contents');
+            return;
+        }
+
+        // 处理 POST 请求（复制后的表单提交 - 执行创建操作）
+        if ($request->isPost()) {
+            // 创建新的Content实例用于保存
+            $newContent = new Content();
+
+            // 4. 对 POST 的数值进行提取并填充到新实例
+            $data = [
+                'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
+                'author' => $request->post('author') ?? 'DP',
+                'code' => $request->post('code') ?? '',
+                'title_cn' => $request->post('name_cn'),
+                'title_en' => $request->post('name_en'),
+                'short_desc_cn' => $request->post('short_desc_cn') ?? '',
+                'short_desc_en' => $request->post('short_desc_en') ?? '',
+                'desc_cn' => $request->post('desc_cn') ?? '',
+                'desc_en' => $request->post('desc_en') ?? '',
+                'sum_cn' => $request->post('sum_cn') ?? '',
+                'sum_en' => $request->post('sum_en') ?? '',
+                'duration' => $request->post('duration') ?? '',
+                'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
+                'pub_at' => $request->post('pub_at') ?? null,
+                'pv_cnt' => 0,
+                'view_cnt' => 0
+            ];
+
+            // 处理文件上传（缩略图）
+            if (!empty($_FILES)) {
+                $newContent->handleFileUploads($_FILES);
+            }
+
+            $newContent->fill($data);
+
+            $postedTagIds = $request->post('tag_ids');
+            $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
+            $postedCollectionIds = $request->post('collection_ids');
+            $postedCollectionIds = $postedCollectionIds == '' ? [] : array_map('intval', explode(',', $postedCollectionIds));
+
+            // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
+            if (!$newContent->validate()) {
+                // 6. 如果验证失败，使用 $newContent->errors 返回给 view
+                $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+                return;
+            }
+
+            try {
+                // 7. 验证通过，写入数据库（执行创建操作）
+                if ($newContent->save()) {
+                    if (!empty($postedTagIds)) {
+                        $this->curModel->syncTagAssociations($newContent->id, $postedTagIds);
+                    }
+
+                    if (!empty($postedCollectionIds)) {
+                        $this->curModel->syncCollectionAssociations($newContent->id, $postedCollectionIds);
+                    }
+
+                    // 成功后跳转到列表页面
+                    $this->setFlashMessage('内容复制成功', 'success');
+                    $this->redirect('/contents');
+                } else {
+                    // 保存失败，返回复制页面并显示错误
+                    $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+                }
+            } catch (\Exception $e) {
+                error_log("Content copy error: " . $e->getMessage());
+                $newContent->errors['general'] = '复制失败: ' . $e->getMessage();
+                $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+            }
+            return;
+        }
+
+        // 2. GET请求 - 显示复制表单，使用源内容数据填充
+        $this->renderCopyForm($sourceContent);
+    }
+
+    private function renderCopyForm(Content $sourceContent, Content $newContent = null, null|array|string $postedTagIds = null, null|array|string $postedCollectionIds = null): void
+    {
+        // 如果没有提供新内容实例，创建一个并从源内容复制数据
+        if ($newContent === null) {
+            $newContent = new Content();
+            // 复制源内容的数据（除了缩略图）
+            $newContent->content_type_id = $sourceContent->content_type_id;
+            $newContent->title_cn = $sourceContent->title_cn;
+            $newContent->title_en = $sourceContent->title_en;
+            $newContent->code = $sourceContent->code;
+            $newContent->author = $sourceContent->author;
+            $newContent->duration = $sourceContent->duration;
+            $newContent->short_desc_cn = $sourceContent->short_desc_cn;
+            $newContent->short_desc_en = $sourceContent->short_desc_en;
+            $newContent->desc_cn = $sourceContent->desc_cn;
+            $newContent->desc_en = $sourceContent->desc_en;
+            $newContent->sum_cn = $sourceContent->sum_cn;
+            $newContent->sum_en = $sourceContent->sum_en;
+            $newContent->status_id = $sourceContent->status_id;
+            $newContent->pub_at = $sourceContent->pub_at;
+            // 不复制缩略图和统计数据
+        }
+
+        // 如果是表单错误重新渲染，使用提交的数据；否则使用源内容的关联数据
+        if ($postedTagIds !== null) {
+            $selectedTagIds = $postedTagIds;
+        } else {
+            $relatedTags = $this->curModel->getRelatedTags($sourceContent->id);
+            $selectedTagIds = array_column($relatedTags, 'id');
+        }
+
+        if ($postedCollectionIds !== null) {
+            $selectedCollectionIds = $postedCollectionIds;
+        } else {
+            $relatedCollections = $this->curModel->getRelatedCollections($sourceContent->id);
+            $selectedCollectionIds = array_column($relatedCollections, 'id');
+        }
+
+        $tagsList = Tag::loadList([
+            'status_id' => TagStatus::getVisibleStatuses()
+        ]);
+
+        $collectionsList = Collection::loadList([
+            'status_id' => CollectionStatus::getVisibleStatuses()
+        ]);
+
+        $this->render('contents/copy', [
+            'content' => $newContent,  // 传递新的Content实例
+            'sourceContent' => $sourceContent,  // 传递源Content实例用于参考
+            'tagsList' => $tagsList,
+            'collectionsList' => $collectionsList,
+            'selectedTagIds' => $selectedTagIds,
+            'selectedCollectionIds' => $selectedCollectionIds,
+            'pageTitle' => '复制内容 - 视频分享网站管理后台',
+            'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
+            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'content_edit_11.js']
+        ]);
+    }
 }

@@ -384,6 +384,9 @@ use App\Constants\ContentType;
                                             <a href="/contents/<?= $item['id'] ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
+                                            <a href="/contents/<?= $item['id'] ?>/copy" class="btn btn-outline-warning btn-sm" title="复制">
+                                                <i class="bi bi-copy"></i>
+                                            </a>
                                             <a href="/contents/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>

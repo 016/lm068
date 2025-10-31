@@ -688,7 +688,7 @@ class FormUtils {
             case 'duration':
                 if (value && !this.isValidDuration(value)) {
                     field.classList.add('is-invalid');
-                    this.setFieldError(field.parentElement, '请输入有效的时间格式(如: 12:35)');
+                    this.setFieldError(field.parentElement, '请输入有效的时间格式(如: 123)');
                     return false;
                 }
                 break;
@@ -1023,7 +1023,7 @@ class FormUtils {
      * 验证时长格式 (MM:SS)
      */
     isValidDuration(duration) {
-        const regex = /^\d{1,3}:[0-5]\d$/;
+        const regex = /^\d+$/;
         return regex.test(duration);
     }
 

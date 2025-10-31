@@ -5,7 +5,12 @@ use App\Helpers\HtmlHelper;
 
 /**
  * @var $content App\Models\Content
+ * @var $isCopyMode bool
  */
+
+// 检测是否为复制模式
+$isCopyMode = isset($isCopyMode) && $isCopyMode === true;
+$isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
 
 ?>
 <!-- Shared Content Form Content -->
@@ -14,7 +19,7 @@ use App\Helpers\HtmlHelper;
         <i class="bi bi-camera-video form-icon"></i>
         <h3>内容详细信息</h3>
     </div>
-    
+
     <div class="form-body">
         <?php if (!empty($content->errors)): ?>
         <div class="alert alert-danger mb-4">
@@ -28,21 +33,21 @@ use App\Helpers\HtmlHelper;
         <?php endif; ?>
 
         <form id="contentEditForm" action="<?= $formAction ?>" method="POST" enctype="multipart/form-data">
-            <?php if (!$content->isNew): ?>
+            <?php if (!$isNewContent): ?>
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="id" id="id" value="<?= htmlspecialchars($content->id) ?>">
             <?php endif; ?>
-            
+
             <!-- 基本信息 -->
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-info-circle form-section-icon"></i>
-                    基本信息<?php if (!$content->isNew): ?> - ID: #<?= str_pad($content->id, 3, '0', STR_PAD_LEFT) ?><?php endif; ?>
+                    基本信息<?php if (!$isNewContent): ?> - ID: #<?= str_pad($content->id, 3, '0', STR_PAD_LEFT) ?><?php endif; ?>
                 </h4>
 
                 <div class="row">
                     <div class="col-md-6 pb-3">
-                        <?php if (!$content->isNew): ?>
+                        <?php if (!$isNewContent): ?>
                         <div class="form-group">
                             <label for="contentId" class="form-label">内容ID</label>
                             <input type="text" class="form-control" id="contentId" value="#<?= str_pad($content->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
@@ -136,12 +141,12 @@ use App\Helpers\HtmlHelper;
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
-                            <label for="duration" class="form-label">内容时长</label>
+                            <label for="duration" class="form-label">内容时长(s)</label>
                             <input type="text" class="form-control <?= isset($content->errors['duration']) ? 'is-invalid' : '' ?>" id="duration" name="duration" value="<?= htmlspecialchars($content->duration ?? '') ?>" placeholder="mm:ss">
                             <?php if (isset($content->errors['duration'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['duration']) ?></div>
                             <?php endif; ?>
-                            <div class="form-text">格式：分钟:秒(如 12:35)</div>
+                            <div class="form-text">格式：秒(如 123)</div>
                         </div>
                     </div>
                 </div>
@@ -245,7 +250,7 @@ use App\Helpers\HtmlHelper;
                     <i class="bi bi-toggles form-section-icon"></i>
                     状态设置
                 </h4>
-                
+
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
@@ -271,14 +276,23 @@ use App\Helpers\HtmlHelper;
                 </div>
             </div>
 
-            <?php if (!$content->isNew): ?>
-            <!-- 统计信息 -->
+            <?php if ($isCopyMode || !$content->isNew): ?>
+            <!-- 统计信息 (复制模式或编辑模式下显示) -->
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-bar-chart form-section-icon"></i>
-                    统计信息
+                    <?= $isCopyMode ? '源内容统计信息' : '统计信息' ?>
                 </h4>
-                
+
+                <?php if ($isCopyMode): ?>
+                <div class="info-box">
+                    <i class="bi bi-info-circle info-icon"></i>
+                    <div class="info-content">
+                        <div class="info-title">数据统计</div>
+                        <div class="info-text">以下数据来自源内容的统计信息（仅供参考，新内容的统计将从零开始）</div>
+                    </div>
+                </div>
+                <?php else: ?>
                 <div class="info-box">
                     <i class="bi bi-info-circle info-icon"></i>
                     <div class="info-content">
@@ -286,6 +300,7 @@ use App\Helpers\HtmlHelper;
                         <div class="info-text">以下数据为系统自动统计,实时更新</div>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <div class="stats-row">
                     <div class="stat-item">
@@ -306,14 +321,17 @@ use App\Helpers\HtmlHelper;
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
-            <!-- 时间信息 -->
+            <?php if (!$isCopyMode): ?>
+            <!-- 时间信息 (仅在非复制模式下显示) -->
+            <?php if (!$content->isNew): ?>
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-clock form-section-icon"></i>
                     时间信息
                 </h4>
-                
+
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
@@ -327,8 +345,15 @@ use App\Helpers\HtmlHelper;
                             <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= htmlspecialchars($content->updated_at ?? '') ?>" disabled>
                         </div>
                     </div>
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
+                            <label for="pub_at" class="form-label">发布时间</label>
+                            <input type="text" class="form-control" id="pub_at" name="pub_at" value="<?= htmlspecialchars($content->pub_at ?? '') ?>">
+                        </div>
+                    </div>
                 </div>
             </div>
+            <?php endif; ?>
             <?php endif; ?>
 
             <!-- 表单操作按钮 -->
@@ -339,7 +364,15 @@ use App\Helpers\HtmlHelper;
                 </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i>
-                    <?= $content->isNew ? '创建内容' : '保存修改' ?>
+                    <?php
+                    if ($isCopyMode) {
+                        echo '保存复制';
+                    } elseif ($content->isNew) {
+                        echo '创建内容';
+                    } else {
+                        echo '保存修改';
+                    }
+                    ?>
                 </button>
             </div>
         </form>
