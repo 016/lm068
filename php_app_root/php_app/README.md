@@ -69,6 +69,7 @@ php_app/
 - 前台入口: 将 `public_frontend/` 目录配置为网站根目录
 - 后台入口: 将 `public_backend/` 目录配置为管理后台根目录
 - 资源目录: 将 `../public_resources/uploads/` 配置为资源访问目录
+  - 将 `../public_resources/uploads/` 下所有文件夹设置为可写
 
 ### 5. 测试访问
 - 访问前台: `http://your-domain.com/test` 查看 Hello World 测试页面
