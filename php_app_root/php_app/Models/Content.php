@@ -50,7 +50,7 @@ class Content extends UploadableModel implements HasStatuses
         'duration' => 0,
         'pv_cnt' => 0,
         'view_cnt' => 0,
-        'status_id' => 1
+        'status_id' => ContentStatus::DRAFT->value
     ];
 
     public function __construct()
@@ -112,7 +112,7 @@ class Content extends UploadableModel implements HasStatuses
             'short_desc_en' => '英文简介',
             'short_desc_cn' => '中文简介',
             'thumbnail' => '缩略图',
-            'duration' => '时长',
+            'duration' => '时长(s)',
             'status_id' => '状态'
         ];
     }
@@ -544,22 +544,22 @@ class Content extends UploadableModel implements HasStatuses
     public function prepareBulkImportData(array $csvRowData): array
     {
         return [
-            'content_type_id' => isset($csvRowData['content_type_id']) ? (int)$csvRowData['content_type_id'] : ContentType::VIDEO->value,
-            'author' => $csvRowData['author'] ?? 'DP',
-            'code' => $csvRowData['code'] ?? '',
-            'title_en' => $csvRowData['title_en'] ?? '',
-            'title_cn' => $csvRowData['title_cn'] ?? '',
-            'desc_en' => $csvRowData['desc_en'] ?? '',
-            'desc_cn' => $csvRowData['desc_cn'] ?? '',
-            'sum_en' => $csvRowData['sum_en'] ?? '',
-            'sum_cn' => $csvRowData['sum_cn'] ?? '',
-            'short_desc_en' => $csvRowData['short_desc_en'] ?? '',
-            'short_desc_cn' => $csvRowData['short_desc_cn'] ?? '',
-            'thumbnail' => $csvRowData['thumbnail'] ?? '',
-            'duration' => $csvRowData['duration'] ?? '',
-            'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : ContentStatus::DRAFT->value,
-            'pv_cnt' => 0,
-            'view_cnt' => 0
+            'content_type_id' => isset($csvRowData['content_type_id']) ? (int)$csvRowData['content_type_id'] : $this->defaults['content_type_id'],
+            'author' => $csvRowData['author'] ?? $this->defaults['author'],
+            'code' => $csvRowData['code'] ?? $this->defaults['code'],
+            'title_en' => $csvRowData['title_en'] ?? $this->defaults['title_en'],
+            'title_cn' => $csvRowData['title_cn'] ?? $this->defaults['title_cn'],
+            'desc_en' => $csvRowData['desc_en'] ?? $this->defaults['desc_en'],
+            'desc_cn' => $csvRowData['desc_cn'] ?? $this->defaults['desc_cn'],
+            'sum_en' => $csvRowData['sum_en'] ?? $this->defaults['sum_en'],
+            'sum_cn' => $csvRowData['sum_cn'] ?? $this->defaults['sum_cn'],
+            'short_desc_en' => $csvRowData['short_desc_en'] ?? $this->defaults['short_desc_en'],
+            'short_desc_cn' => $csvRowData['short_desc_cn'] ?? $this->defaults['short_desc_cn'],
+            'thumbnail' => $csvRowData['thumbnail'] ?? $this->defaults['thumbnail'],
+            'duration' => $csvRowData['duration'] ?? $this->defaults['duration'],
+            'status_id' => isset($csvRowData['status_id']) ? (int)$csvRowData['status_id'] : $this->defaults['status_id'],
+            'pv_cnt' => $this->defaults['pv_cnt'],
+            'view_cnt' => $this->defaults['view_cnt']
         ];
     }
 
