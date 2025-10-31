@@ -1757,6 +1757,7 @@ class TableManager {
     /**
      * 应用筛选器
      * 支持自定义保持参数配置，允许保持任意 URL 参数
+     * 支持多选组件的筛选参数
      */
     applyFilters() {
         const filterParams = new URLSearchParams();
@@ -1772,6 +1773,20 @@ class TableManager {
                 filterParams.set(columnName, value);
             }
         });
+
+        // 特殊处理：检查是否有多选组件（如状态多选）
+        // 查找 status_id 列的多选组件
+        const statusCell = document.querySelector('.table-filter-cell[data-column="status_id"]');
+        if (statusCell) {
+            const statusMultiSelectContainer = statusCell.querySelector('#statusMultiSelect');
+            if (statusMultiSelectContainer && window.statusMultiSelectInstance) {
+                // 获取多选组件的值（逗号分隔的ID字符串）
+                const statusValue = window.statusMultiSelectInstance.getValue();
+                if (statusValue && statusValue !== '') {
+                    filterParams.set('status_id', statusValue);
+                }
+            }
+        }
 
         // 使用公共接口获取需要保持的参数
         const persistentParams = this.getPersistentUrlParams();

@@ -20,8 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initContentListPage() {
     console.log('=== 初始化内容列表页面（优化版 TableManager）===');
-    
-    // 1. 创建表格管理器实例 - 配置适配内容管理
+
+    // 1. 初始化状态多选组件
+    initStatusMultiSelect();
+
+    // 2. 创建表格管理器实例 - 配置适配内容管理
     const tableManager = new window.AdminCommon.TableManager({
         tableSelector: '#dataTable',
         tbodySelector: '#contentTableBody',
@@ -110,7 +113,7 @@ function initContentListPage() {
 // 注释：原有的删除功能已迁移至 main_12.js 的 TableOperations 中
 // 现在使用通用的 TableOperations.setupDeleteButtonEventListeners 和 handleSingleDelete 方法
 
-// ========== 导出函数供HTML调用 ========== 
+// ========== 导出函数供HTML调用 ==========
 
 /**
  * 导出数据 - 供HTML的onclick调用
@@ -125,3 +128,57 @@ function exportData(format) {
 }
 // 确保 exportData 全局可访问，供 HTML onclick 调用
 window.exportData = exportData;
+
+// ========== 状态多选组件初始化 ==========
+
+/**
+ * 初始化状态多选组件
+ * 使用 multi_select_dropdown_3.js 实现
+ */
+function initStatusMultiSelect() {
+    // 检查必要的数据是否存在
+    if (!window.contentIndexData) {
+        console.error('contentIndexData 未定义');
+        return;
+    }
+
+    const statusList = window.contentIndexData.statusList || [];
+    const selectedStatusIds = window.contentIndexData.selectedStatusIds || [];
+
+    // 将选中的ID转换为对应的对象
+    const selectedStatuses = statusList.filter(status =>
+        selectedStatusIds.includes(status.id) || selectedStatusIds.includes(parseInt(status.id))
+    );
+
+    console.log('初始化状态多选组件:', {
+        statusList,
+        selectedStatusIds,
+        selectedStatuses
+    });
+
+    // 创建多选组件实例
+    const statusMultiSelect = new MultiSelectDropdown('#statusMultiSelect', {
+        placeholder: '全部状态',
+        maxDisplayItems: 2,
+        columns: 1,
+        searchPlaceholder: '搜索状态...',
+        hiddenInputName: 'status_ids',
+        data: statusList,
+        selected: selectedStatuses,
+        allowClear: true
+    });
+
+    // 监听多选组件的变化，当下拉框关闭时自动触发搜索
+    document.getElementById('statusMultiSelect').addEventListener('multiselect:close', function(e) {
+        // 获取 TableManager 实例并触发筛选
+        if (window.contentListManager && window.contentListManager.tableManager) {
+            console.log('状态多选框关闭，自动触发筛选');
+            window.contentListManager.tableManager.applyFilters();
+        }
+    });
+
+    // 保存到全局以便访问
+    window.statusMultiSelectInstance = statusMultiSelect;
+
+    console.log('状态多选组件初始化完成');
+}

@@ -436,7 +436,7 @@ abstract class Model
 
     /**
      * 处理标准字段过滤逻辑
-     * 
+     *
      * @param string $field 字段名
      * @param mixed $value 搜索值
      * @param string $strategy 搜索策略
@@ -446,18 +446,39 @@ abstract class Model
     protected static function handleStandardFieldFilter(string $field, $value, string $strategy, array &$whereConditions, array &$params): void
     {
         $paramKey = "search_{$field}";
-        
+
         switch ($strategy) {
             case 'exact':
-                $whereConditions[] = "{$field} = :{$paramKey}";
-                $params[$paramKey] = is_numeric($value) ? (int)$value : $value;
+                // 检查值是否包含逗号（多选的情况）
+                if (is_string($value) && strpos($value, ',') !== false) {
+                    // 多选情况：使用 IN 查询
+                    $ids = array_map('trim', explode(',', $value));
+                    $ids = array_filter($ids, function($id) {
+                        return $id !== '' && is_numeric($id);
+                    });
+                    $ids = array_map('intval', $ids);
+
+                    if (!empty($ids)) {
+                        $placeholders = [];
+                        foreach ($ids as $index => $id) {
+                            $placeholder = "{$paramKey}_{$index}";
+                            $placeholders[] = ":{$placeholder}";
+                            $params[$placeholder] = $id;
+                        }
+                        $whereConditions[] = "{$field} IN (" . implode(', ', $placeholders) . ")";
+                    }
+                } else {
+                    // 单选情况：使用 = 查询
+                    $whereConditions[] = "{$field} = :{$paramKey}";
+                    $params[$paramKey] = is_numeric($value) ? (int)$value : $value;
+                }
                 break;
-                
+
             case 'like':
                 $whereConditions[] = "{$field} LIKE :{$paramKey}";
                 $params[$paramKey] = "%{$value}%";
                 break;
-                
+
             case 'bilingual_like':
                 // 双语模糊搜索 (中英文字段)
                 $whereConditions[] = "({$field}_cn LIKE :{$paramKey}_cn OR {$field}_en LIKE :{$paramKey}_en)";
@@ -465,7 +486,7 @@ abstract class Model
                 $params["{$paramKey}_en"] = "%{$value}%";
 
                 break;
-                
+
             case 'auto':
             default:
                 // 默认规则：数字用 =，字符串用 LIKE

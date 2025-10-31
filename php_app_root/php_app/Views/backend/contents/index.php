@@ -316,12 +316,7 @@ use App\Constants\ContentType;
                                 <input type="text" class="form-control form-control-sm" placeholder="发布日期范围" value="<?= htmlspecialchars($filters['pub_at'] ?? '') ?>">
                             </th>
                             <th class="table-filter-cell" data-column="status_id">
-                                <select class="form-control form-select form-select-sm">
-                                    <option value="">全部状态</option>
-                                    <?php foreach (ContentStatus::getAllValues() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= ($filters['status_id'] ?? '') == $value ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <div id="statusMultiSelect"></div>
                             </th>
                             <th class="table-filter-cell" data-column="actions"></th>
                         </tr>
@@ -457,3 +452,16 @@ use App\Constants\ContentType;
 include __DIR__ . '/../common/_bulkImport.php';
 ?>
 
+<script>
+    // 将动态数据传递给JS
+    window.contentIndexData = {
+        // 状态列表数据
+        statusList: <?= json_encode(array_map(function($value, $label) {
+            return ['id' => (string)$value, 'text' => $label];
+        }, array_keys(ContentStatus::getAllValues()), ContentStatus::getAllValues())) ?>,
+        // 当前选中的状态IDs (从URL参数中获取)
+        selectedStatusIds: <?= json_encode(isset($filters['status_id']) && !empty($filters['status_id'])
+            ? (is_array($filters['status_id']) ? $filters['status_id'] : explode(',', $filters['status_id']))
+            : []) ?>
+    };
+</script>
