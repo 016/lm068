@@ -38,10 +38,6 @@ $router->get('/test', 'Frontend\\HomeController@test');
 $router->get('/content', 'Frontend\\ContentController@index');
 $router->get('/content/{id}', 'Frontend\\ContentController@show');
 $router->get('/content/{id}/{title}', 'Frontend\\ContentController@show');
-$router->get('/login', 'Frontend\\AuthController@showLogin');
-$router->post('/login', 'Frontend\\AuthController@login');
-$router->get('/register', 'Frontend\\AuthController@showRegister');
-$router->post('/register', 'Frontend\\AuthController@register');
 
 // 404页面
 $router->notFound(function() {
