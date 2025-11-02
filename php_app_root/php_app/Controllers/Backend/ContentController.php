@@ -102,7 +102,7 @@ class ContentController extends BackendController
                 'sum_cn' => $request->post('sum_cn'),
                 'sum_en' => $request->post('sum_en'),
                 'duration' => $request->post('duration'),
-                'pub_at' => $request->post('pub_at') ?? null,
+                'pub_at' => !empty($request->post('pub_at')) ? $request->post('pub_at') : null,
                 'status_id' => (int)($request->post('status_id'))
             ];
 
@@ -221,7 +221,7 @@ class ContentController extends BackendController
                 'sum_cn' => $request->post('sum_cn') ?? '',
                 'sum_en' => $request->post('sum_en') ?? '',
                 'duration' => $request->post('duration') ?? '',
-                'pub_at' => $request->post('pub_at') ?? null,
+                'pub_at' => !empty($request->post('pub_at')) ? $request->post('pub_at') : null,
                 'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
                 'pv_cnt' => 0,
                 'view_cnt' => 0
