@@ -90,9 +90,9 @@ class ContentController extends BackendController
 
             // 4. 对 POST 的数值进行提取并填充回 $content
             $data = [
-                'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
-                'author' => $request->post('author') ?? 'DP',
-                'code' => $request->post('code') ?? '',
+                'content_type_id' => (int)($request->post('content_type_id')),
+                'author' => $request->post('author'),
+                'code' => $request->post('code'),
                 'title_cn' => $request->post('name_cn'),
                 'title_en' => $request->post('name_en'),
                 'short_desc_cn' => $request->post('short_desc_cn'),
@@ -102,8 +102,8 @@ class ContentController extends BackendController
                 'sum_cn' => $request->post('sum_cn'),
                 'sum_en' => $request->post('sum_en'),
                 'duration' => $request->post('duration'),
-                'pub_at' => $request->post('pub_at'),
-                'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value)
+                'pub_at' => $request->post('pub_at') ?? null,
+                'status_id' => (int)($request->post('status_id'))
             ];
 
             // 处理文件上传
@@ -209,7 +209,7 @@ class ContentController extends BackendController
         if ($request->isPost()) {
             // 4. 对 POST 的数值进行提取并填充回 $content
             $data = [
-                'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
+                'content_type_id' => (int)($request->post('content_type_id')),
                 'author' => $request->post('author') ?? 'DP',
                 'code' => $request->post('code') ?? '',
                 'title_cn' => $request->post('name_cn'),

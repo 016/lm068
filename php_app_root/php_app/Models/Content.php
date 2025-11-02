@@ -34,7 +34,7 @@ class Content extends UploadableModel implements HasStatuses
     ];
 
     // 默认属性值
-    protected array $defaults = [
+    public array $defaults = [
         'content_type_id' => 21, // 默认为视频
         'author' => 'DP',
         'code' => '',
@@ -50,6 +50,7 @@ class Content extends UploadableModel implements HasStatuses
         'duration' => 0,
         'pv_cnt' => 0,
         'view_cnt' => 0,
+        'pub_at' => null,
         'status_id' => ContentStatus::DRAFT->value
     ];
 
