@@ -125,7 +125,7 @@ use \App\Models\Tag;
                                     foreach ($displayTags as $tag):
                                         $tagName = $currentLang === 'zh' ? $tag['name_cn'] : $tag['name_en'];
                                     ?>
-                                        <a href="<?= Tag::buildListUrl($tag['id']) ?>"
+                                        <a href="<?= Tag::buildListUrl($tag['id'], $tag['name_en']) ?>"
                                            class="btn btn-outline-primary btn-xs me-1">
                                             <?= htmlspecialchars($tagName) ?>
                                         </a>
@@ -137,7 +137,7 @@ use \App\Models\Tag;
                                         $collection = $video->collections[0];
                                         $collectionName = $currentLang === 'zh' ? $collection['name_cn'] : $collection['name_en'];
                                     ?>
-                                        <a href="<?= Collection::buildListUrl($collection['id']) ?>"
+                                        <a href="<?= Collection::buildListUrl($collection['id'], $collection['name_en']) ?>"
                                            class="btn btn-outline-success btn-xs">
                                             <?= htmlspecialchars($collectionName) ?>
                                         </a>
@@ -152,12 +152,7 @@ use \App\Models\Tag;
     </div>
 
     <!-- 分页导航 -->
-    <?php if ($totalPages > 1):
-        // 添加语言参数到分页链接
-        if (!empty($currentLang)) {
-            $currentParams['lang'] = $currentLang;
-        }
-    ?>
+    <?php if ($totalPages > 1):?>
         <nav aria-label="<?= $currentLang === 'zh' ? '列表分页' : 'Video List Pagination' ?>" class="mt-5">
             <div class="pagination-wrapper d-flex justify-content-center align-items-center">
                 <!-- 上一页 -->

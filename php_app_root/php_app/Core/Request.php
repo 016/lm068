@@ -75,6 +75,24 @@ class Request
         return $this->query[$key] ?? $default;
     }
 
+    /**
+     * 设置查询参数（用于桥接方法）
+     * @param array $query
+     */
+    public function setQuery(array $query): void
+    {
+        $this->query = $query;
+    }
+
+    /**
+     * 设置查询参数（用于桥接方法）
+     * @param array $query
+     */
+    public function setOneQuery(string $key, string $value): void
+    {
+        $this->query[$key] = $value;
+    }
+
     public function getBody(?string $key = null, $default = null)
     {
         if ($key === null) {

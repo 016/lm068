@@ -6,7 +6,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // lang init, lang is in url
 \App\Core\I18n::initLang();
 
-
 use App\Core\Router;
 use App\Core\Request;
 use App\Core\Config;
@@ -35,7 +34,19 @@ $router = new Router();
 // 定义前端路由
 $router->get('/', 'Frontend\\HomeController@index');
 $router->get('/test', 'Frontend\\HomeController@test');
+
+// 内容列表页（支持多参数筛选）
 $router->get('/content', 'Frontend\\ContentController@index');
+
+// 新增：单 ID 语义化 URL 路由
+$router->get('/tag/{id}', 'Frontend\\ContentController@tagList');
+$router->get('/tag/{id}/{slug}', 'Frontend\\ContentController@tagList');
+$router->get('/collection/{id}', 'Frontend\\ContentController@collectionList');
+$router->get('/collection/{id}/{slug}', 'Frontend\\ContentController@collectionList');
+$router->get('/content-type/{id}', 'Frontend\\ContentController@contentTypeList');
+$router->get('/content-type/{id}/{slug}', 'Frontend\\ContentController@contentTypeList');
+
+// 内容详情页
 $router->get('/content/{id}', 'Frontend\\ContentController@show');
 $router->get('/content/{id}/{title}', 'Frontend\\ContentController@show');
 

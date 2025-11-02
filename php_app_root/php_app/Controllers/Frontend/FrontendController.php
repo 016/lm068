@@ -29,4 +29,17 @@ class FrontendController extends Controller
         $data['title'] = $title;
         return $this->view('layouts.main', $data);
     }
+
+    /**
+     * 404 错误处理
+     */
+    public function notFound(): void
+    {
+        http_response_code(404);
+        $currentLang = \App\Core\I18n::getCurrentLang();
+        $message = $currentLang === 'zh' ? '页面未找到' : 'Page Not Found';
+        echo "<h1>404 - {$message}</h1>";
+        echo "<p><a href='/{$currentLang}/content'>返回列表页</a></p>";
+    }
+
 }

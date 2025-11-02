@@ -113,8 +113,8 @@ class SitemapController extends BackendController
         // 1. 处理 Tags
         $tags = Tag::findAll(['status_id'=>TagStatus::ENABLED->value]);
         foreach ($tags as $tag) {
-            $list_url_cn = $this->base_url . Tag::buildListUrl($tag['id'], 'zh');
-            $list_url_en = $this->base_url . Tag::buildListUrl($tag['id'], 'en');
+            $list_url_cn = $this->base_url . Tag::buildListUrl($tag['id'], $tag['name_en'],'zh');
+            $list_url_en = $this->base_url . Tag::buildListUrl($tag['id'], $tag['name_en'], 'en');
 
             $lastmod = date('c', strtotime($tag['updated_at']));
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
@@ -123,8 +123,8 @@ class SitemapController extends BackendController
         // 2. 处理 Collections
         $collections = Collection::findAll(['status_id'=>CollectionStatus::ENABLED->value]);
         foreach ($collections as $collection) {
-            $list_url_cn = $this->base_url  . Collection::buildListUrl($collection['id'], 'zh');
-            $list_url_en = $this->base_url  . Collection::buildListUrl($collection['id'], 'en');
+            $list_url_cn = $this->base_url  . Collection::buildListUrl($collection['id'], $collection['name_en'], 'zh');
+            $list_url_en = $this->base_url  . Collection::buildListUrl($collection['id'], $collection['name_en'], 'en');
 
             $lastmod = date('c', strtotime($collection['updated_at']));
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
@@ -134,6 +134,7 @@ class SitemapController extends BackendController
         foreach (ContentType::getAllContentTypes() as $oneContentType) {
 
             // load this type's last updated content
+            //@ee1 fix title
             $lastChangedContent = Content::findOne(['content_type_id'=>$oneContentType['id']], 'updated_at DESC');
 
             //for no content type, use 2025-01-01 as last update date.
@@ -142,8 +143,8 @@ class SitemapController extends BackendController
                 $lastmod = date('c', strtotime($lastChangedContent['updated_at']));
             }
 
-            $list_url_cn = $this->base_url . "/zh/content?content_type_id={$oneContentType['id']}";
-            $list_url_en = $this->base_url . "/en/content?content_type_id={$oneContentType['id']}";
+            $list_url_cn = $this->base_url . "/zh/content-type/{$oneContentType['id']}/".UrlHelper::formatString($oneContentType['name_en']);
+            $list_url_en = $this->base_url . "/en/content-type/{$oneContentType['id']}/".UrlHelper::formatString($oneContentType['name_en']);
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.8);
         }
     }

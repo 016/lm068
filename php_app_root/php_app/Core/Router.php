@@ -43,6 +43,7 @@ class Router
 
         foreach ($this->routes[$method] as $pattern => $handler) {
             $params = $this->matchRoute($pattern, $uri);
+
             if ($params !== false) {
                 $request->setParams($params);
                 return $this->executeHandler($handler, $request);
@@ -61,6 +62,7 @@ class Router
 
         if (preg_match($pattern, $uri, $matches)) {
             array_shift($matches); // Remove full match
+
             return $matches;
         }
 
@@ -69,6 +71,7 @@ class Router
 
     private function executeHandler($handler, Request $request)
     {
+
         if (is_callable($handler)) {
             return call_user_func($handler, $request);
         }
@@ -83,7 +86,7 @@ class Router
                 throw new \Exception("Controller {$controllerClass} not found");
             }
 
-            $controllerInstance = new $controllerClass();
+            $controllerInstance = new $controllerClass($request);
 
             if (!method_exists($controllerInstance, $method)) {
                 throw new \Exception("Method {$method} not found in {$controllerClass}");

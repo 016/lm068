@@ -6,6 +6,7 @@ use App\Core\Config;
 use App\Core\Request;
 use App\Core\HashId;
 use App\Helpers\ArrayHelper;
+use App\Helpers\StringHelper;
 use App\Helpers\UrlHelper;
 use App\Models\Content;
 use App\Models\Tag;
@@ -97,9 +98,9 @@ class ContentController extends FrontendController
         // 获取GET参数
         $page = max(1, (int)($this->request->getInput('page', 1)));
         $search = trim($this->request->getInput('search', ''));
-        $tagIds = $this->parseIdsParam($this->request->getInput('tag_id', ''));
-        $collectionIds = $this->parseIdsParam($this->request->getInput('collection_id', ''));
-        $contentTypeIds = $this->parseIdsParam($this->request->getInput('content_type_id', ''));
+        $tagIds = StringHelper::parseIdsParam($this->request->getInput('tag_id', ''));
+        $collectionIds = StringHelper::parseIdsParam($this->request->getInput('collection_id', ''));
+        $contentTypeIds = StringHelper::parseIdsParam($this->request->getInput('content_type_id', ''));
 
         // 分页配置
         $perPage = Config::get('pagination.per_page'); // 每页显示12个视频
@@ -174,20 +175,70 @@ class ContentController extends FrontendController
     }
 
     /**
-     * 解析ID参数(支持逗号分隔的多个ID)
+     * 标签列表页 - 桥接到 index 方法
+     * URL: /zh/tag/104 或 /zh/tag/104/slug-name
      */
-    private function parseIdsParam(string $param): array
+    public function tagList(): void
     {
-        if (empty($param)) {
-            return [];
+        $this->curAction = 'tagList';
+        $tagId = $this->request->getParam(0); // 获取路由参数 {id}
+
+        // 验证 ID 是否为有效数字
+        if (!is_numeric($tagId) || $tagId <= 0) {
+            $this->notFound();
+            return;
         }
 
-        $ids = explode(',', $param);
-        $ids = array_map('trim', $ids);
-        $ids = array_filter($ids, 'is_numeric');
-        $ids = array_map('intval', $ids);
+        // 将路由参数转换为查询参数
+        $_GET['tag_id'] = $tagId;
+        $this->request->setQuery($_GET);
 
-        return array_unique($ids);
+        // 复用 index 方法的逻辑
+        $this->index();
+    }
+
+    /**
+     * 合集列表页 - 桥接到 index 方法
+     * URL: /zh/collection/104 或 /zh/collection/104/slug-name
+     */
+    public function collectionList(): void
+    {
+        $this->curAction = 'collectionList';
+        $collectionId = $this->request->getParam(0);
+
+        if (!is_numeric($collectionId) || $collectionId <= 0) {
+            $this->notFound();
+            return;
+        }
+
+        $_GET['collection_id'] = $collectionId;
+        $this->request->setQuery($_GET);
+
+        $this->setSEOParam('collection_list', ['collection_id' => $collectionId]);
+
+        $this->index();
+    }
+
+    /**
+     * 内容类型列表页 - 桥接到 index 方法
+     * URL: /zh/content_type/11 或 /zh/content_type/11/slug-name
+     */
+    public function contentTypeList(): void
+    {
+        $this->curAction = 'contentTypeList';
+        $contentTypeId = $this->request->getParam(0);
+
+        if (!is_numeric($contentTypeId) || $contentTypeId <= 0) {
+            $this->notFound();
+            return;
+        }
+
+        $_GET['content_type_id'] = $contentTypeId;
+        $this->request->setQuery($_GET);
+
+        $this->setSEOParam('content_type_list', ['content_type_id' => $contentTypeId]);
+
+        $this->index();
     }
 
     /**
@@ -420,11 +471,24 @@ class ContentController extends FrontendController
     /**
      * 构建分页链接URL (供View调用)
      */
-    public function buildPaginationUrl(int $page, array $currentParams): string
+    public function buildPaginationUrl(int $page, array $currentParams, ?string $mode = null): string
     {
         $params = $currentParams;
         $params['page'] = $page;
-        return '/content' . $this->buildQueryParams($params);
+
+        $mode = $this->curAction;
+
+        //for tag, collection and contentType single list, remove id from url for better show
+        $removeParams = [
+            'tagList' => 'tag_id',
+            'collectionList' => 'collection_id',
+            'contentTypeList' => 'contentType_id',
+        ];
+        if (isset($removeParams[$mode])) {
+            unset($params[$removeParams[$mode]]);
+        }
+
+        return UrlHelper::generateUri($this->request->getUri(), null, $params);
     }
 
     /**

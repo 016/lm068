@@ -6,12 +6,12 @@ use App\Core\Request;
 
 abstract class Controller
 {
-    protected $request;
+    protected \App\Core\Request $request;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
 
-        $this->request = new Request();
+        $this->request = $request;
 
         $this->init();
     }

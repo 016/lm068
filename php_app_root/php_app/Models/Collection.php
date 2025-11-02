@@ -94,10 +94,11 @@ class Collection extends Model implements HasStatuses
      * @param array $queryParams
      * @return string
      */
-    public static function buildListUrl(int $id, ?string $targetLang = null, array $queryParams = []): string
+    public static function buildListUrl(int $id, ?string $title, ?string $targetLang = null, array $queryParams = []): string
     {
+        $title = UrlHelper::formatString($title);
         // 构建基础URL 前缀
-        $urlPrefix = "/content?collection_id=".$id;
+        $urlPrefix = "/collection/{$id}/{$title}";
 
         return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
     }
