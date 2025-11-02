@@ -70,12 +70,18 @@ class ContentController extends FrontendController
             }//if index page have $params['page'] >=2 set index to noindex
         }
 
+        if ( in_array($action, ['tagList', 'collectionList', 'contentTypeList'])) {
+            //SEO
+            $this->curAction_zh = substr($params['s'], strpos($params['s'], '/', 2));
+            $this->curAction_en = substr($params['s'], strpos($params['s'], '/', 2));
+        }
+
 
         if ($action == 'view') {
             //SEO
             $this->seo_param['title'] = $data->getTitle() ;
             $this->seo_param['desc'] = $data->getShortDescription();
-            $this->curAction_zh = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . $data->title_cn;
+            $this->curAction_zh = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . $data->title_en;
             $this->curAction_en = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . $data->title_en;
 
         }
@@ -183,6 +189,8 @@ class ContentController extends FrontendController
         $this->curAction = 'tagList';
         $tagId = $this->request->getParam(0); // 获取路由参数 {id}
 
+        $this->setSEOParam('tagList');
+
         // 验证 ID 是否为有效数字
         if (!is_numeric($tagId) || $tagId <= 0) {
             $this->notFound();
@@ -205,6 +213,7 @@ class ContentController extends FrontendController
     {
         $this->curAction = 'collectionList';
         $collectionId = $this->request->getParam(0);
+        $this->setSEOParam('collectionList');
 
         if (!is_numeric($collectionId) || $collectionId <= 0) {
             $this->notFound();
@@ -227,6 +236,7 @@ class ContentController extends FrontendController
     {
         $this->curAction = 'contentTypeList';
         $contentTypeId = $this->request->getParam(0);
+        $this->setSEOParam('contentTypeList');
 
         if (!is_numeric($contentTypeId) || $contentTypeId <= 0) {
             $this->notFound();
@@ -476,17 +486,7 @@ class ContentController extends FrontendController
         $params = $currentParams;
         $params['page'] = $page;
 
-        $mode = $this->curAction;
-
-        //for tag, collection and contentType single list, remove id from url for better show
-        $removeParams = [
-            'tagList' => 'tag_id',
-            'collectionList' => 'collection_id',
-            'contentTypeList' => 'contentType_id',
-        ];
-        if (isset($removeParams[$mode])) {
-            unset($params[$removeParams[$mode]]);
-        }
+        $params = UrlHelper::removeQueryParam($this->curAction, $params);
 
         return UrlHelper::generateUri($this->request->getUri(), null, $params);
     }

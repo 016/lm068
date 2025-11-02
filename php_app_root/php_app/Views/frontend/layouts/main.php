@@ -17,7 +17,7 @@ use App\Helpers\UrlHelper;
     <title><?= htmlspecialchars($this->seo_param['title']) ?></title>
     <meta name="description" content="<?= htmlspecialchars($this->seo_param['desc']) ?>" />
 
-    <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateCanonicalUrl($_GET['s'], CURRENT_LANG, $_GET))?>" />
+    <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateCanonicalUrl($_GET['s'], CURRENT_LANG, UrlHelper::removeQueryParam($this->curAction, $_GET)))?>" />
 <?php if ($this->seo_param['index']): ?>
     <meta name="robots" content="index, follow">
 <?php else: ?>
@@ -25,9 +25,9 @@ use App\Helpers\UrlHelper;
 <?php endif; ?>
 
 
-    <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'zh', $_GET))?>" />
-    <link rel="alternate" hreflang="en" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'en', $_GET))?>" />
-    <link rel="alternate" hreflang="x-default" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'en', $_GET))?>" />
+    <link rel="alternate" hreflang="zh-CN" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'zh', UrlHelper::removeQueryParam($this->curAction, $_GET)))?>" />
+    <link rel="alternate" hreflang="en" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'en', UrlHelper::removeQueryParam($this->curAction, $_GET)))?>" />
+    <link rel="alternate" hreflang="x-default" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateUri($this->curAction_en, 'en', UrlHelper::removeQueryParam($this->curAction, $_GET)))?>" />
 
 
 

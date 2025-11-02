@@ -19,6 +19,7 @@ class Config
      */
     public static function load(string $configFile = 'main'): array
     {
+
         if (self::$config !== null) {
             return self::$config;
         }
@@ -60,6 +61,7 @@ class Config
 
         $keys = explode('.', $key);
         $value = self::$config;
+
 
         foreach ($keys as $k) {
             if (!isset($value[$k])) {

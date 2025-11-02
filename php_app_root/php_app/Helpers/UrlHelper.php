@@ -75,7 +75,35 @@ class UrlHelper
     {
         unset($params['page']);
         $urlPrefix = substr($urlPrefix, strpos($urlPrefix, '/', 2));
+
+        // if curAction set try remove no need $_GET params.
+        if (!empty($curAction)) {
+            $params = UrlHelper::removeQueryParam($curAction, $params);
+        }
+
         return self::generateUri($urlPrefix, $targetLang, $params, $filterEmpty);
+    }
+
+    /**
+     * for single tag, collection, contentType seo url remove tag_id, collection_id, contentType_id from url by actionName
+     * @param string $curAction , like tagList
+     * @param array|null $inputParam, usually is $_GET
+     * @return array|null
+     */
+    public static function removeQueryParam(string $curAction, ?array $inputParam = null): ?array
+    {
+
+        //for tag, collection and contentType single list, remove id from url for better show
+        $removeParams = [
+            'tagList' => 'tag_id',
+            'collectionList' => 'collection_id',
+            'contentTypeList' => 'content_type_id',
+        ];
+        if (isset($removeParams[$curAction])) {
+            unset($inputParam[$removeParams[$curAction]]);
+        }
+
+        return $inputParam;
     }
 
 
