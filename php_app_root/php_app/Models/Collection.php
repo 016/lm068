@@ -97,7 +97,7 @@ class Collection extends Model implements HasStatuses
     public static function buildListUrl(int $id, ?string $targetLang = null, array $queryParams = []): string
     {
         // 构建基础URL 前缀
-        $urlPrefix = "/content/?collection_id=".$id;
+        $urlPrefix = "/content?collection_id=".$id;
 
         return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
     }

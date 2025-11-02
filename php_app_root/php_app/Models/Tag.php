@@ -101,7 +101,7 @@ class Tag extends Model implements HasStatuses
     public static function buildListUrl(int $id, ?string $targetLang = null, array $queryParams = []): string
     {
         // 构建基础URL 前缀
-        $urlPrefix = "/content/?tag_id=".$id;
+        $urlPrefix = "/content?tag_id=".$id;
 
         return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
     }
