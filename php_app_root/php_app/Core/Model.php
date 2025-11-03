@@ -399,6 +399,7 @@ abstract class Model
     /**
      * 处理自定义字段过滤逻辑
      * 子类可以重写此方法来处理特定字段的复杂逻辑
+     *   - range number,  like 5-10, > < = >= <= 5
      * 
      * @param string $field 字段名
      * @param mixed $value 搜索值
