@@ -49,7 +49,7 @@ class SitemapController extends BackendController
         $this->generateHeader();
 
         $this->generateHomepageUrls();
-        $this->generateVideoDetailUrls();
+        $this->generateContentListUrls();
         $this->generateFilteredListUrls();
 
         $this->generateFooter();
@@ -96,7 +96,7 @@ class SitemapController extends BackendController
         $this->generateUrlEntry($homepage_cn, $homepage_en, date('c'), 'daily', 1.0);
     }
 
-    private function generateVideoDetailUrls(): void
+    private function generateContentListUrls(): void
     {
         $contents = Content::findAll(['status_id' => ContentStatus::PUBLISHED->value]);
 
@@ -104,7 +104,10 @@ class SitemapController extends BackendController
             $detail_url_cn = $this->base_url . "/zh/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
             $detail_url_en = $this->base_url . "/en/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
             $lastmod = date('c', strtotime($oneContent['updated_at']));
-            $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, 'monthly', 1.0);
+
+            $params = self::calculateSitemapParams($oneContent['updated_at'], ContentType::getEnglishLabel($oneContent['content_type_id']));
+
+            $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
     }
 
@@ -117,7 +120,8 @@ class SitemapController extends BackendController
             $list_url_en = $this->base_url . Tag::buildListUrl($tag['id'], $tag['name_en'], 'en');
 
             $lastmod = date('c', strtotime($tag['updated_at']));
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
+            $params = self::calculateSitemapParams($tag['updated_at'], 'tag_list');
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
 
         // 2. 处理 Collections
@@ -127,7 +131,8 @@ class SitemapController extends BackendController
             $list_url_en = $this->base_url  . Collection::buildListUrl($collection['id'], $collection['name_en'], 'en');
 
             $lastmod = date('c', strtotime($collection['updated_at']));
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.6);
+            $params = self::calculateSitemapParams($collection['updated_at'], 'collection_list');
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
 
         // 3. 处理 Content Types (来自常量)
@@ -137,14 +142,17 @@ class SitemapController extends BackendController
             $lastChangedContent = Content::findOne(['content_type_id'=>$oneContentType['id']], 'updated_at DESC');
 
             //for no content type, use 2025-01-01 as last update date.
-            $lastmod = date('c', strtotime('2025-10-01 00:00:00'));
+            $lastDate = '2025-01-01 00:00:00';
+
             if ($lastChangedContent) {
-                $lastmod = date('c', strtotime($lastChangedContent['updated_at']));
+                $lastDate = $lastChangedContent['updated_at'];
             }
+            $lastmod = date('c', strtotime($lastDate));
+            $params = self::calculateSitemapParams($lastDate, 'content_type_list');
 
             $list_url_cn = $this->base_url . "/zh/content-type/{$oneContentType['id']}/".UrlHelper::formatString($oneContentType['name_en']);
             $list_url_en = $this->base_url . "/en/content-type/{$oneContentType['id']}/".UrlHelper::formatString($oneContentType['name_en']);
-            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, 'weekly', 0.8);
+            $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
     }
 
@@ -164,5 +172,68 @@ class SitemapController extends BackendController
                 $this->generateUrlEntry($list_url_cn, $list_url_en, date('c'), 'daily', 0.9);
             }
         }
+    }
+
+    /**
+     * A reusable helper to calculate sitemap priority and changefreq.
+     *
+     * @param string $lastModifiedDate The last modification date string (e.g., from updated_at).
+     * @param string $pageType A string identifier for the page type (e.g., 'article', 'tag_list', 'collection_list').
+     * @return array ['priority' => float, 'changefreq' => string]
+     */
+    public static function calculateSitemapParams(string $lastModifiedDate, string $pageType): array
+    {
+        $updateTimestamp = strtotime($lastModifiedDate);
+        $ageInSeconds = time() - $updateTimestamp;
+
+        // --- 1. Determine Change Frequency (mostly time-based) ---
+        $oneMonth = 30 * 24 * 60 * 60;
+        $oneYear = 365 * 24 * 60 * 60;
+
+        if ($ageInSeconds < $oneMonth) {
+            $changefreq = 'weekly';
+        } elseif ($ageInSeconds > $oneYear) {
+            $changefreq = 'yearly';
+        } else {
+            $changefreq = 'monthly';
+        }
+
+        // --- 2. Determine Priority (mostly type-based, with time adjustment) ---
+        $priority = 0.5; // Default priority
+        $threeMonths = 3 * $oneMonth;
+
+        switch ($pageType) {
+            // High-level navigation pages
+            case 'collection_list':
+            case 'content_type_list':
+                $priority = ($ageInSeconds < $threeMonths) ? 0.9 : 0.7;
+                break;
+
+            // Mid-level navigation pages
+            case 'tag_list':
+                $priority = ($ageInSeconds < $threeMonths) ? 0.7 : 0.5;
+                break;
+
+            // Content detail pages
+            case 'Announcement':
+                $priority = ($ageInSeconds < $threeMonths) ? 0.8 : 0.4;
+                break;
+
+            case 'Article':
+            case 'Video':
+                if ($ageInSeconds < $threeMonths) {
+                    $priority = 0.7;
+                } elseif ($ageInSeconds > $oneYear) {
+                    $priority = 0.3;
+                } else {
+                    $priority = 0.5;
+                }
+                break;
+        }
+
+        return [
+            'priority'   => $priority,
+            'changefreq' => $changefreq,
+        ];
     }
 }

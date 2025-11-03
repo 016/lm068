@@ -17,6 +17,16 @@ enum ContentType: int
         };
     }
 
+    /**
+     * 根据枚举值获取对应的英文标签
+     * @param int $value
+     * @return string|null 如果找不到对应的值则返回 null
+     */
+    public static function getEnglishLabel(int $value): ?string
+    {
+        return self::tryFrom($value)?->englishLabel();
+    }
+
     public function englishLabel(): string
     {
         return match($this) {
