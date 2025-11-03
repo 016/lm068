@@ -12,9 +12,9 @@ class CollectionController extends BackendController
 {
     private Content $contentModel;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
-        parent::__construct();
+        parent::__construct($request);
         $this->curModel = new Collection();
         $this->contentModel = new Content();
     }

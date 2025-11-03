@@ -9,9 +9,9 @@ use App\Constants\AdminUserRole;
 
 class AdminUserController extends BackendController
 {
-    public function __construct()
+    public function __construct(Request $request)
     {
-        parent::__construct();
+        parent::__construct($request);
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

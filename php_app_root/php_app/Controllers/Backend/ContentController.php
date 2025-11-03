@@ -16,9 +16,9 @@ class ContentController extends BackendController
     private Tag $tagModel;
     private Collection $collectionModel;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
-        parent::__construct();
+        parent::__construct($request);
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
