@@ -15,7 +15,7 @@ class AdminUser extends Model implements HasStatuses
     protected $fillable = [
         'username', 'password_hash', 'email', 'real_name',
         'avatar', 'phone', 'status_id', 'role_id',
-        'last_login_time', 'last_login_ip'
+        'last_login_time', 'last_login_ip', 'remember_token'
     ];
     protected $timestamps = true;
 
@@ -306,5 +306,51 @@ class AdminUser extends Model implements HasStatuses
             'status_id' => 'exact',
             'role_id' => 'exact'
         ];
+    }
+
+    /**
+     * 生成记住我的 token
+     */
+    public function generateRememberToken(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+    /**
+     * 保存记住我的 token 到数据库
+     */
+    public function saveRememberToken(int $adminId, string $token): bool
+    {
+        $hashedToken = hash('sha256', $token);
+        return $this->update($adminId, [
+            'remember_token' => $hashedToken
+        ]);
+    }
+
+    /**
+     * 通过记住我的 token 查找管理员
+     */
+    public function findByRememberToken(string $token): ?array
+    {
+        $hashedToken = hash('sha256', $token);
+        $table = static::getTableName();
+        $sql = "SELECT * FROM {$table}
+                WHERE remember_token = :token
+                AND status_id = :status_id
+                LIMIT 1";
+        return $this->db->fetch($sql, [
+            'token' => $hashedToken,
+            'status_id' => AdminUserStatus::ENABLED->value
+        ]);
+    }
+
+    /**
+     * 清除记住我的 token
+     */
+    public function clearRememberToken(int $adminId): bool
+    {
+        return $this->update($adminId, [
+            'remember_token' => null
+        ]);
     }
 }

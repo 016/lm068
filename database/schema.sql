@@ -289,10 +289,12 @@ CREATE TABLE `admin_user` (
     `role_id` TINYINT UNSIGNED NOT NULL COMMENT '角色权限id: 1-普通管理员, 99-超级管理员',
     `last_login_time` DATETIME,
     `last_login_ip` VARCHAR(45),
+    `remember_token` VARCHAR(64) DEFAULT NULL COMMENT '记住我功能的token(SHA256哈希后存储)',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `uk_username` (`username`),
-    UNIQUE KEY `uk_email` (`email`)
+    UNIQUE KEY `uk_email` (`email`),
+    INDEX `idx_remember_token` (`remember_token`)
 ) ENGINE=InnoDB;
 
 -- 插入默认第三方平台数据

@@ -233,11 +233,56 @@ class BackendController extends Controller
 
     protected function requireAuth(): bool
     {
-        if (!isset($_SESSION['admin_id'])) {
-            $this->redirect('/login');
-            return false;
+        // 首先检查 session 是否已登录
+        if (isset($_SESSION['admin_id'])) {
+            return true;
         }
-        return true;
+
+        // 如果 session 未登录，尝试通过 cookie 自动登录
+        $config = require __DIR__ . '/../../config/main.php';
+        $rememberConfig = $config['remember_me'];
+
+        if ($rememberConfig['enabled'] && isset($_COOKIE[$rememberConfig['cookie_name']])) {
+            $token = $_COOKIE[$rememberConfig['cookie_name']];
+
+            // 通过 token 查找管理员
+            $adminUserModel = new \App\Models\AdminUser();
+            $admin = $adminUserModel->findByRememberToken($token);
+
+            if ($admin) {
+                // 自动登录成功，设置 session
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_username'] = $admin['username'];
+                $_SESSION['admin_email'] = $admin['email'];
+                $_SESSION['admin_real_name'] = $admin['real_name'];
+                $_SESSION['admin_role_id'] = $admin['role_id'];
+
+                // 更新 cookie 过期时间（延长有效期）
+                setcookie(
+                    $rememberConfig['cookie_name'],
+                    $token,
+                    time() + $rememberConfig['cookie_lifetime'],
+                    $rememberConfig['cookie_path'],
+                    '',
+                    $rememberConfig['cookie_secure'],
+                    $rememberConfig['cookie_httponly']
+                );
+
+                return true;
+            } else {
+                // token 无效，删除 cookie
+                setcookie(
+                    $rememberConfig['cookie_name'],
+                    '',
+                    time() - 3600,
+                    $rememberConfig['cookie_path']
+                );
+            }
+        }
+
+        // 未登录，重定向到登录页面
+        $this->redirect('/login');
+        return false;
     }
 
     protected function jsonResponse(array $data, int $statusCode = 200): void

@@ -256,8 +256,6 @@ class ContentController extends FrontendController
      */
     public function show( Request $request): void
     {
-        //@ee1 check title in url, if it's wrong use 403 or 30x to jump to correct url
-
         // 获取URL参数并解码为ID（HashId::decode会根据配置自动处理）
         $param = $request->getParam(0);
         $id = HashId::decode($param);

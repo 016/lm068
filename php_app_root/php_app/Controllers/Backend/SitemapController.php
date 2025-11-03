@@ -134,7 +134,6 @@ class SitemapController extends BackendController
         foreach (ContentType::getAllContentTypes() as $oneContentType) {
 
             // load this type's last updated content
-            //@ee1 fix title
             $lastChangedContent = Content::findOne(['content_type_id'=>$oneContentType['id']], 'updated_at DESC');
 
             //for no content type, use 2025-01-01 as last update date.

@@ -11,6 +11,17 @@ return [
     // 安全配置
     'secret_key' => 'your-secret-key-change-in-production',
     'session_lifetime' => 3600, // 1小时
+
+    // 记住我功能配置
+    'remember_me' => [
+        'enabled' => true,
+        'cookie_name' => 'admin_remember',
+        'cookie_lifetime' => 30 * 24 * 60 * 60, // 30天（秒）
+        'cookie_path' => '/',
+        'cookie_secure' => false, // 生产环境建议设为 true (需要 HTTPS)
+        'cookie_httponly' => true, // 防止 JavaScript 访问
+        'cookie_samesite' => 'Lax', // CSRF 保护
+    ],
     
     // 语言配置
     'default_language' => 'cn',

@@ -116,10 +116,27 @@ class AuthController extends BackendController
 
         // 设置记住我功能
         if ($rememberMe) {
-            // 设置30天的cookie
-            $token = bin2hex(random_bytes(32));
-            $_SESSION['remember_token'] = $token;
-            setcookie('admin_remember', $token, time() + (30 * 24 * 60 * 60), '/', '', false, true);
+            $config = require __DIR__ . '/../../config/main.php';
+            $rememberConfig = $config['remember_me'];
+
+            if ($rememberConfig['enabled']) {
+                // 生成记住我的 token
+                $token = $this->adminUser->generateRememberToken();
+
+                // 保存 token 到数据库
+                $this->adminUser->saveRememberToken($admin['id'], $token);
+
+                // 设置 Cookie
+                setcookie(
+                    $rememberConfig['cookie_name'],
+                    $token,
+                    time() + $rememberConfig['cookie_lifetime'],
+                    $rememberConfig['cookie_path'],
+                    '', // domain (空字符串表示当前域)
+                    $rememberConfig['cookie_secure'],
+                    $rememberConfig['cookie_httponly']
+                );
+            }
         }
 
         // 更新最后登录信息
@@ -135,9 +152,14 @@ class AuthController extends BackendController
      */
     public function logout(Request $request): void
     {
+        // 清除数据库中的 remember token
+        if (isset($_SESSION['admin_id'])) {
+            $this->adminUser->clearRememberToken($_SESSION['admin_id']);
+        }
+
         // 清除所有会话数据
         $_SESSION = [];
-        
+
         // 删除会话cookie
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
@@ -146,15 +168,21 @@ class AuthController extends BackendController
                 $params["secure"], $params["httponly"]
             );
         }
-        
+
         // 删除记住我cookie
-        if (isset($_COOKIE['admin_remember'])) {
-            setcookie('admin_remember', '', time() - 3600, '/');
+        $config = require __DIR__ . '/../../config/main.php';
+        if (isset($_COOKIE[$config['remember_me']['cookie_name']])) {
+            setcookie(
+                $config['remember_me']['cookie_name'],
+                '',
+                time() - 3600,
+                $config['remember_me']['cookie_path']
+            );
         }
-        
+
         // 销毁会话
         session_destroy();
-        
+
         // 重定向到登录页面
         header('Location: /login');
         exit;
