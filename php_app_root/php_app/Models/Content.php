@@ -316,20 +316,17 @@ class Content extends UploadableModel implements HasStatuses
         $sql = "SELECT 
                     COUNT(*) as total_content,
                     SUM(CASE WHEN status_id = :published_status THEN 1 ELSE 0 END) as published_content,
-                    SUM(CASE WHEN status_id = :draft_status THEN 1 ELSE 0 END) as draft_content,
-                    SUM(view_cnt) as total_views,
-                    AVG(view_cnt) as avg_views
+                    SUM(pv_cnt) as total_views,
+                    AVG(pv_cnt) as avg_views
                 FROM {$table}";
-        
+
         $result = $this->db->fetch($sql, [
             'published_status' => ContentStatus::PUBLISHED->value,
-            'draft_status' => ContentStatus::DRAFT->value
         ]);
-        
+
         return [
             'total_content' => (int)$result['total_content'],
             'published_content' => (int)$result['published_content'],
-            'draft_content' => (int)$result['draft_content'],
             'total_views' => (int)$result['total_views'],
             'avg_views' => round((float)$result['avg_views'], 2)
         ];
