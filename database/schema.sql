@@ -36,6 +36,9 @@ CREATE TABLE `content` (
   `duration` MEDIUMINT UNSIGNED COMMENT '视频时长秒数 (仅视频类型使用)',
   `pv_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '网站内PV计数',
   `view_cnt` BIGINT UNSIGNED DEFAULT 0 COMMENT '总观看/阅读次数',
+  `like_cnt` INT UNSIGNED DEFAULT 0 COMMENT '点赞数',
+  `favorite_cnt` INT UNSIGNED DEFAULT 0 COMMENT '收藏数',
+  `comment_cnt` INT UNSIGNED DEFAULT 0 COMMENT '评论数',
   `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 9-隐藏, 11-草稿, 51-创意, 56-脚本开, 59-脚本完, 61-开拍, 69-拍完, 71-开剪, 79-剪完, 91-待发布, 99-已发布',
   `pub_at` DATETIME COMMENT '发布时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -204,6 +207,18 @@ CREATE TABLE `favorite` (
   FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+-- 内容点赞表
+CREATE TABLE `content_like` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `content_id` INT UNSIGNED NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_user_content` (`user_id`, `content_id`),
+    INDEX `idx_content_id` (`content_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`content_id`) REFERENCES `content`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- 邮件订阅表
 CREATE TABLE `subscription` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -290,6 +305,7 @@ CREATE TABLE `admin_user` (
     `last_login_time` DATETIME,
     `last_login_ip` VARCHAR(45),
     `remember_token` VARCHAR(64) DEFAULT NULL COMMENT '记住我功能的token(SHA256哈希后存储)',
+    `remember_token_expires_at` DATETIME COMMENT 'Token过期时间',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `uk_username` (`username`),
