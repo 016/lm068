@@ -58,37 +58,4 @@ class Platform extends Model
             'base_url' => '基础URL'
         ];
     }
-
-    /**
-     * 静态工厂方法 - 创建新Platform实例
-     */
-    public static function make(array $data = []): self
-    {
-        $instance = new static();
-        $instance->fill($data);
-        return $instance;
-    }
-
-    /**
-     * 静态方法 - 通过ID查找
-     */
-    public static function findOrFail(int $id): self
-    {
-        $instance = new static();
-        $found = $instance->find($id);
-        if (!$found) {
-            throw new \Exception("Platform with ID {$id} not found");
-        }
-        return $found;
-    }
-
-    /**
-     * 静态方法 - 通过code查找
-     */
-    public static function findByCode(string $code): ?self
-    {
-        $instance = new static();
-        $result = $instance->findOne(['code' => $code]);
-        return $result;
-    }
 }
