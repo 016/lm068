@@ -4,6 +4,25 @@ namespace App\Models;
 
 use App\Core\Model;
 
+/**
+ * Comment Model
+ *
+ * @property int $id 评论ID
+ * @property int|null $root_id 根评论ID, 用于快速查询整个评论树
+ * @property int|null $parent_id 父评论ID, 支持回复功能
+ * @property int $user_id 用户ID
+ * @property int $content_id 关联内容ID
+ * @property string $content 评论内容
+ * @property int $status_id 状态: 0-已隐藏, 1-待审核, 99-审核通过
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read User $user 评论用户
+ * @property-read Content $linkContent 关联内容
+ * @property-read Comment $parent 父评论
+ * @property-read Comment $root 根评论
+ * @property-read Comment[] $replies 子评论
+ */
 class Comment extends Model
 {
     protected static string $table = 'comment';
@@ -20,7 +39,53 @@ class Comment extends Model
     const STATUS_APPROVED = 99;
 
     /**
-     * ��ĺ�ߡ
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 User 的 BelongsTo 关系
+     */
+    public function user(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * 定义与 Content 的 BelongsTo 关系
+     */
+    public function linkContent(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Content::class, 'content_id', 'id');
+    }
+
+    /**
+     * 定义与父评论的 BelongsTo 关系（自关联）
+     */
+    public function parent(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(Comment::class, 'parent_id', 'id');
+    }
+
+    /**
+     * 定义与根评论的 BelongsTo 关系（自关联）
+     */
+    public function root(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(Comment::class, 'root_id', 'id');
+    }
+
+    /**
+     * 定义子评论的 HasMany 关系（自关联）
+     */
+    public function replies(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class, 'parent_id', 'id');
+    }
+
+    /**
+     * for dashboard show.
      *
      * @return array ['total' => int, 'pending' => int, 'approved' => int, 'hidden' => int]
      */
@@ -50,72 +115,6 @@ class Comment extends Model
             'approved' => $approved,
             'hidden' => $hidden
         ];
-    }
-
-    /**
-     * 9n���ĺp�
-     *
-     * @param int $statusId
-     * @return int
-     */
-    public static function countByStatus(int $statusId): int
-    {
-        return static::count(['status_id' => $statusId]);
-    }
-
-    /**
-     * ������ĺh
-     *
-     * @param int $contentId
-     * @param int $limit
-     * @param int $offset
-     * @return array
-     */
-    public function getCommentsByContent(int $contentId, int $limit = 20, int $offset = 0): array
-    {
-        return $this->findAll(
-            ['content_id' => $contentId, 'status_id' => self::STATUS_APPROVED],
-            'created_at DESC',
-            $limit,
-            $offset
-        );
-    }
-
-    /**
-     * �օ�8ĺh
-     *
-     * @param int $limit
-     * @param int $offset
-     * @return array
-     */
-    public function getPendingComments(int $limit = 20, int $offset = 0): array
-    {
-        return $this->findAll(
-            ['status_id' => self::STATUS_PENDING],
-            'created_at DESC',
-            $limit,
-            $offset
-        );
-    }
-
-    /**
-     *
-     * @param int $commentId
-     * @return bool
-     */
-    public function approveComment(int $commentId): bool
-    {
-        return $this->update($commentId, ['status_id' => self::STATUS_APPROVED]);
-    }
-
-    /**
-     *
-     * @param int $commentId
-     * @return bool
-     */
-    public function hideComment(int $commentId): bool
-    {
-        return $this->update($commentId, ['status_id' => self::STATUS_HIDDEN]);
     }
 
     /**
