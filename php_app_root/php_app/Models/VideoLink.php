@@ -11,9 +11,11 @@ class VideoLink extends Model implements HasStatuses
     protected static string $table = 'video_link';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'content_id', 'platform_id', 'external_url', 'external_video_id',
-        'play_cnt', 'like_cnt', 'favorite_cnt', 'download_cnt',
-        'comment_cnt', 'share_cnt', 'status_id'
+        'default' => [
+            'content_id', 'platform_id', 'external_url', 'external_video_id',
+            'play_cnt', 'like_cnt', 'favorite_cnt', 'download_cnt',
+            'comment_cnt', 'share_cnt', 'status_id'
+        ]
     ];
     protected $timestamps = true;
 
@@ -50,22 +52,25 @@ class VideoLink extends Model implements HasStatuses
     /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称，为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         return [
-            'content_id' => 'required|numeric',
-            'platform_id' => 'required|numeric',
-            'external_url' => 'required|max:500',
-            'external_video_id' => 'required|max:200',
-            'play_cnt' => 'numeric',
-            'like_cnt' => 'numeric',
-            'favorite_cnt' => 'numeric',
-            'download_cnt' => 'numeric',
-            'comment_cnt' => 'numeric',
-            'share_cnt' => 'numeric',
-            'status_id' => 'numeric'
+            'default' => [
+                'content_id' => 'required|numeric',
+                'platform_id' => 'required|numeric',
+                'external_url' => 'required|max:500',
+                'external_video_id' => 'required|max:200',
+                'play_cnt' => 'numeric',
+                'like_cnt' => 'numeric',
+                'favorite_cnt' => 'numeric',
+                'download_cnt' => 'numeric',
+                'comment_cnt' => 'numeric',
+                'share_cnt' => 'numeric',
+                'status_id' => 'numeric'
+            ]
         ];
     }
 

@@ -9,7 +9,9 @@ class Comment extends Model
     protected static string $table = 'comment';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'root_id', 'parent_id', 'user_id', 'content_id', 'content', 'status_id'
+        'default' => [
+            'root_id', 'parent_id', 'user_id', 'content_id', 'content', 'status_id'
+        ]
     ];
     protected $timestamps = true;
 

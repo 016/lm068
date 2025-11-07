@@ -11,9 +11,11 @@ class ContentPvDaily extends Model
     protected static string $table = 'content_pv_daily';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'content_type_id', 'author', 'code', 'title_en', 'title_cn',
-        'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
-        'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
+        'default' => [
+            'content_type_id', 'author', 'code', 'title_en', 'title_cn',
+            'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
+            'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
+        ]
     ];
     protected $timestamps = true;
 
@@ -31,11 +33,14 @@ class ContentPvDaily extends Model
     /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称，为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         return [
+            'default' => [
+            ]
         ];
     }
 

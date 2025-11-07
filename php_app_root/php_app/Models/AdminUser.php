@@ -13,9 +13,11 @@ class AdminUser extends Model implements HasStatuses
     protected static string $table = 'admin_user';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'username', 'password_hash', 'email', 'real_name',
-        'avatar', 'phone', 'status_id', 'role_id',
-        'last_login_time', 'last_login_ip', 'remember_token'
+        'default' => [
+            'username', 'password_hash', 'email', 'real_name',
+            'avatar', 'phone', 'status_id', 'role_id',
+            'last_login_time', 'last_login_ip', 'remember_token'
+        ]
     ];
     protected $timestamps = true;
 
@@ -41,7 +43,7 @@ class AdminUser extends Model implements HasStatuses
     }
 
     /**
-     * 实现接口方法，返回对应的状态枚举类
+     * 实现接口方法, 返回对应的状态枚举类
      */
     public static function getStatusEnum(): string
     {
@@ -51,9 +53,10 @@ class AdminUser extends Model implements HasStatuses
     /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称, 为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         $rules = [
             'username' => 'required|max:50|unique',
@@ -69,7 +72,9 @@ class AdminUser extends Model implements HasStatuses
             $rules['password_hash'] = 'required';
         }
 
-        return $rules;
+        return [
+            'default' => $rules
+        ];
     }
 
     /**
@@ -277,7 +282,7 @@ class AdminUser extends Model implements HasStatuses
     }
 
     /**
-     * 重写父类方法，为AdminUser模型准备CSV导入数据
+     * 重写父类方法, 为AdminUser模型准备CSV导入数据
      */
     public function prepareBulkImportData(array $csvRowData): array
     {

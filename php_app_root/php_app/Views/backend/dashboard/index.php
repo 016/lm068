@@ -95,19 +95,19 @@
             <div class="metric-card-body">
                 <div class="status-grid-updated">
                     <div class="status-item-updated">
-                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['published']) ?></div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['content_stats']['published']) ?></div>
                         <div class="status-label-updated">已发布</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['pending_publish']) ?></div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['content_stats']['pending_publish']) ?></div>
                         <div class="status-label-updated">待发布</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['shooting_done']) ?></div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['content_stats']['shooting_done']) ?></div>
                         <div class="status-label-updated">拍摄完</div>
                     </div>
                     <div class="status-item-updated">
-                        <div class="status-number-updated"><?= number_format($contentGrid['video_stats']['script_done']) ?></div>
+                        <div class="status-number-updated"><?= number_format($contentGrid['content_stats']['script_done']) ?></div>
                         <div class="status-label-updated">脚本完</div>
                     </div>
                 </div>

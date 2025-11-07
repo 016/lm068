@@ -9,7 +9,9 @@ class Platform extends Model
     protected static string $table = 'platform';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'name', 'code', 'base_url'
+        'default' => [
+            'name', 'code', 'base_url'
+        ]
     ];
     protected $timestamps = true;
 
@@ -30,14 +32,17 @@ class Platform extends Model
     /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称，为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         return [
-            'name' => 'required|max:50|unique',
-            'code' => 'required|max:50|unique',
-            'base_url' => 'required|max:255'
+            'default' => [
+                'name' => 'required|max:50|unique',
+                'code' => 'required|max:50|unique',
+                'base_url' => 'required|max:255'
+            ]
         ];
     }
 

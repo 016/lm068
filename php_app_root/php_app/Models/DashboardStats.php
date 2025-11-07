@@ -47,7 +47,7 @@ class DashboardStats
         $commentStats = Comment::getStatusStats();
 
         return [
-            'video_stats' => $videoStats,
+            'content_stats' => $videoStats,
             'comment_stats' => $commentStats,
             'queue_stats' => [
                 'new' => 0,

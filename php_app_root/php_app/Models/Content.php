@@ -15,9 +15,12 @@ class Content extends UploadableModel implements HasStatuses
     protected static string $table = 'content';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'content_type_id', 'author', 'code', 'title_en', 'title_cn',
-        'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
-        'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
+        'default' => [
+            'content_type_id', 'author', 'code', 'title_en', 'title_cn',
+            'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
+            'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
+        ]
+
     ];
     protected $timestamps = true;
 
@@ -74,23 +77,26 @@ class Content extends UploadableModel implements HasStatuses
      * @param bool $isUpdate 是否为更新操作
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         return [
-            'content_type_id' => 'required|numeric',
-            'code' => 'max:50',
-            'title_en' => 'required|max:255|unique',
-            'title_cn' => 'required|max:255|unique',
-            'desc_en' => 'max:65535', // TEXT类型
-            'desc_cn' => 'max:65535', // TEXT类型
-            'sum_en' => 'max:65535', // TEXT类型
-            'sum_cn' => 'max:65535', // TEXT类型
-            'short_desc_en' => 'max:1000',
-            'short_desc_cn' => 'max:1000',
-            'author' => 'max:255',
-            'thumbnail' => 'max:255',
-            'duration' => 'numeric',
-            'status_id' => 'numeric'
+            'default' => [
+                'content_type_id' => 'required|numeric',
+                'code' => 'max:50',
+                'title_en' => 'required|max:255|unique',
+                'title_cn' => 'required|max:255|unique',
+                'desc_en' => 'max:65535', // TEXT类型
+                'desc_cn' => 'max:65535', // TEXT类型
+                'sum_en' => 'max:65535', // TEXT类型
+                'sum_cn' => 'max:65535', // TEXT类型
+                'short_desc_en' => 'max:1000',
+                'short_desc_cn' => 'max:1000',
+                'author' => 'max:255',
+                'thumbnail' => 'max:255',
+                'duration' => 'numeric',
+                'status_id' => 'numeric'
+            ]
+
         ];
     }
 

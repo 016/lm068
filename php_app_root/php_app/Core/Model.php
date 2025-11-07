@@ -14,7 +14,10 @@ abstract class Model
     protected $fillable = [];
     protected $timestamps = true;
     public $isNew = true;
-    
+
+    // Scenario 场景支持
+    protected string $scenario = 'default';
+
     // Active Record 属性
     protected array $attributes = [];
     protected array $original = [];
@@ -39,16 +42,66 @@ abstract class Model
     }
 
     /**
+     * 设置场景
+     * @param string $scenario 场景名称
+     * @return self
+     */
+    public function setScenario(string $scenario): self
+    {
+        $this->scenario = $scenario;
+        return $this;
+    }
+
+    /**
+     * 获取当前场景
+     * @return string
+     */
+    public function getScenario(): string
+    {
+        return $this->scenario;
+    }
+
+    /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称, 为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         $rules = [
         ];
 
         return $rules;
+    }
+
+    /**
+     * 获取当前场景的验证规则
+     * @param bool $isUpdate 是否为更新操作
+     * @return array
+     */
+    protected function getRulesForScenario(bool $isUpdate = false): array
+    {
+        // 获取所有规则
+        $allRules = $this->rules($isUpdate);
+
+        // 如果规则为空，返回空数组
+        if (empty($allRules)) {
+            return [];
+        }
+
+        // 检查是否为二维数组结构（场景化规则）
+        $firstKey = array_key_first($allRules);
+        $firstElement = $allRules[$firstKey];
+
+        // 如果第一个元素是数组且包含规则数组，说明是场景化结构
+        if (is_array($firstElement) && isset($allRules['default']) && is_array($allRules['default'])) {
+            // 二维数组模式：根据场景返回对应的规则
+            return $allRules[$this->scenario] ?? [];
+        }
+
+        // 一维数组模式（向后兼容）：直接返回所有规则
+        return $allRules;
     }
 
     /**
@@ -141,12 +194,36 @@ abstract class Model
      */
     public function fill(array $data): self
     {
+        $fillableFields = $this->getFillableForScenario();
+
         foreach ($data as $key => $value) {
-            if (in_array($key, $this->fillable) || empty($this->fillable)) {
+            if (in_array($key, $fillableFields) || empty($fillableFields)) {
                 $this->attributes[$key] = $value;
             }
         }
         return $this;
+    }
+
+    /**
+     * 获取当前场景的可填充字段
+     * @return array
+     */
+    protected function getFillableForScenario(): array
+    {
+        // 如果 fillable 为空，返回空数组
+        if (empty($this->fillable)) {
+            return [];
+        }
+
+        // 检查 fillable 是否为二维数组
+        $firstElement = reset($this->fillable);
+        if (is_array($firstElement)) {
+            // 二维数组模式：根据场景返回对应的fillable
+            return $this->fillable[$this->scenario] ?? [];
+        }
+
+        // 一维数组模式（向后兼容）：直接返回fillable
+        return $this->fillable;
     }
 
     /**
@@ -272,11 +349,6 @@ abstract class Model
         }
 
         return $result;
-    }
-
-    public static function findById(int $id): ?self
-    {
-        return static::find($id);
     }
 
     /**
@@ -587,11 +659,13 @@ abstract class Model
 
     protected function filterFillable(array $data): array
     {
-        if (empty($this->fillable)) {
+        $fillableFields = $this->getFillableForScenario();
+
+        if (empty($fillableFields)) {
             return $data;
         }
 
-        return array_intersect_key($data, array_flip($this->fillable));
+        return array_intersect_key($data, array_flip($fillableFields));
     }
 
     /**
@@ -657,32 +731,12 @@ abstract class Model
 
         // 子类可以重写此方法实现具体验证逻辑
         if (method_exists($this, 'rules')) {
-            $rules = $this->rules(!$this->isNew());
+            $rules = $this->getRulesForScenario(!$this->isNew());
             $excludeId = $this->isNew() ? null : $this->attributes[$this->primaryKey] ?? null;
             $this->errors = $this->validateRules($this->attributes, $rules, $excludeId);
         }
 
         return empty($this->errors);
-    }
-
-    /**
-     * 兼容旧的验证方法
-     * @param array $data 要验证的数据
-     * @param bool $isUpdate 是否为更新操作
-     * @param ?int $excludeId 更新时排除的ID
-     * @return array 错误信息数组，为空表示验证通过
-     */
-    public function validateData(array $data, bool $isUpdate = false, ?int $excludeId = null): array
-    {
-        $errors = [];
-
-        // 子类可以重写此方法实现具体验证逻辑
-        if (method_exists($this, 'rules')) {
-            $rules = $this->rules($isUpdate);
-            $errors = $this->validateRules($data, $rules, $excludeId);
-        }
-
-        return $errors;
     }
 
     /**

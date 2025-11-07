@@ -13,9 +13,11 @@ class Collection extends Model implements HasStatuses
     protected static string $table = 'collection';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'name_en', 'name_cn', 'short_desc_en', 'short_desc_cn', 
-        'desc_en', 'desc_cn', 'color_class', 'icon_class', 
-        'content_cnt', 'status_id'
+        'default' => [
+            'name_en', 'name_cn', 'short_desc_en', 'short_desc_cn',
+            'desc_en', 'desc_cn', 'color_class', 'icon_class',
+            'content_cnt', 'status_id'
+        ]
     ];
     protected $timestamps = true;
 
@@ -51,20 +53,23 @@ class Collection extends Model implements HasStatuses
     /**
      * 定义验证规则
      * @param bool $isUpdate 是否为更新操作
+     * @param string|null $scenario 场景名称，为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false): array
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
     {
         return [
-            'name_cn' => 'required|max:50|unique',
-            'name_en' => 'required|max:50|unique',
-            'short_desc_cn' => 'max:100',
-            'short_desc_en' => 'max:100',
-            'desc_cn' => 'max:500',
-            'desc_en' => 'max:500',
-            'color_class' => 'max:50',
-            'icon_class' => 'max:50',
-            'status_id' => 'numeric'
+            'default' => [
+                'name_cn' => 'required|max:50|unique',
+                'name_en' => 'required|max:50|unique',
+                'short_desc_cn' => 'max:100',
+                'short_desc_en' => 'max:100',
+                'desc_cn' => 'max:500',
+                'desc_en' => 'max:500',
+                'color_class' => 'max:50',
+                'icon_class' => 'max:50',
+                'status_id' => 'numeric'
+            ]
         ];
     }
 

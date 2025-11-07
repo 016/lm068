@@ -9,8 +9,10 @@ class User extends Model
 {
     protected static string $table = 'user';
     protected $fillable = [
-        'username', 'email', 'password_hash', 'avatar', 
-        'nickname', 'status_id'
+        'default' => [
+            'username', 'email', 'password_hash', 'avatar',
+            'nickname', 'status_id'
+        ]
     ];
 
     public function findByEmail(string $email): ?array
