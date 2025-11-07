@@ -12,8 +12,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化推荐视频点击
     // initRecommendedVideos();
-    
+
+    initCodeCopy();
+
 });
+
+function initCodeCopy() {
+    const div = document.createElement('div');
+    div.innerHTML = '<div class="tooltip-copy"><span class="icon-copy bi bi-copy" title="Click to Copy" /></div>';
+    div.className = 'div-copy';
+
+    const allPres = document.querySelectorAll('pre');
+    allPres.forEach(function(pre) {
+        let timeout = null;
+        const copy = div.cloneNode(true);
+        pre.appendChild(copy);
+        pre.onmouseover = function() {
+            copy.classList.add('active');
+        };
+        pre.onmouseleave = function() {
+            clearTimeout(timeout);
+            copy.classList.remove('active');
+            copy.classList.remove('click');
+        };
+        copy.onclick = function() {
+            navigator.clipboard.writeText(pre.textContent);
+            copy.classList.add('click');
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                copy.classList.remove('click');
+            }, 3000);
+        };
+    });
+}
 
 // 初始化Markdown渲染功能
 function initMarkdownRendering() {
@@ -587,22 +618,37 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// 滚动时更新阅读进度（可选功能）
+/**
+ * 滚动时更新阅读进度
+ * 修改为在现有页面标题前增加百分比，而不是替换整个标题
+ */
 function initScrollProgress() {
+    // 1. 在开始时获取并存储原始标题
+    const originalTitle = document.title;
     let ticking = false;
-    
+
     window.addEventListener('scroll', function() {
         if (!ticking) {
             requestAnimationFrame(function() {
-                const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-                
-                // 更新页面标题显示进度
-                if (scrolled > 10 && scrolled < 90) {
-                    document.title = `(${Math.round(scrolled)}%) 视频详情 - 视频创作展示网站`;
-                } else {
-                    document.title = '视频详情 - 视频创作展示网站';
+                const totalScrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+                // 防止页面内容不足一屏时出现除以0的情况 (NaN)
+                if (totalScrollableHeight <= 0) {
+                    document.title = originalTitle; // 确保标题是原始的
+                    return;
                 }
-                
+
+                const scrolled = (window.pageYOffset / totalScrollableHeight) * 100;
+
+                // 2. 根据滚动位置动态更新标题
+                if (scrolled > 10 && scrolled < 90) {
+                    // 在原始标题前拼接百分比
+                    document.title = `(${Math.round(scrolled)}%) ${originalTitle}`;
+                } else {
+                    // 恢复原始标题
+                    document.title = originalTitle;
+                }
+
                 ticking = false;
             });
             ticking = true;
@@ -611,4 +657,4 @@ function initScrollProgress() {
 }
 
 // 可选：启用滚动进度
-// initScrollProgress();
+initScrollProgress();
