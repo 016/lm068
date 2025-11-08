@@ -576,11 +576,6 @@ abstract class Model
         return static::find($id) !== null;
     }
 
-    public function query1(string $sql, array $params = []): \PDOStatement
-    {
-        return $this->db->query($sql, $params);
-    }
-
     /**
      * for quick get model list for multi-select init.
      *  force format to [[id, text], ... ]
