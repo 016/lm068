@@ -286,14 +286,6 @@ class ContentController extends BackendController
 
     private function renderCreateForm(Content $content, array|string|null $postedTagIds = null, array|string|null $postedCollectionIds = null): void
     {
-        $allTags = $this->tagModel->findAll([
-            'status_id' => TagStatus::getVisibleStatuses()
-        ]);
-        
-        $allCollections = $this->collectionModel->findAll([
-            'status_id' => CollectionStatus::getVisibleStatuses()
-        ]);
-
         $tagsList = Tag::loadList([
             'status_id' => TagStatus::getVisibleStatuses()
         ]);
