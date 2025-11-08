@@ -1692,11 +1692,15 @@ class TableManager {
             if (columnId === 'checkbox') return;
             
             const columnName = TableOperations.extractColumnName(headerCell, columnId);
+
+            // 从 data-show 属性读取显示状态，默认为 1（显示）以保证兼容性
+            const dataShow = headerCell.getAttribute('data-show');
+            const isChecked = dataShow === '0' ? '' : 'checked';
             
             const checkboxDiv = document.createElement('div');
             checkboxDiv.className = 'popup-checkbox';
             checkboxDiv.innerHTML = `
-                <input type="checkbox" id="col-${columnId}" checked>
+                <input type="checkbox" id="col-${columnId}" ${isChecked}>
                 <label for="col-${columnId}">${columnName}</label>
             `;
             
