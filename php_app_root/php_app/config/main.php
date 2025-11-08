@@ -7,6 +7,9 @@ return [
     'debug' => true,
     'timezone' => 'Asia/Shanghai',
     'charset' => 'UTF-8',
+    'dev' => [
+        'is_dev' => false,
+    ],
     
     // 安全配置
     'secret_key' => 'your-secret-key-change-in-production',
