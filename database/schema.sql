@@ -18,10 +18,31 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_email` (`email`)
 ) ENGINE=InnoDB;
 
+-- 内容分类表
+CREATE TABLE `content_type` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name_en` VARCHAR(50) NOT NULL,
+    `name_cn` VARCHAR(50) NOT NULL,
+    `content_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联内容数量',
+    `published_content_cnt` INT UNSIGNED DEFAULT 0 COMMENT '关联已发布内容数量',
+    `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 1-启用, 0-禁用',
+    `sort_order` TINYINT UNSIGNED DEFAULT 1 COMMENT '排序字段, 数字大在前面, 默认值1。一般置顶使用11。特殊置顶使用21+',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_name_cn` (`name_cn`)
+) ENGINE=InnoDB;
+
+-- ID说明 2-9为预留系统级id，常规ID从11开始
+INSERT INTO `content_type` (`id`, `name_en`, `name_cn`) VALUES
+(1, 'Announcement', '网站公告'),
+(11, 'Article', '一般文章'),
+(21, 'Video', '视频');
+
+
 -- 内容主表 (包含: 网站公告, 一般文章, 视频, 共三类内容，用content_type_id区分)
 CREATE TABLE `content` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `content_type_id` TINYINT UNSIGNED NOT NULL COMMENT '内容类型: 1-网站公告, 11-一般文章, 21-视频',
+  `content_type_id` INT UNSIGNED NOT NULL COMMENT '内容类型ID',
   `author` VARCHAR(255) DEFAULT 'DP' COMMENT '作者名称',
   `code` VARCHAR(50) COMMENT '内部管理代码',
   `title_en` VARCHAR(255) NOT NULL COMMENT '英文标题',
@@ -44,7 +65,8 @@ CREATE TABLE `content` (
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP removed because pv_cnt update will rise this field update, sitemap will show wrong date, keep update logic in php code
   INDEX `idx_status_id` (`status_id`),
-  INDEX `idx_content_type_id` (`content_type_id`)
+  INDEX `idx_content_type_id` (`content_type_id`),
+  FOREIGN KEY (`content_type_id`) REFERENCES `content_type`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- 内容 PV 每日统计表 (主要查询表)
