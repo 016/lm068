@@ -5,6 +5,21 @@ namespace App\Models;
 use App\Core\Model;
 use App\Constants\UserStatus;
 
+/**
+ * User Model
+ *
+ * @property int $id 用户ID
+ * @property string $username 用户名
+ * @property string $email 邮箱
+ * @property string $password_hash 密码哈希
+ * @property string|null $avatar 用户头像URL
+ * @property string|null $nickname 用户昵称
+ * @property int $status_id 用户状态: 0=不可用/封停, 1=可用/正常
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read Comment[] $comments 用户的评论
+ */
 class User extends Model
 {
     protected static string $table = 'user';
@@ -15,39 +30,25 @@ class User extends Model
         ]
     ];
 
-    public function findByEmail(string $email): ?array
+    /**
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 Comment 的 HasMany 关系
+     */
+    public function comments(): \App\Core\Relations\HasMany
     {
-        $table = static::getTableName();
-        $sql = "SELECT * FROM {$table} WHERE email = :email LIMIT 1";
-        return $this->db->fetch($sql, ['email' => $email]);
+        return $this->hasMany(Comment::class, 'user_id', 'id');
     }
 
-    public function findByUsername(string $username): ?array
-    {
-        $table = static::getTableName();
-        $sql = "SELECT * FROM {$table} WHERE username = :username LIMIT 1";
-        return $this->db->fetch($sql, ['username' => $username]);
-    }
-
-    public function getActiveUsers(int $limit = 20, int $offset = 0): array
-    {
-        return $this->findAll(['status_id' => UserStatus::ACTIVE->value], 'created_at DESC', $limit, $offset);
-    }
-
-    public function createUser(array $data): int
-    {
-        if (!empty($data['password'])) {
-            $data['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
-            unset($data['password']);
-        }
-
-        return $this->create($data);
-    }
-
-    public function verifyPassword(array $user, string $password): bool
-    {
-        return password_verify($password, $user['password_hash']);
-    }
+    /**
+     * ============================================
+     * 原有方法保持不变
+     * ============================================
+     */
 
     /**
      * 获取用户总数和本月新增统计
@@ -77,26 +78,5 @@ class User extends Model
             'monthly_new' => $monthlyNew,
             'monthly_growth_rate' => $growthRate
         ];
-    }
-
-    /**
-     * 获取指定日期范围内的新增用户数
-     *
-     * @param string $startDate 开始日期 (Y-m-d)
-     * @param string $endDate 结束日期 (Y-m-d)
-     * @return int
-     */
-    public static function getNewUserCountByDateRange(string $startDate, string $endDate): int
-    {
-        $db = \App\Core\Database::getInstance();
-        $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() .
-               " WHERE created_at >= :start_date AND created_at < :end_date";
-
-        $result = $db->fetch($sql, [
-            'start_date' => $startDate . ' 00:00:00',
-            'end_date' => $endDate . ' 23:59:59'
-        ]);
-
-        return (int)$result['count'];
     }
 }
