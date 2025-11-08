@@ -659,8 +659,7 @@ abstract class Model
      */
     public static function findAllWithFilters(array $filters = []): array
     {
-        $db = Database::getInstance();
-        $sql = "SELECT * FROM " . static::getTableName();
+        $sqlBuilder = static::query();
         $params = [];
         $whereConditions = [];
 
@@ -687,14 +686,13 @@ abstract class Model
         }
 
         if (!empty($whereConditions)) {
-            $sql .= " WHERE " . implode(" AND ", $whereConditions);
+            $sqlBuilder->whereRaw(implode(' AND ', $whereConditions), $params);
         }
 
         // 排序
-        $orderBy = $filters['order_by'] ?? 'id DESC';
-        $sql .= " ORDER BY {$orderBy}";
+        $sqlBuilder->orderBy($filters['order_by'] ?? 'id DESC');
 
-        return $db->fetchAll($sql, $params);
+        return $sqlBuilder->all();
     }
 
 

@@ -270,35 +270,35 @@ use App\Constants\AdminUserRole;
                     <tbody id="adminUserTableBody">
                         <?php if (!empty($adminUsers)): ?>
                             <?php foreach ($adminUsers as $adminUser): ?>
-                                <tr class="table-row" data-id="<?= htmlspecialchars($adminUser['id']) ?>">
+                                <tr class="table-row" data-id="<?= htmlspecialchars($adminUser->id) ?>">
                                     <td class="table-cell">
                                         <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= htmlspecialchars($adminUser['id']) ?>">
+                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= htmlspecialchars($adminUser->id) ?>">
                                         </div>
                                     </td>
-                                    <td class="table-cell table-id" data-column="id"><?= htmlspecialchars($adminUser['id']) ?></td>
-                                    <td class="table-cell table-name" data-column="username"><?= htmlspecialchars($adminUser['username']) ?></td>
-                                    <td class="table-cell" data-column="real_name"><?= htmlspecialchars($adminUser['real_name'] ?: '-') ?></td>
-                                    <td class="table-cell" data-column="email"><?= htmlspecialchars($adminUser['email'] ?: '-') ?></td>
+                                    <td class="table-cell table-id" data-column="id"><?= htmlspecialchars($adminUser->id) ?></td>
+                                    <td class="table-cell table-name" data-column="username"><?= htmlspecialchars($adminUser->username) ?></td>
+                                    <td class="table-cell" data-column="real_name"><?= htmlspecialchars($adminUser->real_name ?: '-') ?></td>
+                                    <td class="table-cell" data-column="email"><?= htmlspecialchars($adminUser->email ?: '-') ?></td>
                                     <td class="table-cell" data-column="role_id">
-                                        <span class="badge rounded-pill <?= $adminUser['role_id'] >= AdminUserRole::SUPER_ADMIN->value ? 'text-bg-danger' : 'text-bg-info' ?>">
+                                        <span class="badge rounded-pill <?= $adminUser->role_id >= AdminUserRole::SUPER_ADMIN->value ? 'text-bg-danger' : 'text-bg-info' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
-                                            <?= $adminUser['role_id'] >= AdminUserRole::SUPER_ADMIN->value ? '超级管理员' : '普通管理员' ?>
+                                            <?= $adminUser->role_id >= AdminUserRole::SUPER_ADMIN->value ? '超级管理员' : '普通管理员' ?>
                                         </span>
                                     </td>
                                     <td class="table-cell" data-column="status_id">
-                                        <span class="badge rounded-pill <?= $adminUser['status_id'] ? 'text-bg-success' : 'text-bg-secondary' ?>">
+                                        <span class="badge rounded-pill <?= $adminUser->status_id ? 'text-bg-success' : 'text-bg-secondary' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
-                                            <?= $adminUser['status_id'] ? '启用' : '禁用' ?>
+                                            <?= $adminUser->status_id ? '启用' : '禁用' ?>
                                         </span>
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/admin_users/<?= htmlspecialchars($adminUser['id']) ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/admin_users/<?= htmlspecialchars($adminUser->id) ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <?php if ($adminUser['id'] != $_SESSION['admin_id']): ?>
-                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($adminUser['id']) ?>">
+                                            <?php if ($adminUser->id != $_SESSION['admin_id']): ?>
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($adminUser->id) ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                             <?php endif; ?>

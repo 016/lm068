@@ -58,7 +58,7 @@ use App\Constants\ContentType;
                     </div>
                 </div>
                 <div class="metric-card-body">
-                    <div class="metric-value-small"><?= number_format(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::VIDEO->value) ? count(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::VIDEO->value)) : 0) ?></div>
+                    <div class="metric-value-small"><?= number_format(array_filter($contents, fn($c) => $c->content_type_id == ContentType::VIDEO->value) ? count(array_filter($contents, fn($c) => $c->content_type_id == ContentType::VIDEO->value)) : 0) ?></div>
                     <div class="monthly-stats">
                         <i class="bi bi-camera-video monthly-stats-icon"></i>
                         <span>视频类型</span>
@@ -78,7 +78,7 @@ use App\Constants\ContentType;
                     </div>
                 </div>
                 <div class="metric-card-body">
-                    <div class="metric-value-small"><?= number_format(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::ARTICLE->value) ? count(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::ARTICLE->value)) : 0) ?></div>
+                    <div class="metric-value-small"><?= number_format(array_filter($contents, fn($c) => $c->content_type_id == ContentType::ARTICLE->value) ? count(array_filter($contents, fn($c) => $c->content_type_id == ContentType::ARTICLE->value)) : 0) ?></div>
                     <div class="monthly-stats">
                         <i class="bi bi-file-earmark-text monthly-stats-icon"></i>
                         <span>文章类型</span>
@@ -98,7 +98,7 @@ use App\Constants\ContentType;
                     </div>
                 </div>
                 <div class="metric-card-body">
-                    <div class="metric-value-small"><?= number_format(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::ANNOUNCEMENT->value) ? count(array_filter($content, fn($c) => $c['content_type_id'] == ContentType::ANNOUNCEMENT->value)) : 0) ?></div>
+                    <div class="metric-value-small"><?= number_format(array_filter($contents, fn($c) => $c->content_type_id == ContentType::ANNOUNCEMENT->value) ? count(array_filter($contents, fn($c) => $c->content_type_id == ContentType::ANNOUNCEMENT->value)) : 0) ?></div>
                     <div class="monthly-stats">
                         <i class="bi bi-megaphone monthly-stats-icon"></i>
                         <span>公告类型</span>
@@ -322,25 +322,25 @@ use App\Constants\ContentType;
                         </tr>
                     </thead>
                     <tbody id="contentTableBody">
-                        <?php if (!empty($content)): ?>
-                            <?php foreach ($content as $item): ?>
-                                <tr class="table-row" data-id="<?= $item['id'] ?>">
+                        <?php if (!empty($contents)): ?>
+                            <?php foreach ($contents as $item): ?>
+                                <tr class="table-row" data-id="<?= $item->id ?>">
                                     <td class="table-cell">
                                         <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= $item['id'] ?>">
+                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= $item->id ?>">
                                         </div>
                                     </td>
-                                    <td class="table-cell table-id" data-column="id"><?= $item['id'] ?></td>
+                                    <td class="table-cell table-id" data-column="id"><?= $item->id ?></td>
                                     <td class="table-cell" data-column="content_type_id">
                                         <?php 
-                                        $type = ContentType::tryFrom($item['content_type_id']);
-                                        $typeClass = match($item['content_type_id']) {
+                                        $type = ContentType::tryFrom($item->content_type_id);
+                                        $typeClass = match($item->content_type_id) {
                                             ContentType::VIDEO->value => 'content-type-video',
                                             ContentType::ARTICLE->value => 'content-type-article',
                                             ContentType::ANNOUNCEMENT->value => 'content-type-announcement',
                                             default => 'content-type-default'
                                         };
-                                        $typeIcon = match($item['content_type_id']) {
+                                        $typeIcon = match($item->content_type_id) {
                                             ContentType::VIDEO->value => 'bi-camera-video',
                                             ContentType::ARTICLE->value => 'bi-file-earmark-text',
                                             ContentType::ANNOUNCEMENT->value => 'bi-megaphone',
@@ -354,19 +354,19 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell table-title" data-column="title">
                                         <div class="content-title-wrapper">
-                                            <div class="content-title"><?= htmlspecialchars($item['title_cn'] ?: $item['title_en']) ?></div>
-                                            <?php if ($item['title_cn'] && $item['title_en']): ?>
-                                                <div class="content-subtitle"><?= htmlspecialchars($item['title_en']) ?></div>
+                                            <div class="content-title"><?= htmlspecialchars($item->title_cn ?: $item->title_en) ?></div>
+                                            <?php if ($item->title_cn && $item->title_en): ?>
+                                                <div class="content-subtitle"><?= htmlspecialchars($item->title_en) ?></div>
                                             <?php endif; ?>
                                         </div>
                                     </td>
-                                    <td class="table-cell" data-column="code"><?= htmlspecialchars($item['code'] ?? '') ?></td>
-                                    <td class="table-cell" data-column="author"><?= htmlspecialchars($item['author'] ?? 'DP') ?></td>
-                                    <td class="table-cell" data-column="pv_cnt"><?= number_format($item['pv_cnt'] ?? 0) ?></td>
-                                    <td class="table-cell" data-column="pub_at"><?= htmlspecialchars($item['pub_at'] ?? '') ?></td>
+                                    <td class="table-cell" data-column="code"><?= htmlspecialchars($item->code ?? '') ?></td>
+                                    <td class="table-cell" data-column="author"><?= htmlspecialchars($item->author ?? 'DP') ?></td>
+                                    <td class="table-cell" data-column="pv_cnt"><?= number_format($item->pv_cnt ?? 0) ?></td>
+                                    <td class="table-cell" data-column="pub_at"><?= htmlspecialchars($item->pub_at ?? '') ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php 
-                                        $status = ContentStatus::tryFrom($item['status_id']);
+                                        $status = ContentStatus::tryFrom($item->status_id);
                                         $statusClass = $status ? $status->bootstrapBadgeClass() : 'text-bg-secondary';
                                         ?>
                                         <span class="badge rounded-pill <?= $statusClass ?>">
@@ -376,21 +376,21 @@ use App\Constants\ContentType;
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/contents/<?= $item['id'] ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/contents/<?= $item->id ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="/contents/<?= $item['id'] ?>/copy" class="btn btn-outline-warning btn-sm" title="复制">
+                                            <a href="/contents/<?= $item->id ?>/copy" class="btn btn-outline-warning btn-sm" title="复制">
                                                 <i class="bi bi-copy"></i>
                                             </a>
-                                            <a href="/contents/show/<?= $item['id'] ?>" class="btn btn-outline-info btn-sm d-none" title="查看">
+                                            <a href="/contents/show/<?= $item->id ?>" class="btn btn-outline-info btn-sm d-none" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <?php if ($item['content_type_id'] == \App\Constants\ContentType::VIDEO->value): ?>
-                                            <a href="/video-links?content_id=<?= $item['id'] ?>" class="btn btn-outline-success btn-sm" title="视频链接">
+                                            <?php if ($item->content_type_id == \App\Constants\ContentType::VIDEO->value): ?>
+                                            <a href="/video-links?content_id=<?= $item->id ?>" class="btn btn-outline-success btn-sm" title="视频链接">
                                                 <i class="bi bi-link-45deg"></i>
                                             </a>
                                             <?php endif; ?>
-                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= $item['id'] ?>">
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= $item->id ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -416,7 +416,7 @@ use App\Constants\ContentType;
                 <div class="col-md-6">
                     <div class="summary-box">
                         <div class="summary-text">
-                            📊 <strong>汇总信息:</strong> 当前显示 <span class="summary-highlight" id="currentDisplay">1-<?= count($content) ?>/<?= count($content) ?></span> 条 |
+                            📊 <strong>汇总信息:</strong> 当前显示 <span class="summary-highlight" id="currentDisplay">1-<?= count($contents) ?>/<?= count($contents) ?></span> 条 |
                             总观看数: <span class="summary-highlight"><?= number_format($stats['total_views'] ?? 0) ?></span> 次 |
                             平均观看: <span class="summary-highlight"><?= number_format($stats['avg_views'] ?? 0, 1) ?></span> 次
                         </div>

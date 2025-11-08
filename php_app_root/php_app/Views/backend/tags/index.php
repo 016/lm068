@@ -269,40 +269,40 @@ use App\Constants\TagStatus;
                     <tbody id="tagTableBody">
                         <?php if (!empty($tags)): ?>
                             <?php foreach ($tags as $tag): ?>
-                                <tr class="table-row" data-id="<?= htmlspecialchars($tag['id']) ?>">
+                                <tr class="table-row" data-id="<?= htmlspecialchars($tag->id) ?>">
                                     <td class="table-cell">
                                         <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= htmlspecialchars($tag['id']) ?>">
+                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= htmlspecialchars($tag->id) ?>">
                                         </div>
                                     </td>
-                                    <td class="table-cell table-id" data-column="id"><?= htmlspecialchars($tag['id']) ?></td>
-                                    <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($tag['name_cn'] ?: $tag['name_en']) ?></td>
+                                    <td class="table-cell table-id" data-column="id"><?= htmlspecialchars($tag->id) ?></td>
+                                    <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($tag->name_cn ?: $tag->name_en) ?></td>
                                     <td class="table-cell" data-column="content_cnt">
-                                        <a href="/contents?tag_id=<?= htmlspecialchars($tag['id']) ?>" class="content-link">
-                                            <?= number_format($tag['content_cnt'] ?? 0) ?>
+                                        <a href="/contents?tag_id=<?= htmlspecialchars($tag->id) ?>" class="content-link">
+                                            <?= number_format($tag->content_cnt ?? 0) ?>
                                         </a>
                                     </td>
                                     <td class="table-cell" data-column="icon_class">
                                         <div class="icon-class-display">
-                                            <span class="bi <?= htmlspecialchars($tag['icon_class'] ?: 'bi-tag') ?>"></span>
-                                            <?= htmlspecialchars($tag['icon_class'] ?: 'bi-tag') ?>
+                                            <span class="bi <?= htmlspecialchars($tag->icon_class ?: 'bi-tag') ?>"></span>
+                                            <?= htmlspecialchars($tag->icon_class ?: 'bi-tag') ?>
                                         </div>
                                     </td>
                                     <td class="table-cell" data-column="status_id">
-                                        <span class="badge rounded-pill <?= $tag['status_id'] ? 'text-bg-success' : 'text-bg-danger' ?>">
+                                        <span class="badge rounded-pill <?= $tag->status_id ? 'text-bg-success' : 'text-bg-danger' ?>">
                                             <i class="bi bi-circle-fill badge-icon"></i>
-                                            <?= $tag['status_id'] ? '显示' : '隐藏' ?>
+                                            <?= $tag->status_id ? '显示' : '隐藏' ?>
                                         </span>
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/tags/<?= htmlspecialchars($tag['id']) ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/tags/<?= htmlspecialchars($tag->id) ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="/tags/<?= htmlspecialchars($tag['id']) ?>" class="btn btn-outline-info btn-sm" title="查看">
+                                            <a href="/tags/<?= htmlspecialchars($tag->id) ?>" class="btn btn-outline-info btn-sm" title="查看">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($tag['id']) ?>">
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($tag->id) ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>

@@ -280,39 +280,39 @@ use App\Constants\CollectionStatus;
                     </thead>
                     <tbody id="collectionTableBody">
                         <?php foreach ($collections as $collection): ?>
-                        <tr class="table-row" data-id="<?= $collection['id'] ?>">
+                        <tr class="table-row" data-id="<?= $collection->id ?>">
                             <td class="table-cell">
                                 <div class="form-check">
-                                    <input class="form-check-input row-checkbox" type="checkbox" value="<?= $collection['id'] ?>">
+                                    <input class="form-check-input row-checkbox" type="checkbox" value="<?= $collection->id ?>">
                                 </div>
                             </td>
-                            <td class="table-cell table-id" data-column="id"><?= $collection['id'] ?></td>
-                            <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($collection['name_cn']) ?></td>
-                            <td class="table-cell" data-column="description"><?= htmlspecialchars($collection['short_desc_cn'] ?: $collection['short_desc_en'] ?: '') ?></td>
+                            <td class="table-cell table-id" data-column="id"><?= $collection->id ?></td>
+                            <td class="table-cell table-name" data-column="name"><?= htmlspecialchars($collection->name_cn) ?></td>
+                            <td class="table-cell" data-column="description"><?= htmlspecialchars($collection->short_desc_cn ?: $collection->short_desc_en ?: '') ?></td>
                             <td class="table-cell" data-column="content_cnt">
-                                <a href="/contents?collection_id=<?= $collection['id'] ?>" class="content-link"><?= $collection['content_cnt'] ?></a>
+                                <a href="/contents?collection_id=<?= $collection->id ?>" class="content-link"><?= $collection->content_cnt ?></a>
                             </td>
                             <td class="table-cell" data-column="icon_class">
                                 <div class="icon-class-display">
-                                    <span class="bi <?= htmlspecialchars($collection['icon_class'] ?: 'bi-collection') ?>"></span>
-                                    <?= htmlspecialchars($collection['icon_class'] ?: 'bi-collection') ?>
+                                    <span class="bi <?= htmlspecialchars($collection->icon_class ?: 'bi-collection') ?>"></span>
+                                    <?= htmlspecialchars($collection->icon_class ?: 'bi-collection') ?>
                                 </div>
                             </td>
                             <td class="table-cell" data-column="status_id">
-                                <span class="badge rounded-pill <?= $collection['status_id'] ? 'text-bg-success' : 'text-bg-danger' ?>">
+                                <span class="badge rounded-pill <?= $collection->status_id ? 'text-bg-success' : 'text-bg-danger' ?>">
                                     <i class="bi bi-circle-fill badge-icon"></i>
-                                    <?= $collection['status_id'] ? '显示' : '隐藏' ?>
+                                    <?= $collection->status_id ? '显示' : '隐藏' ?>
                                 </span>
                             </td>
                             <td class="table-cell table-actions" data-column="actions">
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <a href="/collections/<?= $collection['id'] ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
+                                    <a href="/collections/<?= $collection->id ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="/collections/<?= $collection['id'] ?>" class="btn btn-outline-info btn-sm" title="查看">
+                                    <a href="/collections/<?= $collection->id ?>" class="btn btn-outline-info btn-sm" title="查看">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($collection['id']) ?>">
+                                    <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= htmlspecialchars($collection->id) ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
