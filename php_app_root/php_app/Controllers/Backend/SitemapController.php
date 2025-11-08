@@ -4,12 +4,12 @@ namespace App\Controllers\Backend;
 
 use App\Constants\CollectionStatus;
 use App\Constants\ContentStatus;
-use App\Constants\ContentType;
 use App\Constants\TagStatus;
 use App\Core\Config;
 use App\Helpers\UrlHelper;
 use App\Models\Collection;
 use App\Models\Content;
+use App\Models\ContentType;
 use App\Models\Tag;
 
 class SitemapController extends BackendController
@@ -100,12 +100,19 @@ class SitemapController extends BackendController
     {
         $contents = Content::findAll(['status_id' => ContentStatus::PUBLISHED->value]);
 
+        /**
+         * @var $oneContent Content
+         */
         foreach ($contents as $oneContent) {
-            $detail_url_cn = $this->base_url . "/zh/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
-            $detail_url_en = $this->base_url . "/en/content/{$oneContent['id']}/". UrlHelper::formatString($oneContent['title_en']);
-            $lastmod = date('c', strtotime($oneContent['updated_at']));
+            $detail_url_cn = $this->base_url . "/zh/content/{$oneContent->id}/". UrlHelper::formatString($oneContent->title_en);
+            $detail_url_en = $this->base_url . "/en/content/{$oneContent->id}/". UrlHelper::formatString($oneContent->title_en);
+            $lastmod = date('c', strtotime($oneContent->updated_at));
 
-            $params = self::calculateSitemapParams($oneContent['updated_at'], ContentType::getEnglishLabel($oneContent['content_type_id']));
+            $ct_name_en = 'Article';
+            if ($oneContent->content_type_id < 10) {
+                $ct_name_en = $oneContent->contentType->title_en;
+            }
+            $params = self::calculateSitemapParams($oneContent->updated_at, $ct_name_en);
 
             $this->generateUrlEntry($detail_url_cn, $detail_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
@@ -115,37 +122,43 @@ class SitemapController extends BackendController
     {
         // 1. 处理 Tags
         $tags = Tag::findAll(['status_id'=>TagStatus::ENABLED->value]);
-        foreach ($tags as $tag) {
-            $list_url_cn = $this->base_url . Tag::buildListUrl($tag['id'], $tag['name_en'],'zh');
-            $list_url_en = $this->base_url . Tag::buildListUrl($tag['id'], $tag['name_en'], 'en');
+        foreach ($tags as $oneTag){
+            $list_url_cn = $this->base_url . Tag::buildListUrl($oneTag->id, $oneTag->name_en,'zh');
+            $list_url_en = $this->base_url . Tag::buildListUrl($oneTag->id, $oneTag->name_en, 'en');
 
-            $lastmod = date('c', strtotime($tag['updated_at']));
-            $params = self::calculateSitemapParams($tag['updated_at'], 'tag_list');
+            $lastmod = date('c', strtotime($oneTag->updated_at));
+            $params = self::calculateSitemapParams($oneTag->updated_at, 'tag_list');
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
 
         // 2. 处理 Collections
         $collections = Collection::findAll(['status_id'=>CollectionStatus::ENABLED->value]);
-        foreach ($collections as $collection) {
-            $list_url_cn = $this->base_url  . Collection::buildListUrl($collection['id'], $collection['name_en'], 'zh');
-            $list_url_en = $this->base_url  . Collection::buildListUrl($collection['id'], $collection['name_en'], 'en');
+        foreach ($collections as $oneCollection) {
+            $list_url_cn = $this->base_url  . Collection::buildListUrl($oneCollection->id, $oneCollection->name_en, 'zh');
+            $list_url_en = $this->base_url  . Collection::buildListUrl($oneCollection->id, $oneCollection->name_en, 'en');
 
-            $lastmod = date('c', strtotime($collection['updated_at']));
-            $params = self::calculateSitemapParams($collection['updated_at'], 'collection_list');
+            $lastmod = date('c', strtotime($oneCollection->updated_at));
+            $params = self::calculateSitemapParams($oneCollection->updated_at, 'collection_list');
             $this->generateUrlEntry($list_url_cn, $list_url_en, $lastmod, $params['changefreq'], $params['priority']);
         }
 
+        /**
+         * @var $oneContentType ContentType
+         * @var $lastChangedConten111t1 Content
+         */
         // 3. 处理 Content Types (来自常量)
-        foreach (ContentType::getAllContentTypes() as $oneContentType) {
+        foreach (ContentType::loadList([], ['id'=>'id', 'name_en'=>'name_en']) as $oneContentType) {
 
             // load this type's last updated content
-            $lastChangedContent = Content::findOne(['content_type_id'=>$oneContentType['id']], 'updated_at DESC');
+            $lastChangedContent = Content::where(['content_type_id'=>$oneContentType['id']])->orderBy('updated_at DESC')->one();
+
+
 
             //for no content type, use 2025-01-01 as last update date.
             $lastDate = '2025-01-01 00:00:00';
 
             if ($lastChangedContent) {
-                $lastDate = $lastChangedContent['updated_at'];
+                $lastDate = $lastChangedContent->updated_at;
             }
             $lastmod = date('c', strtotime($lastDate));
             $params = self::calculateSitemapParams($lastDate, 'content_type_list');

@@ -6,6 +6,28 @@ use App\Core\Model;
 use App\Constants\VideoLinkStatus;
 use App\Interfaces\HasStatuses;
 
+/**
+ * VideoLink Model
+ *
+ * @property int $id Link ID
+ * @property int $content_id 关联内容ID (content_type_id 应为视频类型)
+ * @property int $platform_id 关联平台表ID
+ * @property string $external_url 第三方视频链接
+ * @property string $external_video_id 第三方平台视频URI里的ID
+ * @property int $play_cnt 播放数
+ * @property int $like_cnt 点赞数
+ * @property int $favorite_cnt 收藏数
+ * @property int $download_cnt 下载数
+ * @property int $comment_cnt 评论数
+ * @property int $share_cnt 分享数
+ * @property int $status_id 状态: 1-正常, 0-失效
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read Content $content
+ * @property-read Platform $platform 每日PV统计
+ */
+
 class VideoLink extends Model implements HasStatuses
 {
     protected static string $table = 'video_link';
@@ -93,6 +115,21 @@ class VideoLink extends Model implements HasStatuses
             'share_cnt' => '分享数',
             'status_id' => '状态'
         ];
+    }
+
+    /**
+     * 定义与 Content 的 BelongsTo 关系
+     */
+    public function content(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Content::class, 'content_id', 'id');
+    }
+    /**
+     * 定义与 Platform 的 BelongsTo 关系
+     */
+    public function platform(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Platform::class, 'platform_id', 'id');
     }
 
     /**

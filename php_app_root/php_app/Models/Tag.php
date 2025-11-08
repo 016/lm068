@@ -9,6 +9,26 @@ use App\Constants\TagStatus;
 use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
+/**
+ * Tag Model
+ *
+ * @property int $id 标签ID
+ * @property string $name_en 英文名称
+ * @property string $name_cn 中文名称
+ * @property string|null $short_desc_en 英文简介
+ * @property string|null $short_desc_cn 中文简介
+ * @property string|null $desc_en 英文描述
+ * @property string|null $desc_cn 中文描述
+ * @property string|null $color_class 颜色样式类, 为 btn-outline-primary 这种bootstrap 5.3 默认类
+ * @property string|null $icon_class 图标样式类, 为 bi-book 这种bootstrap icon 默认类
+ * @property int $content_cnt 关联内容数量
+ * @property int $published_content_cnt 关联已发布内容数量
+ * @property int $status_id 状态: 1-启用, 0-禁用
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read ContentTag[] $contentTags 内容标签关联
+ */
 class Tag extends Model implements HasStatuses
 {
 
@@ -190,6 +210,26 @@ class Tag extends Model implements HasStatuses
     }
 
     /**
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 ContentTag 的 HasMany 关系
+     */
+    public function contentTags(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentTag::class, 'tag_id', 'id');
+    }
+
+    /**
+     * ============================================
+     * 其他方法
+     * ============================================
+     */
+
+    /**
      * 静态工厂方法 - 创建新Tag实例
      */
     public static function make(array $data = []): self
@@ -222,12 +262,12 @@ class Tag extends Model implements HasStatuses
                     SUM(content_cnt) as total_content_associations
                 FROM ".static::getTableName();
 
-        
+
         $result = $this->db->fetch($sql, [
             'active_status' => TagStatus::ENABLED->value,
             'inactive_status' => TagStatus::DISABLED->value
         ]);
-        
+
         return [
             'total_tags' => (int)$result['total_tags'],
             'active_tags' => (int)$result['active_tags'],
@@ -243,7 +283,7 @@ class Tag extends Model implements HasStatuses
                 INNER JOIN content_tag ct ON c.id = ct.content_id  
                 WHERE ct.tag_id = :tag_id
                 ORDER BY c.created_at DESC";
-        
+
         return $this->db->fetchAll($sql, ['tag_id' => $tagId]);
     }
 
@@ -283,10 +323,10 @@ class Tag extends Model implements HasStatuses
     public function syncContentAssociations(int $tagId, array $contentIds): bool
     {
         $this->db->beginTransaction();
-        
+
         try {
             $this->db->query("DELETE FROM content_tag WHERE tag_id = :tag_id", ['tag_id' => $tagId]);
-            
+
             foreach ($contentIds as $contentId) {
                 $this->db->query(
                     "INSERT INTO content_tag (tag_id, content_id) VALUES (:tag_id, :content_id)",
@@ -296,7 +336,7 @@ class Tag extends Model implements HasStatuses
 
             $this->updateContentCount($tagId);
             $this->db->commit();
-            
+
             return true;
         } catch (\Exception $e) {
             $this->db->rollback();

@@ -2,8 +2,18 @@
 
 namespace App\Models;
 
+use App\Constants\SubscriptionStatus;
 use App\Core\Model;
 
+/**
+ * Subscription Model
+ *
+ * @property int $id 订阅ID
+ * @property string $email 邮箱
+ * @property int $status_id 订阅状态: 0=取消订阅, 1=已订阅
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ */
 class Subscription extends Model
 {
     protected static string $table = 'subscription';
@@ -15,10 +25,6 @@ class Subscription extends Model
     ];
     protected $timestamps = true;
 
-    //
-    const STATUS_UNSUBSCRIBED = 0;  //
-    const STATUS_SUBSCRIBED = 1;    //
-
     /**
      *
      * @return array ['total' => int, 'monthly_new' => int, 'monthly_growth_rate' => float]
@@ -29,7 +35,7 @@ class Subscription extends Model
 
         //
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() . " WHERE status_id = :status_id";
-        $result = $db->fetch($sql, ['status_id' => self::STATUS_SUBSCRIBED]);
+        $result = $db->fetch($sql, ['status_id' => SubscriptionStatus::SUBSCRIBED->value]);
         $total = (int)$result['count'];
 
         //
@@ -37,7 +43,7 @@ class Subscription extends Model
         $sql = "SELECT COUNT(*) as count FROM " . static::getTableName() .
             " WHERE status_id = :status_id AND created_at >= :first_day";
         $result = $db->fetch($sql, [
-            'status_id' => self::STATUS_SUBSCRIBED,
+            'status_id' => SubscriptionStatus::SUBSCRIBED->value,
             'first_day' => $firstDayOfMonth
         ]);
         $monthlyNew = (int)$result['count'];
@@ -52,62 +58,4 @@ class Subscription extends Model
         ];
     }
 
-    /**
-     *
-     * @return int
-     */
-    public static function getActiveCount(): int
-    {
-        return static::count(['status_id' => self::STATUS_SUBSCRIBED]);
-    }
-
-    /**
-     *
-     * @param string $email
-     * @return array|null
-     */
-    public function findByEmail(string $email): ?array
-    {
-        $table = static::getTableName();
-        $sql = "SELECT * FROM {$table} WHERE email = :email LIMIT 1";
-        return $this->db->fetch($sql, ['email' => $email]);
-    }
-
-    /**
-     *
-     * @param string $email
-     * @return int
-     */
-    public function subscribe(string $email): int
-    {
-        $existing = $this->findByEmail($email);
-
-        if ($existing) {
-            //
-            $this->update($existing['id'], ['status_id' => self::STATUS_SUBSCRIBED]);
-            return $existing['id'];
-        }
-
-        //
-        return $this->create([
-            'email' => $email,
-            'status_id' => self::STATUS_SUBSCRIBED
-        ]);
-    }
-
-    /**
-     *
-     * @param string $email
-     * @return bool
-     */
-    public function unsubscribe(string $email): bool
-    {
-        $existing = $this->findByEmail($email);
-
-        if ($existing) {
-            return $this->update($existing['id'], ['status_id' => self::STATUS_UNSUBSCRIBED]);
-        }
-
-        return false;
-    }
 }

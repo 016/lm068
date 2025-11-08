@@ -8,6 +8,26 @@ use App\Constants\CollectionStatus;
 use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
+/**
+ * Collection Model
+ *
+ * @property int $id 合集ID
+ * @property string $name_en 英文名称
+ * @property string $name_cn 中文名称
+ * @property string|null $short_desc_en 英文简介
+ * @property string|null $short_desc_cn 中文简介
+ * @property string|null $desc_en 英文描述
+ * @property string|null $desc_cn 中文描述
+ * @property string|null $color_class 颜色样式类, 为 btn-outline-primary 这种bootstrap 5.3 默认类
+ * @property string|null $icon_class 图标样式类, 为 bi-book 这种bootstrap icon 默认类
+ * @property int $content_cnt 关联内容数量
+ * @property int $published_content_cnt 关联已发布内容数量
+ * @property int $status_id 状态: 1-启用, 0-禁用
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read ContentCollection[] $contentCollections 内容合集关联
+ */
 class Collection extends Model implements HasStatuses
 {
     protected static string $table = 'collection';
@@ -186,6 +206,26 @@ class Collection extends Model implements HasStatuses
     }
 
     /**
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 ContentCollection 的 HasMany 关系
+     */
+    public function contentCollections(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentCollection::class, 'collection_id', 'id');
+    }
+
+    /**
+     * ============================================
+     * 其他方法
+     * ============================================
+     */
+
+    /**
      * 静态工厂方法 - 创建新Collection实例
      */
     public static function make(array $data = []): self
@@ -224,12 +264,12 @@ class Collection extends Model implements HasStatuses
                     SUM(CASE WHEN status_id = :inactive_status THEN 1 ELSE 0 END) as inactive_collections,
                     SUM(content_cnt) as total_content_associations
                 FROM {$table}";
-        
+
         $result = $this->db->fetch($sql, [
             'active_status' => CollectionStatus::ENABLED->value,
             'inactive_status' => CollectionStatus::DISABLED->value
         ]);
-        
+
         return [
             'total_collections' => (int)$result['total_collections'],
             'active_collections' => (int)$result['active_collections'],
@@ -245,7 +285,7 @@ class Collection extends Model implements HasStatuses
                 INNER JOIN content_collection cc ON c.id = cc.content_id  
                 WHERE cc.collection_id = :collection_id
                 ORDER BY c.created_at DESC";
-        
+
         return $this->db->fetchAll($sql, ['collection_id' => $collectionId]);
     }
 
@@ -259,7 +299,7 @@ class Collection extends Model implements HasStatuses
                     WHERE collection_id = :collection_id_1
                 )
                 WHERE id = :collection_id_2";
-        
+
         $this->db->query($sql, ['collection_id_1' => $collectionId, 'collection_id_2' => $collectionId]);
 
         $sql = "UPDATE {$table}
@@ -284,7 +324,7 @@ class Collection extends Model implements HasStatuses
     {
         $sql = "INSERT IGNORE INTO content_collection (collection_id, content_id) VALUES (:collection_id, :content_id)";
         $this->db->query($sql, ['collection_id' => $collectionId, 'content_id' => $contentId]);
-        
+
         $this->updateContentCount($collectionId);
         return true;
     }
@@ -293,7 +333,7 @@ class Collection extends Model implements HasStatuses
     {
         $sql = "DELETE FROM content_collection WHERE collection_id = :collection_id AND content_id = :content_id";
         $this->db->query($sql, ['collection_id' => $collectionId, 'content_id' => $contentId]);
-        
+
         $this->updateContentCount($collectionId);
         return true;
     }
@@ -301,7 +341,7 @@ class Collection extends Model implements HasStatuses
     public function syncContentAssociations(int $collectionId, array $contentIds): bool
     {
         $this->db->beginTransaction();
-        
+
         try {
             $this->db->query("DELETE FROM content_collection WHERE collection_id = :collection_id", ['collection_id' => $collectionId]);
 
@@ -313,10 +353,10 @@ class Collection extends Model implements HasStatuses
                     ['collection_id' => $collectionId, 'content_id' => $contentId]
                 );
             }
-            
+
             $this->updateContentCount($collectionId);
             $this->db->commit();
-            
+
             return true;
         } catch (\Exception $e) {
             $this->db->rollback();

@@ -73,25 +73,37 @@
     6. 如果验证失败，使用 $tag->errors 返回给 view, view 向用户渲染错误, 允许再次编辑。
     7. 重复提交，直至验证通过。写入数据库。完成后续逻辑.
 - Model
-  - 建立 model 和基础 model 
+  - 建立 model 和基础 model
   - 在 view 和 controller 中按标准使用 model
+  - 新建 model 时需要为 model 的属性和关系。引入 IDE 支持的变量注释。
 - View
   - view 文件存放在 php_app_root/php_app/Views 文件夹下
     - 管理后端存放在 php_app_root/php_app/Views/backend
-    - 用户前端存放在 php_app_root/php_app/Views/frontend 
+    - 用户前端存放在 php_app_root/php_app/Views/frontend
   - 布局内容存放在 对应 layouts 文件夹内, 在无约定的情况下, 优先使用layouts内的布局文件
     - layouts/main.php 为默认布局文件, 无特殊指定时优先使用该布局
     - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容已存放在布局文件内, 不需要重复渲染
   - backend form page
     - create and edit form page 相同的表单部分使用 _form.php 文件来实现共享
-  - view页面变量IDE引入指南
-    - View中使用的变量(覆盖 Controller 和 Model), 需要通过以下格式引入变量对应的源，方便实现 IDE 提示。demo 见 "IDE引入指南"
-    - 当出现指南中 array 包裹 active record 的情形 (like \$video in \$videos)，需要为包裹的 active record (\$video) 也设置对应的注释变量
-```IDE引入指南
+- IDE引入指南
+  - 请依据数据库 DDL 的字段定义，在生成 Model 和 View 层代码时，自动为相关的类属性,关系与变量添加 PHPDoc 类型注释。
+  - View中使用的变量(包括 Controller 和 Model), 需要引入变量对应的源，方便实现 IDE 提示
+  - Model中的关系需要指定具体目标关系的Model名称，具体在DDL里可以查找到
+  - PHPDoc 定义格式见 "IDE引入指南Demo"
+```IDE引入指南Demo
+// View demo
 /**
  * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
- * @var $videos array
- * @var $video \App\Models\Content //$content->id will auto work in IDE
+ * @var $contents \App\Models\Content[]
+ * @var $content \App\Models\Content //$content->id will auto work in IDE
+ */
+ 
+// Model demo
+/**
+ * @property int $id 内容ID
+ * @property int $content_type_id 内容类型
+ * @property-read ContentType $contentType 所属内容类型
+ * @property-read Comment[] $comments 评论
  */
 ```
 

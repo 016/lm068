@@ -4,6 +4,11 @@ namespace App\Core;
 
 use App\Constants\ContentStatus;
 use App\Core\Database;
+use App\Core\Relations\BelongsTo;
+use App\Core\Relations\HasMany;
+use App\Core\Relations\HasOne;
+use App\Core\Relations\Relation;
+use App\Helpers\ClassHelper;
 use App\Models\Content;
 
 abstract class Model
@@ -22,6 +27,9 @@ abstract class Model
     protected array $attributes = [];
     protected array $original = [];
     public array $errors = [];
+
+    // 关系数据存储
+    protected array $relations = [];
 
     public function __construct()
     {
@@ -42,135 +50,156 @@ abstract class Model
     }
 
     /**
-     * 设置场景
-     * @param string $scenario 场景名称
-     * @return self
+     * ============================================
+     * Active Record 查询方法 - 新增
+     * ============================================
      */
-    public function setScenario(string $scenario): self
+
+    /**
+     * 创建查询构建器
+     */
+    public static function query(): QueryBuilder
     {
-        $this->scenario = $scenario;
-        return $this;
+        return new QueryBuilder(static::class);
     }
 
     /**
-     * 获取当前场景
-     * @return string
+     * 查找单个记录 - 支持 ID 或条件数组
      */
-    public function getScenario(): string
+    public static function find($idOrConditions)
     {
-        return $this->scenario;
-    }
-
-    /**
-     * 定义验证规则
-     * @param bool $isUpdate 是否为更新操作
-     * @param string|null $scenario 场景名称, 为null时使用当前场景
-     * @return array 验证规则
-     */
-    public function rules(bool $isUpdate = false, ?string $scenario = null): array
-    {
-        $rules = [
-        ];
-
-        return $rules;
-    }
-
-    /**
-     * 获取当前场景的验证规则
-     * @param bool $isUpdate 是否为更新操作
-     * @return array
-     */
-    protected function getRulesForScenario(bool $isUpdate = false): array
-    {
-        // 获取所有规则
-        $allRules = $this->rules($isUpdate);
-
-        // 如果规则为空，返回空数组
-        if (empty($allRules)) {
-            return [];
+        if (is_numeric($idOrConditions) || is_string($idOrConditions)) {
+            // 按 ID 查找
+            return static::query()->where(['id' => $idOrConditions])->first();
+        } elseif (is_array($idOrConditions)) {
+            // 按条件查找
+            return static::query()->where($idOrConditions)->first();
         }
-
-        // 检查是否为二维数组结构（场景化规则）
-        $firstKey = array_key_first($allRules);
-        $firstElement = $allRules[$firstKey];
-
-        // 如果第一个元素是数组且包含规则数组，说明是场景化结构
-        if (is_array($firstElement) && isset($allRules['default']) && is_array($allRules['default'])) {
-            // 二维数组模式：根据场景返回对应的规则
-            return $allRules[$this->scenario] ?? [];
-        }
-
-        // 一维数组模式（向后兼容）：直接返回所有规则
-        return $allRules;
+        return null;
     }
 
     /**
-     * 静态方法 - 查找所有记录，支持查询条件和输出格式化
-     * 
-     * @param array $conditions 查询条件数组 
-     * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
-     * @return array 格式化后的数组结果
+     * 查找所有记录
      */
-    public static function findAll(array $conditions = [], ?string $orderBy = null, ?int $limit = null, ?int $offset = 0, callable|array|null $formatter = null): array
+    public static function findAll(array $conditions = [], ?string $orderBy = null, ?int $limit = null, ?int $offset = 0): array
     {
-        $db = Database::getInstance();
-        $table = static::getTableName();
-        
-        $sql = "SELECT * FROM {$table}";
-        $params = [];
+        $query = static::query();
 
-        // 处理查询条件
         if (!empty($conditions)) {
-            $whereClause = [];
-            foreach ($conditions as $field => $value) {
-                if (is_array($value)) {
-                    $placeholders = implode(',', array_fill(0, count($value), '?'));
-                    $whereClause[] = "{$field} IN ({$placeholders})";
-                    $params = array_merge($params, $value);
-                } else {
-                    $whereClause[] = "{$field} = :{$field}";
-                    $params[$field] = $value;
-                }
-            }
-            $sql .= " WHERE " . implode(" AND ", $whereClause);
+            $query->where($conditions);
         }
 
         if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
+            $query->orderBy($orderBy);
         }
 
         if ($limit) {
-            $sql .= " LIMIT {$limit}";
-            if ($offset > 0) {
-                $sql .= " OFFSET {$offset}";
-            }
+            $query->limit($limit)->offset($offset);
         }
 
-        // 执行查询
-        $results = $db->fetchAll($sql, $params);
+        $models = $query->all();
 
-        // 应用格式化
-        if ($formatter !== null) {
-            if (is_array($formatter)) {
-                // 字段名数组模式：筛选指定字段
-                $results = array_map(function($row) use ($formatter) {
-                    return array_intersect_key($row, array_flip($formatter));
-                }, $results);
-            } elseif (is_callable($formatter)) {
-                // 格式化函数模式：使用自定义格式化函数
-                $results = array_map($formatter, $results);
-            }
-        }
-
-        return $results;
+        return $models;
     }
 
     /**
-     * 魔术方法 - 获取属性
+     * where 条件查询
+     */
+    public static function where(array $conditions): QueryBuilder
+    {
+        return static::query()->where($conditions);
+    }
+
+    /**
+     * ============================================
+     * 关系定义方法 - 新增
+     * ============================================
+     */
+
+    /**
+     * 定义 HasOne 关系
+     * @param string $related 关联模型类名
+     * @param string|null $foreignKey 外键字段(默认: 当前模型名_id)
+     * @param string|null $localKey 本地键(默认: id)
+     */
+    protected function hasOne(string $related, ?string $foreignKey = null, ?string $localKey = null): HasOne
+    {
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
+        $localKey = $localKey ?: $this->primaryKey;
+
+        return new HasOne($this, $related, $foreignKey, $localKey);
+    }
+
+    /**
+     * 定义 HasMany 关系
+     */
+    protected function hasMany(string $related, ?string $foreignKey = null, ?string $localKey = null): HasMany
+    {
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
+        $localKey = $localKey ?: $this->primaryKey;
+
+        return new HasMany($this, $related, $foreignKey, $localKey);
+    }
+
+    /**
+     * 定义 BelongsTo 关系
+     * @param string $related 关联模型类名
+     * @param string|null $foreignKey 外键字段
+     * @param string|null $ownerKey 关联模型键(默认: id)
+     */
+    protected function belongsTo(string $related, ?string $foreignKey = null, ?string $ownerKey = null): BelongsTo
+    {
+        // 自动推断外键名: category_id
+        if (!$foreignKey) {
+            $relatedClass = ClassHelper::class_basename($related);
+            $foreignKey = strtolower($relatedClass) . '_id';
+        }
+
+        $ownerKey = $ownerKey ?: 'id';
+
+        return new BelongsTo($this, $related, $foreignKey, $ownerKey);
+    }
+
+    /**
+     * 获取默认外键名
+     */
+    protected function getForeignKey(): string
+    {
+        $className = ClassHelper::class_basename(static::class);
+        return strtolower($className) . '_id';
+    }
+
+    /**
+     * ============================================
+     * 魔术方法 - 支持关系访问
+     * ============================================
+     */
+
+    /**
+     * 魔术方法 - 获取属性或关系
      */
     public function __get(string $key)
     {
-        return $this->attributes[$key] ?? null;
+        // 先检查属性
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+
+        // 检查是否已加载的关系
+        if (array_key_exists($key, $this->relations)) {
+            return $this->relations[$key];
+        }
+
+        // 尝试加载关系
+        if (method_exists($this, $key)) {
+            $relation = $this->$key();
+            if ($relation instanceof Relation) {
+                $this->relations[$key] = $relation->get();
+                return $this->relations[$key];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -178,6 +207,15 @@ abstract class Model
      */
     public function __set(string $key, $value): void
     {
+        // 如果是关系数据,存储到 relations
+        if (method_exists($this, $key)) {
+            $relation = $this->$key();
+            if ($relation instanceof Relation) {
+                $this->relations[$key] = $value;
+                return;
+            }
+        }
+
         $this->attributes[$key] = $value;
     }
 
@@ -186,12 +224,173 @@ abstract class Model
      */
     public function __isset(string $key): bool
     {
-        return isset($this->attributes[$key]);
+        return isset($this->attributes[$key]) || isset($this->relations[$key]);
     }
 
     /**
-     * 填充模型属性
+     * ============================================
+     * Active Record 保存方法 - 增强
+     * ============================================
      */
+
+    /**
+     * 保存模型(新增或更新) - 支持关系保存
+     */
+    public function save(): bool
+    {
+        // 验证数据
+        $this->errors = [];
+        if (!$this->validate() || !$this->beforeSave()) {
+            return false;
+        }
+
+        try {
+            $db = Database::getInstance();
+            $db->beginTransaction();
+
+            // 保存主模型
+            if ($this->isNew()) {
+                $data = $this->getAttributes();
+                if ($this->timestamps) {
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                }
+
+                $id = $db->insert(static::getTableName(), $this->filterFillable($data));
+                $this->attributes[$this->primaryKey] = $id;
+                $this->setNew(false);
+            } else {
+                $data = $this->getAttributes();
+                if ($this->timestamps) {
+                    $data['updated_at'] = date('Y-m-d H:i:s');
+                }
+
+                $db->update(
+                    static::getTableName(),
+                    $this->filterFillable($data),
+                    "{$this->primaryKey} = :id",
+                    ['id' => $this->attributes[$this->primaryKey]]
+                );
+            }
+
+            // 保存关系数据
+            $this->saveRelations();
+
+            $db->commit();
+            $this->setOriginal($this->attributes);
+            return true;
+
+        } catch (\Exception $e) {
+            $db->rollback();
+            $this->errors['general'] = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * 保存关系数据
+     */
+    protected function saveRelations(): void
+    {
+        foreach ($this->relations as $name => $related) {
+            if (!method_exists($this, $name)) {
+                continue;
+            }
+
+            $relation = $this->$name();
+
+            if (!$relation instanceof Relation) {
+                continue;
+            }
+
+            // HasMany 关系
+            if ($relation instanceof HasMany) {
+                if (is_array($related)) {
+                    foreach ($related as $model) {
+                        if ($model instanceof Model) {
+                            $relation->save($model);
+                        }
+                    }
+                }
+            } else {
+                // HasOne 和 BelongsTo
+                if ($related instanceof Model) {
+                    $relation->save($related);
+                }
+            }
+        }
+    }
+
+    /**
+     * 删除模型
+     */
+    public function delete(): bool
+    {
+        if ($this->isNew()) {
+            return false;
+        }
+
+        try {
+            $deleted = $this->db->delete(
+                static::getTableName(),
+                "{$this->primaryKey} = :id",
+                ['id' => $this->attributes[$this->primaryKey]]
+            );
+
+            if ($deleted > 0) {
+                $this->setNew(true);
+                return true;
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            $this->errors['general'] = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * ============================================
+     * 原有方法保持不变
+     * ============================================
+     */
+
+    // 场景相关
+    public function setScenario(string $scenario): self
+    {
+        $this->scenario = $scenario;
+        return $this;
+    }
+
+    public function getScenario(): string
+    {
+        return $this->scenario;
+    }
+
+    public function rules(bool $isUpdate = false, ?string $scenario = null): array
+    {
+        return [];
+    }
+
+    protected function getRulesForScenario(bool $isUpdate = false): array
+    {
+        $allRules = $this->rules($isUpdate);
+
+        if (empty($allRules)) {
+            return [];
+        }
+
+        $firstKey = array_key_first($allRules);
+        $firstElement = $allRules[$firstKey];
+
+        if (is_array($firstElement) && isset($allRules['default']) && is_array($allRules['default'])) {
+            return $allRules[$this->scenario] ?? [];
+        }
+
+        return $allRules;
+    }
+
+    // 数据填充
     public function fill(array $data): self
     {
         $fillableFields = $this->getFillableForScenario();
@@ -204,152 +403,217 @@ abstract class Model
         return $this;
     }
 
-    /**
-     * 获取当前场景的可填充字段
-     * @return array
-     */
     protected function getFillableForScenario(): array
     {
-        // 如果 fillable 为空，返回空数组
         if (empty($this->fillable)) {
             return [];
         }
 
-        // 检查 fillable 是否为二维数组
         $firstElement = reset($this->fillable);
         if (is_array($firstElement)) {
-            // 二维数组模式：根据场景返回对应的fillable
             return $this->fillable[$this->scenario] ?? [];
         }
 
-        // 一维数组模式（向后兼容）：直接返回fillable
         return $this->fillable;
     }
 
-    /**
-     * 获取所有属性
-     */
+    // 属性访问
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * 设置原始数据（用于追踪变更）
-     */
     public function setOriginal(array $data): void
     {
         $this->original = $data;
         $this->attributes = array_merge($this->attributes, $data);
     }
 
-    /**
-     * 检查模型是否已修改
-     */
     public function isDirty(): bool
     {
         return $this->attributes !== $this->original;
     }
 
-    /**
-     * 检查是否为新记录
-     * @return bool 是否为新记录
-     */
     public function isNew(): bool
     {
         return $this->isNew;
     }
 
-    /**
-     * 设置记录状态
-     * @param bool $isNew 是否为新记录
-     * @return void
-     */
     public function setNew(bool $isNew): void
     {
         $this->isNew = $isNew;
     }
 
-    public static function find(int $id): ?self
+    // 验证
+    public function validate(): bool
     {
-        $db = Database::getInstance();
-        $sql = "SELECT * FROM " . static::getTableName() . " WHERE id = :id LIMIT 1";
-        $result = $db->fetch($sql, ['id' => $id]);
-        
-        if ($result) {
-            $instance = new static();
-            $instance->setOriginal($result);
-            $instance->setNew(false);
-            return $instance;
+        $this->errors = [];
+
+        if (method_exists($this, 'rules')) {
+            $rules = $this->getRulesForScenario(!$this->isNew());
+            $excludeId = $this->isNew() ? null : $this->attributes[$this->primaryKey] ?? null;
+            $this->errors = $this->validateRules($this->attributes, $rules, $excludeId);
         }
-        
-        return null;
+
+        return empty($this->errors);
+    }
+
+    protected function validateRules(array $data, array $rules, ?int $excludeId = null): array
+    {
+        // 保持原有验证逻辑
+        $errors = [];
+
+        foreach ($rules as $field => $ruleSet) {
+            $value = $data[$field] ?? null;
+            $fieldRules = explode('|', $ruleSet);
+
+            foreach ($fieldRules as $rule) {
+                $ruleParts = explode(':', $rule);
+                $ruleName = $ruleParts[0];
+                $ruleParam = $ruleParts[1] ?? null;
+
+                switch ($ruleName) {
+                    case 'required':
+                        if (empty($value) && $value !== '0' && $value !== 0) {
+                            $errors[$field] = $this->getErrorMessage($field, 'required');
+                        }
+                        break;
+
+                    case 'max':
+                        if (!empty($value) && mb_strlen($value) > (int)$ruleParam) {
+                            $errors[$field] = $this->getErrorMessage($field, 'max', $ruleParam);
+                        }
+                        break;
+
+                    case 'min':
+                        if (!empty($value) && mb_strlen($value) < (int)$ruleParam) {
+                            $errors[$field] = $this->getErrorMessage($field, 'min', $ruleParam);
+                        }
+                        break;
+
+                    case 'unique':
+                        if (!empty($value)) {
+                            $table = $ruleParam ?: static::getTableName();
+                            $exists = $this->checkUnique($field, $value, $table, $excludeId);
+                            if ($exists) {
+                                $errors[$field] = $this->getErrorMessage($field, 'unique');
+                            }
+                        }
+                        break;
+
+                    case 'numeric':
+                        if (!empty($value) && !is_numeric($value)) {
+                            $errors[$field] = $this->getErrorMessage($field, 'numeric');
+                        }
+                        break;
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    protected function checkUnique(string $field, $value, string $table, ?int $excludeId = null): bool
+    {
+        $sql = "SELECT 1 FROM {$table} WHERE {$field} = :value";
+        $params = ['value' => $value];
+
+        if ($excludeId !== null) {
+            $sql .= " AND {$this->primaryKey} != :exclude_id";
+            $params['exclude_id'] = $excludeId;
+        }
+
+        $sql .= " LIMIT 1";
+
+        return (bool)$this->db->fetch($sql, $params);
+    }
+
+    protected function getErrorMessage(string $field, string $rule, ?string $param = null): string
+    {
+        $fieldLabels = $this->getFieldLabels();
+        $fieldLabel = $fieldLabels[$field] ?? $field;
+
+        $messages = [
+            'required' => "{$fieldLabel}不能为空",
+            'max' => "{$fieldLabel}不能超过{$param}个字符",
+            'min' => "{$fieldLabel}不能少于{$param}个字符",
+            'unique' => "{$fieldLabel}已存在",
+            'numeric' => "{$fieldLabel}必须是数字"
+        ];
+
+        return $messages[$rule] ?? "{$fieldLabel}验证失败";
+    }
+
+    protected function getFieldLabels(): array
+    {
+        return [];
+    }
+
+    protected function filterFillable(array $data): array
+    {
+        $fillableFields = $this->getFillableForScenario();
+
+        if (empty($fillableFields)) {
+            return $data;
+        }
+
+        return array_intersect_key($data, array_flip($fillableFields));
+    }
+
+    public function beforeSave(): bool
+    {
+        return true;
+    }
+
+    // 保留原有静态方法
+    public static function count(array $conditions = []): int
+    {
+        return static::query()->where($conditions)->count();
+    }
+
+    public static function exists(int $id): bool
+    {
+        return static::find($id) !== null;
+    }
+
+    public function query1(string $sql, array $params = []): \PDOStatement
+    {
+        return $this->db->query($sql, $params);
     }
 
     /**
-     * 静态方法 - 查找单条记录，支持查询条件和输出格式化
-     *
-     * @param array $conditions 查询条件数组
-     * @param int|null $offset 结果集的偏移量
-     * @param string|null $orderBy 排序方式
-     * @param callable|array|null $formatter 输出格式化：数组表示字段名筛选，callable表示格式化函数
-     * @return array|null 格式化后的单条记录数组，未找到则返回 null
+     * for quick get model list for multi-select init.
+     *  force format to [[id, text], ... ]
+     * @param array $conditions 查询条件
+     * @param array $fieldMapping 字段映射配置，例如 ['id'=>'id', 'text'=>'name_cn']
+     * @param int|null $limit 限制数量
+     * @param int|null $offset 偏移量
+     * @param string|null $orderBy 排序规则
+     * @return array 格式化后的数组
      */
-    public static function findOne(array $conditions = [], ?string $orderBy = null, ?int $offset = 0, callable|array|null $formatter = null): ?array
+    public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
-        $db = Database::getInstance();
-        $table = static::getTableName();
+        $models = static::findAll($conditions, $orderBy, $limit, $offset);
 
-        $sql = "SELECT * FROM {$table}";
-        $params = [];
+        $returnArray = [];
+        foreach ($models as $oneModel) {
+            $item = [];
+            foreach ($fieldMapping as $outputKey => $sourceField) {
 
-        // 处理查询条件
-        if (!empty($conditions)) {
-            $whereClause = [];
-            foreach ($conditions as $field => $value) {
-                if (is_array($value)) {
-                    $placeholders = implode(',', array_fill(0, count($value), '?'));
-                    $whereClause[] = "{$field} IN ({$placeholders})";
-                    $params = array_merge($params, $value);
-                } else {
-                    $whereClause[] = "{$field} = :{$field}";
-                    $params[$field] = $value;
+                $item[$outputKey] =  $oneModel->$sourceField ?? '';
+
+                if ($outputKey === 'id'){
+                    $item[$outputKey] = (int)$item[$outputKey];
                 }
             }
-            $sql .= " WHERE " . implode(" AND ", $whereClause);
+            $returnArray[] = $item;
         }
-
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
-        }
-
-        // 强制限制只查找一条记录
-        $sql .= " LIMIT 1";
-        if ($offset > 0) {
-            $sql .= " OFFSET {$offset}";
-        }
-
-        // 执行查询，获取单条记录
-        $result = $db->fetch($sql, $params);
-
-        // 如果没有找到记录，直接返回 null
-        if (!$result) {
-            return null;
-        }
-
-        // 应用格式化
-        if ($formatter !== null) {
-            if (is_array($formatter)) {
-                // 字段名数组模式：筛选指定字段
-                $result = array_intersect_key($result, array_flip($formatter));
-            } elseif (is_callable($formatter)) {
-                // 格式化函数模式：使用自定义格式化函数
-                $result = $formatter($result);
-            }
-        }
-
-        return $result;
+        return $returnArray;
     }
+
+
+    // ... 其他原有方法保持不变(findByName, findAllWithFilters, 批量操作等)
+    // 如果下面的方法和上面重复，则代表下面的方法为旧方法,保留只是为了兼容。，原则上不在新代码中使用。
 
     /**
      * 根据中文名或英文名查找标签
@@ -367,14 +631,14 @@ abstract class Model
         ];
 
         $result = $db->fetch($sql, $params);
-        
+
         return $result ?: null;
     }
 
     /**
      * 获取字段搜索策略配置
      * 子类可以重写此方法来自定义字段搜索行为
-     * 
+     *
      * @return array 字段搜索策略配置
      */
     protected static function getFieldSearchStrategies(): array
@@ -408,7 +672,7 @@ abstract class Model
         // 处理搜索条件
         if (!empty($filters)) {
             $fieldStrategies = static::getFieldSearchStrategies();
-            
+
             foreach ($filters as $field => $value) {
                 if (empty($value) && $value !== '0') {
                     continue; // skip for empty null or empty string
@@ -416,7 +680,7 @@ abstract class Model
 
                 // 获取字段策略，默认为 'auto'
                 $strategy = $fieldStrategies[$field] ?? 'auto';
-                
+
                 if ($strategy === 'custom') {
                     // 处理自定义复杂逻辑
                     static::handleCustomFieldFilter($field, $value, $whereConditions, $params);
@@ -438,41 +702,13 @@ abstract class Model
         return $db->fetchAll($sql, $params);
     }
 
-    /**
-     * for quick get model list for multi-select init.
-     *  force format to [[id, text], ... ]
-     * @param array $conditions 查询条件
-     * @param array $fieldMapping 字段映射配置，例如 ['id'=>'id', 'text'=>'name_cn']
-     * @param int|null $limit 限制数量
-     * @param int|null $offset 偏移量
-     * @param string|null $orderBy 排序规则
-     * @return array 格式化后的数组
-     */
-    public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
-    {
-        $models = static::findAll($conditions, $orderBy, $limit, $offset);
 
-        $returnArray = [];
-        foreach ($models as $oneModel) {
-            $item = [];
-            foreach ($fieldMapping as $outputKey => $sourceField) {
-
-                $item[$outputKey] =  $oneModel[$sourceField] ?? '';
-
-                if ($outputKey === 'id'){
-                    $item[$outputKey] = (int)$item[$outputKey];
-                }
-            }
-            $returnArray[] = $item;
-        }
-        return $returnArray;
-    }
 
     /**
      * 处理自定义字段过滤逻辑
      * 子类可以重写此方法来处理特定字段的复杂逻辑
      *   - range number,  like 5-10, > < = >= <= 5
-     * 
+     *
      * @param string $field 字段名
      * @param mixed $value 搜索值
      * @param array &$whereConditions WHERE条件数组
@@ -485,7 +721,7 @@ abstract class Model
             case 'play_cnt':
             case 'view_cnt':
                 // 处理数量范围搜索，支持格式如 "5-10" 或 ">5" 或 "10"
-                if (strpos($value, '-') !== false) {
+                if (str_contains($value, '-')) {
                     $range = explode('-', $value);
                     if (count($range) === 2 && is_numeric($range[0]) && is_numeric($range[1])) {
                         $whereConditions[] = "{$field} BETWEEN :cnt_min AND :cnt_max";
@@ -523,7 +759,7 @@ abstract class Model
         switch ($strategy) {
             case 'exact':
                 // 检查值是否包含逗号（多选的情况）
-                if (is_string($value) && strpos($value, ',') !== false) {
+                if (is_string($value) && str_contains($value, ',')) {
                     // 多选情况：使用 IN 查询
                     $ids = array_map('trim', explode(',', $value));
                     $ids = array_filter($ids, function($id) {
@@ -585,11 +821,11 @@ abstract class Model
         }
 
         $id = $this->db->insert(static::getTableName(), $data);
-        
+
         if ($id > 0) {
             $this->setNew(false);
         }
-        
+
         return $id;
     }
 
@@ -613,246 +849,6 @@ abstract class Model
         );
 
         return $updated > 0;
-    }
-
-    public function delete(int $id): bool
-    {
-        $deleted = $this->db->delete(
-            static::getTableName(),
-            "{$this->primaryKey} = :id",
-            ['id' => $id]
-        );
-
-        return $deleted > 0;
-    }
-
-    public static function count(array $conditions = []): int
-    {
-        $db = Database::getInstance();
-        $sql = "SELECT COUNT(*) as count FROM " . static::getTableName();
-        $params = [];
-
-        if (!empty($conditions)) {
-            $whereClause = [];
-            foreach ($conditions as $field => $value) {
-                $whereClause[] = "{$field} = :{$field}";
-                $params[$field] = $value;
-            }
-            $sql .= " WHERE " . implode(" AND ", $whereClause);
-        }
-
-        $result = $db->fetch($sql, $params);
-        return (int)$result['count'];
-    }
-
-    public static function exists(int $id): bool
-    {
-        $db = Database::getInstance();
-        $sql = "SELECT 1 FROM " . static::getTableName() . " WHERE id = :id LIMIT 1";
-        return (bool)$db->fetch($sql, ['id' => $id]);
-    }
-
-    public function query(string $sql, array $params = []): \PDOStatement
-    {
-        return $this->db->query($sql, $params);
-    }
-
-    protected function filterFillable(array $data): array
-    {
-        $fillableFields = $this->getFillableForScenario();
-
-        if (empty($fillableFields)) {
-            return $data;
-        }
-
-        return array_intersect_key($data, array_flip($fillableFields));
-    }
-
-    /**
-     * always run b4 save to db.
-     * @return bool
-     */
-    public function beforeSave(): bool
-    {
-        // add b4 save code, change bool return.
-        return true;
-    }
-
-    /**
-     * 保存模型（新增或更新）
-     */
-    public function save(): bool
-    {
-        // 验证数据
-        $this->errors = [];
-        if (!$this->validate() || !$this->beforeSave()) {
-            return false;
-        }
-
-        try {
-            if ($this->isNew()) {
-                $data = $this->getAttributes();
-                if ($this->timestamps) {
-                    $data['created_at'] = date('Y-m-d H:i:s');
-                    $data['updated_at'] = date('Y-m-d H:i:s');
-                }
-                
-                $id = $this->db->insert(static::getTableName(), $this->filterFillable($data));
-                $this->attributes[$this->primaryKey] = $id;
-                $this->setNew(false);
-                $this->setOriginal($this->attributes);
-            } else {
-                $data = $this->getAttributes();
-                if ($this->timestamps) {
-                    $data['updated_at'] = date('Y-m-d H:i:s');
-                }
-                
-                $this->db->update(
-                    static::getTableName(),
-                    $this->filterFillable($data),
-                    "{$this->primaryKey} = :id",
-                    ['id' => $this->attributes[$this->primaryKey]]
-                );
-                $this->setOriginal($this->attributes);
-            }
-            return true;
-        } catch (\Exception $e) {
-            $this->errors['general'] = $e->getMessage();
-            return false;
-        }
-    }
-
-    /**
-     * 验证模型数据
-     */
-    public function validate(): bool
-    {
-        $this->errors = [];
-
-        // 子类可以重写此方法实现具体验证逻辑
-        if (method_exists($this, 'rules')) {
-            $rules = $this->getRulesForScenario(!$this->isNew());
-            $excludeId = $this->isNew() ? null : $this->attributes[$this->primaryKey] ?? null;
-            $this->errors = $this->validateRules($this->attributes, $rules, $excludeId);
-        }
-
-        return empty($this->errors);
-    }
-
-    /**
-     * 执行验证规则
-     * @param array $data 数据
-     * @param array $rules 规则
-     * @param ?int $excludeId 排除的ID
-     * @return array 错误信息
-     */
-    protected function validateRules(array $data, array $rules, ?int $excludeId = null): array
-    {
-        $errors = [];
-
-        foreach ($rules as $field => $ruleSet) {
-            $value = $data[$field] ?? null;
-            $fieldRules = explode('|', $ruleSet);
-
-            foreach ($fieldRules as $rule) {
-                $ruleParts = explode(':', $rule);
-                $ruleName = $ruleParts[0];
-                $ruleParam = $ruleParts[1] ?? null;
-
-                switch ($ruleName) {
-                    case 'required':
-                        if (empty($value) && $value !== '0' && $value !== 0) {
-                            $errors[$field] = $this->getErrorMessage($field, 'required');
-                        }
-                        break;
-
-                    case 'max':
-                        if (!empty($value) && mb_strlen($value) > (int)$ruleParam) {
-                            $errors[$field] = $this->getErrorMessage($field, 'max', $ruleParam);
-                        }
-                        break;
-
-                    case 'min':
-                        if (!empty($value) && mb_strlen($value) < (int)$ruleParam) {
-                            $errors[$field] = $this->getErrorMessage($field, 'min', $ruleParam);
-                        }
-                        break;
-
-                    case 'unique':
-                        if (!empty($value)) {
-                            $table = $ruleParam ?: static::getTableName();
-                            $exists = $this->checkUnique($field, $value, $table, $excludeId);
-                            if ($exists) {
-                                $errors[$field] = $this->getErrorMessage($field, 'unique');
-                            }
-                        }
-                        break;
-
-                    case 'numeric':
-                        if (!empty($value) && !is_numeric($value)) {
-                            $errors[$field] = $this->getErrorMessage($field, 'numeric');
-                        }
-                        break;
-                }
-            }
-        }
-
-        return $errors;
-    }
-
-    /**
-     * 检查字段值是否唯一
-     * @param string $field 字段名
-     * @param mixed $value 值
-     * @param string $table 表名
-     * @param ?int $excludeId 排除的ID
-     * @return bool 是否存在重复
-     */
-    protected function checkUnique(string $field, $value, string $table, ?int $excludeId = null): bool
-    {
-        $sql = "SELECT 1 FROM {$table} WHERE {$field} = :value";
-        $params = ['value' => $value];
-
-        if ($excludeId !== null) {
-            $sql .= " AND {$this->primaryKey} != :exclude_id";
-            $params['exclude_id'] = $excludeId;
-        }
-
-        $sql .= " LIMIT 1";
-
-        return (bool)$this->db->fetch($sql, $params);
-    }
-
-    /**
-     * 获取错误信息
-     * @param string $field 字段名
-     * @param string $rule 规则名
-     * @param ?string $param 参数
-     * @return string 错误信息
-     */
-    protected function getErrorMessage(string $field, string $rule, ?string $param = null): string
-    {
-        $fieldLabels = $this->getFieldLabels();
-        $fieldLabel = $fieldLabels[$field] ?? $field;
-
-        $messages = [
-            'required' => "{$fieldLabel}不能为空",
-            'max' => "{$fieldLabel}不能超过{$param}个字符",
-            'min' => "{$fieldLabel}不能少于{$param}个字符",
-            'unique' => "{$fieldLabel}已存在",
-            'numeric' => "{$fieldLabel}必须是数字"
-        ];
-
-        return $messages[$rule] ?? "{$fieldLabel}验证失败";
-    }
-
-    /**
-     * 获取字段标签，子类可重写
-     * @return array 字段标签映射
-     */
-    protected function getFieldLabels(): array
-    {
-        return [];
     }
 
 
@@ -928,7 +924,7 @@ abstract class Model
 
     /**
      * 准备CSV导入数据 - 子类可重写来自定义数据准备逻辑
-     * 
+     *
      * @param array $csvRowData CSV行数据
      * @return array 处理后的数据
      */
@@ -940,7 +936,7 @@ abstract class Model
 
     /**
      * 验证CSV导入数据 - 基于现有的validate方法
-     * 
+     *
      * @param array $data 要验证的数据
      * @return bool 是否验证通过
      */
@@ -952,7 +948,7 @@ abstract class Model
 
     /**
      * 检查导入数据是否重复 - 子类可重写
-     * 
+     *
      * @param array $data 导入数据
      * @return bool 是否重复
      */

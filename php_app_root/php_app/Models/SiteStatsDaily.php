@@ -6,6 +6,27 @@ use App\Core\Config;
 use App\Core\Model;
 use PDO;
 
+/**
+ * SiteStatsDaily Model
+ *
+ * @property int $id 统计ID
+ * @property string $stat_date 统计日期
+ * @property int $pv_count 全站当日总PV数
+ * @property int $uv_count 全站当日独立访客数
+ * @property int|null $session_count 会话数(预留)
+ * @property int|null $new_visitor_count 新访客数(预留)
+ * @property int|null $bounce_count 跳出次数(预留)
+ * @property int|null $avg_session_duration 平均会话时长/秒(预留)
+ * @property int|null $announcement_pv 公告类PV(预留)
+ * @property int|null $article_pv 文章类PV(预留)
+ * @property int|null $video_pv 视频类PV(预留)
+ * @property int|null $desktop_pv 桌面端PV(预留)
+ * @property int|null $mobile_pv 移动端PV(预留)
+ * @property int|null $tablet_pv 平板端PV(预留)
+ * @property int|null $bot_pv 爬虫PV(预留)
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ */
 class SiteStatsDaily extends Model
 {
     protected static string $table = 'site_stats_daily';

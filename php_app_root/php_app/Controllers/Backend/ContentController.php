@@ -39,7 +39,7 @@ class ContentController extends BackendController
         // 如果存在tag_id或collection_id筛选，获取对应的名称用于显示
         $filterDisplayInfo = [];
         if (!empty($filters['tag_id'])) {
-            $tag = $this->tagModel->find((int)$filters['tag_id']);
+            $tag = Tag::find((int)$filters['tag_id']);
             if ($tag) {
                 $filterDisplayInfo['tag'] = [
                     'id' => $tag->id,

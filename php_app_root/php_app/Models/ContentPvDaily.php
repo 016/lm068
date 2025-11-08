@@ -6,6 +6,19 @@ use App\Core\Config;
 use App\Core\Model;
 use PDO;
 
+/**
+ * ContentPvDaily Model
+ *
+ * @property int $id 统计ID
+ * @property int $content_id 关联内容ID
+ * @property string $stat_date 统计日期
+ * @property int $pv_count 当日新增PV数
+ * @property int $uv_count 当日独立访客数
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read Content $content 关联内容
+ */
 class ContentPvDaily extends Model
 {
     protected static string $table = 'content_pv_daily';
@@ -29,6 +42,26 @@ class ContentPvDaily extends Model
         parent::__construct();
         // 设置默认值
     }
+
+    /**
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 Content 的 BelongsTo 关系
+     */
+    public function content(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Content::class, 'content_id', 'id');
+    }
+
+    /**
+     * ============================================
+     * 原有方法保持不变
+     * ============================================
+     */
 
     /**
      * 定义验证规则

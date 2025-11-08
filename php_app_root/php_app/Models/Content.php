@@ -10,6 +10,43 @@ use App\Helpers\RequestHelper;
 use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
+/**
+ * Content Model
+ *
+ * @property int $id 内容ID
+ * @property int $content_type_id 内容类型: 1-网站公告(固定), 11+科技类文章分类动态
+ * @property string|null $source_topic_id 来源 LobeChat topic id
+ * @property string $author 作者名称
+ * @property string|null $code 内部管理代码
+ * @property string $title_en 英文标题
+ * @property string $title_cn 中文标题
+ * @property string|null $short_desc_en 英文简介
+ * @property string|null $short_desc_cn 中文简介
+ * @property string|null $desc_en 英文描述/内容, 支持markdown格式纯文本存储
+ * @property string|null $desc_cn 中文描述/内容, 支持markdown格式纯文本存储
+ * @property string|null $thumbnail 缩略图URL
+ * @property int $pv_cnt 网站内PV计数
+ * @property int $like_cnt 点赞数
+ * @property int $favorite_cnt 收藏数
+ * @property int $comment_cnt 评论数
+ * @property int $status_id 状态: 9-隐藏, 11-草稿, 51-创意, 91-待审核, 96-待发布, 99-已发布
+ * @property int $sort_order 排序字段, 数字大在前面, 默认值1。一般置顶使用11。特殊置顶使用21+
+ * @property string|null $suggested_tags_cn AI建议的中文标签(逗号分隔)
+ * @property string|null $suggested_tags_en AI建议的英文标签(逗号分隔)
+ * @property string|null $suggested_content_types_cn AI建议的中文分类(逗号分隔)
+ * @property string|null $suggested_content_types_en AI建议的英文分类(逗号分隔)
+ * @property string|null $pub_at 发布时间
+ * @property string $created_at 创建时间
+ * @property string $updated_at 更新时间
+ *
+ * @property-read \App\Models\ContentType $contentType 所属内容类型
+ * @property-read ContentPvDaily[] $pvDailies 每日PV统计
+ * @property-read ContentPvLog[] $pvLogs PV访问日志
+ * @property-read Comment[] $comments 评论
+ * @property-read ContentTag[] $contentTags 内容标签关联
+ * @property-read ContentCollection[] $contentCollections 内容合集关联
+ */
+
 class Content extends UploadableModel implements HasStatuses
 {
     protected static string $table = 'content';
@@ -337,6 +374,66 @@ class Content extends UploadableModel implements HasStatuses
             'avg_views' => round((float)$result['avg_views'], 2)
         ];
     }
+
+    /**
+     * ============================================
+     * 关系定义 - AR Pattern
+     * ============================================
+     */
+
+    /**
+     * 定义与 ContentType 的 BelongsTo 关系
+     */
+    public function contentType(): \App\Core\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\ContentType::class, 'content_type_id', 'id');
+    }
+
+    /**
+     * 定义与 ContentPvDaily 的 HasMany 关系
+     */
+    public function pvDailies(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentPvDaily::class, 'content_id', 'id');
+    }
+
+    /**
+     * 定义与 ContentPvLog 的 HasMany 关系
+     */
+    public function pvLogs(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentPvLog::class, 'content_id', 'id');
+    }
+
+    /**
+     * 定义与 Comment 的 HasMany 关系
+     */
+    public function comments(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class, 'content_id', 'id');
+    }
+
+    /**
+     * 定义与 ContentTag 的 HasMany 关系
+     */
+    public function contentTags(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentTag::class, 'content_id', 'id');
+    }
+
+    /**
+     * 定义与 ContentCollection 的 HasMany 关系
+     */
+    public function contentCollections(): \App\Core\Relations\HasMany
+    {
+        return $this->hasMany(ContentCollection::class, 'content_id', 'id');
+    }
+
+    /**
+     * ============================================
+     * 原有方法保持不变
+     * ============================================
+     */
 
     /**
      * 获取关联标签
