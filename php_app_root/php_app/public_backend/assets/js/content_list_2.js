@@ -40,8 +40,11 @@ function initContentListPage() {
         enablePagination: true,
         enableColumnSettings: true,
         enableSearch: true,
+        // multi dd input for filter support
+        multiSelectColumns: [{ columnName: 'status_id', instanceName: 'statusMultiSelectInstance', containerId: 'statusMultiSelect' }],
         // 配置需要在筛选时保持的URL参数
         persistentUrlParams: ['tag_id', 'collection_id']
+
     });
     
     // 2. 初始化表格管理器

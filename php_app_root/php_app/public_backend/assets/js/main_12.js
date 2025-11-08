@@ -13,7 +13,13 @@
  *   { selector: '[data-column="description"]', maxLength: 20, placement: 'top' },
  *   { selector: '[data-column="title"]', maxLength: 30, placement: 'bottom' }
  * ]
- * 
+ *
+ * multiSelectColumns配置格式：
+ * multiSelectColumns: [
+ *   { columnName: 'status_id', instanceName: 'statusMultiSelectInstance', containerId: 'statusMultiSelect' },
+ *   { columnName: 'content_type_id', instanceName: 'contentTypeMultiSelectInstance', containerId: 'contentTypeMultiSelect' }
+ * ]
+ *
  * 其他功能保持与 main_11.js 相同：
  * - 完整的 switch 组件交互功能
  * - 优化的表格管理和排序功能
@@ -1570,6 +1576,9 @@ class TableManager {
             // tooltip配置支持数组格式
             // 多个配置：tooltipConfig: [{ selector: '[data-column="description"]', maxLength: 20, placement: 'top' }, { selector: '[data-column="title"]', maxLength: 30, placement: 'bottom' }]
             tooltipConfig: null,
+            // 多选框列配置数组
+            // 格式: [{ columnName: 'status_id', instanceName: 'statusMultiSelectInstance', containerId: 'statusMultiSelect' }]
+            multiSelectColumns: [],
             ...config
         };
         
@@ -1757,7 +1766,12 @@ class TableManager {
     /**
      * 应用筛选器
      * 支持自定义保持参数配置,允许保持任意 URL 参数
-     * 支持多选组件的筛选参数
+     * 支持多选组件的筛选参数（通过 multiSelectColumns 配置数组自动处理）
+     *
+     * 多选框配置说明：
+     * - columnName: 列名，对应 data-column 属性的值
+     * - instanceName: window 上的多选组件实例名称
+     * - containerId: 多选组件容器的 ID
      */
     applyFilters() {
         const filterParams = new URLSearchParams();
@@ -1774,19 +1788,21 @@ class TableManager {
             }
         });
 
-        // 特殊处理:检查是否有多选组件(如状态多选)
-        // 查找 status_id 列的多选组件
-        const statusCell = document.querySelector('.table-filter-cell[data-column="status_id"]');
-        if (statusCell) {
-            const statusMultiSelectContainer = statusCell.querySelector('#statusMultiSelect');
-            if (statusMultiSelectContainer && window.statusMultiSelectInstance) {
-                // 获取多选组件的值(逗号分隔的ID字符串)
-                const statusValue = window.statusMultiSelectInstance.getValue();
-                if (statusValue && statusValue !== '') {
-                    filterParams.set('status_id', statusValue);
+        // 处理配置的多选组件（自动遍历所有配置的多选列）
+        this.config.multiSelectColumns.forEach(multiSelectConfig => {
+            const { columnName, instanceName, containerId } = multiSelectConfig;
+            const cell = document.querySelector(`.table-filter-cell[data-column="${columnName}"]`);
+            if (cell) {
+                const container = cell.querySelector(`#${containerId}`);
+                if (container && window[instanceName]) {
+                    // 获取多选组件的值(逗号分隔的ID字符串)
+                    const value = window[instanceName].getValue();
+                    if (value && value !== '') {
+                        filterParams.set(columnName, value);
+                    }
                 }
             }
-        }
+        });
 
         // 使用公共接口获取需要保持的参数
         const persistentParams = this.getPersistentUrlParams();
