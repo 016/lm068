@@ -247,14 +247,16 @@ use App\Helpers\UrlHelper;
         <?php endif; ?>
     <?php endif; ?>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYWS2Q7CHL"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+    <?php if (!Config::get('dev.is_dev')): ?>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYWS2Q7CHL"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-        gtag('config', 'G-JYWS2Q7CHL');
-    </script>
+            gtag('config', 'G-JYWS2Q7CHL');
+        </script>
+    <?php endif; ?>
 </body>
 </html>
