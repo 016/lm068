@@ -60,9 +60,9 @@ class LogHelper
         // 总是在写入前进行一次 config 检查，保证 config 有来自配置文件的默认值
         self::checkConfig();
 
-        //check log enable
+        //check log enable, do nothing if disabled.
         if (!Config::get('log.enabled')) {
-            $data = ['log 写入失败，当前 log 写入功能在 config 文件中已关闭。'];
+            return false;
         }
 
         // 如果 channel 是完整路径(包含 / 或 \),直接使用
@@ -94,6 +94,12 @@ class LogHelper
 
     public static function debug($data, $channel = 'debug') {
         return self::write($data, $channel, 'DEBUG');
+    }
+
+    public static function aiAPIDebug($data, $channel = 'ai-api-debug') {
+        if (Config::get('log.ai-api-enabled')) {
+            return self::write($data, $channel, 'DEBUG');
+        }
     }
 
     /**

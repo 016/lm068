@@ -80,6 +80,7 @@ return [
     // 日志配置
     'log' => [
         'enabled' => true,
+        'ai-api-enabled' => true,
         'level' => 'error', // debug, info, warning, error
         'path' => __DIR__ . '/../runtime/logs/',
     ],
