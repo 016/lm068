@@ -180,7 +180,7 @@ use App\Constants\AdminUserRole;
                                     <input class="form-check-input" type="checkbox" id="selectAll">
                                 </div>
                             </th>
-                            <th class="table-cell sortable-header" data-column="id">
+                            <th class="table-cell sortable-header" data-column="id" data-type="number">
                                 <div class="d-flex align-items-center">
                                     ID
                                     <div class="sort-icons-container">
