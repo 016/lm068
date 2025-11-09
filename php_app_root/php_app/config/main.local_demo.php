@@ -18,4 +18,8 @@ return [
         // 如需修改上传路径，可在此覆盖
         // 'pics_path' => '/custom/path/pics/',
     ],
+    'google'=>[
+        // for Google Analytics
+        'tag_id'=>'',
+    ],
 ];

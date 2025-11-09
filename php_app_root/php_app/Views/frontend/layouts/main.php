@@ -247,15 +247,17 @@ use App\Helpers\UrlHelper;
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php if (!Config::get('dev.is_dev')): ?>
+    <?php
+    $gtag_id = Config::get('google.tag_id');
+    if (!Config::get('dev.is_dev')  && !empty($gtag_id)): ?>
         <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYWS2Q7CHL"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $gtag_id ?>"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-JYWS2Q7CHL');
+            gtag('config', '<?= $gtag_id ?>');
         </script>
     <?php endif; ?>
 </body>

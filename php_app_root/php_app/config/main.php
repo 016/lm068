@@ -10,6 +10,10 @@ return [
     'dev' => [
         'is_dev' => false,
     ],
+    'google'=>[
+        // for Google Analytics
+        'tag_id'=>'',
+    ],
     
     // 安全配置
     'secret_key' => 'your-secret-key-change-in-production',
