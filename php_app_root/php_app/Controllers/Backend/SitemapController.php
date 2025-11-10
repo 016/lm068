@@ -4,6 +4,7 @@ namespace App\Controllers\Backend;
 
 use App\Constants\CollectionStatus;
 use App\Constants\ContentStatus;
+use App\Constants\ContentTypeStatus;
 use App\Constants\TagStatus;
 use App\Core\Config;
 use App\Helpers\UrlHelper;
@@ -147,7 +148,7 @@ class SitemapController extends BackendController
          * @var $lastChangedConten111t1 Content
          */
         // 3. 处理 Content Types (来自常量)
-        foreach (ContentType::loadList([], ['id'=>'id', 'name_en'=>'name_en']) as $oneContentType) {
+        foreach (ContentType::loadList('published_content_cnt > 0 and status_id = '.ContentTypeStatus::ENABLED->value, ['id'=>'id', 'name_en'=>'name_en']) as $oneContentType) {
 
             // load this type's last updated content
             $lastChangedContent = Content::where(['content_type_id'=>$oneContentType['id']])->orderBy('updated_at DESC')->one();

@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Frontend;
 
+use App\Constants\ContentTypeStatus;
 use App\Core\Config;
 use App\Core\Request;
 use App\Core\HashId;
@@ -137,7 +138,7 @@ class ContentController extends FrontendController
         // 加载所有可用的标签、合集和内容类型(用于筛选表单)
         $allTags = Tag::getEnabledTags();
         $allCollections = Collection::getEnabledCollections();
-        $allContentTypes = ContentType::getAllContentTypes();
+        $allContentTypes = \App\Models\ContentType::loadList('published_content_cnt > 0 and status_id = '.ContentTypeStatus::ENABLED->value, ['id'=>'id', 'name_cn'=>'name_cn', 'name_en'=>'name_en']);
 
         // 准备当前查询参数 (供View使用)
         $currentParams = $this->getCurrentParams($search, $tagIds, $collectionIds, $contentTypeIds);
