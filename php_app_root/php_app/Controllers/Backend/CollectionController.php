@@ -144,7 +144,7 @@ class CollectionController extends BackendController
             'selectedContentIds' => $selectedContentIds,
             'title' => '编辑合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']
+            'js_files' => ['multi_select_dropdown_3.js',  'collection_edit_6.js']
         ]);
     }
 
@@ -224,7 +224,7 @@ class CollectionController extends BackendController
             'selectedContentIds' => $selectedContentIds,
             'title' => '创建合集 - 视频分享网站管理后台',
             'css_files' => ['collection_edit_2.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'collection_edit_6.js']
+            'js_files' => ['multi_select_dropdown_3.js',  'collection_edit_6.js']
         ]);
     }
 

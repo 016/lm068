@@ -271,9 +271,34 @@ use App\Constants\AdminUserRole;
     
     <!-- Chart.js - FIXED: Use CDN without module import issue -->
     <script src="/assets/lib/chart.js-4.4.0/dist/chart.umd.js"></script>
-    
-    <!-- Main JS - Common Functions -->
-    <script src="/assets/js/main_12.js"></script>
+
+    <!-- 1. 工具函数（最先加载，被其他模块依赖） -->
+    <script src="/assets/js/admin/admin-utils.js"></script>
+
+    <!-- 2. 管理后台基础功能 -->
+    <script src="/assets/js/admin/admin-layout.js"></script>
+    <script src="/assets/js/admin/admin-notifications.js"></script>
+    <script src="/assets/js/admin/admin-switch.js"></script>
+
+    <!-- 3. 表格功能模块 -->
+    <script src="/assets/js/table/table-operations.js"></script>
+    <script src="/assets/js/table/table-manager.js"></script>
+    <script src="/assets/js/table/table-actions.js"></script>
+
+    <!-- 4. 表单核心功能 -->
+    <!-- 必须按此顺序加载 -->
+    <script src="/assets/js/form-utils/form-validator.js"></script>
+    <script src="/assets/js/form-utils/form-submit-handler.js"></script>
+    <script src="/assets/js/form-utils/form-file-uploader.js"></script>
+    <script src="/assets/js/form-utils/form-multiselect-manager.js"></script>
+    <script src="/assets/js/form-utils/form-preview-manager.js"></script>
+    <script src="/assets/js/form-utils/form-persistence.js"></script>
+    <script src="/assets/js/form-utils/form-utils-core.js"></script>
+    <script src="/assets/js/form-utils/form-utils-helper.js"></script>
+
+    <!-- 5. 按需加载（仅在需要时引入） -->
+    <script src="/assets/js/table/bulk-import.js"></script>
+    <script src="/assets/js/page-specific/admin-page-specific.js"></script>
     
     <?php if (isset($js_files)): ?>
         <?php foreach ($js_files as $js_file): ?>

@@ -141,7 +141,7 @@ class VideoLinkController extends BackendController
             'contentsList' => $contentsList,
             'pageTitle' => '编辑视频链接 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css'],
-            'js_files' => ['form_utils_2.js', 'video_link_edit_1.js']
+            'js_files' => [ 'video_link_edit_1.js']
         ]);
     }
 
@@ -217,7 +217,7 @@ class VideoLinkController extends BackendController
             'contentsList' => $contentsList,
             'pageTitle' => '创建视频链接 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css'],
-            'js_files' => ['form_utils_2.js', 'video_link_edit_1.js']
+            'js_files' => [ 'video_link_edit_1.js']
         ]);
     }
 

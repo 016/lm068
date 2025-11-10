@@ -148,7 +148,7 @@ class AdminUserController extends BackendController
             'adminUser' => $adminUser,
             'pageTitle' => '编辑管理员 - 视频分享网站管理后台',
             'css_files' => ['admin_user_edit.css'],
-            'js_files' => ['form_utils_2.js', 'admin_user_edit.js']
+            'js_files' => [ 'admin_user_edit.js']
         ]);
     }
 
@@ -224,7 +224,7 @@ class AdminUserController extends BackendController
             'adminUser' => $adminUser,
             'pageTitle' => '创建管理员 - 视频分享网站管理后台',
             'css_files' => ['admin_user_edit.css'],
-            'js_files' => ['form_utils_2.js', 'admin_user_edit.js']
+            'js_files' => [ 'admin_user_edit.js']
         ]);
     }
 
@@ -344,7 +344,7 @@ class AdminUserController extends BackendController
             'adminUser' => $adminUser,
             'pageTitle' => '个人信息管理 - 视频分享网站管理后台',
             'css_files' => ['admin_user_edit.css'],
-            'js_files' => ['form_utils_2.js', 'admin_user_edit.js']
+            'js_files' => [ 'admin_user_edit.js']
         ]);
     }
 }

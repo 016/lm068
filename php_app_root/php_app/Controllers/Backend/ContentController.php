@@ -196,7 +196,7 @@ class ContentController extends BackendController
             'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '编辑内容 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'content_edit_11.js']
+            'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);
     }
 
@@ -308,7 +308,7 @@ class ContentController extends BackendController
             'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '创建内容 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'content_edit_11.js']
+            'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);
     }
 
@@ -505,7 +505,7 @@ class ContentController extends BackendController
             'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '复制内容 - 视频分享网站管理后台',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
-            'js_files' => ['multi_select_dropdown_3.js', 'form_utils_2.js', 'content_edit_11.js']
+            'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);
     }
 }
