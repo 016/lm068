@@ -633,6 +633,10 @@ class Content extends UploadableModel implements HasStatuses
             return true;
         }
 
+        if (empty($this->pub_at)) {
+            $this->pub_at = null;
+        }
+
         return parent::beforeSave();
     }
 
