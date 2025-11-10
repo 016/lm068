@@ -9,6 +9,7 @@ use App\Core\Relations\HasMany;
 use App\Core\Relations\HasOne;
 use App\Core\Relations\Relation;
 use App\Helpers\ClassHelper;
+use App\Helpers\UrlHelper;
 use App\Models\Content;
 
 abstract class Model
@@ -443,6 +444,43 @@ abstract class Model
     {
         $this->isNew = $isNew;
     }
+
+    /**
+     * 根据指定语言获取标题
+     *
+     * @param string|null $lang 语言代码 (zh/en), 为null时使用当前语言
+     * @return string 对应语言的标题
+     */
+    public function getTitle(?string $lang = null): string
+    {
+        $lang = $lang ?? \App\Core\I18n::getCurrentLang();
+        $title = $lang === 'zh' ? $this->name_cn : $this->name_en;
+
+        // 如果指定语言的标题为空,降级到另一个语言
+        if (empty($title)) {
+            $title = $lang === 'zh' ? $this->name_en : $this->name_cn;
+        }
+
+        return $title ?? '';
+    }
+
+    /**
+     * generate detail url for all model type.
+     * @param string|null $targetLang
+     * @param array $queryParams
+     * @return string
+     */
+    public function generateDetailUrl(?string $targetLang = null, array $queryParams = []): string
+    {
+        //content_type to content-type
+        $preFixTitle = str_replace('_', '-', static::$table);
+
+        // 构建基础URL 前缀
+        $urlPrefix = "/".$preFixTitle."/".HashId::encode($this->id)."/".UrlHelper::formatString($this->getTitle('en'));
+
+        return UrlHelper::generateUri($urlPrefix, $targetLang, $queryParams);
+    }
+
 
     // 验证
     public function validate(): bool

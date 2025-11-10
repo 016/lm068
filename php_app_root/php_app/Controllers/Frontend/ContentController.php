@@ -270,24 +270,24 @@ class ContentController extends FrontendController
         $currentLang = \App\Core\I18n::getCurrentLang();
 
         // 查找视频
-        $video = Content::where(['id'=>$id, 'status_id'=>ContentStatus::PUBLISHED->value])->whereRaw('pub_at < NOW()')->one();
+        $curContent = Content::where(['id'=>$id, 'status_id'=>ContentStatus::PUBLISHED->value])->whereRaw('pub_at < NOW()')->one();
 
         // 检查是否是视频类型且已发布
-        if (empty($video)) {
+        if (empty($curContent)) {
             http_response_code(404);
             echo json_encode(['error' => 'Video not found']);
             return;
         }
 
         // set SEO params
-        $this->setSEOParam('view', $video);
+        $this->setSEOParam('view', $curContent);
 
         // 增加浏览次数
-        $video->logPVAccess($id);
+        $curContent->logPVAccess($id);
 
         // 获取视频的标签和合集
-        $videoTags = $video->getRelatedTags($id);
-        $videoCollections = $video->getRelatedCollections($id);
+        $videoTags = $curContent->getRelatedTags($id);
+        $videoCollections = $curContent->getRelatedCollections($id);
 
         // 获取视频的第三方平台链接
         $videoLinkModel = new \App\Models\VideoLink();
@@ -328,7 +328,7 @@ class ContentController extends FrontendController
 
         // 准备视图数据
         $data = [
-            'video' => $video,
+            'curContent' => $curContent,
             'videoTags' => $videoTags,
             'videoCollections' => $videoCollections,
             'videoLinks' => $videoLinks,
@@ -350,7 +350,7 @@ class ContentController extends FrontendController
 
         // 渲染视图
         $content = $this->view('contents.view', $data);
-        $pageTitle = $video->getTitle($currentLang);
+        $pageTitle = $curContent->getTitle($currentLang);
         echo $this->layout($content, $pageTitle, $data);
     }
 

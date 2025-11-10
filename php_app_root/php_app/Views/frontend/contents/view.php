@@ -3,7 +3,7 @@
  * 前端视频详情视图
  *
  * @var $this \App\Controllers\Frontend\ContentController
- * @var $video \App\Models\Content
+ * @var $curContent \App\Models\Content
  * @var $announcement \App\Models\Content
  * @var $videoTags array
  * @var $videoCollections array
@@ -37,10 +37,10 @@ use App\Models\Collection;
         <!-- 视频封面和信息区域 -->
         <div class="card mb-4">
 
-            <?php if (!empty($video->thumbnail)): ?>
+            <?php if (!empty($curContent->thumbnail)): ?>
             <div class="video-cover-container card-img-top">
-                <img src="<?= htmlspecialchars($video->getThumbnailUrl()) ?>"
-                     alt="<?= htmlspecialchars($video->getTitle($currentLang)) ?>"
+                <img src="<?= htmlspecialchars($curContent->getThumbnailUrl()) ?>"
+                     alt="<?= htmlspecialchars($curContent->getTitle($currentLang)) ?>"
                      class="video-cover">
             </div>
             <?php endif; ?>
@@ -50,7 +50,7 @@ use App\Models\Collection;
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h1 class="video-title mb-0 flex-grow-1 me-3">
                         <i class="bi bi-camera-video text-primary me-2"></i>
-                        <?= htmlspecialchars($video->getTitle($currentLang)) ?>
+                        <?= htmlspecialchars($curContent->getTitle($currentLang)) ?>
                     </h1>
                     <!-- 交互按钮移到标题行右侧 -->
                     <div class="interaction-buttons-inline">
@@ -94,27 +94,37 @@ use App\Models\Collection;
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-calendar3 me-2"></i>
-                                <?= $currentLang === 'zh' ? '发布时间' : 'Published' ?>: <?= date('Y-m-d', strtotime($video->pub_at)) ?>
+                                <?= $currentLang === 'zh' ? '发布时间' : 'Published' ?>: <?= date('Y-m-d', strtotime($curContent->pub_at)) ?>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-person me-2"></i>
-                                <?= $currentLang === 'zh' ? '作者' : 'Author' ?>: <?= htmlspecialchars($video->author) ?>
+                                <?= $currentLang === 'zh' ? '作者' : 'Author' ?>: <?= htmlspecialchars($curContent->author) ?>
                             </div>
                         </div>
-                        <?php if (!empty($video->duration)): ?>
+                        <?php if (!empty($curContent->duration)): ?>
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-clock me-2"></i>
-                                <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= TimeHelper::formatTime($video->duration) ?>
+                                <?= $currentLang === 'zh' ? '时长' : 'Duration' ?>: <?= TimeHelper::formatTime($curContent->duration) ?>
                             </div>
                         </div>
                         <?php endif; ?>
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-eye me-2"></i>
-                                <?= $currentLang === 'zh' ? '浏览数' : 'Views' ?>: <?= number_format($video->pv_cnt) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
+                                <?= $currentLang === 'zh' ? '浏览数' : 'Views' ?>: <?= number_format($curContent->pv_cnt) ?> <?= $currentLang === 'zh' ? '次' : '' ?>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="meta-item">
+                                <i class="bi bi-eye me-2"></i>
+                                <?= $currentLang === 'zh' ? '分类' : 'Category' ?>:
+                                <a href="<?= $curContent->contentType->generateDetailUrl() ?>" target="_blank" class="ms-1 text-decoration-none text-reset">
+                                    <?= $currentLang === 'zh' ? $curContent->contentType->name_cn : $curContent->contentType->name_en ?>
+                                </a>
+
                             </div>
                         </div>
                         <?php if (!empty($videoLinks)): ?>
@@ -166,7 +176,7 @@ use App\Models\Collection;
         </div>
 
         <!-- 视频正文内容-支持文档 -->
-        <?php if (!empty($video->getDescription($currentLang))): ?>
+        <?php if (!empty($curContent->getDescription($currentLang))): ?>
         <div class="card mb-4">
             <div class="card-header text-center">
                 <h5 class="mb-0">
@@ -176,14 +186,14 @@ use App\Models\Collection;
             </div>
             <div class="card-body">
                 <div class="video-content" id="markdown-content-support">
-                    <?= (htmlspecialchars(TextHelper::renderMarkdown($video->getDescription($currentLang)))) ?>
+                    <?= (htmlspecialchars(TextHelper::renderMarkdown($curContent->getDescription($currentLang)))) ?>
                 </div>
             </div>
         </div>
         <?php endif; ?>
 
         <!-- 视频正文内容-总结文档 -->
-        <?php if (!empty($video->getSummary($currentLang))): ?>
+        <?php if (!empty($curContent->getSummary($currentLang))): ?>
         <div class="card mb-4">
             <div class="card-header text-center">
                 <h5 class="mb-0">
@@ -193,7 +203,7 @@ use App\Models\Collection;
             </div>
             <div class="card-body">
                 <div class="video-content" id="markdown-content-summary">
-                    <?= (htmlspecialchars(TextHelper::renderMarkdown($video->getSummary($currentLang)))) ?>
+                    <?= (htmlspecialchars(TextHelper::renderMarkdown($curContent->getSummary($currentLang)))) ?>
                 </div>
             </div>
         </div>
@@ -247,7 +257,7 @@ use App\Models\Collection;
                     <?php if ($commentsTotalPages > 1): ?>
                         <nav class="mt-4">
                             <div class="custom-pagination d-flex justify-content-center align-items-center">
-                                <a href="<?= $commentPage > 1 ? $this->buildCommentPaginationUrl($commentPage - 1, $video->id, $currentLang) : '#' ?>"
+                                <a href="<?= $commentPage > 1 ? $this->buildCommentPaginationUrl($commentPage - 1, $curContent->id, $currentLang) : '#' ?>"
                                    class="btn btn-outline-secondary btn-sm pagination-btn"
                                    <?= $commentPage <= 1 ? 'disabled' : '' ?>>
                                     <i class="bi bi-chevron-left"></i>
@@ -257,13 +267,13 @@ use App\Models\Collection;
                                     $paginationRange = $this->calculateCommentPaginationRange($commentPage, $commentsTotalPages);
                                     for ($i = $paginationRange['start']; $i <= $paginationRange['end']; $i++):
                                     ?>
-                                        <a href="<?= $this->buildCommentPaginationUrl($i, $video->id, $currentLang) ?>"
+                                        <a href="<?= $this->buildCommentPaginationUrl($i, $curContent->id, $currentLang) ?>"
                                            class="btn <?= $i === $commentPage ? 'text-bg-primary' : 'btn-outline-secondary' ?> btn-sm pagination-page">
                                             <?= $i ?>
                                         </a>
                                     <?php endfor; ?>
                                 </div>
-                                <a href="<?= $commentPage < $commentsTotalPages ? $this->buildCommentPaginationUrl($commentPage + 1, $video->id, $currentLang) : '#' ?>"
+                                <a href="<?= $commentPage < $commentsTotalPages ? $this->buildCommentPaginationUrl($commentPage + 1, $curContent->id, $currentLang) : '#' ?>"
                                    class="btn btn-outline-secondary btn-sm pagination-btn"
                                    <?= $commentPage >= $commentsTotalPages ? 'disabled' : '' ?>>
                                     <i class="bi bi-chevron-right"></i>
