@@ -992,4 +992,53 @@ class Content extends UploadableModel implements HasStatuses
         return 25;
     }
 
+    /**
+     * 保存后的钩子方法
+     * 检查是否需要重新统计关联的 ContentType 的内容数量
+     */
+    public function afterSave(): void
+    {
+        parent::afterSave();
+
+        $needUpdateContentTypeIds = [];
+
+        // 1. 检查 content_type_id 是否改变
+        if (isset($this->original['content_type_id']) &&
+            isset($this->attributes['content_type_id']) &&
+            $this->original['content_type_id'] != $this->attributes['content_type_id']) {
+
+            // 新旧两个 ContentType 都需要重新统计
+            $needUpdateContentTypeIds[] = (int)$this->original['content_type_id'];
+            $needUpdateContentTypeIds[] = (int)$this->attributes['content_type_id'];
+        }
+
+        // 2. 检查 status_id 是否改变，且变化涉及 PUBLISHED 状态
+        if (isset($this->original['status_id']) &&
+            isset($this->attributes['status_id']) &&
+            $this->original['status_id'] != $this->attributes['status_id']) {
+
+            $oldStatus = (int)$this->original['status_id'];
+            $newStatus = (int)$this->attributes['status_id'];
+            $publishedStatus = ContentStatus::PUBLISHED->value;
+
+            // 如果状态变化涉及 PUBLISHED 状态（从 PUBLISHED 变为其他，或从其他变为 PUBLISHED）
+            if ($oldStatus === $publishedStatus || $newStatus === $publishedStatus) {
+                // 添加当前的 content_type_id
+                if (isset($this->attributes['content_type_id'])) {
+                    $needUpdateContentTypeIds[] = (int)$this->attributes['content_type_id'];
+                }
+            }
+        }
+
+        // 去重并更新相关 ContentType 的统计数据
+        $needUpdateContentTypeIds = array_unique($needUpdateContentTypeIds);
+
+        if (!empty($needUpdateContentTypeIds)) {
+            $contentTypeModel = new \App\Models\ContentType();
+            foreach ($needUpdateContentTypeIds as $contentTypeId) {
+                $contentTypeModel->updateContentCnt($contentTypeId);
+            }
+        }
+    }
+
 }

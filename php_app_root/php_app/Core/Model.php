@@ -282,6 +282,9 @@ abstract class Model
             $this->saveRelations();
 
             $db->commit();
+
+            $this->afterSave();
+
             $this->setOriginal($this->attributes);
             return true;
 
@@ -605,6 +608,11 @@ abstract class Model
     public function beforeSave(): bool
     {
         return true;
+    }
+
+    public function afterSave()
+    {
+        //
     }
 
     // 保留原有静态方法

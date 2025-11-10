@@ -221,4 +221,63 @@ class ContentType extends Model implements HasStatuses
 
         return true;
     }
+
+    /**
+     * 更新当前 ContentType 的内容统计数量
+     * 统计 content_cnt 和 published_content_cnt
+     *
+     * @param int|null $contentTypeId ContentType ID, 如果为null则使用当前对象的ID
+     * @return bool 是否更新成功
+     */
+    public function updateContentCnt(?int $contentTypeId = null): bool
+    {
+        // 确定要更新的 ContentType ID
+        $targetId = $contentTypeId ?? $this->id;
+
+        if (!$targetId) {
+            return false;
+        }
+
+        try {
+            // 统计总内容数量
+            $totalCountSql = "SELECT COUNT(*) as cnt FROM content WHERE content_type_id = :content_type_id";
+            $totalResult = $this->db->fetch($totalCountSql, ['content_type_id' => $targetId]);
+            $totalCount = (int)($totalResult['cnt'] ?? 0);
+
+            // 统计已发布内容数量
+            $publishedCountSql = "SELECT COUNT(*) as cnt FROM content
+                                  WHERE content_type_id = :content_type_id
+                                  AND status_id = :published_status";
+            $publishedResult = $this->db->fetch($publishedCountSql, [
+                'content_type_id' => $targetId,
+                'published_status' => ContentStatus::PUBLISHED->value
+            ]);
+            $publishedCount = (int)($publishedResult['cnt'] ?? 0);
+
+            // 更新 ContentType 表
+            $updateSql = "UPDATE " . static::getTableName() . "
+                         SET content_cnt = :content_cnt,
+                             published_content_cnt = :published_content_cnt,
+                             updated_at = NOW()
+                         WHERE id = :id";
+
+            $this->db->query($updateSql, [
+                'content_cnt' => $totalCount,
+                'published_content_cnt' => $publishedCount,
+                'id' => $targetId
+            ]);
+
+            // 如果是当前对象，更新属性
+            if ($contentTypeId === null && isset($this->id) && $this->id == $targetId) {
+                $this->attributes['content_cnt'] = $totalCount;
+                $this->attributes['published_content_cnt'] = $publishedCount;
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            error_log("UpdateContentCnt Error: " . $e->getMessage());
+            return false;
+        }
+    }
 }
