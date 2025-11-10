@@ -82,12 +82,16 @@ abstract class Model
     /**
      * 查找所有记录
      */
-    public static function findAll(array $conditions = [], ?string $orderBy = null, ?int $limit = null, ?int $offset = 0): array
+    public static function findAll(string|array $conditions = [], ?string $orderBy = null, ?int $limit = null, ?int $offset = 0): array
     {
         $query = static::query();
 
         if (!empty($conditions)) {
-            $query->where($conditions);
+            if (is_array($conditions)) {
+                $query->where($conditions);
+            }else{
+                $query->whereRaw($conditions);
+            }
         }
 
         if ($orderBy) {
@@ -624,7 +628,7 @@ abstract class Model
      * @param string|null $orderBy 排序规则
      * @return array 格式化后的数组
      */
-    public static function loadList(?array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
+    public static function loadList(null|string|array $conditions = [], ?array $fieldMapping = ['id'=>'id', 'text'=>'name_cn'], ?int $limit = null, ?int $offset = 0, ?string $orderBy = null): array
     {
         $models = static::findAll($conditions, $orderBy, $limit, $offset);
 
