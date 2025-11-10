@@ -626,7 +626,7 @@ class Content extends UploadableModel implements HasStatuses
     public function beforeSave(): bool
     {
         if ($this->status_id == ContentStatus::PUBLISHED->value) {
-            if ($this->isNew || $this->original['status_id'] != $this->status_id){
+            if (($this->isNew || $this->original['status_id'] != $this->status_id) && empty($this->attributes['pub_at'])){
                 $this->attributes['pub_at'] = date('Y-m-d H:i:s');
             }
 
