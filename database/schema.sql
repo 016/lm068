@@ -33,10 +33,10 @@ CREATE TABLE `content_type` (
 ) ENGINE=InnoDB;
 
 -- ID说明 2-9为预留系统级id，常规ID从11开始
-INSERT INTO `content_type` (`id`, `name_en`, `name_cn`) VALUES
-(1, 'Announcement', '网站公告'),
-(11, 'Article', '一般文章'),
-(21, 'Video', '视频');
+INSERT INTO `content_type` (`id`, `name_en`, `name_cn`, `published_content_cnt`) VALUES
+(1, 'Announcement', '网站公告', 1),
+(11, 'Article', '一般文章', 1),
+(21, 'Video', '视频', 1);
 
 
 -- 内容主表 (包含: 网站公告, 一般文章, 视频, 共三类内容，用content_type_id区分)
