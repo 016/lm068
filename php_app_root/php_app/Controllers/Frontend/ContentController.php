@@ -270,10 +270,10 @@ class ContentController extends FrontendController
         $currentLang = \App\Core\I18n::getCurrentLang();
 
         // 查找视频
-        $video = Content::findOrFail($id);
+        $video = Content::where(['id'=>$id, 'status_id'=>ContentStatus::PUBLISHED->value])->whereRaw('pub_at < NOW()')->one();
 
         // 检查是否是视频类型且已发布
-        if (!$video->isPublished()) {
+        if (empty($video)) {
             http_response_code(404);
             echo json_encode(['error' => 'Video not found']);
             return;
@@ -400,6 +400,7 @@ class ContentController extends FrontendController
                 AND c.id != :current_video_id
                 AND c.status_id = 99
                 AND c.content_type_id = 21
+                AND c.pub_at < NOW()
                 ORDER BY c.created_at DESC
                 LIMIT {$limit}";
 
@@ -431,6 +432,7 @@ class ContentController extends FrontendController
                 WHERE c.id != :current_video_id
                 AND c.status_id = 99
                 AND c.content_type_id = 21
+                AND c.pub_at < NOW()
                 ORDER BY RAND()
                 LIMIT {$limit}";
 

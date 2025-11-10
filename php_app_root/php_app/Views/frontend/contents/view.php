@@ -94,7 +94,7 @@ use App\Models\Collection;
                         <div class="col-6">
                             <div class="meta-item">
                                 <i class="bi bi-calendar3 me-2"></i>
-                                <?= $currentLang === 'zh' ? '发布时间' : 'Published' ?>: <?= date('Y-m-d', strtotime($video->created_at)) ?>
+                                <?= $currentLang === 'zh' ? '发布时间' : 'Published' ?>: <?= date('Y-m-d', strtotime($video->pub_at)) ?>
                             </div>
                         </div>
                         <div class="col-6">
