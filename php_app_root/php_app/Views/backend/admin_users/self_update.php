@@ -20,7 +20,7 @@ use App\Constants\AdminUserRole;
         </div>
         <?php endif; ?>
 
-        <form id="selfUpdateForm" action="/admin_users/self_update" method="POST">
+        <form id="admin_selfUpdateForm" action="/admin_users/self_update" method="POST">
             <!-- 基本信息 -->
             <div class="form-section">
                 <h4 class="form-section-title">

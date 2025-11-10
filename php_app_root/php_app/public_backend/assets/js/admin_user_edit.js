@@ -6,7 +6,13 @@
 
 class AdminUserEditManager {
     constructor() {
-        this.form = document.getElementById('adminUserEditForm');
+        this.formId = 'adminUserEditForm';
+        this.form = document.getElementById(this.formId);
+        if (!this.form){
+            //support admin self upgrade
+            this.formId = 'admin_selfUpdateForm';
+            this.form = document.getElementById(this.formId);
+        }
         this.formUtils = null;
 
         this.init();
