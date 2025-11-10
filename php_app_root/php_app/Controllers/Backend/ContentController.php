@@ -89,29 +89,12 @@ class ContentController extends BackendController
             }
 
             // 4. 对 POST 的数值进行提取并填充回 $content
-            $data = [
-                'content_type_id' => (int)($request->post('content_type_id')),
-                'author' => $request->post('author'),
-                'code' => $request->post('code'),
-                'title_cn' => $request->post('name_cn'),
-                'title_en' => $request->post('name_en'),
-                'short_desc_cn' => $request->post('short_desc_cn'),
-                'short_desc_en' => $request->post('short_desc_en'),
-                'desc_cn' => $request->post('desc_cn'),
-                'desc_en' => $request->post('desc_en'),
-                'sum_cn' => $request->post('sum_cn'),
-                'sum_en' => $request->post('sum_en'),
-                'duration' => $request->post('duration'),
-                'pub_at' => !empty($request->post('pub_at')) ? $request->post('pub_at') : null,
-                'status_id' => (int)($request->post('status_id'))
-            ];
-
             // 处理文件上传
             if (!empty($_FILES)) {
                 $content->handleFileUploads($_FILES);
             }
 
-            $content->fill($data);
+            $content->fill($request->post());
 
             $postedTagIds = $request->post('tag_ids');
             $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
@@ -208,31 +191,12 @@ class ContentController extends BackendController
         // 处理 POST 请求（表单提交）
         if ($request->isPost()) {
             // 4. 对 POST 的数值进行提取并填充回 $content
-            $data = [
-                'content_type_id' => (int)($request->post('content_type_id')),
-                'author' => $request->post('author') ?? 'DP',
-                'code' => $request->post('code') ?? '',
-                'title_cn' => $request->post('name_cn'),
-                'title_en' => $request->post('name_en'),
-                'short_desc_cn' => $request->post('short_desc_cn') ?? '',
-                'short_desc_en' => $request->post('short_desc_en') ?? '',
-                'desc_cn' => $request->post('desc_cn') ?? '',
-                'desc_en' => $request->post('desc_en') ?? '',
-                'sum_cn' => $request->post('sum_cn') ?? '',
-                'sum_en' => $request->post('sum_en') ?? '',
-                'duration' => $request->post('duration') ?? '',
-                'pub_at' => !empty($request->post('pub_at')) ? $request->post('pub_at') : null,
-                'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
-                'pv_cnt' => 0,
-                'view_cnt' => 0
-            ];
-
             // 处理文件上传
             if (!empty($_FILES)) {
                 $content->handleFileUploads($_FILES);
             }
 
-            $content->fill($data);
+            $content->fill($request->post());
 
             $postedTagIds = $request->post('tag_ids');
             $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
