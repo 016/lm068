@@ -98,7 +98,7 @@ class SitemapController extends BackendController
 
     private function generateContentListUrls(): void
     {
-        $contents = Content::findAll(['status_id' => ContentStatus::PUBLISHED->value]);
+        $contents = Content::where(['status_id' => ContentStatus::PUBLISHED->value])->whereRaw('pub_at < NOW()')->all();
 
         /**
          * @var $oneContent Content
