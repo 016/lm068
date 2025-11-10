@@ -863,16 +863,21 @@ abstract class Model
         $tagIdChunks = array_chunk($targetIds, $chunkSize);
 
         foreach ($tagIdChunks as $chunk) {
+            // 1st normal update without pub_at check
             $placeholders = implode(',', array_fill(0, count($chunk), '?'));
             $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW() WHERE id IN ({$placeholders})";
 
+            $params = array_merge([$status], $chunk);
+            // 累加每次成功更新的数量
+            $returnCnt['changed'] += $db->execute($sql, $params);
+
+            //2nd only update if pub_at is null
             //support content.pub_at auto update
             if (static::getTableName() == Content::getTableName() && $status == ContentStatus::PUBLISHED->value){
-                $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW(), pub_at = NOW() WHERE id IN ({$placeholders})";
+                $sql = "UPDATE " . static::getTableName() . " SET status_id = ?, updated_at = NOW(), pub_at = NOW() WHERE id IN ({$placeholders}) and pub_at IS NULL";
             }
 
             $params = array_merge([$status], $chunk);
-
             // 累加每次成功更新的数量
             $returnCnt['changed'] += $db->execute($sql, $params);
         }
