@@ -48,119 +48,77 @@ function initCodeCopy() {
 
 // 初始化Markdown渲染功能
 function initMarkdownRendering() {
-    //support text
-    const markdownContent_support = document.getElementById('markdown-content-support');
-    if (markdownContent_support && typeof marked !== 'undefined') {
+    if (typeof marked === 'undefined') return;
 
-        const CDN_DOMAIN = window.inputData.CND_URL;
+    const CDN_DOMAIN = window.inputData.CND_URL;
 
-        marked.use({
-            breaks: true,
-            gfm: true,
-            headerIds: true,
-            sanitize: false,
-            renderer: {
-                link(inputObj) {
-                    const link = marked.Renderer.prototype.link.call(this, inputObj);
-                    return link.replace('<a', '<a target="_blank" rel="noopener noreferrer"');
-                },
-                image(inputObj) {
-                    // 类型检查和转换
-                    href = inputObj.href;
-                    title = inputObj.title;
-                    text = inputObj.text;
-
-                    // 如果是相对路径，添加域名前缀
-                    if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
-                        href = CDN_DOMAIN + href;
-                    }
-
-                    // 构建 img 标签
-                    let out = `<img src="${href}" alt="${text}"`;
-                    if (title) {
-                        out += ` title="${title}"`;
-                    }
-                    out += '>';
-                    return out;
+    // 只配置一次 marked
+    marked.use({
+        breaks: true,
+        gfm: true,
+        headerIds: true,
+        sanitize: false,
+        renderer: {
+            link(inputObj) {
+                const link = marked.Renderer.prototype.link.call(this, inputObj);
+                return link.replace('<a', '<a target="_blank" rel="noopener noreferrer"');
+            },
+            table(inputObj) {
+                let headerHtml = '';
+                if (inputObj.header.length > 0) {
+                    const headerCells = inputObj.header
+                        .map(cell => `<th>${this.parser.parseInline(cell.tokens)}</th>`)
+                        .join('');
+                    headerHtml = `<thead><tr>${headerCells}</tr></thead>`;
                 }
+
+                let bodyHtml = '';
+                if (inputObj.rows.length > 0) {
+                    const bodyRows = inputObj.rows
+                        .map(row => {
+                            const rowCells = row
+                                .map(cell => `<td>${this.parser.parseInline(cell.tokens)}</td>`)
+                                .join('');
+                            return `<tr>${rowCells}</tr>`;
+                        })
+                        .join('');
+                    bodyHtml = `<tbody>${bodyRows}</tbody>`;
+                }
+
+                return `<table class="table table-hover table-bordered">${headerHtml}${bodyHtml}</table>`;
+            },
+            image(inputObj) {
+                let { href, title, text } = inputObj;
+
+                // 相对路径添加CDN前缀
+                if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
+                    href = CDN_DOMAIN + href;
+                }
+
+                return `<img src="${href}" alt="${text}"${title ? ` title="${title}"` : ''}>`;
             }
-        });
-        
-        // 获取原始Markdown内容
-        const markdownText = markdownContent_support.textContent || markdownContent_support.innerText;
-        // console.log(markdownText);
-        
-        // 渲染为HTML
+        }
+    });
+
+    // 渲染指定元素的辅助函数
+    function renderMarkdown(elementId) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        const markdownText = element.textContent || element.innerText;
+
         try {
-            const htmlContent = marked.parse(markdownText);
-            // console.log(htmlContent)
-            markdownContent_support.innerHTML = htmlContent;
-            markdownContent_support.classList.add('markdown-rendered');
+            element.innerHTML = marked.parse(markdownText);
+            element.classList.add('markdown-rendered');
         } catch (error) {
-            console.error('Markdown渲染失败:', error);
-            // 保持原始文本格式
-            markdownContent_support.style.whiteSpace = 'pre-wrap';
+            console.error(`Markdown渲染失败 (${elementId}):`, error);
+            element.style.whiteSpace = 'pre-wrap';
         }
     }
 
-    // summary text
-    const markdownContent_summary = document.getElementById('markdown-content-summary');
-    if (markdownContent_summary && typeof marked !== 'undefined') {
-
-        const CDN_DOMAIN = window.inputData.CND_URL;
-
-        marked.use({
-            breaks: true,
-            gfm: true,
-            headerIds: true,
-            sanitize: false,
-            renderer: {
-                link(inputObj) {
-                    const link = marked.Renderer.prototype.link.call(this, inputObj);
-                    return link.replace('<a', '<a target="_blank" rel="noopener noreferrer"');
-                },
-                image(inputObj) {
-                    // 类型检查和转换
-                    href = inputObj.href;
-                    title = inputObj.title;
-                    text = inputObj.text;
-
-                    // 如果是相对路径，添加域名前缀
-                    if (href && !href.startsWith('http://') && !href.startsWith('https://')) {
-                        href = CDN_DOMAIN + href;
-                    }
-
-                    // 构建 img 标签
-                    let out = `<img src="${href}" alt="${text}"`;
-                    if (title) {
-                        out += ` title="${title}"`;
-                    }
-                    out += '>';
-                    return out;
-                }
-            }
-        });
-
-        // 获取原始Markdown内容
-        const markdownText = markdownContent_summary.textContent || markdownContent_summary.innerText;
-        // console.log(markdownText);
-
-        // 渲染为HTML
-        try {
-            const htmlContent = marked.parse(markdownText);
-            // console.log(htmlContent)
-            markdownContent_summary.innerHTML = htmlContent;
-            markdownContent_summary.classList.add('markdown-rendered');
-        } catch (error) {
-            console.error('Markdown渲染失败:', error);
-            // 保持原始文本格式
-            markdownContent_summary.style.whiteSpace = 'pre-wrap';
-        }
-    }
-
-
-
-
+    // 渲染所有需要的元素
+    renderMarkdown('markdown-content-support');
+    renderMarkdown('markdown-content-summary');
 }
 
 // 初始化交互按钮
