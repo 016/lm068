@@ -382,7 +382,7 @@ use App\Constants\ContentType;
                                             <a href="/contents/<?= $item->id ?>/copy" class="btn btn-outline-warning btn-sm" title="复制">
                                                 <i class="bi bi-copy"></i>
                                             </a>
-                                            <a href="/contents/show/<?= $item->id ?>" class="btn btn-outline-info btn-sm d-none" title="查看">
+                                            <a href="<?= \App\Core\Config::get('request.frontend_base_url') ?>/content/<?= $item->id ?>" class="btn btn-outline-info btn-sm " title="查看" target="_blank">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             <?php if ($item->content_type_id == \App\Constants\ContentType::VIDEO->value): ?>
