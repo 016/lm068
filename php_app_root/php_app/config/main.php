@@ -34,7 +34,7 @@ return [
     'default_language' => 'cn',
     'supported_languages' => ['cn', 'en'],
     'request' =>[
-        'base_url' => 'https://dpit.lib00.com',
+        'frontend_base_url' => 'https://dpit.lib00.com',
     ],
 
     // 文件上传配置
