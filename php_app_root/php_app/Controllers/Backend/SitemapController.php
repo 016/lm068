@@ -122,7 +122,7 @@ class SitemapController extends BackendController
     private function generateFilteredListUrls(): void
     {
         // 1. 处理 Tags
-        $tags = Tag::findAll(['status_id'=>TagStatus::ENABLED->value]);
+        $tags = Tag::findAll(['status_id'=>TagStatus::ENABLED->value, 'content_cnt'=>['>', 0]]);
         foreach ($tags as $oneTag){
             $list_url_cn = $this->base_url . Tag::buildListUrl($oneTag->id, $oneTag->name_en,'zh');
             $list_url_en = $this->base_url . Tag::buildListUrl($oneTag->id, $oneTag->name_en, 'en');
