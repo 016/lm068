@@ -9,7 +9,7 @@ namespace App\Helpers;
 class MarkdownHelper
 {
     /**
-     * 输入 Markdown 文本，返回 Markdown 内部内容，去除 Markdown 格式
+     * 输入 Markdown 文本(```json contentString ```)，返回 Markdown 内部内容(contentString)，去除 Markdown 格式
      * @param $markdown
      * @param $language
      * @return string
@@ -44,7 +44,7 @@ class MarkdownHelper
     public static function fixJsonNewlines($jsonString) {
         // 使用正则表达式匹配 JSON 中的字符串值
         // 匹配模式: "key": "value" 其中 value 可能包含未转义的 \n
-        return preg_replace_callback(
+        $result = preg_replace_callback(
             '/"([^"]+)":\s*"((?:[^"\\\\]|\\\\.)*)"/s',
             function($matches) {
                 $key = $matches[1];
@@ -64,6 +64,9 @@ class MarkdownHelper
             },
             $jsonString
         );
+
+        // 如果没有匹配到内容,返回原字符串
+        return $result ?? $jsonString;
     }
 
 
