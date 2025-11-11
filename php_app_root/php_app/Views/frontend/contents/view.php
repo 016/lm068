@@ -186,7 +186,7 @@ use App\Models\Collection;
             </div>
             <div class="card-body">
                 <div class="video-content" id="markdown-content-support">
-                    <?= (htmlspecialchars(TextHelper::renderMarkdown($curContent->getDescription($currentLang)))) ?>
+                    <?= (htmlspecialchars(\App\Helpers\MarkdownHelper::prepareMarkdownForRender($curContent->getDescription($currentLang)))) ?>
                 </div>
             </div>
         </div>
@@ -203,7 +203,7 @@ use App\Models\Collection;
             </div>
             <div class="card-body">
                 <div class="video-content" id="markdown-content-summary">
-                    <?= (htmlspecialchars(TextHelper::renderMarkdown($curContent->getSummary($currentLang)))) ?>
+                    <?= (htmlspecialchars(\App\Helpers\MarkdownHelper::prepareMarkdownForRender($curContent->getSummary($currentLang)))) ?>
                 </div>
             </div>
         </div>
