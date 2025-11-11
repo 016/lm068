@@ -62,7 +62,7 @@ class ContentController extends BackendController
             'filters' => $filters,
             'filterDisplayInfo' => $filterDisplayInfo,
             'stats' => $stats,
-            'pageTitle' => '内容管理 - 视频分享网站管理后台',
+            'pageTitle' => '内容管理',
             'css_files' => ['content_list_2.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js', 'content_list_2.js']
         ]);
@@ -177,7 +177,7 @@ class ContentController extends BackendController
             'collectionsList' => $collectionsList,
             'selectedTagIds' => $selectedTagIds,
             'selectedCollectionIds' => $selectedCollectionIds,
-            'pageTitle' => '编辑内容 - 视频分享网站管理后台',
+            'pageTitle' => '编辑内容',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);
@@ -270,7 +270,7 @@ class ContentController extends BackendController
             'collectionsList' => $collectionsList,
             'selectedTagIds' => $selectedTagIds,
             'selectedCollectionIds' => $selectedCollectionIds,
-            'pageTitle' => '创建内容 - 视频分享网站管理后台',
+            'pageTitle' => '创建内容',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);
@@ -467,7 +467,7 @@ class ContentController extends BackendController
             'collectionsList' => $collectionsList,
             'selectedTagIds' => $selectedTagIds,
             'selectedCollectionIds' => $selectedCollectionIds,
-            'pageTitle' => '复制内容 - 视频分享网站管理后台',
+            'pageTitle' => '复制内容',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
         ]);

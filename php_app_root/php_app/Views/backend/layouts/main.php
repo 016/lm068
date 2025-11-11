@@ -8,7 +8,7 @@ use App\Constants\AdminUserRole;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? '内容分享网站 - 管理后台') ?></title>
+    <title><?= htmlspecialchars($pageTitle ?? '') ?> - 管理后台</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="/assets/lib/bootstrap-5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">

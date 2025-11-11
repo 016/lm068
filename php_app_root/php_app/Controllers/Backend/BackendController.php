@@ -78,14 +78,14 @@ class BackendController extends Controller
     protected function layout(string $content, string $title = '', array $data = []): string
     {
         $data['content'] = $content;
-        $data['title'] = $title;
+        $data['pageTitle'] = $title;
         return $this->view('layouts.main', $data);
     }
 
     protected function render(string $template, array $data = [], bool $useLayout = true): void
     {
         if ($useLayout) {
-            echo $this->layout($this->view($template, $data), $data['title'] ?? '', $data);
+            echo $this->layout($this->view($template, $data), $data['pageTitle'] ?? '', $data);
         } else {
             echo $this->view($template, $data);
         }

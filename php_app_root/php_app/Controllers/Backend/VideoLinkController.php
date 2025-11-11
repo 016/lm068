@@ -56,7 +56,7 @@ class VideoLinkController extends BackendController
             'stats' => $stats,
             'platformsList' => $platformsList,
             'contentsList' => $contentsList,
-            'pageTitle' => '视频链接管理 - 视频分享网站管理后台',
+            'pageTitle' => '视频链接管理',
             'css_files' => ['content_list_2.css'],
             'js_files' => ['video_link_list_1.js']
         ]);
@@ -139,7 +139,7 @@ class VideoLinkController extends BackendController
             'videoLink' => $videoLink,
             'platformsList' => $platformsList,
             'contentsList' => $contentsList,
-            'pageTitle' => '编辑视频链接 - 视频分享网站管理后台',
+            'pageTitle' => '编辑视频链接',
             'css_files' => ['content_edit_10.css'],
             'js_files' => [ 'video_link_edit_1.js']
         ]);
@@ -215,7 +215,7 @@ class VideoLinkController extends BackendController
             'videoLink' => $videoLink,
             'platformsList' => $platformsList,
             'contentsList' => $contentsList,
-            'pageTitle' => '创建视频链接 - 视频分享网站管理后台',
+            'pageTitle' => '创建视频链接',
             'css_files' => ['content_edit_10.css'],
             'js_files' => [ 'video_link_edit_1.js']
         ]);

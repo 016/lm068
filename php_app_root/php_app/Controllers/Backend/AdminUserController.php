@@ -69,7 +69,7 @@ class AdminUserController extends BackendController
             'stats' => $stats,
             'toastMessage' => $toastMessage,
             'toastType' => $toastType,
-            'pageTitle' => '管理员管理 - 视频分享网站管理后台',
+            'pageTitle' => '管理员管理',
             'css_files' => ['admin_user_list.css'],
             'js_files' => ['admin_user_list.js']
         ]);
@@ -146,7 +146,7 @@ class AdminUserController extends BackendController
     {
         $this->render('admin_users/edit', [
             'adminUser' => $adminUser,
-            'pageTitle' => '编辑管理员 - 视频分享网站管理后台',
+            'pageTitle' => '编辑管理员',
             'css_files' => ['admin_user_edit.css'],
             'js_files' => [ 'admin_user_edit.js']
         ]);
@@ -222,7 +222,7 @@ class AdminUserController extends BackendController
     {
         $this->render('admin_users/create', [
             'adminUser' => $adminUser,
-            'pageTitle' => '创建管理员 - 视频分享网站管理后台',
+            'pageTitle' => '创建管理员',
             'css_files' => ['admin_user_edit.css'],
             'js_files' => [ 'admin_user_edit.js']
         ]);
@@ -342,7 +342,7 @@ class AdminUserController extends BackendController
     {
         $this->render('admin_users/self_update', [
             'adminUser' => $adminUser,
-            'pageTitle' => '个人信息管理 - 视频分享网站管理后台',
+            'pageTitle' => '个人信息管理',
             'css_files' => ['admin_user_edit.css'],
             'js_files' => [ 'admin_user_edit.js']
         ]);
