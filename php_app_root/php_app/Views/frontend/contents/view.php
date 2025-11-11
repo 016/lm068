@@ -325,7 +325,7 @@ use App\Models\Collection;
                                         </p>
                                     <?php endif; ?>
                                     <small class="text-success">
-                                        <i class="bi bi-clock me-1"></i><?= date('Y-m-d', strtotime($announcement->created_at)) ?>
+                                        <i class="bi bi-clock me-1"></i><?= date('Y-m-d', strtotime($announcement->pub_at)) ?>
                                     </small>
                                 </div>
                                 <span class="badge bg-warning text-dark"><?= $currentLang === 'zh' ? '重要' : 'Important' ?></span>

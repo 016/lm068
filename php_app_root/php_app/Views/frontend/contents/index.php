@@ -107,7 +107,7 @@ use \App\Models\Tag;
                             </h5>
                             <div class="video-meta mb-2">
                                 <small class="text-muted">
-                                    <i class="bi bi-calendar3 me-1"></i><?= date('Y-m-d', strtotime($video->created_at)) ?>
+                                    <i class="bi bi-calendar3 me-1"></i><?= date('Y-m-d', strtotime($video->pub_at)) ?>
                                     <?php if (!empty($video->author)): ?>
                                         <i class="bi bi-person ms-2 me-1"></i><?= htmlspecialchars($video->author) ?>
                                     <?php endif; ?>
