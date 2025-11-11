@@ -26,26 +26,140 @@ class QueryBuilder
     }
 
     /**
-     * 添加 WHERE 条件
+     * 重置构建器状态，方便在循环中重复使用
+     */
+    public function reset(): self
+    {
+        $this->wheres = [];
+        $this->params = [];
+        $this->orderBy = null;
+        $this->limit = null;
+        $this->offset = 0;
+        $this->with = [];
+        $this->select = '*';
+
+        return $this;
+    }
+
+    /**
+     * 添加 WHERE 条件 (增强版)
+     *
+     * 支持多种条件格式:
+     * - `['id' => 1]` -> `id = :id_...`
+     * - `['id' => [1, 2, 3]]` -> `id IN (:id_0, :id_1, ...)`
+     * - `['id' => ['!=', 1]]` -> `id != :id_...`
+     * - `['price' => ['BETWEEN', [100, 200]]]` -> `price BETWEEN :price_0 AND :price_1`
+     * - `['deleted_at' => null]` -> `deleted_at IS NULL`
+     *
+     * @param array $conditions 条件数组
+     * @return self
      */
     public function where(array $conditions): self
     {
         foreach ($conditions as $field => $value) {
-            if (is_array($value)) {
-                $placeholders = [];
-                foreach ($value as $idx => $val) {
-                    $paramKey = $field . '_' . $idx;
-                    $placeholders[] = ':' . $paramKey;
-                    $this->params[$paramKey] = $val;
+            // 1. 处理 IS NULL / IS NOT NULL
+            if ($value === null) {
+                $this->wheres[] = "{$field} IS NULL";
+                continue;
+            }
+            if (is_array($value) && isset($value[0]) && strtoupper($value[0]) === 'IS NOT NULL') {
+                $this->wheres[] = "{$field} IS NOT NULL";
+                continue;
+            }
+            if (is_array($value) && isset($value[0]) && strtoupper($value[0]) === 'IS NULL') {
+                $this->wheres[] = "{$field} IS NULL";
+                continue;
+            }
+
+            // 2. 检查是否为 [操作符, 值] 的高级格式
+            if (is_array($value) && isset($value[0]) && is_string($value[0])) {
+                $operator = strtoupper($value[0]);
+                $val = $value[1] ?? null;
+
+                switch ($operator) {
+                    case 'IN':
+                    case 'NOT IN':
+                        if (!is_array($val) || empty($val)) {
+                            // 避免 IN () 导致的SQL语法错误
+                            $this->wheres[] = ($operator === 'NOT IN') ? '1=1' : '1=0';
+                            break;
+                        }
+                        $placeholders = [];
+                        foreach ($val as $idx => $v) {
+                            $paramKey = $this->generateParamKey($field, $idx);
+                            $placeholders[] = ':' . $paramKey;
+                            $this->params[$paramKey] = $v;
+                        }
+                        $this->wheres[] = "{$field} {$operator} (" . implode(',', $placeholders) . ")";
+                        break;
+
+                    case 'BETWEEN':
+                    case 'NOT BETWEEN':
+                        if (!is_array($val) || count($val) !== 2) {
+                            // 值必须是包含两个元素的数组
+                            continue 2; // continue the outer foreach loop
+                        }
+                        $paramKey1 = $this->generateParamKey($field, 'start');
+                        $paramKey2 = $this->generateParamKey($field, 'end');
+                        $this->wheres[] = "{$field} {$operator} :{$paramKey1} AND :{$paramKey2}";
+                        $this->params[$paramKey1] = $val[0];
+                        $this->params[$paramKey2] = $val[1];
+                        break;
+
+                    default:
+                        // 处理 =, !=, >, <, LIKE 等常规操作符
+                        // 使用白名单确保安全
+                        $allowedOperators = ['=', '!=', '<>', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE'];
+                        if (in_array($operator, $allowedOperators)) {
+                            $paramKey = $this->generateParamKey($field);
+                            $this->wheres[] = "{$field} {$operator} :{$paramKey}";
+                            $this->params[$paramKey] = $val;
+                        }
+                        break;
                 }
-                $this->wheres[] = "{$field} IN (" . implode(',', $placeholders) . ")";
             } else {
-                $paramKey = $field . '_' . count($this->params);
-                $this->wheres[] = "{$field} = :{$paramKey}";
-                $this->params[$paramKey] = $value;
+                // 3. 兼容原始的简单格式
+                if (is_array($value)) {
+                    // 原始格式: ['id' => [1, 2, 3]] -> IN
+                    if (empty($value)) {
+                        $this->wheres[] = '1=0'; // id IN () is invalid
+                        continue;
+                    }
+                    $placeholders = [];
+                    foreach ($value as $idx => $v) {
+                        $paramKey = $this->generateParamKey($field, $idx);
+                        $placeholders[] = ':' . $paramKey;
+                        $this->params[$paramKey] = $v;
+                    }
+                    $this->wheres[] = "{$field} IN (" . implode(',', $placeholders) . ")";
+                } else {
+                    // 原始格式: ['id' => 1] -> =
+                    $paramKey = $this->generateParamKey($field);
+                    $this->wheres[] = "{$field} = :{$paramKey}";
+                    $this->params[$paramKey] = $value;
+                }
             }
         }
         return $this;
+    }
+
+    /**
+     * 生成一个唯一的参数键名以避免冲突
+     */
+    private function generateParamKey(string $field, $suffix = null): string
+    {
+        // 清理字段名，只保留字母数字和下划线
+        $baseKey = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+        $key = $baseKey . ($suffix !== null ? '_' . $suffix : '');
+
+        $uniqueKey = $key;
+        $count = 0;
+        // 如果键名已存在，则添加数字后缀确保唯一性
+        while (array_key_exists($uniqueKey, $this->params)) {
+            $count++;
+            $uniqueKey = $key . '_' . $count;
+        }
+        return $uniqueKey;
     }
 
     /**
@@ -205,5 +319,25 @@ class QueryBuilder
             $relation = $firstModel->$relationName();
             $relation->eagerLoad($models);
         }
+    }
+
+
+    //test support
+    /**
+     * 获取生成的SQL和参数，用于测试
+     */
+    public function getResult(): array
+    {
+        if (empty($this->wheres)) {
+            return [
+                'sql_string' => ' (No WHERE clause generated)',
+                'params'     => [],
+            ];
+        }
+
+        return [
+            'sql_string' => 'WHERE ' . implode(' AND ', $this->wheres),
+            'params'     => $this->params,
+        ];
     }
 }
