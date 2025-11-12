@@ -95,8 +95,8 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
-                            <label for="name_cn" class="form-label required">中文标题</label>
-                            <input type="text" class="form-control <?= isset($content->errors['title_cn']) ? 'is-invalid' : '' ?>" id="name_cn" name="name_cn" value="<?= htmlspecialchars($content->title_cn ?? '') ?>" maxlength="255" required>
+                            <label for="title_cn" class="form-label required">中文标题</label>
+                            <input type="text" class="form-control <?= isset($content->errors['title_cn']) ? 'is-invalid' : '' ?>" id="title_cn" name="title_cn" value="<?= htmlspecialchars($content->title_cn ?? '') ?>" maxlength="255" required>
                             <?php if (isset($content->errors['title_cn'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['title_cn']) ?></div>
                             <?php endif; ?>
@@ -105,8 +105,8 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                     </div>
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
-                            <label for="name_en" class="form-label required">英文标题</label>
-                            <input type="text" class="form-control <?= isset($content->errors['title_en']) ? 'is-invalid' : '' ?>" id="name_en" name="name_en" value="<?= htmlspecialchars($content->title_en ?? '') ?>" maxlength="255" required>
+                            <label for="title_en" class="form-label required">英文标题</label>
+                            <input type="text" class="form-control <?= isset($content->errors['title_en']) ? 'is-invalid' : '' ?>" id="title_en" name="title_en" value="<?= htmlspecialchars($content->title_en ?? '') ?>" maxlength="255" required>
                             <?php if (isset($content->errors['title_en'])): ?>
                                 <div class="invalid-feedback"><?= htmlspecialchars($content->errors['title_en']) ?></div>
                             <?php endif; ?>
