@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFloatingButtons();
 
     // 初始化微信二维码功能
-    initWeChatQRCode();
+    // initWeChatQRCode();
 
 });
 
