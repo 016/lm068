@@ -39,10 +39,23 @@
 ### IDE引入指南 [from](documents/roles/backend_engineer/mvc_rules.md)
 - 在生成 Model 和 View 层代码时，需要遵守 IDE 引入指南, 自动为相关的类属性, 关系与变量添加 PHPDoc 类型注释。
 
-### 常亮使用约定
+### 代码相关指南
+进行相关代码操作时，优先读取下面的 Demo code 进行学习并遵守
+#### Model 操作 Demo code
+- [active_record_demo_code_bulk_operation.md](documents/model/active_record_demo_code_bulk_operation.md)
+- [active_record_demo_code_chain_query.md](documents/model/active_record_demo_code_chain_query.md)
+- [active_record_demo_code_create.md](documents/model/active_record_demo_code_create.md)
+- [active_record_demo_code_delete.md](documents/model/active_record_demo_code_delete.md)
+- [active_record_demo_code_query_simple.md](documents/model/active_record_demo_code_query_simple.md)
+- [active_record_demo_code_relation_eager_loading.md](documents/model/active_record_demo_code_relation_eager_loading.md)
+- [active_record_demo_code_relation_lazy_loading.md](documents/model/active_record_demo_code_relation_lazy_loading.md)
+- [active_record_demo_code_update.md](documents/model/active_record_demo_code_update.md)
+- [active_record_demo_code_where_func_full_params_show.md](documents/model/active_record_demo_code_where_func_full_params_show.md)
+
+#### 常亮使用约定
 - 原则上所有定义在 DDL 语句里的数值都需要转化为常量。然后以常量的形式使用到代码中。禁止直接 hardcode
 
-### MySQL 数据库操作规则 [from](documents/roles/backend_engineer/mysql_op_rules.md)
+#### MySQL 数据库操作规则 [from](documents/roles/backend_engineer/mysql_op_rules.md)
 
 ### URI设计/使用规范 [from](documents/roles/backend_engineer/url_use_rules.md)
 
