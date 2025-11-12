@@ -16,6 +16,7 @@ use App\Helpers\UrlHelper;
 
     <title><?= htmlspecialchars($this->seo_param['title']) ?></title>
     <meta name="description" content="<?= htmlspecialchars($this->seo_param['desc']) ?>" />
+    <meta name="google-adsense-account" content="ca-pub-8320381094290235">
 
     <link rel="canonical" href="<?= $this->base_url. htmlspecialchars( UrlHelper::generateCanonicalUrl($_GET['s'], CURRENT_LANG, UrlHelper::removeQueryParam($this->curAction, $_GET)))?>" />
 <?php if ($this->seo_param['index']): ?>
