@@ -1,7 +1,7 @@
 # CLAUDE Command and Role Definitions
 
 ## 基本信息
-这是一个使用 Claude Code 开发的视频展示网站。主要工作是使用定义的角色完成开发工作。
+这是一个使用 Claude Code 开发的内容展示网站。主要工作是使用定义的角色完成开发工作。
 
 ## 规则
 - 你是 Claude
@@ -20,102 +20,31 @@
 ## 角色
 ### 角色定义
 - 前端UI工程师(roles/frontend-engineer.md)
-  - 负责线框图生成、前端代码生成及修改、ui类型任务
+    - 负责线框图生成、前端代码生成及修改、ui类型任务
 - 后端PHP工程师(roles/backend-engineer.md)
-  - 负责PHP代码业务模块生成及修改
+    - 负责PHP代码业务模块生成及修改
 
 ## 文件相关说明
 
+### 文件拆分说明
+为了保证读取和操作的效率，一些文件按功能拆分成了子文件，请在需要的时候按标注位置读取子文件
+
 ### 核心项目文件
 - 以下文件以项目根目录为基础展示路径
-- `/project-root/PRD.md` - 产品需求文档，定义所有功能模块和技术要求
+- `/project-root/documents/PRD.md` - 产品需求文档，定义所有功能模块和技术要求
 - `/project-root/database/schema.sql` - MySQL数据库结构文件，包含所有数据表定义
-- `/project-root/roles/frontend-engineer.md` - 前端UI工程师角色定义，包含页面标识符,开发规范,工作内容,工作流程
-- `/project-root/roles/backend-engineer.md` - 后端PHP工程师角色定义，包含模块标识符,开发规范,工作内容,工作流程
 
 ### 项目文件结构
 /project-root
 ├── CLAUDE.md # 本文件
-├── PRD.md # 产品需求文档
+├── documents/ # 辅助说明文件, CLAUDE.md 文件太长了影响性能，拆分开便按需读取
 ├── database/
-│ └── schema.sql # 数据库结构
-├── html_design # 设计html相关文件
-│ ├── frontend/ # 前端html相关设计文件
-│ │ ├── wireframes/ # ASCII线框图
-│ │ ├── html/ # HTML文件
-│ │ ├── css/ # CSS文件
-│ │ └── js/ # JavaScript文件
-│ └── backend/ # 后端html相关设计文件
-│   ├── wireframes/ # ASCII线框图
-│   ├── html/ # HTML文件
-│   ├── css/ # CSS文件
-│   └── js/ # JavaScript文件
-├── php_app_root/ # PHP生成的项目存放位置
+├── html_design # 设计html相关文件, 内部结构见 documents/html_design_layout.md
+├── php_app_root/ # PHP生成的项目存放位置, 内部结构见 documents/php_app_root_layout.md
 ├── roles/ # 角色定义文件
-│ ├── frontend-engineer.md
-│ └── backend-engineer.md
 └── .claude/ # Claude配置
-  ├── commands/ # 自定义斜杠命令
-  └── settings.json # 项目设置
-
-#### php_app_root 目录结构
-/php_app_root
-├── php_app/                # 主PHP应用 (code)
-└── public_resources/       # 独立的资源目录, 安全隔离
-    └── uploads/            # re.domain.com 指向这里
-        ├── avatars/
-        ├── thumbnails/
-        └── videos_preview/
-
-##### php_app 目录结构
-php_app/
-├── Models/                   # 模型层 (M) - 数据库交互, 业务逻辑 (前后端共用)
-├── Views/                    # 视图层 (V)
-│   ├── backend/              # 后台视图 (以子文件夹结构来和controller呼应)
-│   │   ├──layouts/           # 布局文件 (如头部, 尾部, 侧边栏)
-│   │   └──videos/            # 以video举例
-│   └── frontend/             # 前台视图 (您的前台HTML页面放这里)
-│       ├── layouts/          # 布局文件
-│       └── videos/           # 以video举例
-├── Controllers/              # 控制器层 (C)
-│   ├── Backend/              # 后台控制器
-│   └── Frontend/             # 前台控制器
-├── Core/                     # 核心框架类
-│   ├── Router.php            # 路由器
-│   ├── Request.php           # 请求处理
-│   ├── Database.php          # 数据库连接
-│   ├── Controller.php        # 基础控制器
-│   └── Model.php             # 基础模型
-├── Helpers/                  # 无状态的工具类存放位置, 提供可复用的静态方法
-├── Interfaces/               # Interface 存放位置
-├── Constants/                # Constant 存放位置
-├── config/                   # 配置文件
-│   ├── main.php              # 应用主配置 (时区, 密钥等)
-│   ├── database.php          # 默认数据库配置
-│   └── database.local.php    # 本地数据库配置 (此文件不提交到版本库)
-├── scripts/                  # 测试脚本存放位置
-│
-├── public_backend/           # 【后台入口】(admin.yourdomain.com 指向这里)
-│   ├── assets/               # 后台静态资源 (CSS, JS, Images)
-│   └── index.php             # 后台唯一入口文件
-│
-├── public_frontend/          # 【前端入口】(www.yourdomain.com 指向这里)
-│   ├── assets/               # 前台静态资源
-│   └── index.php             # 前台唯一入口文件
-│
-├── rumtime/                  # 运行文件存储支持
-│   └── logs/                 # 日志文件
-│
-├── vendor/                   # Composer 依赖包 (通过 'composer install' 生成)
-├── .gitignore                # Git 忽略配置
-├── composer.json             # Composer 依赖管理文件
-└── README.md                 # 项目说明文件
 
 
 ## 技术规范
-
-### 已定义 js 可用组件
-- 当需求符合时，优先使用本列表中定义的内容
-- backend
-  - 向用户展示提示信息。 main.js showToast() 
-- frontend
+- 当涉及关联需求时，优先查阅下面的列表
+- 已定义 js 可用组件 documents/exist_js_lib_list.md
