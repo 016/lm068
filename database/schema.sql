@@ -60,7 +60,7 @@ CREATE TABLE `content` (
   `like_cnt` INT UNSIGNED DEFAULT 0 COMMENT '点赞数',
   `favorite_cnt` INT UNSIGNED DEFAULT 0 COMMENT '收藏数',
   `comment_cnt` INT UNSIGNED DEFAULT 0 COMMENT '评论数',
-  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 9-隐藏, 11-草稿, 51-创意, 56-脚本开, 59-脚本完, 61-开拍, 69-拍完, 71-开剪, 79-剪完, 91-待发布, 99-已发布',
+  `status_id` TINYINT UNSIGNED DEFAULT 1 COMMENT '状态: 9-隐藏, 11-草稿, 31-创意_0, 35-创意开, 39-创意完, 56-脚本开, 59-脚本完, 61-开拍, 69-拍完, 71-开剪, 79-剪完, 91-待发布, 99-已发布',
   `pub_at` DATETIME COMMENT '发布时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP removed because pv_cnt update will rise this field update, sitemap will show wrong date, keep update logic in php code

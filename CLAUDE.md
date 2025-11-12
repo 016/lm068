@@ -20,9 +20,9 @@
 ## 角色
 ### 角色定义
 - 前端UI工程师(roles/frontend-engineer.md)
-    - 负责线框图生成、前端代码生成及修改、ui类型任务
+  - 负责线框图生成、前端代码生成及修改、ui类型任务
 - 后端PHP工程师(roles/backend-engineer.md)
-    - 负责PHP代码业务模块生成及修改
+  - 负责PHP代码业务模块生成及修改
 
 ## 文件相关说明
 
@@ -39,12 +39,12 @@
 ├── CLAUDE.md # 本文件
 ├── documents/ # 辅助说明文件, CLAUDE.md 文件太长了影响性能，拆分开便按需读取
 ├── database/
-├── html_design # 设计html相关文件, 内部结构见 documents/html_design_layout.md
-├── php_app_root/ # PHP生成的项目存放位置, 内部结构见 documents/php_app_root_layout.md
+├── html_design # 设计html相关文件, 内部结构见 (documents/html_design_layout.md)
+├── php_app_root/ # PHP生成的项目存放位置, 内部结构见 (documents/php_app_root_layout.md)
 ├── roles/ # 角色定义文件
 └── .claude/ # Claude配置
 
 
 ## 技术规范
 - 当涉及关联需求时，优先查阅下面的列表
-- 已定义 js 可用组件 documents/exist_js_lib_list.md
+- 已定义 js 可用组件(documents/exist_js_lib_list.md)

@@ -9,6 +9,7 @@
 - 维护数据库操作, 数据验证及业务逻辑实现
 - 进行代码修改及功能完善
 - 在你的运行环境里没有配置php, 所以不要尝试运行任何php代码, 如有需要可以生成文件告诉我怎么运行, 我将手动完成
+- 没有收到明确命令的情况下，默认不做测试相关内容，不写测试脚本，不写总结文档
 
 ## 角色工作流
 1. 充分分析用户需求
@@ -16,34 +17,7 @@
 3. 按用户要求生成或修改 PHP 代码
 4. 以文本的形式向用户反馈结果
 
-## 模块示例
-- 用户前端模块
-    - f-content-list: 内容列表页面
-    - f-content-detail: 内容详情页面
-    - f-user-login: 用户登录页面
-    - f-user-comments: 评论展示页面
-    - f-subscribe-email: 邮件订阅页面
-    - f-contact-us: 联系我们页面
-- 管理后端模块
-    - b-admin-login: 后端管理员登录 
-    - b-dashboard: 后端dashboard的页面
-    - b-tag-index: tag index page
-    - b-tag-create: tag create form page
-    - b-tag-edit: tag edit form page
-    - b-collection-index: collection index page
-    - b-collection-create: collection create form page
-    - b-collection-edit: collection edit form page
-    - b-content-index: content index page
-    - b-content-create: content create form page
-    - b-content-edit: content edit form page
-    - b-video_link-index: video_link index page
-    - b-video_link-create: video_link create form page
-    - b-video_link-edit: video_link edit form page
-    - b-user-management: 用户管理模块
-    - b-admin_user-management: 管理员管理模块
-    - b-comment-management: 评论管理模块
-    - b-subscription-management: 订阅邮件管理模块
-    - b-analytics: 视频数据分析模块
+## 模块list [from](documents/roles/backend_engineer/module_list.md)
 
 ## 技术规则
 ### 技术栈
@@ -60,91 +34,22 @@
 - 使用单入口模式。为用户前端和管理后端各配置一个入口。
 
 
-### MVC架构规则
-- 使用 MVC架构
-- 遵循 MVC 原则, 进行必要的继承, 以优化代码架构
-- MVC 标准流程, 使用经典MVC流程, 实现Active Record模式，支持属性访问和错误管理
-  - 以create tag 举例
-    1. $tag = new Tag();
-    2. 把 $tag 传递到 view 实现渲染。
-    3. view 渲染时使用 $tag 的一些入属性，比如说字数限制标题等常见功能。
-    4. 表单提交时 post 回 create action。对 POST 的数值进行提取并填充回 $tag。
-    5. 使用 Tag 的 validate 对提取的 post 数值进行验证。
-    6. 如果验证失败，使用 $tag->errors 返回给 view, view 向用户渲染错误, 允许再次编辑。
-    7. 重复提交，直至验证通过。写入数据库。完成后续逻辑.
-- Model
-  - 建立 model 和基础 model
-  - 在 view 和 controller 中按标准使用 model
-  - 新建 model 时需要为 model 的属性和关系。引入 IDE 支持的变量注释。
-- View
-  - view 文件存放在 php_app_root/php_app/Views 文件夹下
-    - 管理后端存放在 php_app_root/php_app/Views/backend
-    - 用户前端存放在 php_app_root/php_app/Views/frontend
-  - 布局内容存放在 对应 layouts 文件夹内, 在无约定的情况下, 优先使用layouts内的布局文件
-    - layouts/main.php 为默认布局文件, 无特殊指定时优先使用该布局
-    - 在使用布局的前提下, 只需要渲染 <main> 标签内的内容即可, 其他可复用的公共元素内容已存放在布局文件内, 不需要重复渲染
-  - backend form page
-    - create and edit form page 相同的表单部分使用 _form.php 文件来实现共享
-- IDE引入指南
-  - 请依据数据库 DDL 的字段定义，在生成 Model 和 View 层代码时，自动为相关的类属性,关系与变量添加 PHPDoc 类型注释。
-  - View中使用的变量(包括 Controller 和 Model), 需要引入变量对应的源，方便实现 IDE 提示
-  - Model中的关系需要指定具体目标关系的Model名称，具体在DDL里可以查找到
-  - PHPDoc 定义格式见 "IDE引入指南Demo"
-```IDE引入指南Demo
-// View demo
-/**
- * @var $this \App\Controllers\Frontend\ContentController //$this->funcName() will auto work in IDE
- * @var $contents \App\Models\Content[]
- * @var $content \App\Models\Content //$content->id will auto work in IDE
- */
- 
-// Model demo
-/**
- * @property int $id 内容ID
- * @property int $content_type_id 内容类型
- * @property-read ContentType $contentType 所属内容类型
- * @property-read Comment[] $comments 评论
- */
-```
+### MVC架构规则 [from](documents/roles/backend_engineer/mvc_rules.md)
+
+### IDE引入指南 [from](documents/roles/backend_engineer/mvc_rules.md)
+- 在生成 Model 和 View 层代码时，需要遵守 IDE 引入指南, 自动为相关的类属性, 关系与变量添加 PHPDoc 类型注释。
 
 ### 常亮使用约定
 - 原则上所有定义在 DDL 语句里的数值都需要转化为常量。然后以常量的形式使用到代码中。禁止直接 hardcode
 
-### MySQL 数据库
-- 因为使用了 PDO::ATTR_EMULATE_PREPARES => false, 所以SQL语句中不允许出现同名占位符, 就算对应同一个参数, 也要严格使用不同的占位符
-  - 正确做法 SELECT * FROM tag WHERE id = :id AND (name_cn LIKE :name_cn OR name_en LIKE :name_en) ORDER BY created_at DESC
-  - 错误做法 SELECT * FROM tag WHERE id = :id AND (name_cn LIKE :name OR name_en LIKE :name) ORDER BY created_at DESC
+### MySQL 数据库操作规则 [from](documents/roles/backend_engineer/mysql_op_rules.md)
 
-### URI页面流程规范
-- 关于URL, 已经通过3级域名实现了前后端使用不同的域名, 在生成uri的时候请生成正确的path
-  - www.a.com 已指向 php_app_root/php_app/public_frontend
-  - admin.a.com 已指向 php_app_root/php_app/public_backend
-- 如果需要对 URI 中的 ID 进行encode/decode，已经实现了 hashId class 可以直接使用
-  - php_app_root/php_app/Core/HashId.php
-- backend
-  - list page 使用 index关键词
-  - create page 使用 create关键词 
-    - 直接post到create 处理完以后跳转回index
-  - update page 使用 update关键词 
-    - 直接post到update 处理完以后跳转回index
-  - view page 使用 view关键词
-  - 其他要求
-    - 后台页面所有功能, 需要使用反馈的时候, 均使用定义的notification进行反馈
-    
-- frontend
-  - list page 使用 index关键词
-  - detail page 使用 view关键词
+### URI设计/使用规范 [from](documents/roles/backend_engineer/url_use_rules.md)
 
 ### 错误处理
 - 处理 HTTP 请求时, 如果遇到错误, 直接输出 json 格式错误信息。在未收到明确要求的前提下, 不要进行 redirect 跳转页面。 方便进行判断和 debug
 
-### 关于 form 操作
-- 数据验证规则
-  - JS 代码会有完成。实时数据验证在用户输入之后。校验合格后进入下一步
-  - form submit 使用 post模式,  后台由 PHP 完成验证。
-    - 如果出现问题, 返回对应的 form 页面, 向用户展示提交的数据和错误信息, 错误展示方式, 已通过 HTML 设计稿给出。
-    - 如果没有问题, 则进入流程的下一步。
-- 根据 model 层定义的 rule 扫描form post的数据, 确定输入没有问题后(可以通过读取数据库来做判断), 再到数据库执行, 如果有问题, 则返回 UI 向用户反馈, 要求用户修改
+### form 操作规则 [from](documents/roles/backend_engineer/form_op_rules.md)
 
 ### 其他要点
 - 在定义函数参数的时候, "int $limit = null" 这种写法已经废弃了, 正确的写法应该是。 "?int $limit = null"

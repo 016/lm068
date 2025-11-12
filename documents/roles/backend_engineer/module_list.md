@@ -1,0 +1,28 @@
+## 模块list
+- 用户前端模块
+  - f-content-list: 内容列表页面
+  - f-content-detail: 内容详情页面
+  - f-user-login: 用户登录页面
+  - f-user-comments: 评论展示页面
+  - f-subscribe-email: 邮件订阅页面
+  - f-contact-us: 联系我们页面
+- 管理后端模块
+  - b-admin-login: 后端管理员登录
+  - b-dashboard: 后端dashboard的页面
+  - b-tag-index: tag index page
+  - b-tag-create: tag create form page
+  - b-tag-edit: tag edit form page
+  - b-collection-index: collection index page
+  - b-collection-create: collection create form page
+  - b-collection-edit: collection edit form page
+  - b-content-index: content index page
+  - b-content-create: content create form page
+  - b-content-edit: content edit form page
+  - b-video_link-index: video_link index page
+  - b-video_link-create: video_link create form page
+  - b-video_link-edit: video_link edit form page
+  - b-user-management: 用户管理模块
+  - b-admin_user-management: 管理员管理模块
+  - b-comment-management: 评论管理模块
+  - b-subscription-management: 订阅邮件管理模块
+  - b-analytics: 视频数据分析模块
