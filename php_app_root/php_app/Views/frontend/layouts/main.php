@@ -192,10 +192,10 @@ use App\Helpers\UrlHelper;
                     <div>
                         <h5 class="mb-0 mt-2" data-i18n="footer.social"><?= ($currentLang ?? 'zh') === 'zh' ? '社交媒体' : 'Social Media' ?></h5>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="#" class="text-light"><i class="bi bi-youtube me-1"></i><span data-i18n="footer.youtube">YT</span></a>
-                            <a href="#" class="text-light"><i class="bi bi-tv me-1"></i><span data-i18n="footer.bilibili">Bilibili</span></a>
-                            <a href="#" class="text-light"><i class="bi bi-tiktok me-1"></i><span data-i18n="footer.douyin"><?= ($currentLang ?? 'zh') === 'zh' ? '抖音' : 'Douyin' ?></span></a>
-                            <a href="#" class="text-light"><i class="bi bi-wechat me-1"></i><span data-i18n="footer.wechat"><?= ($currentLang ?? 'zh') === 'zh' ? '微信' : 'WeChat' ?></span></a>
+                            <a href="https://www.youtube.com/@DP_IT" class="text-light" target="_blank"><i class="bi bi-youtube me-1"></i><span data-i18n="footer.youtube">YT</span></a>
+                            <a href="https://space.bilibili.com/439088670" class="text-light" target="_blank"><i class="bi bi-tv me-1"></i><span data-i18n="footer.bilibili">Bilibili</span></a>
+                            <a href="https://www.douyin.com/user/MS4wLjABAAAASH-CpqvGn5acgtNKvHsTTqztO3npH6QPxR1ejZSta9kBktzzbgCnl63mkCTrUAnt" class="text-light" target="_blank"><i class="bi bi-tiktok me-1"></i><span data-i18n="footer.douyin"><?= ($currentLang ?? 'zh') === 'zh' ? '抖音' : 'Douyin' ?></span></a>
+                            <a href="#" class="text-light" target="_blank"><i class="bi bi-wechat me-1"></i><span data-i18n="footer.wechat"><?= ($currentLang ?? 'zh') === 'zh' ? '微信' : 'WeChat' ?></span></a>
                         </div>
                     </div>
                 </div>
