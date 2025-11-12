@@ -279,30 +279,30 @@ use App\Constants\VideoLinkStatus;
                     </thead>
                     <tbody id="videoLinkTableBody">
                         <?php if (!empty($videoLinks)): ?>
-                            <?php foreach ($videoLinks as $item): ?>
-                                <tr class="table-row" data-id="<?= $item['id'] ?>">
+                            <?php foreach ($videoLinks as $oneLink): ?>
+                                <tr class="table-row" data-id="<?= $oneLink->id ?>">
                                     <td class="table-cell">
                                         <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= $item['id'] ?>">
+                                            <input class="form-check-input row-checkbox" type="checkbox" value="<?= $oneLink->id ?>">
                                         </div>
                                     </td>
-                                    <td class="table-cell table-id" data-column="id"><?= $item['id'] ?></td>
+                                    <td class="table-cell table-id" data-column="id"><?= $oneLink->id ?></td>
                                     <td class="table-cell" data-column="content_id">
-                                        <a href="/contents/<?= $item['content_id'] ?>/edit" class="text-decoration-none">
-                                            <?= htmlspecialchars($item['content_title'] ?? "ID: {$item['content_id']}") ?>
+                                        <a href="/contents/<?= $oneLink->content_id ?>/edit" class="text-decoration-none">
+                                            <?= htmlspecialchars($oneLink->content_title ?? "ID: {$oneLink->content_id}") ?>
                                         </a>
                                     </td>
                                     <td class="table-cell" data-column="platform_id">
                                         <span class="badge rounded-pill text-bg-info">
                                             <i class="bi bi-play-btn badge-icon"></i>
-                                            <?= htmlspecialchars($item['platform_name'] ?? '') ?>
+                                            <?= htmlspecialchars($oneLink->platform_name ?? '') ?>
                                         </span>
                                     </td>
-                                    <td class="table-cell" data-column="play_cnt"><?= number_format($item['play_cnt'] ?? 0) ?></td>
+                                    <td class="table-cell" data-column="play_cnt"><?= number_format($oneLink->play_cnt ?? 0) ?></td>
                                     <td class="table-cell" data-column="status_id">
                                         <?php
-                                        $status = VideoLinkStatus::tryFrom($item['status_id']);
-                                        $statusClass = match($item['status_id']) {
+                                        $status = VideoLinkStatus::tryFrom($oneLink->status_id);
+                                        $statusClass = match($oneLink->status_id) {
                                             VideoLinkStatus::VALID->value => 'text-bg-success',
                                             VideoLinkStatus::INVALID->value => 'text-bg-danger',
                                             default => 'text-bg-secondary'
@@ -315,13 +315,13 @@ use App\Constants\VideoLinkStatus;
                                     </td>
                                     <td class="table-cell table-actions" data-column="actions">
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="/video-links/<?= $item['id'] ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
+                                            <a href="/video-links/<?= $oneLink->id ?>/edit" class="btn btn-outline-primary btn-sm" title="编辑">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="<?= htmlspecialchars($item['external_url']) ?>" target="_blank" class="btn btn-outline-info btn-sm" title="查看链接">
+                                            <a href="<?= htmlspecialchars($oneLink->external_url) ?>" target="_blank" class="btn btn-outline-info btn-sm" title="查看链接">
                                                 <i class="bi bi-box-arrow-up-right"></i>
                                             </a>
-                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= $item['id'] ?>">
+                                            <button class="btn btn-outline-danger btn-sm delete-item" title="删除" data-id="<?= $oneLink->id ?>">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>

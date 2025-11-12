@@ -34,12 +34,12 @@ class VideoLinkController extends BackendController
         $videoLinks = VideoLink::findAllWithFilters($filters);
 
         // 获取每个video_link的关联信息
-        foreach ($videoLinks as &$link) {
-            $contentInfo = $this->curModel->getRelatedContent($link['id']);
-            $platformInfo = $this->curModel->getRelatedPlatform($link['id']);
-            $link['content_title'] = $contentInfo ? ($contentInfo['title_cn'] ?: $contentInfo['title_en']) : '';
-            $link['platform_name'] = $platformInfo ? $platformInfo['name'] : '';
-            $link['platform_code'] = $platformInfo ? $platformInfo['code'] : '';
+        foreach ($videoLinks as &$oneLink) {
+            $contentInfo = $this->curModel->getRelatedContent($oneLink->id);
+            $platformInfo = $this->curModel->getRelatedPlatform($oneLink->id);
+            $oneLink->content_title = $contentInfo ? ($contentInfo['title_cn'] ?: $contentInfo['title_en']) : '';
+            $oneLink->platform_name = $platformInfo ? $platformInfo['name'] : '';
+            $oneLink->platform_code = $platformInfo ? $platformInfo['code'] : '';
         }
 
         $stats = $this->curModel->getStats();
