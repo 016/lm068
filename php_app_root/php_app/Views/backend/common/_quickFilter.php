@@ -45,6 +45,9 @@ use App\Constants\ContentStatus;
 $defaultItems = [
     's_' => ['queryParam' => 'status_id', 'value' => '', 'label' => '全部', 'icon' => 'bi-list-ul'],
     's_'.ContentStatus::DRAFT->value => ['queryParam' => 'status_id', 'value' => ContentStatus::DRAFT->value, 'label' => ContentStatus::DRAFT->label(), 'icon' => ContentStatus::DRAFT->icon()],
+    's_'.ContentStatus::CREATIVE_0->value.'-'.ContentStatus::CREATIVE_START->value.'-'.ContentStatus::CREATIVE_DONE->value => ['queryParam' => 'status_id', 'value' => ContentStatus::CREATIVE_0->value.','.ContentStatus::CREATIVE_START->value.','.ContentStatus::CREATIVE_DONE->value, 'label' => '创意*', 'icon' => ContentStatus::CREATIVE_0->icon()],
+    's_'.ContentStatus::SHOOTING_DONE->value => ['queryParam' => 'status_id', 'value' => ContentStatus::SHOOTING_DONE->value, 'label' => ContentStatus::SHOOTING_DONE->label(), 'icon' => ContentStatus::SHOOTING_DONE->icon()],
+    's_'.ContentStatus::EDITING_DONE->value => ['queryParam' => 'status_id', 'value' => ContentStatus::EDITING_DONE->value, 'label' => ContentStatus::EDITING_DONE->label(), 'icon' => ContentStatus::EDITING_DONE->icon()],
     's_'.ContentStatus::PENDING_PUBLISH->value => ['queryParam' => 'status_id', 'value' => ContentStatus::PENDING_PUBLISH->value, 'label' => ContentStatus::PENDING_PUBLISH->label(), 'icon' => ContentStatus::PENDING_PUBLISH->icon()],
     's_'.ContentStatus::PUBLISHED->value => ['queryParam' => 'status_id', 'value' => ContentStatus::PUBLISHED->value, 'label' => ContentStatus::PUBLISHED->label(), 'icon' => ContentStatus::PUBLISHED->icon()],
     's_'.ContentStatus::PENDING_PUBLISH->value.'-'.ContentStatus::PUBLISHED->value => ['queryParam' => 'status_id', 'value' => ContentStatus::PENDING_PUBLISH->value.",".ContentStatus::PUBLISHED->value, 'label' => ContentStatus::PENDING_PUBLISH->label().'+'.ContentStatus::PUBLISHED->label(), 'icon' => ContentStatus::PUBLISHED->icon()]
