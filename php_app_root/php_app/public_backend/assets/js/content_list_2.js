@@ -102,11 +102,23 @@ function initContentListPage() {
         entityName: '内容',
         tableManager: tableManager
     });
-    
-    // 8. 将实例保存到全局，方便调试和扩展
+
+    // 8. 初始化批量设置功能
+    const batchSettingsManager = new window.AdminCommon.BatchSettingsManager(tableManager, {
+        endpoint: '/contents/batch-update'
+    });
+    batchSettingsManager.init();
+
+    // 9. 初始化区域切换功能
+    const sectionToggleManager = new window.AdminCommon.SectionToggleManager();
+    sectionToggleManager.init();
+
+    // 10. 将实例保存到全局，方便调试和扩展
     window.contentListManager = {
         tableManager: tableManager,
-        tableActions: tableActions
+        tableActions: tableActions,
+        batchSettingsManager: batchSettingsManager,
+        sectionToggleManager: sectionToggleManager
     };
     
     console.log('=== 内容列表页面初始化完成（优化版 TableManager）===');
@@ -149,8 +161,10 @@ function initStatusMultiSelect() {
     const selectedStatusIds = window.contentIndexData.selectedStatusIds || [];
 
     // 将选中的ID转换为对应的对象
-    const selectedStatuses = statusList.filter(status =>
-        selectedStatusIds.includes(status.id) || selectedStatusIds.includes(parseInt(status.id))
+    const normalizedSelectedIds = selectedStatusIds.map(id => String(id));
+
+    const selectedStatuses = statusList.filter(oneType =>
+        normalizedSelectedIds.includes(String(oneType.id))
     );
 
     console.log('初始化状态多选组件:', {

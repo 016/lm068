@@ -114,6 +114,10 @@ use App\Constants\ContentType;
             <div class="chart-header-left">
                 <i class="bi bi-list-ul chart-title-icon"></i>
                 <h3>📄 内容列表管理</h3>
+                <?php
+                // 配置切换按钮 - 使用默认值，无需额外配置
+                include __DIR__ . '/../common/_toggleButtons.php';
+                ?>
             </div>
             <?php if (!empty($filterDisplayInfo)): ?>
             <div class="filter-status-display" style="margin-left: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
@@ -135,8 +139,16 @@ use App\Constants\ContentType;
             <?php endif; ?>
         </div>
 
+        <?php
+        // 配置快速筛选 - 使用默认值，只需配置当前选中值
+        $config = [
+            'currentValue' => $_GET['status_id'] ?? null
+        ];
+        include __DIR__ . '/../common/_quickFilter.php';
+        ?>
+
         <!-- Action Buttons Row -->
-        <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
+        <div id="action-buttons-section" data-show="true" style="padding: 1.5rem 1.5rem 0 1.5rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex gap-2 flex-wrap">
                     <a href="/contents/create" class="btn btn-primary d-flex align-items-center gap-2">
