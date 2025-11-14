@@ -71,58 +71,69 @@ class QueryBuilder
                 continue;
             }
 
-            // 2. 检查是否为 [操作符, 值] 的高级格式
-            if (is_array($value) && isset($value[0]) && is_string($value[0])) {
-                $operator = strtoupper($value[0]);
-                $val = $value[1] ?? null;
+            // 2. 处理数组类型的值
+            if (is_array($value)) {
+                // 2.1 检查是否为 [操作符, 值] 的高级格式
+                $isOperatorFormat = false;
+                if (isset($value[0]) && is_string($value[0])) {
+                    $operator = strtoupper($value[0]);
 
-                switch ($operator) {
-                    case 'IN':
-                    case 'NOT IN':
-                        if (!is_array($val) || empty($val)) {
-                            // 避免 IN () 导致的SQL语法错误
-                            $this->wheres[] = ($operator === 'NOT IN') ? '1=1' : '1=0';
-                            break;
-                        }
-                        $placeholders = [];
-                        foreach ($val as $idx => $v) {
-                            $paramKey = $this->generateParamKey($field, $idx);
-                            $placeholders[] = ':' . $paramKey;
-                            $this->params[$paramKey] = $v;
-                        }
-                        $this->wheres[] = "{$field} {$operator} (" . implode(',', $placeholders) . ")";
-                        break;
+                    // 定义有效操作符白名单
+                    $validOperators = [
+                        'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN',
+                        'IS NULL', 'IS NOT NULL',
+                        '=', '!=', '<>', '>', '<', '>=', '<=',
+                        'LIKE', 'NOT LIKE'
+                    ];
 
-                    case 'BETWEEN':
-                    case 'NOT BETWEEN':
-                        if (!is_array($val) || count($val) !== 2) {
-                            // 值必须是包含两个元素的数组
-                            continue 2; // continue the outer foreach loop
-                        }
-                        $paramKey1 = $this->generateParamKey($field, 'start');
-                        $paramKey2 = $this->generateParamKey($field, 'end');
-                        $this->wheres[] = "{$field} {$operator} :{$paramKey1} AND :{$paramKey2}";
-                        $this->params[$paramKey1] = $val[0];
-                        $this->params[$paramKey2] = $val[1];
-                        break;
+                    if (in_array($operator, $validOperators)) {
+                        $isOperatorFormat = true;
+                        $val = $value[1] ?? null;
 
-                    default:
-                        // 处理 =, !=, >, <, LIKE 等常规操作符
-                        // 使用白名单确保安全
-                        $allowedOperators = ['=', '!=', '<>', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE'];
-                        if (in_array($operator, $allowedOperators)) {
-                            $paramKey = $this->generateParamKey($field);
-                            $this->wheres[] = "{$field} {$operator} :{$paramKey}";
-                            $this->params[$paramKey] = $val;
+                        switch ($operator) {
+                            case 'IN':
+                            case 'NOT IN':
+                                if (!is_array($val) || empty($val)) {
+                                    // 避免 IN () 导致的SQL语法错误
+                                    $this->wheres[] = ($operator === 'NOT IN') ? '1=1' : '1=0';
+                                    break;
+                                }
+                                $placeholders = [];
+                                foreach ($val as $idx => $v) {
+                                    $paramKey = $this->generateParamKey($field, $idx);
+                                    $placeholders[] = ':' . $paramKey;
+                                    $this->params[$paramKey] = $v;
+                                }
+                                $this->wheres[] = "{$field} {$operator} (" . implode(',', $placeholders) . ")";
+                                break;
+
+                            case 'BETWEEN':
+                            case 'NOT BETWEEN':
+                                if (!is_array($val) || count($val) !== 2) {
+                                    // 值必须是包含两个元素的数组
+                                    continue 2; // continue the outer foreach loop
+                                }
+                                $paramKey1 = $this->generateParamKey($field, 'start');
+                                $paramKey2 = $this->generateParamKey($field, 'end');
+                                $this->wheres[] = "{$field} {$operator} :{$paramKey1} AND :{$paramKey2}";
+                                $this->params[$paramKey1] = $val[0];
+                                $this->params[$paramKey2] = $val[1];
+                                break;
+
+                            default:
+                                // 处理 =, !=, >, <, LIKE 等常规操作符
+                                $paramKey = $this->generateParamKey($field);
+                                $this->wheres[] = "{$field} {$operator} :{$paramKey}";
+                                $this->params[$paramKey] = $val;
+                                break;
                         }
-                        break;
+                    }
                 }
-            } else {
-                // 3. 兼容原始的简单格式
-                if (is_array($value)) {
-                    // 原始格式: ['id' => [1, 2, 3]] -> IN
+
+                // 2.2 不是操作符格式,按普通数组处理(IN 查询)
+                if (!$isOperatorFormat) {
                     if (empty($value)) {
-                        $this->wheres[] = '1=0'; // id IN () is invalid
+                        $this->wheres[] = '1=0';
                         continue;
                     }
                     $placeholders = [];
@@ -132,12 +143,12 @@ class QueryBuilder
                         $this->params[$paramKey] = $v;
                     }
                     $this->wheres[] = "{$field} IN (" . implode(',', $placeholders) . ")";
-                } else {
-                    // 原始格式: ['id' => 1] -> =
-                    $paramKey = $this->generateParamKey($field);
-                    $this->wheres[] = "{$field} = :{$paramKey}";
-                    $this->params[$paramKey] = $value;
                 }
+            } else {
+                // 3. 处理简单值: ['id' => 1] -> =
+                $paramKey = $this->generateParamKey($field);
+                $this->wheres[] = "{$field} = :{$paramKey}";
+                $this->params[$paramKey] = $value;
             }
         }
         return $this;
