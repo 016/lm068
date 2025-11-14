@@ -504,8 +504,8 @@ class Content extends UploadableModel implements HasStatuses
                 );
             }
 
-            // 更新所有相关标签的内容计数（只更新有变化的标签）
-            $affectedTagIds = array_unique(array_merge($tagsToRemove, $tagsToAdd));
+            // 更新所有old tag + new tag // because status_id could be changed.
+            $affectedTagIds = array_unique(array_merge($oldTagIds, $tagsToAdd));
             foreach ($affectedTagIds as $tagId) {
                 $tmpTag = new Tag();
                 $tmpTag->updateContentCount($tagId);
@@ -559,6 +559,11 @@ class Content extends UploadableModel implements HasStatuses
                     ['content_id' => $contentId, 'collection_id' => $collectionId]
                 );
 
+            }
+
+            // 更新所有old collection + new collection // because status_id could be changed.
+            $affectedCollectionIds = array_unique(array_merge($oldCollectionIds, $collectionsToAdd));
+            foreach ($affectedCollectionIds as $collectionId) {
                 $tmpCollection = new Collection();
                 $tmpCollection->updateContentCount($collectionId);
             }
