@@ -577,6 +577,85 @@ class Content extends UploadableModel implements HasStatuses
     }
 
     /**
+     * update linked tag's count when content change like bulk action
+     * @param int|null $contentId
+     * @return void
+     */
+    public function updateLinkTagCnt(?int $contentId): void
+    {
+        $contentId = $contentId ?? $this->id;
+        if (empty($contentId)) {
+            return;
+        }//stop if no correct contentID
+
+        // 一次性读取所有现有的关联记录（包含主键ID和tag_id）
+        $existingAssociations = $this->db->fetchAll(
+            "SELECT id, tag_id FROM content_tag WHERE content_id = :content_id",
+            ['content_id' => $contentId]
+        );
+
+        $oldTagIds = array_column($existingAssociations, 'tag_id');
+
+        // 更新所有old tag
+        foreach ($oldTagIds as $tagId) {
+            $tmpTag = new Tag();
+            $tmpTag->updateContentCount($tagId);
+        }
+
+    }
+
+    /**
+     * update linked tag's count when content change like bulk action
+     * @param int|null $contentId
+     * @return void
+     */
+    public function updateLinkCollectionCnt(?int $contentId): void
+    {
+        $contentId = $contentId ?? $this->id;
+        if (empty($contentId)) {
+            return;
+        }//stop if no correct contentID
+
+        // 一次性读取所有现有的关联记录（包含主键ID和collection_id）
+        $existingAssociations = $this->db->fetchAll(
+            "SELECT id, collection_id FROM content_collection WHERE content_id = :content_id",
+            ['content_id' => $contentId]
+        );
+
+        $oldCollectionIds = array_column($existingAssociations, 'collection_id');
+
+
+        foreach ($oldCollectionIds as $collectionId) {
+            $tmpCollection = new Collection();
+            $tmpCollection->updateContentCount($collectionId);
+        }
+
+    }
+
+    public function updateLinkContentTypeCnt(?int $contentId): void
+    {
+        $contentId = $contentId ?? $this->id;
+        if (empty($contentId)) {
+            return;
+        }//stop if no correct contentID
+
+        // 一次性读取所有现有的关联记录（包含主键ID和collection_id）
+        $existingAssociations = $this->db->fetchAll(
+            "SELECT id, content_type_id FROM content WHERE id = :content_id",
+            ['content_id' => $contentId]
+        );
+
+        $oldIds = array_column($existingAssociations, 'content_type_id');
+
+
+        foreach ($oldIds as $oneId) {
+            $tmpCT = new \App\Models\ContentType();
+            $tmpCT->updateContentCnt($oneId);
+        }
+
+    }
+
+    /**
      * 记录 PV 访问日志
      * @param int $contentId 内容ID
      * @param int|null $userId 用户ID（可选）

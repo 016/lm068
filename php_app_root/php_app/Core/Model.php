@@ -930,6 +930,17 @@ abstract class Model
             $params = array_merge([$status], $chunk);
             // 累加每次成功更新的数量
             $returnCnt['changed'] += $db->execute($sql, $params);
+
+            //only for content bulk action do link cnt*3 update
+            if (static::getTableName() == Content::getTableName()){
+                //loop and update content's cnt
+                foreach ($chunk as $oneContentId) {
+                    $tmpContent = new Content();
+                    $tmpContent->updateLinkContentTypeCnt($oneContentId);
+                    $tmpContent->updateLinkTagCnt($oneContentId);
+                    $tmpContent->updateLinkCollectionCnt($oneContentId);
+                }
+            }
         }
 
 
