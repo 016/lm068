@@ -248,7 +248,7 @@ function createChart(data) {
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
                     fill: false,
-                    yAxisID: 'y-left'
+                    yAxisID: 'y-right'
                 },
                 // 折线图 - 当日总UV数量
                 {
@@ -265,7 +265,7 @@ function createChart(data) {
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
                     fill: false,
-                    yAxisID: 'y-left'
+                    yAxisID: 'y-right'
                 },
                 // 柱状图 - 当日新增视频数量
                 {
