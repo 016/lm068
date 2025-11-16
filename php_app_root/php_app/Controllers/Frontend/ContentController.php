@@ -82,7 +82,9 @@ class ContentController extends FrontendController
             //SEO
             $this->seo_param['title'] = $data->getTitle() ;
             $this->seo_param['desc'] = $data->getShortDescription();
-            $this->curAction_en = $this->curAction_zh = substr($params['s'], strpos($params['s'], '/', 2), strrpos($params['s'], '/') + 1) . UrlHelper::formatString($data->title_en);
+
+            $basePathWithLang = substr($params['s'], 0, strrpos($params['s'], '/') + 1); // '/zh/content/7/'
+            $this->curAction_en = $this->curAction_zh = substr($basePathWithLang, strpos($basePathWithLang, '/', 1)) . UrlHelper::formatString($data->title_en);
 
         }
 
