@@ -150,7 +150,7 @@ use App\Helpers\UrlHelper;
                             <h5 class="mb-3" data-i18n="footer.navigation"><?= ($currentLang ?? 'zh') === 'zh' ? '网站导航' : 'Navigation' ?></h5>
                             <ul class="list-unstyled">
                                 <li><a href="/" class="text-light" data-i18n="footer.home"><?= ($currentLang ?? 'zh') === 'zh' ? '首页' : 'Home' ?></a></li>
-                                <li><a href="/videos" class="text-light" data-i18n="footer.video_list"><?= ($currentLang ?? 'zh') === 'zh' ? '视频列表' : 'Video List' ?></a></li>
+                                <li><a href="/content" class="text-light" data-i18n="footer.video_list"><?= ($currentLang ?? 'zh') === 'zh' ? '内容列表' : 'Content List' ?></a></li>
                                 <li><a href="#" class="text-light" data-i18n="footer.user_center"><?= ($currentLang ?? 'zh') === 'zh' ? '用户中心' : 'User Center' ?></a></li>
                                 <li><a href="#" class="text-light" data-i18n="footer.favorites"><?= ($currentLang ?? 'zh') === 'zh' ? '收藏夹' : 'Favorites' ?></a></li>
                             </ul>
