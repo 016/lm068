@@ -6,6 +6,7 @@ use App\Core\HashId;
 use App\Core\UploadableModel;
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
+use App\Helpers\MarkdownHelper;
 use App\Helpers\RequestHelper;
 use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
@@ -735,6 +736,9 @@ class Content extends UploadableModel implements HasStatuses
                 return false;
             }
 
+            // add split to header
+            $this->desc_en = MarkdownHelper::addMarkdownHeaderSplit($this->desc_en);
+            $this->desc_cn = MarkdownHelper::addMarkdownHeaderSplit($this->desc_cn);
         }
 
         if ($this->status_id == ContentStatus::PUBLISHED->value) {
