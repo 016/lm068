@@ -55,7 +55,8 @@ class Content extends UploadableModel implements HasStatuses
         'default' => [
             'content_type_id', 'author', 'code', 'title_en', 'title_cn',
             'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
-            'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at'
+            'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at',
+            'suggested_tags_cn', 'suggested_tags_en',
         ]
 
     ];
@@ -91,7 +92,9 @@ class Content extends UploadableModel implements HasStatuses
         'pv_cnt' => 0,
         'view_cnt' => 0,
         'pub_at' => null,
-        'status_id' => ContentStatus::DRAFT->value
+        'status_id' => ContentStatus::DRAFT->value,
+        'suggested_tags_cn' => '',
+        'suggested_tags_en' => '',
     ];
 
     public function __construct()
@@ -131,7 +134,9 @@ class Content extends UploadableModel implements HasStatuses
                 'author' => 'max:255',
                 'thumbnail' => 'max:255',
                 'duration' => 'numeric',
-                'status_id' => 'numeric'
+                'status_id' => 'numeric',
+                'suggested_tags_cn' => 'max:500',
+                'suggested_tags_en' => 'max:500',
             ]
 
         ];
@@ -157,7 +162,9 @@ class Content extends UploadableModel implements HasStatuses
             'short_desc_cn' => '中文简介',
             'thumbnail' => '缩略图',
             'duration' => '时长(s)',
-            'status_id' => '状态'
+            'status_id' => '状态',
+            'suggested_tags_cn' => 'AI建议的中文标签',
+            'suggested_tags_en' => 'AI建议的英文标签',
         ];
     }
 
@@ -709,6 +716,19 @@ class Content extends UploadableModel implements HasStatuses
 
     public function beforeSave(): bool
     {
+        // 处理待发布状态的内容
+        if ($this->status_id == ContentStatus::PENDING_PUBLISH->value) {
+            try {
+                // 处理建议的标签
+                $this->processSuggestedTags();
+
+            } catch (\Exception $e) {
+                $this->errors['general'] = '处理标签和内容类型时出错: ' . $e->getMessage();
+                return false;
+            }
+
+        }
+
         if ($this->status_id == ContentStatus::PUBLISHED->value) {
             if (($this->isNew || $this->original['status_id'] != $this->status_id) && empty($this->attributes['pub_at'])){
                 $this->attributes['pub_at'] = date('Y-m-d H:i:s');
@@ -722,6 +742,62 @@ class Content extends UploadableModel implements HasStatuses
         }
 
         return parent::beforeSave();
+    }
+
+    /**
+     * 处理建议的标签
+     * 从 suggested_tags_en 和 suggested_tags_cn 中提取标签，创建不存在的标签，并建立关联
+     */
+    private function processSuggestedTags(): void
+    {
+        // 如果没有ID（新记录）或没有建议的标签，跳过处理
+        if ($this->isNew || empty($this->suggested_tags_en)) {
+            return;
+        }
+
+        // 分割英文和中文标签
+        $tagsEn = array_map('trim', explode(',', $this->suggested_tags_en));
+        $tagsCn = array_map('trim', explode(',', $this->suggested_tags_cn ?? ''));
+
+        // 确保两个数组长度一致
+        $tagsEn = array_filter($tagsEn);
+        $tagsCn = array_filter($tagsCn);
+
+        $tagIds = [];
+        $tagModel = new Tag();
+
+        foreach ($tagsEn as $index => $tagEn) {
+            if (empty($tagEn)) {
+                continue;
+            }
+
+            $tagCn = $tagsCn[$index] ?? $tagEn; // 如果中文标签不存在，使用英文
+
+            // 查找是否已存在该标签
+            $existingTag = Tag::findByName($tagCn, $tagEn);
+
+            if ($existingTag) {
+                // 标签已存在，使用现有ID
+                $tagIds[] = (int)$existingTag['id'];
+            } else {
+                // 标签不存在，创建新标签
+                $newTag = new Tag();
+                $newTag->fill([
+                    'name_en' => $tagEn,
+                    'name_cn' => $tagCn,
+                    'status_id' => 1 // 默认启用
+                ]);
+
+                if ($newTag->save()) {
+                    $tagIds[] = (int)$newTag->id;
+                }
+            }
+        }
+
+        // 同步标签关联（只在内容ID存在时执行）
+        if (!empty($tagIds) && !$this->isNew && isset($this->attributes[$this->primaryKey])) {
+            $this->syncTagAssociations((int)$this->attributes[$this->primaryKey], $tagIds);
+        }
     }
 
     /**

@@ -177,6 +177,30 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-6 pb-3">
+                    <div class="form-group">
+                        <label for="suggested_tags_cn" class="form-label required">AI中文标签</label>
+                        <input type="text" class="form-control <?= isset($content->errors['suggested_tags_cn']) ? 'is-invalid' : '' ?>" id="suggested_tags_cn" name="suggested_tags_cn" value="<?= htmlspecialchars($content->suggested_tags_cn ?? '') ?>" maxlength="255" required>
+                        <?php if (isset($content->errors['suggested_tags_cn'])): ?>
+                            <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_tags_cn']) ?></div>
+                        <?php endif; ?>
+                        <div class="form-text">内容的AI中文标签</div>
+                    </div>
+                </div>
+                <div class="col-md-6 pb-3">
+                    <div class="form-group">
+                        <label for="suggested_tags_en" class="form-label required">AI英文标签</label>
+                        <input type="text" class="form-control <?= isset($content->errors['suggested_tags_en']) ? 'is-invalid' : '' ?>" id="suggested_tags_en" name="suggested_tags_en" value="<?= htmlspecialchars($content->suggested_tags_en ?? '') ?>" maxlength="255" required>
+                        <?php if (isset($content->errors['suggested_tags_en'])): ?>
+                            <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_tags_en']) ?></div>
+                        <?php endif; ?>
+                        <div class="form-text">内容的AI英文标签</div>
+                    </div>
+                </div>
+
+            </div>
+
             <!-- 简介设置 -->
             <div class="form-section">
                 <h4 class="form-section-title">
