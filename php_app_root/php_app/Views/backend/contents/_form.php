@@ -95,6 +95,29 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 <div class="row">
                     <div class="col-md-6 pb-3">
                         <div class="form-group">
+                            <label for="suggested_content_types_cn" class="form-label required">AI中文分类</label>
+                            <input type="text" class="form-control <?= isset($content->errors['suggested_content_types_cn']) ? 'is-invalid' : '' ?>" id="suggested_content_types_cn" name="suggested_content_types_cn" value="<?= htmlspecialchars($content->suggested_content_types_cn ?? '') ?>" maxlength="255" required>
+                            <?php if (isset($content->errors['suggested_content_types_cn'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_content_types_cn']) ?></div>
+                            <?php endif; ?>
+                            <div class="form-text">内容的AI中文分类</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
+                            <label for="suggested_content_types_en" class="form-label required">AI英文分类</label>
+                            <input type="text" class="form-control <?= isset($content->errors['suggested_content_types_en']) ? 'is-invalid' : '' ?>" id="suggested_content_types_en" name="suggested_content_types_en" value="<?= htmlspecialchars($content->suggested_content_types_en ?? '') ?>" maxlength="255" required>
+                            <?php if (isset($content->errors['suggested_content_types_en'])): ?>
+                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_content_types_en']) ?></div>
+                            <?php endif; ?>
+                            <div class="form-text">内容的AI英文分类</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pb-3">
+                        <div class="form-group">
                             <label for="title_cn" class="form-label required">中文标题</label>
                             <input type="text" class="form-control <?= isset($content->errors['title_cn']) ? 'is-invalid' : '' ?>" id="title_cn" name="title_cn" value="<?= htmlspecialchars($content->title_cn ?? '') ?>" maxlength="255" required>
                             <?php if (isset($content->errors['title_cn'])): ?>

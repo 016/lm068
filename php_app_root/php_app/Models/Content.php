@@ -56,7 +56,7 @@ class Content extends UploadableModel implements HasStatuses
             'content_type_id', 'author', 'code', 'title_en', 'title_cn',
             'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
             'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at',
-            'suggested_tags_cn', 'suggested_tags_en',
+            'suggested_tags_cn', 'suggested_tags_en', 'suggested_content_types_cn', 'suggested_content_types_en'
         ]
 
     ];
@@ -95,6 +95,8 @@ class Content extends UploadableModel implements HasStatuses
         'status_id' => ContentStatus::DRAFT->value,
         'suggested_tags_cn' => '',
         'suggested_tags_en' => '',
+        'suggested_content_types_cn' => '',
+        'suggested_content_types_en' => '',
     ];
 
     public function __construct()
@@ -137,6 +139,8 @@ class Content extends UploadableModel implements HasStatuses
                 'status_id' => 'numeric',
                 'suggested_tags_cn' => 'max:500',
                 'suggested_tags_en' => 'max:500',
+                'suggested_content_types_cn' => 'max:500',
+                'suggested_content_types_en' => 'max:500',
             ]
 
         ];
@@ -165,6 +169,8 @@ class Content extends UploadableModel implements HasStatuses
             'status_id' => '状态',
             'suggested_tags_cn' => 'AI建议的中文标签',
             'suggested_tags_en' => 'AI建议的英文标签',
+            'suggested_content_types_cn' => 'AI建议的中文分类',
+            'suggested_content_types_en' => 'AI建议的英文分类',
         ];
     }
 
@@ -722,6 +728,8 @@ class Content extends UploadableModel implements HasStatuses
                 // 处理建议的标签
                 $this->processSuggestedTags();
 
+                // 处理建议的内容类型 //not use in this project, just keep logic for future
+//                $this->processSuggestedContentType();
             } catch (\Exception $e) {
                 $this->errors['general'] = '处理标签和内容类型时出错: ' . $e->getMessage();
                 return false;
@@ -797,6 +805,54 @@ class Content extends UploadableModel implements HasStatuses
         // 同步标签关联（只在内容ID存在时执行）
         if (!empty($tagIds) && !$this->isNew && isset($this->attributes[$this->primaryKey])) {
             $this->syncTagAssociations((int)$this->attributes[$this->primaryKey], $tagIds);
+        }
+    }
+
+    /**
+     * 处理建议的内容类型
+     * 从 suggested_content_types_en 中提取第一个类型，创建不存在的类型，并设置 content_type_id
+     */
+    private function processSuggestedContentType(): void
+    {
+        // 如果没有建议的内容类型，跳过处理
+        if (empty($this->suggested_content_types_en)) {
+            return;
+        }
+
+        // 分割内容类型，只取第一个
+        $contentTypesEn = array_map('trim', explode(',', $this->suggested_content_types_en));
+        $contentTypesCn = array_map('trim', explode(',', $this->suggested_content_types_cn ?? ''));
+
+        $contentTypesEn = array_filter($contentTypesEn);
+        $contentTypesCn = array_filter($contentTypesCn);
+
+        if (empty($contentTypesEn)) {
+            return;
+        }
+
+        // 只取第一个内容类型
+        $contentTypeEn = $contentTypesEn[0];
+        $contentTypeCn = $contentTypesCn[0] ?? $contentTypeEn;
+
+        // 查找是否已存在该内容类型
+        $existingContentType = \App\Models\ContentType::findByNameEn($contentTypeEn);
+
+        if ($existingContentType) {
+            // 内容类型已存在，使用现有ID
+            $this->attributes['content_type_id'] = (int)$existingContentType['id'];
+        } else {
+            // 内容类型不存在，创建新内容类型
+            $newContentType = new \App\Models\ContentType();
+            $newContentType->fill([
+                'name_en' => $contentTypeEn,
+                'name_cn' => $contentTypeCn,
+                'status_id' => 1, // 默认启用
+                'sort_order' => 1
+            ]);
+
+            if ($newContentType->save()) {
+                $this->attributes['content_type_id'] = (int)$newContentType->id;
+            }
         }
     }
 
