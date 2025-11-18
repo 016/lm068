@@ -206,9 +206,6 @@ class MarkdownHelper
      */
     public static function aiGenerateMarkdownFormat(string $markdownText): string
     {
-        //2. \\n to \n for direct copy string !!! keep it at begin
-        $markdownText = str_replace('\\n', "\n", $markdownText);
-
         // 1. 使用正则表达式查找第一个标题（以'#'开头，后跟空格的行）
         //    '/^#+\s/m' 的解释:
         //    ^  - 匹配行的开头
@@ -224,9 +221,12 @@ class MarkdownHelper
             //    使用 str_starts_with() 可以精确判断，避免将 '#### ' 误判
             if ($firstHeadingTag === '### ') {
                 // 如果是，则将全文所有的 '### ' 替换为 '## '
-                return str_replace('### ', '## ', $markdownText);
+                $markdownText = str_replace('### ', '## ', $markdownText);
             }
         }
+
+        //2. \\n to \n for direct copy string !!! keep it at begin
+        $markdownText = str_replace('\\n', "\n", $markdownText);
 
         //add --- to lv header ##
         $markdownText = self::addMarkdownHeaderSplit($markdownText);
