@@ -8,6 +8,7 @@ use App\Constants\ContentStatus;
 use App\Constants\ContentType;
 use App\Helpers\MarkdownHelper;
 use App\Helpers\RequestHelper;
+use App\Helpers\TextHelper;
 use App\Helpers\UrlHelper;
 use App\Interfaces\HasStatuses;
 
@@ -25,6 +26,8 @@ use App\Interfaces\HasStatuses;
  * @property string|null $short_desc_cn 中文简介
  * @property string|null $desc_en 英文描述/内容, 支持markdown格式纯文本存储
  * @property string|null $desc_cn 中文描述/内容, 支持markdown格式纯文本存储
+ * @property string|null $sum_en 英文总结/内容, 支持markdown格式纯文本存储
+ * @property string|null $sum_cn 中文总结/内容, 支持markdown格式纯文本存储
  * @property string|null $thumbnail 缩略图URL
  * @property int $pv_cnt 网站内PV计数
  * @property int $like_cnt 点赞数
@@ -737,8 +740,10 @@ class Content extends UploadableModel implements HasStatuses
             }
 
             // add split to header
-            $this->desc_en = MarkdownHelper::addMarkdownHeaderSplit($this->desc_en);
-            $this->desc_cn = MarkdownHelper::addMarkdownHeaderSplit($this->desc_cn);
+            $this->desc_en = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_en);
+            $this->desc_cn = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_cn);
+            $this->sum_en = MarkdownHelper::aiGenerateMarkdownFormat($this->sum_en);
+            $this->sum_cn = MarkdownHelper::aiGenerateMarkdownFormat($this->sum_cn);
         }
 
         if ($this->status_id == ContentStatus::PUBLISHED->value) {

@@ -189,4 +189,49 @@ class MarkdownHelper
 
         return $content;
     }
+
+    /**
+     * 对 AI API 返回的结果进行入预处理
+     *
+     * rule 1.
+     * - 如果输入的 Markdown 文本中第一个标题是三级标题(###)，
+     *   则将文中所有的三级标题(###)替换为二级标题(##)。
+     * - 否则，返回原始文本。
+     * rule 2.
+     *
+     * rule 3.
+     *
+     * @param string $markdownText 输入的 Markdown 文本内容。
+     * @return string 处理后的 Markdown 文本或原始文本。
+     */
+    public static function aiGenerateMarkdownFormat(string $markdownText): string
+    {
+        //2. \\n to \n for direct copy string !!! keep it at begin
+        $markdownText = str_replace('\\n', "\n", $markdownText);
+
+        // 1. 使用正则表达式查找第一个标题（以'#'开头，后跟空格的行）
+        //    '/^#+\s/m' 的解释:
+        //    ^  - 匹配行的开头
+        //    #+ - 匹配一个或多个'#'字符
+        //    \s - 匹配一个空白字符
+        //    m  - 多行模式，使'^'可以匹配每一行的开头
+        if (preg_match('/^#+\s/m', $markdownText, $matches)) {
+
+            // 2. 获取找到的第一个标题标记
+            $firstHeadingTag = $matches[0];
+
+            // 3. 判断第一个标题是否为三级标题 '### '
+            //    使用 str_starts_with() 可以精确判断，避免将 '#### ' 误判
+            if ($firstHeadingTag === '### ') {
+                // 如果是，则将全文所有的 '### ' 替换为 '## '
+                return str_replace('### ', '## ', $markdownText);
+            }
+        }
+
+        //add --- to lv header ##
+        $markdownText = self::addMarkdownHeaderSplit($markdownText);
+
+        // 4. 如果没有找到标题，或者第一个标题不是三级标题，则直接返回原文
+        return $markdownText;
+    }
 }
