@@ -14,7 +14,7 @@ class HomeController extends FrontendController
 
         $content = $this->view('contents.list', [
             'videos' => [],
-            'message' => 'Welcome to Video Content Site'
+            'message' => 'Welcome to Content Site'
         ]);
         
         echo $this->layout($content, '首页 - 视频内容网站');

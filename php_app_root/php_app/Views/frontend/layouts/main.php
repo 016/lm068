@@ -181,7 +181,7 @@ use App\Helpers\UrlHelper;
                     <!-- 邮件订阅 -->
                     <div class="mb-4">
                         <h5 class="mb-1" data-i18n="footer.subscribe"><?= ($currentLang ?? 'zh') === 'zh' ? '邮件订阅' : 'Email Subscription' ?></h5>
-                        <p class="mb-2 ms-2" data-i18n="footer.subscribe_desc"><?= ($currentLang ?? 'zh') === 'zh' ? '加入邮件列表，获取最新视频更新和资讯' : 'Join our mailing list for latest video updates' ?></p>
+                        <p class="mb-2 ms-2" data-i18n="footer.subscribe_desc"><?= ($currentLang ?? 'zh') === 'zh' ? '加入邮件列表，获取最新视频更新和资讯' : 'Join our mailing list for latest content updates' ?></p>
                         <div class="input-group mail-list-quick-apply-input">
                             <input type="email" class="form-control" placeholder="<?= ($currentLang ?? 'zh') === 'zh' ? '请输入您的邮箱地址' : 'Enter your email address' ?>" data-i18n-placeholder="footer.subscribe_placeholder">
                             <button class="btn btn-primary" type="button" data-i18n="footer.subscribe_btn"><?= ($currentLang ?? 'zh') === 'zh' ? '订阅' : 'Subscribe' ?></button>
@@ -205,7 +205,7 @@ use App\Helpers\UrlHelper;
             <hr class="my-4">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2024 <span data-i18n="footer.copyright"><?= ($currentLang ?? 'zh') === 'zh' ? '视频创作展示网站. 保留所有权利.' : 'Video Creation Platform. All rights reserved.' ?></span> |
+                    <p class="mb-0">&copy; 2024 <span data-i18n="footer.copyright"><?= ($currentLang ?? 'zh') === 'zh' ? '视频创作展示网站. 保留所有权利.' : 'Content Creation Platform. All rights reserved.' ?></span> |
                         <a href="#" class="text-light" data-i18n="footer.terms"><?= ($currentLang ?? 'zh') === 'zh' ? '使用条款' : 'Terms of Use' ?></a> |
                         <a href="#" class="text-light" data-i18n="footer.privacy"><?= ($currentLang ?? 'zh') === 'zh' ? '隐私政策' : 'Privacy Policy' ?></a> |
                         <a href="#" class="text-light" data-i18n="footer.cookies"><?= ($currentLang ?? 'zh') === 'zh' ? 'Cookie政策' : 'Cookie Policy' ?></a>

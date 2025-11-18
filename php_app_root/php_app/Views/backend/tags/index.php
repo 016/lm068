@@ -93,7 +93,7 @@ use App\Constants\TagStatus;
                     </div>
                     <div class="metric-header-text">
                         <h4>关联量</h4>
-                        <span class="metric-subtitle">Associated Videos</span>
+                        <span class="metric-subtitle">Associated Contents</span>
                     </div>
                 </div>
                 <div class="metric-card-body">

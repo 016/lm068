@@ -178,7 +178,7 @@ class ContentController extends FrontendController
 
         // 渲染视图
         $content = $this->view('contents.index', $data);
-        $pageTitle = $currentLang === 'zh' ? '视频列表' : 'Video List';
+        $pageTitle = $currentLang === 'zh' ? '内容列表' : 'Content List';
         echo $this->layout($content, $pageTitle, $data);
     }
 
@@ -265,7 +265,7 @@ class ContentController extends FrontendController
         // 如果解码失败，返回404
         if ($id === null) {
             http_response_code(404);
-            echo json_encode(['error' => 'Video not found']);
+            echo json_encode(['error' => 'Content not found']);
             return;
         }
 
@@ -278,7 +278,7 @@ class ContentController extends FrontendController
         // 检查是否是视频类型且已发布
         if (empty($curContent)) {
             http_response_code(404);
-            echo json_encode(['error' => 'Video not found']);
+            echo json_encode(['error' => 'Content not found']);
             return;
         }
 

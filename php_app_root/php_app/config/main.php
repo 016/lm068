@@ -2,7 +2,7 @@
 
 return [
     // 应用基础配置
-    'app_name' => 'Video Content Site',
+    'app_name' => 'Content Site',
     'app_version' => '1.0.0',
     'debug' => true,
     'timezone' => 'Asia/Shanghai',

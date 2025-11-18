@@ -153,7 +153,7 @@ use \App\Models\Tag;
 
     <!-- 分页导航 -->
     <?php if ($totalPages > 1):?>
-        <nav aria-label="<?= $currentLang === 'zh' ? '列表分页' : 'Video List Pagination' ?>" class="mt-5">
+        <nav aria-label="<?= $currentLang === 'zh' ? '列表分页' : 'List Pagination' ?>" class="mt-5">
             <div class="pagination-wrapper d-flex justify-content-center align-items-center">
                 <!-- 上一页 -->
                 <?php if ($currentPage > 1): ?>

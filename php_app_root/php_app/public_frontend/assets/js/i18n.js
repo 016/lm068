@@ -115,7 +115,7 @@ const I18N_CONFIG = {
         // ===== Footer =====
         'footer.navigation': 'Navigation',
         'footer.home': 'Home',
-        'footer.video_list': 'Video List',
+        'footer.video_list': 'Content List',
         'footer.user_center': 'User Center',
         'footer.favorites': 'Favorites',
 
@@ -132,7 +132,7 @@ const I18N_CONFIG = {
         'footer.tools': 'Dev Tools',
 
         'footer.subscribe': 'Email Subscription',
-        'footer.subscribe_desc': 'Join our mailing list for latest video updates',
+        'footer.subscribe_desc': 'Join our mailing list for latest content updates',
         'footer.subscribe_placeholder': 'Enter your email address',
         'footer.subscribe_btn': 'Subscribe',
 
@@ -142,7 +142,7 @@ const I18N_CONFIG = {
         'footer.douyin': 'Douyin',
         'footer.wechat': 'WeChat',
 
-        'footer.copyright': 'Video Creation Platform. All rights reserved.',
+        'footer.copyright': 'Content Creation Platform. All rights reserved.',
         'footer.terms': 'Terms of Use',
         'footer.cookies': 'Cookie Policy',
 
