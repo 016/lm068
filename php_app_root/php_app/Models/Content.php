@@ -740,8 +740,8 @@ class Content extends UploadableModel implements HasStatuses
             }
 
             // add split to header
-            $this->desc_en = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_en);
-            $this->desc_cn = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_cn);
+//            $this->desc_en = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_en);
+//            $this->desc_cn = MarkdownHelper::aiGenerateMarkdownFormat($this->desc_cn);
             $this->sum_en = MarkdownHelper::aiGenerateMarkdownFormat($this->sum_en);
             $this->sum_cn = MarkdownHelper::aiGenerateMarkdownFormat($this->sum_cn);
         }
