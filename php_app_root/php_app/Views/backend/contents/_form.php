@@ -115,20 +115,21 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="contentTagsMultiSelect" class="form-label">内容标签</label>
-                            <div id="contentTagsMultiSelect"></div>
-                            <div class="form-text">为内容选择相关标签，便于用户查找和分类</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="contentCollectionsMultiSelect" class="form-label">内容合集</label>
-                            <div id="contentCollectionsMultiSelect"></div>
-                            <div class="form-text">将内容加入到相关合集中，便于系列化管理</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'tag_ids')
+                        ->type('multi-select')
+                        ->label('内容标签')
+                        ->containerId('contentTagsMultiSelect')
+                        ->helpText('为内容选择相关标签，便于用户查找和分类')
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'collection_ids')
+                        ->type('multi-select')
+                        ->label('内容合集')
+                        ->containerId('contentCollectionsMultiSelect')
+                        ->helpText('将内容加入到相关合集中，便于系列化管理')
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
                 </div>
 
                 <div class="row">
@@ -241,6 +242,23 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                     </div>
                 </div>
 
+                <div class="row">
+                    <?= FormFieldBuilder::for($content, 'tag_ids')
+                        ->type('multi-select')
+                        ->label('内容标签')
+                        ->containerId('contentTagsMultiSelect')
+                        ->helpText('为内容选择相关标签，便于用户查找和分类')
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'collection_ids')
+                        ->type('multi-select')
+                        ->label('内容合集')
+                        ->containerId('contentCollectionsMultiSelect')
+                        ->helpText('将内容加入到相关合集中，便于系列化管理')
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
+                </div>
                 <div class="stats-row">
                     <div class="stat-item">
                         <div class="stat-value"><?= number_format($content->view_cnt ?? 0) ?></div>
