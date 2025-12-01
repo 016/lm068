@@ -47,6 +47,7 @@ class FormFieldBuilder
             'type' => 'text',
             'label' => null,
             'helpText' => null,
+            'rawHelpText' => false, // 是否将 helpText 作为原始 HTML 渲染
             'placeholder' => null,
             'cssClass' => 'col-md-6 pb-3',
             'inputClass' => 'form-control',
@@ -119,11 +120,13 @@ class FormFieldBuilder
      * 设置帮助文本
      * 
      * @param string $text 帮助文本
+     * @param bool $raw 是否作为原始 HTML（不进行转义）
      * @return $this
      */
-    public function helpText(string $text): self
+    public function helpText(string $text, bool $raw = false): self
     {
         $this->config['helpText'] = $text;
+        $this->config['rawHelpText'] = $raw;
         return $this;
     }
     
@@ -603,9 +606,12 @@ class FormFieldBuilder
             return '';
         }
         
+        // 根据配置决定是否转义 HTML
+        $content = $this->config['rawHelpText'] ? $helpText : htmlspecialchars($helpText);
+        
         return sprintf(
             '<div class="form-text">%s</div>',
-            htmlspecialchars($helpText)
+            $content
         );
     }
 }
