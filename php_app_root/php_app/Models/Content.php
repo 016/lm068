@@ -123,7 +123,7 @@ class Content extends UploadableModel implements HasStatuses
      * @param bool $isUpdate 是否为更新操作
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false, ?string $scenario = null): array
+    public function rules(): array
     {
         return [
             'default' => [

@@ -57,7 +57,7 @@ class SiteStatsDaily extends Model
      * @param string|null $scenario 场景名称，为null时使用当前场景
      * @return array 验证规则
      */
-    public function rules(bool $isUpdate = false, ?string $scenario = null): array
+    public function rules(): array
     {
         return [
             'default' => [

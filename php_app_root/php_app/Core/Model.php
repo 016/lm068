@@ -14,6 +14,11 @@ use App\Models\Content;
 
 abstract class Model
 {
+    // 标准场景常量
+    const SCENARIO_DEFAULT = 'default';
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
     protected $db;
     protected static string $table;
     protected $primaryKey = 'id';
@@ -375,27 +380,67 @@ abstract class Model
         return $this->scenario;
     }
 
-    public function rules(bool $isUpdate = false, ?string $scenario = null): array
+    /**
+     * 定义验证规则 - 返回所有场景的完整规则映射
+     *
+     * 返回格式：
+     * [
+     *     'default' => ['field' => 'rule1|rule2'],
+     *     'create' => ['field' => 'rule1|rule2'],
+     *     'update' => ['field' => 'rule1|rule2'],
+     *     'custom_scenario' => ['field' => 'rule1|rule2'],
+     * ]
+     *
+     * @return array 场景-规则映射数组
+     */
+    public function rules(): array
     {
         return [];
     }
 
-    protected function getRulesForScenario(bool $isUpdate = false): array
+    /**
+     * 获取指定场景的验证规则
+     * @param string|null $scenario 场景名称，null时使用当前场景
+     * @return array 该场景的验证规则
+     */
+    protected function getRulesForScenario(?string $scenario = null): array
     {
-        $allRules = $this->rules($isUpdate);
+        // 1. 确定目标场景
+        $targetScenario = $scenario ?? $this->scenario ?? $this->getAutoScenario();
+
+        // 2. 获取完整的规则映射
+        $allRules = $this->rules();
 
         if (empty($allRules)) {
             return [];
         }
 
+        // 3. 检查返回格式
         $firstKey = array_key_first($allRules);
         $firstElement = $allRules[$firstKey];
 
-        if (is_array($firstElement) && isset($allRules['default']) && is_array($allRules['default'])) {
-            return $allRules[$this->scenario] ?? [];
+        // 如果是场景映射格式（推荐）
+        if (is_array($firstElement) && isset($allRules[self::SCENARIO_DEFAULT])) {
+            // 尝试获取目标场景的规则
+            if (isset($allRules[$targetScenario])) {
+                return $allRules[$targetScenario];
+            }
+
+            // 回退到 default 场景
+            return $allRules[self::SCENARIO_DEFAULT];
         }
 
+        // 如果是平面数组格式（所有场景共用同一套规则）
         return $allRules;
+    }
+
+    /**
+     * 自动判断场景
+     * @return string
+     */
+    protected function getAutoScenario(): string
+    {
+        return $this->isNew() ? self::SCENARIO_CREATE : self::SCENARIO_UPDATE;
     }
 
     // 数据填充
@@ -495,7 +540,7 @@ abstract class Model
         $this->errors = [];
 
         if (method_exists($this, 'rules')) {
-            $rules = $this->getRulesForScenario(!$this->isNew());
+            $rules = $this->getRulesForScenario();
             $excludeId = $this->isNew() ? null : $this->attributes[$this->primaryKey] ?? null;
             $this->errors = $this->validateRules($this->attributes, $rules, $excludeId);
         }
@@ -1003,8 +1048,15 @@ abstract class Model
      */
     public function validateBulkImportData(array $data): bool
     {
-        $errors = $this->validate($data, false);
-        return empty($errors);
+        // 临时填充数据用于验证
+        $this->fill($data);
+        // 调用验证方法
+        $isValid = $this->validate();
+        // 清空临时数据
+        $this->attributes = [];
+        $this->errors = [];
+
+        return $isValid;
     }
 
     /**
