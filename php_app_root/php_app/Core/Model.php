@@ -639,6 +639,37 @@ abstract class Model
         return [];
     }
 
+    /**
+     * 获取单个字段的标签
+     * @param string $field 字段名
+     * @return string 字段标签
+     */
+    public function getFieldLabel(string $field): string
+    {
+        $labels = $this->getFieldLabels();
+        return $labels[$field] ?? ucfirst($field);
+    }
+
+    /**
+     * 获取字段帮助文本映射 (子类可重写)
+     * @return array 字段帮助文本数组
+     */
+    protected function getFieldHelpTexts(): array
+    {
+        return [];
+    }
+
+    /**
+     * 获取单个字段的帮助文本
+     * @param string $field 字段名
+     * @return string|null 帮助文本，不存在返回 null
+     */
+    public function getFieldHelpText(string $field): ?string
+    {
+        $helpTexts = $this->getFieldHelpTexts();
+        return $helpTexts[$field] ?? null;
+    }
+
     protected function filterFillable(array $data): array
     {
         $fillableFields = $this->getFillableForScenario();

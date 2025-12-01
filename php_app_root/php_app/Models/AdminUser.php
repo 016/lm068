@@ -52,28 +52,36 @@ class AdminUser extends Model implements HasStatuses
 
     /**
      * 定义验证规则
-     * @param bool $isUpdate 是否为更新操作
-     * @param string|null $scenario 场景名称, 为null时使用当前场景
      * @return array 验证规则
      */
     public function rules(): array
     {
-        $rules = [
-            'username' => 'required|max:50|unique',
-            'email' => 'max:100',
-            'real_name' => 'max:50',
-            'phone' => 'max:20',
-            'status_id' => 'numeric',
-            'role_id' => 'required|numeric'
-        ];
-
-        // 新建时必须有密码
-        if (!$isUpdate) {
-            $rules['password_hash'] = 'required';
-        }
-
         return [
-            'default' => $rules
+            'default' => [
+                'username' => 'required|max:50|unique',
+                'email' => 'max:100',
+                'real_name' => 'max:50',
+                'phone' => 'max:20',
+                'status_id' => 'numeric',
+                'role_id' => 'required|numeric'
+            ],
+            'create' => [
+                'username' => 'required|max:50|unique',
+                'password_hash' => 'required',
+                'email' => 'max:100',
+                'real_name' => 'max:50',
+                'phone' => 'max:20',
+                'status_id' => 'numeric',
+                'role_id' => 'required|numeric'
+            ],
+            'update' => [
+                'username' => 'required|max:50|unique',
+                'email' => 'max:100',
+                'real_name' => 'max:50',
+                'phone' => 'max:20',
+                'status_id' => 'numeric',
+                'role_id' => 'required|numeric'
+            ]
         ];
     }
 
@@ -91,6 +99,19 @@ class AdminUser extends Model implements HasStatuses
             'phone' => '电话',
             'status_id' => '状态',
             'role_id' => '角色'
+        ];
+    }
+
+    protected function getFieldHelpTexts(): array
+    {
+        return [
+            'username' => '登录用户名，3-20个字符',
+            'password_hash' => '登录密码，最少 6 位',
+            'email' => '用于接收通知',
+            'real_name' => '管理员真实姓名（可选）',
+            'phone' => '联系电话（可选）',
+            'status_id' => '启用后允许登录',
+            'role_id' => '选择用户角色',
         ];
     }
 

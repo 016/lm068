@@ -117,6 +117,23 @@ class VideoLink extends Model implements HasStatuses
         ];
     }
 
+    protected function getFieldHelpTexts(): array
+    {
+        return [
+            'content_id' => '选择要关联的视频内容',
+            'platform_id' => '选择第三方视频平台',
+            'external_url' => '完整的第三方视频链接URL',
+            'external_video_id' => '第三方平台的视频唯一标识ID',
+            'play_cnt' => '视频在第三方平台的播放次数',
+            'like_cnt' => '视频获得的点赞数量',
+            'favorite_cnt' => '视频被收藏的次数',
+            'download_cnt' => '视频被下载的次数',
+            'comment_cnt' => '视频收到的评论数量',
+            'share_cnt' => '视频被分享的次数',
+            'status_id' => '链接的有效状态',
+        ];
+    }
+
     /**
      * 定义与 Content 的 BelongsTo 关系
      */

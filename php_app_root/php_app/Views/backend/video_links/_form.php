@@ -1,5 +1,6 @@
 <?php
 use App\Constants\VideoLinkStatus;
+use App\Helpers\FormFieldBuilder;
 ?>
 <!-- Shared Video Link Form Content -->
 <div class="form-container">
@@ -34,73 +35,58 @@ use App\Constants\VideoLinkStatus;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <?php if (!$videoLink->isNew): ?>
-                        <div class="form-group">
-                            <label for="videoLinkId" class="form-label">链接ID</label>
-                            <input type="text" class="form-control" id="videoLinkId" value="#<?= str_pad($videoLink->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
-                            <div class="form-text">系统自动生成,不可修改</div>
-                        </div>
-                        <?php endif; ?>
+                    <?php if (!$videoLink->isNew): ?>
+                        <?= FormFieldBuilder::for($videoLink, 'id')
+                            ->label('链接ID')
+                            ->disabled()
+                            ->formatter(fn($v) => '#' . str_pad($v, 3, '0', STR_PAD_LEFT))
+                            ->helpText('系统自动生成,不可修改')
+                            ->render() ?>
+                    <?php endif;?>
 
-                        <div class="form-group">
-                            <label for="content_id" class="form-label required">关联内容</label>
-                            <select class="form-control form-select <?= isset($videoLink->errors['content_id']) ? 'is-invalid' : '' ?>" id="content_id" name="content_id" required>
-                                <option value="">请选择关联内容</option>
-                                <?php foreach ($contentsList as $content): ?>
-                                    <option value="<?= $content['id'] ?>" <?= ($videoLink->content_id == $content['id']) ? 'selected' : '' ?>>
-                                        #<?= $content['id'] ?> - <?= htmlspecialchars($content['text']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php if (isset($videoLink->errors['content_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['content_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">选择要关联的视频内容</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="platform_id" class="form-label required">视频平台</label>
-                            <select class="form-control form-select <?= isset($videoLink->errors['platform_id']) ? 'is-invalid' : '' ?>" id="platform_id" name="platform_id" required>
-                                <option value="">请选择视频平台</option>
-                                <?php foreach ($platformsList as $platform): ?>
-                                    <option value="<?= $platform['id'] ?>" <?= ($videoLink->platform_id == $platform['id']) ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($platform['text']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php if (isset($videoLink->errors['platform_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['platform_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">选择第三方视频平台</div>
-                        </div>
-                    </div>
+                    <?php
+                    $contentsOptions = [];
+                    foreach ($contentsList as $content) {
+                        $contentsOptions[] = [
+                            'id' => $content['id'],
+                            'text' => '#' . $content['id'] . ' - ' . $content['text']
+                        ];
+                    }
+                    ?>
+                    <?= FormFieldBuilder::for($videoLink, 'content_id')
+                        ->type('custom-select')
+                        ->label('关联内容')
+                        ->options($contentsOptions)
+                        ->placeholder('请选择关联内容')
+                        ->render() ?>
+                    
+                    <?php
+                    $platformsOptions = [];
+                    foreach ($platformsList as $platform) {
+                        $platformsOptions[] = [
+                            'id' => $platform['id'],
+                            'text' => $platform['text']
+                        ];
+                    }
+                    ?>
+                    <?= FormFieldBuilder::for($videoLink, 'platform_id')
+                        ->type('custom-select')
+                        ->label('视频平台')
+                        ->options($platformsOptions)
+                        ->placeholder('请选择视频平台')
+                        ->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="external_url" class="form-label required">第三方链接</label>
-                            <input type="url" class="form-control <?= isset($videoLink->errors['external_url']) ? 'is-invalid' : '' ?>" id="external_url" name="external_url" value="<?= htmlspecialchars($videoLink->external_url ?? '') ?>" maxlength="500" required placeholder="https://example.com/video/123">
-                            <?php if (isset($videoLink->errors['external_url'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['external_url']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">完整的第三方视频链接URL</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="external_video_id" class="form-label required">第三方视频ID</label>
-                            <input type="text" class="form-control <?= isset($videoLink->errors['external_video_id']) ? 'is-invalid' : '' ?>" id="external_video_id" name="external_video_id" value="<?= htmlspecialchars($videoLink->external_video_id ?? '') ?>" maxlength="200" required placeholder="例如: BV1234567890">
-                            <?php if (isset($videoLink->errors['external_video_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['external_video_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">第三方平台的视频唯一标识ID</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($videoLink, 'external_url')
+                        ->label('第三方链接')
+                        ->placeholder('https://example.com/video/123')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($videoLink, 'external_video_id')
+                        ->label('第三方视频ID')
+                        -> placeholder('例如: BV1234567890')
+                        ->render() ?>
                 </div>
             </div>
 
@@ -112,73 +98,15 @@ use App\Constants\VideoLinkStatus;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="play_cnt" class="form-label">播放数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['play_cnt']) ? 'is-invalid' : '' ?>" id="play_cnt" name="play_cnt" value="<?= htmlspecialchars($videoLink->play_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['play_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['play_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频在第三方平台的播放次数</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="like_cnt" class="form-label">点赞数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['like_cnt']) ? 'is-invalid' : '' ?>" id="like_cnt" name="like_cnt" value="<?= htmlspecialchars($videoLink->like_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['like_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['like_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频获得的点赞数量</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="favorite_cnt" class="form-label">收藏数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['favorite_cnt']) ? 'is-invalid' : '' ?>" id="favorite_cnt" name="favorite_cnt" value="<?= htmlspecialchars($videoLink->favorite_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['favorite_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['favorite_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频被收藏的次数</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($videoLink, 'play_cnt')->type('number')->label('播放数')->cssClass('col-md-4 pb-3')->render() ?>
+                    <?= FormFieldBuilder::for($videoLink, 'like_cnt')->type('number')->label('点赞数')->cssClass('col-md-4 pb-3')->render() ?>
+                    <?= FormFieldBuilder::for($videoLink, 'favorite_cnt')->type('number')->label('收藏数')->cssClass('col-md-4 pb-3')->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="download_cnt" class="form-label">下载数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['download_cnt']) ? 'is-invalid' : '' ?>" id="download_cnt" name="download_cnt" value="<?= htmlspecialchars($videoLink->download_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['download_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['download_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频被下载的次数</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="comment_cnt" class="form-label">评论数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['comment_cnt']) ? 'is-invalid' : '' ?>" id="comment_cnt" name="comment_cnt" value="<?= htmlspecialchars($videoLink->comment_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['comment_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['comment_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频收到的评论数量</div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 pb-3">
-                        <div class="form-group">
-                            <label for="share_cnt" class="form-label">分享数</label>
-                            <input type="number" class="form-control <?= isset($videoLink->errors['share_cnt']) ? 'is-invalid' : '' ?>" id="share_cnt" name="share_cnt" value="<?= htmlspecialchars($videoLink->share_cnt ?? 0) ?>" min="0">
-                            <?php if (isset($videoLink->errors['share_cnt'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['share_cnt']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">视频被分享的次数</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($videoLink, 'download_cnt')->type('number')->label('下载数')->cssClass('col-md-4 pb-3')->render() ?>
+                    <?= FormFieldBuilder::for($videoLink, 'comment_cnt')->type('number')->label('评论数')->cssClass('col-md-4 pb-3')->render() ?>
+                    <?= FormFieldBuilder::for($videoLink, 'share_cnt')->type('number')->label('分享数')->cssClass('col-md-4 pb-3')->render() ?>
                 </div>
             </div>
 
@@ -190,20 +118,17 @@ use App\Constants\VideoLinkStatus;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="status_id" class="form-label">链接状态</label>
-                            <select class="form-control form-select <?= isset($videoLink->errors['status_id']) ? 'is-invalid' : '' ?>" id="status_id" name="status_id">
-                                <?php foreach (VideoLinkStatus::getAllValues() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= ($videoLink->status_id == $value) ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php if (isset($videoLink->errors['status_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($videoLink->errors['status_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">链接的有效状态</div>
-                        </div>
-                    </div>
+                    <?php
+                    $statusOptions = [];
+                    foreach (VideoLinkStatus::getAllValues() as $value => $label) {
+                        $statusOptions[] = ['value' => $value, 'text' => $label];
+                    }
+                    ?>
+                    <?= FormFieldBuilder::for($videoLink, 'status_id')
+                        ->type('custom-select')
+                        ->label('链接状态')
+                        ->options($statusOptions)
+                        ->render() ?>
                 </div>
             </div>
 
@@ -216,18 +141,8 @@ use App\Constants\VideoLinkStatus;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="created_at" class="form-label">创建时间</label>
-                            <input type="text" class="form-control" id="created_at" name="created_at" value="<?= htmlspecialchars($videoLink->created_at ?? '') ?>" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="updated_at" class="form-label">最后更新时间</label>
-                            <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= htmlspecialchars($videoLink->updated_at ?? '') ?>" disabled>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($videoLink, 'created_at')->label('创建时间')->disabled()->render() ?>
+                    <?= FormFieldBuilder::for($videoLink, 'updated_at')->label('最后更新时间')->disabled()->render() ?>
                 </div>
             </div>
             <?php endif; ?>

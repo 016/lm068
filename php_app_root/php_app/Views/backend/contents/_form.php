@@ -1,6 +1,7 @@
 <?php
 use App\Constants\ContentStatus;
 use App\Constants\ContentType;
+use App\Helpers\FormFieldBuilder;
 use App\Helpers\HtmlHelper;
 
 /**
@@ -46,132 +47,63 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <?php if (!$isNewContent): ?>
-                        <div class="form-group">
-                            <label for="contentId" class="form-label">内容ID</label>
-                            <input type="text" class="form-control" id="contentId" value="#<?= str_pad($content->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
-                            <div class="form-text">系统自动生成,不可修改</div>
-                        </div>
-                        <?php endif; ?>
+                    <?php if (!$isNewContent): ?>
+                        <?= FormFieldBuilder::for($content, 'id')
+                            ->label('内容ID')
+                            ->disabled()
+                            ->formatter(fn($v) => '#' . str_pad($v, 3, '0', STR_PAD_LEFT))
+                            ->helpText('系统自动生成,不可修改')
+                            ->render() ?>
+                    <?php endif; ?>
 
-                        <div class="form-group">
-                            <label for="content_type_id" class="form-label required">内容类型</label>
-                            <select class="form-control form-select <?= isset($content->errors['content_type_id']) ? 'is-invalid' : '' ?>" id="content_type_id" name="content_type_id" required>
-                                <option value="">请选择内容类型</option>
-                                <?php foreach (ContentType::getAllValues() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= ($content->content_type_id == $value) ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php if (isset($content->errors['content_type_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['content_type_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">选择内容的类型分类</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="thumbnailUpload" class="form-label">缩略图管理</label>
-                            <div class="thumbnail-section">
-                                <div class="thumbnail-upload-area">
-                                    <input type="file" class="form-control" id="thumbnailUpload" name="thumbnail" accept="image/*">
-                                    <div class="form-text">上传缩略图文件 (支持 JPG、PNG、GIF、WEBP 格式)</div>
-                                </div>
-                                <div class="thumbnail-preview-container">
-                                    <?php
-                                    $thumbnailUrl = $content->getThumbnailUrl();
-                                    if ($thumbnailUrl): ?>
-                                        <img src="<?= htmlspecialchars($thumbnailUrl) ?>" alt="内容缩略图" class="thumbnail-preview" id="thumbnailPreview">
-                                    <?php else: ?>
-                                        <img src="" alt="暂无缩略图" class="thumbnail-preview" id="thumbnailPreview" style="display:none;">
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="form-text">缩略图预览区域</div>
-                        </div>
-                    </div>
+                    <?php
+                    $contentTypeOptions = [];
+                    foreach (ContentType::getAllValues() as $value => $label) {
+                        $contentTypeOptions[] = ['value' => $value, 'text' => $label];
+                    }
+                    ?>
+                    <?= FormFieldBuilder::for($content, 'content_type_id')
+                        ->type('custom-select')
+                        ->label('内容类型')
+                        ->options($contentTypeOptions)
+                        ->placeholder('请选择内容类型')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'thumbnail')
+                        ->type('image-uploader')
+                        ->label('缩略图管理')
+                        ->helpText('缩略图预览区域')
+                        ->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="suggested_content_types_cn" class="form-label required">AI中文分类</label>
-                            <input type="text" class="form-control <?= isset($content->errors['suggested_content_types_cn']) ? 'is-invalid' : '' ?>" id="suggested_content_types_cn" name="suggested_content_types_cn" value="<?= htmlspecialchars($content->suggested_content_types_cn ?? '') ?>" maxlength="255" required>
-                            <?php if (isset($content->errors['suggested_content_types_cn'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_content_types_cn']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的AI中文分类</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="suggested_content_types_en" class="form-label required">AI英文分类</label>
-                            <input type="text" class="form-control <?= isset($content->errors['suggested_content_types_en']) ? 'is-invalid' : '' ?>" id="suggested_content_types_en" name="suggested_content_types_en" value="<?= htmlspecialchars($content->suggested_content_types_en ?? '') ?>" maxlength="255" required>
-                            <?php if (isset($content->errors['suggested_content_types_en'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_content_types_en']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的AI英文分类</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'suggested_content_types_cn')->label('AI中文分类')->render() ?>
+                    <?= FormFieldBuilder::for($content, 'suggested_content_types_en')->label('AI英文分类')->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="title_cn" class="form-label required">中文标题</label>
-                            <input type="text" class="form-control <?= isset($content->errors['title_cn']) ? 'is-invalid' : '' ?>" id="title_cn" name="title_cn" value="<?= htmlspecialchars($content->title_cn ?? '') ?>" maxlength="255" required>
-                            <?php if (isset($content->errors['title_cn'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['title_cn']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的中文标题</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="title_en" class="form-label required">英文标题</label>
-                            <input type="text" class="form-control <?= isset($content->errors['title_en']) ? 'is-invalid' : '' ?>" id="title_en" name="title_en" value="<?= htmlspecialchars($content->title_en ?? '') ?>" maxlength="255" required>
-                            <?php if (isset($content->errors['title_en'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['title_en']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的英文标题</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'title_cn')->label('中文标题')->render() ?>
+                    <?= FormFieldBuilder::for($content, 'title_en')->label('英文标题')->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="code" class="form-label">内部管理代码</label>
-                            <input type="text" class="form-control <?= isset($content->errors['code']) ? 'is-invalid' : '' ?>" id="code" name="code" value="<?= htmlspecialchars($content->code ?? '') ?>" maxlength="50" placeholder="请输入内部管理代码">
-                            <?php if (isset($content->errors['code'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['code']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的内部管理代码，用于内部标识</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="author" class="form-label">内容作者</label>
-                            <input type="text" class="form-control <?= isset($content->errors['author']) ? 'is-invalid' : '' ?>" id="author" name="author" value="<?= htmlspecialchars($content->author ?? 'DP') ?>" maxlength="255" placeholder="请输入内容作者名称">
-                            <?php if (isset($content->errors['author'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['author']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的创作者或制作者</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'code')
+                        ->label('内部管理代码')
+                        ->placeholder('请输入内部管理代码')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'author')
+                        ->label('内容作者')
+                        ->placeholder('请输入内容作者名称')
+                        ->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="duration" class="form-label">内容时长(s)</label>
-                            <input type="text" class="form-control <?= isset($content->errors['duration']) ? 'is-invalid' : '' ?>" id="duration" name="duration" value="<?= htmlspecialchars($content->duration ?? '') ?>" placeholder="mm:ss">
-                            <?php if (isset($content->errors['duration'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['duration']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">格式：秒(如 123)</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'duration')
+                        ->label('内容时长(s)')
+                        ->placeholder('mm:ss')
+                        ->helpText('格式：秒(如 123)')
+                        ->render() ?>
                 </div>
             </div>
 
@@ -198,30 +130,11 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 pb-3">
-                    <div class="form-group">
-                        <label for="suggested_tags_cn" class="form-label required">AI中文标签</label>
-                        <input type="text" class="form-control <?= isset($content->errors['suggested_tags_cn']) ? 'is-invalid' : '' ?>" id="suggested_tags_cn" name="suggested_tags_cn" value="<?= htmlspecialchars($content->suggested_tags_cn ?? '') ?>" maxlength="255" required>
-                        <?php if (isset($content->errors['suggested_tags_cn'])): ?>
-                            <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_tags_cn']) ?></div>
-                        <?php endif; ?>
-                        <div class="form-text">内容的AI中文标签</div>
-                    </div>
+                <div class="row">
+                    <?= FormFieldBuilder::for($content, 'suggested_tags_cn')->label('AI中文标签')->render() ?>
+                    <?= FormFieldBuilder::for($content, 'suggested_tags_en')->label('AI英文标签')->render() ?>
                 </div>
-                <div class="col-md-6 pb-3">
-                    <div class="form-group">
-                        <label for="suggested_tags_en" class="form-label required">AI英文标签</label>
-                        <input type="text" class="form-control <?= isset($content->errors['suggested_tags_en']) ? 'is-invalid' : '' ?>" id="suggested_tags_en" name="suggested_tags_en" value="<?= htmlspecialchars($content->suggested_tags_en ?? '') ?>" maxlength="255" required>
-                        <?php if (isset($content->errors['suggested_tags_en'])): ?>
-                            <div class="invalid-feedback"><?= htmlspecialchars($content->errors['suggested_tags_en']) ?></div>
-                        <?php endif; ?>
-                        <div class="form-text">内容的AI英文标签</div>
-                    </div>
-                </div>
-
             </div>
 
             <!-- 简介设置 -->
@@ -232,63 +145,56 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="short_desc_cn" class="form-label">中文简介</label>
-                            <textarea class="form-control <?= isset($content->errors['short_desc_cn']) ? 'is-invalid' : '' ?>" id="short_desc_cn" name="short_desc_cn" maxlength="1000"><?= HtmlHelper::escape($content->short_desc_cn ?? '') ?></textarea>
-                            <?php if (isset($content->errors['short_desc_cn'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_cn']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的简短中文描述(最多1000字符)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="short_desc_en" class="form-label">英文简介</label>
-                            <textarea class="form-control <?= isset($content->errors['short_desc_en']) ? 'is-invalid' : '' ?>" id="short_desc_en" name="short_desc_en" maxlength="1000"><?= HtmlHelper::escape($content->short_desc_en ?? '') ?></textarea>
-                            <?php if (isset($content->errors['short_desc_en'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['short_desc_en']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">内容的简短英文描述(最多1000字符)</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'short_desc_cn')
+                        ->type('textarea')
+                        ->label('中文简介')
+                        ->useHtmlHelper(true)
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'short_desc_en')
+                        ->type('textarea')
+                        ->label('英文简介')
+                        ->useHtmlHelper(true)
+                        ->cssClass('col-md-6 pb-3')
+                        ->render() ?>
                 </div>
 
-                <div class="form-group">
-                    <label for="desc_cn" class="form-label">中文描述</label>
-                    <textarea class="form-control <?= isset($content->errors['desc_cn']) ? 'is-invalid' : '' ?>" id="desc_cn" name="desc_cn" rows="8" placeholder="请输入内容的详细中文描述..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->desc_cn ?? '') ?></textarea>
-                    <?php if (isset($content->errors['desc_cn'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['desc_cn']) ?></div>
-                    <?php endif; ?>
-                    <div class="form-text">内容的详细中文说明(支持Markdown格式)</div>
-                </div>
+                <?= FormFieldBuilder::for($content, 'desc_cn')
+                    ->type('textarea')
+                    ->label('中文描述')
+                    ->placeholder('请输入内容的详细中文描述...')
+                    ->rows(8)
+                    ->helpText('内容的详细中文说明(支持Markdown格式)')
+                    ->cssClass('')
+                    ->render() ?>
 
-                <div class="form-group">
-                    <label for="desc_en" class="form-label">英文描述</label>
-                    <textarea class="form-control <?= isset($content->errors['desc_en']) ? 'is-invalid' : '' ?>" id="desc_en" name="desc_en" rows="8" placeholder="Please enter the detailed English description of the content..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->desc_en ?? '') ?></textarea>
-                    <?php if (isset($content->errors['desc_en'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['desc_en']) ?></div>
-                    <?php endif; ?>
-                    <div class="form-text">内容的详细英文说明(支持Markdown格式)</div>
-                </div>
+                <?= FormFieldBuilder::for($content, 'desc_en')
+                    ->type('textarea')
+                    ->label('英文描述')
+                    ->placeholder('Please enter the detailed English description of the content...')
+                    ->rows(8)
+                    ->helpText('内容的详细英文说明(支持Markdown格式)')
+                    ->cssClass('')
+                    ->render() ?>
 
-                <div class="form-group">
-                    <label for="sum_cn" class="form-label">中文总结</label>
-                    <textarea class="form-control <?= isset($content->errors['sum_cn']) ? 'is-invalid' : '' ?>" id="sum_cn" name="sum_cn" rows="8" placeholder="请输入内容的详细中文总结..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->sum_cn ?? '') ?></textarea>
-                    <?php if (isset($content->errors['sum_cn'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['sum_cn']) ?></div>
-                    <?php endif; ?>
-                    <div class="form-text">内容的详细中文总结(支持Markdown格式)</div>
-                </div>
+                <?= FormFieldBuilder::for($content, 'sum_cn')
+                    ->type('textarea')
+                    ->label('中文总结')
+                    ->placeholder('请输入内容的详细中文总结...')
+                    ->rows(8)
+                    ->helpText('内容的详细中文总结(支持Markdown格式)')
+                    ->cssClass('')
+                    ->render() ?>
 
-                <div class="form-group">
-                    <label for="sum_en" class="form-label">英文总结</label>
-                    <textarea class="form-control <?= isset($content->errors['sum_en']) ? 'is-invalid' : '' ?>" id="sum_en" name="sum_en" rows="8" placeholder="Please enter the detailed English summary of the content..." maxlength="65535"><?= HtmlHelper::prepareTextarea($content->sum_en ?? '') ?></textarea>
-                    <?php if (isset($content->errors['sum_en'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($content->errors['sum_en']) ?></div>
-                    <?php endif; ?>
-                    <div class="form-text">内容的详细英文总结(支持Markdown格式)</div>
-                </div>
+                <?= FormFieldBuilder::for($content, 'sum_en')
+                    ->type('textarea')
+                    ->label('英文总结')
+                    ->placeholder('Please enter the detailed English summary of the content...')
+                    ->rows(8)
+                    ->helpText('内容的详细英文总结(支持Markdown格式)')
+                    ->cssClass('')
+                    ->render() ?>
             </div>
 
             <!-- 状态设置 -->
@@ -299,55 +205,41 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="status_id" class="form-label">发布状态</label>
-                            <select class="form-control form-select <?= isset($content->errors['status_id']) ? 'is-invalid' : '' ?>" id="status_id" name="status_id">
-                                <?php foreach (ContentStatus::getAllValues() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= ($content->status_id == $value) ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php if (isset($content->errors['status_id'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($content->errors['status_id']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">选择内容当前的制作和发布状态</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="view_cnt" class="form-label">观看次数</label>
-                            <input type="number" class="form-control" id="view_cnt" name="view_cnt" value="<?= $content->view_cnt ?? 0 ?>" min="0" disabled>
-                            <div class="form-text">内容的观看次数(自动统计)</div>
-                        </div>
-                    </div>
+                    <?php
+                    $statusOptions = [];
+                    foreach (ContentStatus::getAllValues() as $value => $label) {
+                        $statusOptions[] = ['value' => $value, 'text' => $label];
+                    }
+                    ?>
+                    <?= FormFieldBuilder::for($content, 'status_id')
+                        ->type('custom-select')
+                        ->label('发布状态')
+                        ->options($statusOptions)
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($content, 'view_cnt')
+                        ->type('number')
+                        ->label('观看次数')
+                        ->disabled()
+                        ->render() ?>
                 </div>
             </div>
 
             <?php if ($isCopyMode || !$content->isNew): ?>
-            <!-- 统计信息 (复制模式或编辑模式下显示) -->
+            <!-- 统计信息 -->
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-bar-chart form-section-icon"></i>
                     <?= $isCopyMode ? '源内容统计信息' : '统计信息' ?>
                 </h4>
 
-                <?php if ($isCopyMode): ?>
                 <div class="info-box">
                     <i class="bi bi-info-circle info-icon"></i>
                     <div class="info-content">
                         <div class="info-title">数据统计</div>
-                        <div class="info-text">以下数据来自源内容的统计信息（仅供参考，新内容的统计将从零开始）</div>
+                        <div class="info-text"><?= $isCopyMode ? '以下数据来自源内容的统计信息（仅供参考，新内容的统计将从零开始）' : '以下数据为系统自动统计,实时更新' ?></div>
                     </div>
                 </div>
-                <?php else: ?>
-                <div class="info-box">
-                    <i class="bi bi-info-circle info-icon"></i>
-                    <div class="info-content">
-                        <div class="info-title">数据统计</div>
-                        <div class="info-text">以下数据为系统自动统计,实时更新</div>
-                    </div>
-                </div>
-                <?php endif; ?>
 
                 <div class="stats-row">
                     <div class="stat-item">
@@ -370,8 +262,7 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
             </div>
             <?php endif; ?>
 
-
-            <!-- 时间信息 (总是显示发布时间，方便编辑，创建+更新只在更新模式显示仅在复制模式+编辑模式下显示) -->
+            <!-- 时间信息 -->
             <div class="form-section">
                 <h4 class="form-section-title">
                     <i class="bi bi-clock form-section-icon"></i>
@@ -379,27 +270,11 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-
-                    <?php if ((!$content->isNew)): ?>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="created_at" class="form-label">创建时间</label>
-                            <input type="text" class="form-control" id="created_at" name="created_at" value="<?= htmlspecialchars($content->created_at ?? '') ?>" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="updated_at" class="form-label">最后更新时间</label>
-                            <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?= htmlspecialchars($content->updated_at ?? '') ?>" disabled>
-                        </div>
-                    </div>
+                    <?php if (!$content->isNew): ?>
+                        <?= FormFieldBuilder::for($content, 'created_at')->label('创建时间')->disabled()->render() ?>
+                        <?= FormFieldBuilder::for($content, 'updated_at')->label('最后更新时间')->disabled()->render() ?>
                     <?php endif; ?>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="pub_at" class="form-label">发布时间</label>
-                            <input type="text" class="form-control" id="pub_at" name="pub_at" value="<?= htmlspecialchars($content->pub_at ?? '') ?>">
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($content, 'pub_at')->label('发布时间')->render() ?>
                 </div>
             </div>
 

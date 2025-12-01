@@ -1,6 +1,7 @@
 <?php
 use App\Constants\AdminUserStatus;
 use App\Constants\AdminUserRole;
+use App\Helpers\FormFieldBuilder;
 ?>
 <!-- Shared AdminUser Form Content -->
 <div class="form-container">
@@ -36,105 +37,46 @@ use App\Constants\AdminUserRole;
 
                 <div class="row">
                     <?php if (!$adminUser->isNew): ?>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="adminUserId" class="form-label">管理员ID</label>
-                            <input type="text" class="form-control" id="adminUserId" value="#<?= str_pad($adminUser->id, 3, '0', STR_PAD_LEFT) ?>" disabled>
-                            <div class="form-text">系统自动生成，不可修改</div>
-                        </div>
-                    </div>
+                        <?= FormFieldBuilder::for($adminUser, 'id')
+                            ->label('管理员ID')
+                            ->disabled()
+                            ->formatter(fn($v) => '#' . str_pad($v, 3, '0', STR_PAD_LEFT))
+                            ->helpText('系统自动生成，不可修改')
+                            ->render() ?>
                     <?php endif; ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="username" class="form-label required">用户名</label>
-                            <input type="text" class="form-control <?= !empty($adminUser->errors['username']) ? 'is-invalid' : '' ?>"
-                                   id="username" name="username" value="<?= htmlspecialchars($adminUser->username ?? '') ?>"
-                                   maxlength="50" required>
-                            <?php if (!empty($adminUser->errors['username'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['username']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">管理员登录用户名</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="real_name" class="form-label">真实姓名</label>
-                            <input type="text" class="form-control <?= !empty($adminUser->errors['real_name']) ? 'is-invalid' : '' ?>"
-                                   id="real_name" name="real_name" value="<?= htmlspecialchars($adminUser->real_name ?? '') ?>"
-                                   maxlength="50">
-                            <?php if (!empty($adminUser->errors['real_name'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['real_name']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">管理员真实姓名</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($adminUser, 'username')->label('用户名')->render() ?>
+                    <?= FormFieldBuilder::for($adminUser, 'real_name')->label('真实姓名')->render() ?>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="email" class="form-label">邮箱</label>
-                            <input type="email" class="form-control <?= !empty($adminUser->errors['email']) ? 'is-invalid' : '' ?>"
-                                   id="email" name="email" value="<?= htmlspecialchars($adminUser->email ?? '') ?>"
-                                   maxlength="100">
-                            <?php if (!empty($adminUser->errors['email'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['email']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">管理员邮箱地址</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="phone" class="form-label">电话</label>
-                            <input type="text" class="form-control <?= !empty($adminUser->errors['phone']) ? 'is-invalid' : '' ?>"
-                                   id="phone" name="phone" value="<?= htmlspecialchars($adminUser->phone ?? '') ?>"
-                                   maxlength="20">
-                            <?php if (!empty($adminUser->errors['phone'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['phone']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">管理员联系电话</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($adminUser, 'email')->type('email')->label('邮箱')->render() ?>
+                    <?= FormFieldBuilder::for($adminUser, 'phone')->label('电话')->render() ?>
                 </div>
 
                 <div class="row">
                     <?php if ($adminUser->isNew): ?>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="password" class="form-label required">密码</label>
-                            <input type="password" class="form-control <?= !empty($adminUser->errors['password']) ? 'is-invalid' : '' ?>"
-                                   id="password" name="password" required
-                                   placeholder="请输入登录密码">
-                            <?php if (!empty($adminUser->errors['password'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['password']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">管理员登录密码，至少6个字符</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="confirm_password" class="form-label required">确认密码</label>
-                            <input type="password" class="form-control <?= !empty($adminUser->errors['confirm_password']) ? 'is-invalid' : '' ?>"
-                                   id="confirm_password" name="confirm_password" required
-                                   placeholder="请再次输入密码">
-                            <?php if (!empty($adminUser->errors['confirm_password'])): ?>
-                                <div class="invalid-feedback"><?= htmlspecialchars($adminUser->errors['confirm_password']) ?></div>
-                            <?php endif; ?>
-                            <div class="form-text">请再次输入密码以确认</div>
-                        </div>
-                    </div>
+                        <?= FormFieldBuilder::for($adminUser, 'password')
+                            ->type('password')
+                            ->label('密码')
+                            ->placeholder('请输入登录密码')
+                            ->render() ?>
+                        
+                        <?= FormFieldBuilder::for($adminUser, 'confirm_password')
+                            ->type('password')
+                            ->label('确认密码')
+                            ->placeholder('请再次输入密码')
+                            ->helpText('请再次输入密码以确认')
+                            ->render() ?>
                     <?php else: ?>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="new_password" class="form-label">新密码</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password"
-                                   placeholder="如需修改密码请输入新密码">
-                            <div class="form-text">留空则不修改密码</div>
-                        </div>
-                    </div>
+                        <?= FormFieldBuilder::for($adminUser, 'new_password')
+                            ->type('password')
+                            ->label('新密码')
+                            ->placeholder('如需修改密码请输入新密码')
+                            ->helpText('留空则不修改密码')
+                            ->render() ?>
                     <?php endif; ?>
                 </div>
             </div>
@@ -147,29 +89,20 @@ use App\Constants\AdminUserRole;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="role_id" class="form-label required">角色</label>
-                            <select class="form-control form-select" id="role_id" name="role_id" required>
-                                <option value="<?= AdminUserRole::NORMAL->value ?>" <?= ($adminUser->role_id ?? AdminUserRole::NORMAL->value) === AdminUserRole::NORMAL->value ? 'selected' : '' ?>>普通管理员</option>
-                                <option value="<?= AdminUserRole::SUPER_ADMIN->value ?>" <?= ($adminUser->role_id ?? 0) === AdminUserRole::SUPER_ADMIN->value ? 'selected' : '' ?>>超级管理员</option>
-                            </select>
-                            <div class="form-text">选择管理员角色权限</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <div class="switch-group" id="statusSwitchGroup">
-                                <div class="custom-switch tag-edit-switch" id="statusSwitch">
-                                    <input type="checkbox" id="status_id" name="status_id" value="<?= AdminUserStatus::ENABLED->value ?>"
-                                           <?= ($adminUser->status_id ?? AdminUserStatus::ENABLED->value) ? 'checked' : '' ?>>
-                                    <span class="switch-slider"></span>
-                                </div>
-                                <label for="status_id" class="switch-label">启用状态</label>
-                            </div>
-                            <div class="form-text">开启后允许登录，关闭后禁止登录</div>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($adminUser, 'role_id')
+                        ->type('select')
+                        ->label('角色')
+                        ->options([
+                            AdminUserRole::NORMAL->value => '普通管理员',
+                            AdminUserRole::SUPER_ADMIN->value => '超级管理员'
+                        ])
+                        ->render() ?>
+                    
+                    <?= FormFieldBuilder::for($adminUser, 'status_id')
+                        ->type('switch')
+                        ->label('启用状态')
+                        ->value(AdminUserStatus::ENABLED->value)
+                        ->render() ?>
                 </div>
             </div>
 
@@ -182,20 +115,8 @@ use App\Constants\AdminUserRole;
                 </h4>
 
                 <div class="row">
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="created_at" class="form-label">创建时间</label>
-                            <input type="text" class="form-control" id="created_at" name="created_at"
-                                   value="<?= htmlspecialchars($adminUser->created_at ?? '') ?>" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pb-3">
-                        <div class="form-group">
-                            <label for="last_login_time" class="form-label">最后登录时间</label>
-                            <input type="text" class="form-control" id="last_login_time" name="last_login_time"
-                                   value="<?= htmlspecialchars($adminUser->last_login_time ?? '-') ?>" disabled>
-                        </div>
-                    </div>
+                    <?= FormFieldBuilder::for($adminUser, 'created_at')->label('创建时间')->disabled()->render() ?>
+                    <?= FormFieldBuilder::for($adminUser, 'last_login_time')->label('最后登录时间')->disabled()->render() ?>
                 </div>
             </div>
             <?php endif; ?>

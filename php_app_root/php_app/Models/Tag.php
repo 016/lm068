@@ -115,6 +115,21 @@ class Tag extends Model implements HasStatuses
         ];
     }
 
+    protected function getFieldHelpTexts(): array
+    {
+        return [
+            'name_cn' => '标签的中文显示名称',
+            'name_en' => '标签的英文显示名称',
+            'short_desc_cn' => '标签的简短中文描述（最多100字符）',
+            'short_desc_en' => '标签的简短英文描述（最多100字符）',
+            'desc_cn' => '标签的详细中文说明（最多500字符）',
+            'desc_en' => '标签的详细英文说明（最多500字符）',
+            'color_class' => '选择标签在前端显示时的Bootstrap颜色样式',
+            'icon_class' => '直接输入Bootstrap icon 类名（如 bi-star, bi-heart...）',
+            'status_id' => '开启后标签在前端可见，关闭后隐藏',
+        ];
+    }
+
 
     /**
      * tag 列表页 URL (供View调用)

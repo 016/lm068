@@ -112,6 +112,21 @@ class Collection extends Model implements HasStatuses
         ];
     }
 
+    protected function getFieldHelpTexts(): array
+    {
+        return [
+            'name_cn' => '合集的中文显示名称',
+            'name_en' => '合集的英文显示名称',
+            'short_desc_cn' => '合集的简短中文描述（最多 500 字符）',
+            'short_desc_en' => '合集的简短英文描述（最多 500 字符）',
+            'desc_cn' => '合集的详细中文说明',
+            'desc_en' => '合集的详细英文说明',
+            'color_class' => '选择合集在前端显示时的Bootstrap颜色样式',
+            'icon_class' => '直接输入Bootstrap icon 类名（如 bi-collection, bi-folder...）',
+            'status_id' => '开启后合集在前端可见，关闭后隐藏',
+        ];
+    }
+
     /**
      * tag 列表页 URL (供View调用)
      * 统一管理URL的生成，方便后续调整

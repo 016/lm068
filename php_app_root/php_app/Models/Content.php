@@ -155,29 +155,47 @@ class Content extends UploadableModel implements HasStatuses
      * @return array 字段标签映射
      */
     protected function getFieldLabels(): array
-    {
-        return [
-            'content_type_id' => '内容类型',
-            'author' => '作者',
-            'code' => '内部代码',
-            'title_en' => '英文标题',
-            'title_cn' => '中文标题',
-            'desc_en' => '英文描述',
-            'desc_cn' => '中文描述',
-            'sum_en' => '英文总结',
-            'sum_cn' => '中文总结',
-            'short_desc_en' => '英文简介',
-            'short_desc_cn' => '中文简介',
-            'thumbnail' => '缩略图',
-            'duration' => '时长(s)',
-            'status_id' => '状态',
-            'suggested_tags_cn' => 'AI建议的中文标签',
-            'suggested_tags_en' => 'AI建议的英文标签',
-            'suggested_content_types_cn' => 'AI建议的中文分类',
-            'suggested_content_types_en' => 'AI建议的英文分类',
-        ];
-    }
+{
+    return [
+        'content_type_id' => '内容类型',
+        'author' => '作者',
+        'code' => '内部代码',
+        'title_en' => '英文标题',
+        'title_cn' => '中文标题',
+        'desc_en' => '英文描述',
+        'desc_cn' => '中文描述',
+        'sum_en' => '英文总结',
+        'sum_cn' => '中文总结',
+        'short_desc_en' => '英文简介',
+        'short_desc_cn' => '中文简介',
+        'thumbnail' => '缩略图',
+        'duration' => '时长(s)',
+        'status_id' => '状态',
+        'suggested_tags_cn' => 'AI建议的中文标签',
+        'suggested_tags_en' => 'AI建议的英文标签',
+        'suggested_content_types_cn' => 'AI建议的中文分类',
+        'suggested_content_types_en' => 'AI建议的英文分类',
+    ];
+}
 
+protected function getFieldHelpTexts(): array
+{
+    return [
+        'content_type_id' => '选择内容的类型分类',
+        'title_cn' => '内容的中文标题',
+        'title_en' => '内容的英文标题',
+        'code' => '内容的内部管理代码，用于内部标识',
+        'author' => '内容的创作者或制作者',
+        'suggested_content_types_cn' => '内容的AI中文分类',
+        'suggested_content_types_en' => '内容的AI英文分类',
+        'suggested_tags_cn' => '内容的AI中文标签',
+        'suggested_tags_en' => '内容的AI英文标签',
+        'short_desc_cn' => '内容的简短中文描述(最多1000字符)',
+        'short_desc_en' => '内容的简短英文描述(最多1000字符)',
+        'status_id' => '选择内容当前的制作和发布状态',
+        'view_cnt' => '内容的观看次数(自动统计)',
+    ];
+}
     /**
      * 构建视频详情页面URL (供View调用)
      * 统一管理视频详情页面URL的生成，方便后续调整
