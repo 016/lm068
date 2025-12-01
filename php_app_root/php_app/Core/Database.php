@@ -33,14 +33,20 @@ class Database
         $this->username = $config['username'];
         $this->password = $config['password'];
         $this->charset = $config['charset'];
+        
+        // 从配置文件读取端口号（如果存在）
+        $port = $config['port'] ?? 3306;
+        
+        // 从配置文件读取 PDO 选项（如果存在），否则使用默认值
+        $options = $config['options'] ?? [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
 
         try {
-            $dsn = "mysql:host={$this->host};dbname={$this->database};charset={$this->charset}";
-            $this->connection = new PDO($dsn, $this->username, $this->password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]);
+            $dsn = "mysql:host={$this->host};port={$port};dbname={$this->database};charset={$this->charset}";
+            $this->connection = new PDO($dsn, $this->username, $this->password, $options);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
