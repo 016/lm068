@@ -43,6 +43,9 @@ use App\Interfaces\HasStatuses;
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  *
+ * @property int[] $selectedTagIds 已选择的标签ID数组, 支持lazy loading: 首次访问时自动从数据库加载，可被显式赋值覆盖
+ * @property int[] $selectedCollectionIds 已选择的合集ID数组, 支持lazy loading: 首次访问时自动从数据库加载，可被显式赋值覆盖
+ *
  * @property-read \App\Models\ContentType $contentType 所属内容类型
  * @property-read ContentPvDaily[] $pvDailies 每日PV统计
  * @property-read ContentPvLog[] $pvLogs PV访问日志
@@ -60,6 +63,7 @@ class Content extends UploadableModel implements HasStatuses
             'content_type_id', 'author', 'code', 'title_en', 'title_cn',
             'desc_en', 'desc_cn', 'sum_en', 'sum_cn', 'short_desc_en', 'short_desc_cn',
             'thumbnail', 'duration', 'pv_cnt', 'view_cnt', 'status_id', 'pub_at',
+            'selectedTagIds', 'selectedCollectionIds',
             'suggested_tags_cn', 'suggested_tags_en', 'suggested_content_types_cn', 'suggested_content_types_en'
         ]
 
@@ -76,6 +80,17 @@ class Content extends UploadableModel implements HasStatuses
             'required' => false,
             'replace_old' => true,  // 启用旧文件替换，只保留最新的缩略图
         ]
+    ];
+
+    /**
+     * 不保存到数据库的属性列表
+     *
+     * 这些属性可以通过 fill() 设置并保留在 $attributes 中，
+     * 但在构建 SQL 时会被自动过滤掉
+     */
+    protected array $skipSaveToDBAttributes = [
+        'selectedTagIds',
+        'selectedCollectionIds'
     ];
 
     // 默认属性值
@@ -108,6 +123,140 @@ class Content extends UploadableModel implements HasStatuses
         parent::__construct();
         // 设置默认值
         $this->attributes = array_merge($this->defaults, $this->attributes);
+    }
+
+    /**
+     * 重写 fill 方法 - 自动格式化 selectedTagIds 和 selectedCollectionIds
+     *
+     * 将字符串格式 "1,2,3" 自动转换为数组格式 [1, 2, 3]
+     * 然后调用父类的 fill 方法保持原有流程
+     *
+     * @param array $data 要填充的数据
+     * @return self
+     */
+    public function fill(array $data): self
+    {
+        // 处理 selectedTagIds：如果是字符串，转换为数组
+        if (isset($data['selectedTagIds']) && is_string($data['selectedTagIds'])) {
+            $data['selectedTagIds'] = $this->convertStringToIntArray($data['selectedTagIds']);
+        }
+
+        // 处理 selectedCollectionIds：如果是字符串，转换为数组
+        if (isset($data['selectedCollectionIds']) && is_string($data['selectedCollectionIds'])) {
+            $data['selectedCollectionIds'] = $this->convertStringToIntArray($data['selectedCollectionIds']);
+        }
+
+        // 调用父类的 fill 方法，保持所有原有流程
+        return parent::fill($data);
+    }
+
+    /**
+     * 辅助方法：将逗号分隔的字符串转换为整数数组
+     *
+     * @param string $str 逗号分隔的字符串，如 "1,2,3" 或 "1, 2, 3"
+     * @return int[] 整数数组，如 [1, 2, 3]，空字符串返回空数组
+     */
+    private function convertStringToIntArray(string $str): array
+    {
+        // 空字符串或纯空格返回空数组
+        $str = trim($str);
+        if ($str === '') {
+            return [];
+        }
+
+        // 分割字符串，去除空格，转换为整数，过滤掉无效值
+        return array_map('intval', array_filter(array_map('trim', explode(',', $str)), fn($v) => $v !== ''));
+    }
+
+    /**
+     * 重写魔术方法 - 实现 lazy loading
+     * 当首次访问 selectedTagIds 或 selectedCollectionIds 时自动从数据库加载
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function __get(string $key)
+    {
+        // 处理 selectedTagIds 的 lazy loading
+        if ($key === 'selectedTagIds') {
+            return $this->loadSelectedTagIds();
+        }
+
+        // 处理 selectedCollectionIds 的 lazy loading
+        if ($key === 'selectedCollectionIds') {
+            return $this->loadSelectedCollectionIds();
+        }
+
+        // 其他属性调用父类方法处理
+        return parent::__get($key);
+    }
+
+    /**
+     * 加载并缓存关联的标签 ID
+     *
+     * 可在 Controller 中主动调用以预加载或刷新缓存
+     *
+     * @param bool $reload 是否强制重新加载，忽略已缓存的值
+     * @return int[] 标签 ID 数组
+     */
+    public function loadSelectedTagIds(bool $reload = false): array
+    {
+        // 如果已经有值且不强制重新加载，直接返回
+        if (!$reload && isset($this->attributes['selectedTagIds']) && !empty($this->attributes['selectedTagIds'])) {
+            return $this->attributes['selectedTagIds'];
+        }
+
+        // 如果是新记录或没有ID，返回空数组
+        if ($this->isNew || !isset($this->attributes['id'])) {
+            $this->attributes['selectedTagIds'] = [];
+            return [];
+        }
+
+        // 使用关联关系加载 ContentTag 模型列表
+        $contentTags = $this->contentTags()->get();
+
+        // 提取 tag_id 并转换为数组
+        $tagIds = array_map(fn($ct) => (int)$ct->tag_id, $contentTags);
+        sort($tagIds); // 排序以保持一致性
+
+        // 缓存结果
+        $this->attributes['selectedTagIds'] = $tagIds;
+
+        return $this->attributes['selectedTagIds'];
+    }
+
+    /**
+     * 加载并缓存关联的合集 ID
+     *
+     * 可在 Controller 中主动调用以预加载或刷新缓存
+     *
+     * @param bool $reload 是否强制重新加载，忽略已缓存的值
+     * @return int[] 合集 ID 数组
+     */
+    public function loadSelectedCollectionIds(bool $reload = false): array
+    {
+        // 如果已经有值且不强制重新加载，直接返回
+        if (!$reload && isset($this->attributes['selectedCollectionIds']) && !empty($this->attributes['selectedCollectionIds'])) {
+            return $this->attributes['selectedCollectionIds'];
+        }
+
+        // 如果是新记录或没有ID，返回空数组
+        if ($this->isNew || !isset($this->attributes['id'])) {
+            $this->attributes['selectedCollectionIds'] = [];
+            return [];
+        }
+
+        // 使用关联关系加载 ContentCollection 模型列表
+        $contentCollections = $this->contentCollections()->get();
+
+        // 提取 collection_id 并转换为数组
+        $collectionIds = array_map(fn($cc) => (int)$cc->collection_id, $contentCollections);
+        sort($collectionIds); // 排序以保持一致性
+
+        // 缓存结果
+        $this->attributes['selectedCollectionIds'] = $collectionIds;
+
+        return $this->attributes['selectedCollectionIds'];
     }
 
     /**
@@ -829,9 +978,14 @@ protected function getFieldHelpTexts(): array
             }
         }
 
-        // 同步标签关联（只在内容ID存在时执行）
-        if (!empty($tagIds) && !$this->isNew && isset($this->attributes[$this->primaryKey])) {
-            $this->syncTagAssociations((int)$this->attributes[$this->primaryKey], $tagIds);
+        // 将新的标签ID合并到 selectedTagIds 中
+        // afterSave() 会统一处理标签关联的同步
+        if (!empty($tagIds)) {
+            // 获取现有的 selectedTagIds
+            $existingTagIds = $this->attributes['selectedTagIds'] ?? [];
+
+            // 合并并去重
+            $this->attributes['selectedTagIds'] = array_unique(array_merge($existingTagIds, $tagIds));
         }
     }
 
@@ -1281,6 +1435,16 @@ protected function getFieldHelpTexts(): array
             foreach ($needUpdateContentTypeIds as $contentTypeId) {
                 $contentTypeModel->updateContentCnt($contentTypeId);
             }
+        }
+
+        // 直接使用虚拟属性同步关联关系
+        // 这些属性保留在 $attributes 中，但在 save() 时被 filterFillable() 过滤掉
+        if (!empty($this->selectedTagIds)) {
+            $this->syncTagAssociations($this->id, $this->selectedTagIds);
+        }
+
+        if (!empty($this->selectedCollectionIds)) {
+            $this->syncCollectionAssociations($this->id, $this->selectedCollectionIds);
         }
     }
 

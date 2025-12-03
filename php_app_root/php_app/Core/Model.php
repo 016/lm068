@@ -37,6 +37,19 @@ abstract class Model
     // 关系数据存储
     protected array $relations = [];
 
+    /**
+     * 不保存到数据库的属性列表
+     *
+     * 这些属性可以通过 fill() 设置并保留在 $attributes 中，
+     * 但在构建 INSERT/UPDATE SQL 时会被过滤掉，不会写入数据库。
+     *
+     * 常用于虚拟属性、临时数据或关联关系的辅助属性。
+     *
+     * 示例:
+     * protected array $skipSaveToDBAttributes = ['selectedTagIds', 'tempData'];
+     */
+    protected array $skipSaveToDBAttributes = [];
+
     public function __construct()
     {
         $this->db = Database::getInstance();
@@ -670,15 +683,28 @@ abstract class Model
         return $helpTexts[$field] ?? null;
     }
 
+    /**
+     * 过滤可填充字段并移除不保存到数据库的属性
+     *
+     * @param array $data 要过滤的数据
+     * @return array 过滤后的数据
+     */
     protected function filterFillable(array $data): array
     {
         $fillableFields = $this->getFillableForScenario();
 
         if (empty($fillableFields)) {
-            return $data;
+            $filtered = $data;
+        } else {
+            $filtered = array_intersect_key($data, array_flip($fillableFields));
         }
 
-        return array_intersect_key($data, array_flip($fillableFields));
+        // 移除不保存到数据库的属性
+        foreach ($this->skipSaveToDBAttributes as $attr) {
+            unset($filtered[$attr]);
+        }
+
+        return $filtered;
     }
 
     public function beforeSave(): bool

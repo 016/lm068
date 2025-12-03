@@ -96,31 +96,17 @@ class ContentController extends BackendController
 
             $content->fill($request->post());
 
-            $postedTagIds = $request->post('tag_ids');
-            $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
-            $postedCollectionIds = $request->post('collection_ids');
-            $postedCollectionIds = $postedCollectionIds == '' ? [] : array_map('intval', explode(',', $postedCollectionIds));
-
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
             if (!$content->validate()) {
                 // 6. 如果验证失败，使用 $content->errors 返回给 view
 
-                $this->renderEditForm($content, $postedTagIds, $postedCollectionIds);
+                $this->renderEditForm($content);
                 return;
             }
 
             try {
                 // 7. 验证通过，写入数据库
                 if ($content->save()) {
-                    // 处理关联标签
-                    if (!empty($postedTagIds)) {
-                        $this->curModel->syncTagAssociations($id, $postedTagIds);
-                    }
-
-                    // 处理关联合集
-                    if (!empty($postedCollectionIds)) {
-                        $this->curModel->syncCollectionAssociations($id, $postedCollectionIds);
-                    }
 
                     // 成功后跳转到列表页面
                     $this->setFlashMessage('内容编辑成功', 'success');
@@ -129,15 +115,13 @@ class ContentController extends BackendController
                     // 保存失败，返回编辑页面并显示错误
                     $postedTagIds = $request->post('tag_ids');
                     $postedCollectionIds = $request->post('collection_ids');
-                    $this->renderEditForm($content, $postedTagIds, $postedCollectionIds);
+                    $this->renderEditForm($content);
                 }
             } catch (\Exception $e) {
 //                var_dump($e->getTraceAsString());
                 error_log("Content update error: " . $e->getMessage());
                 $content->errors['general'] = '更新失败: ' . $e->getMessage();
-                $postedTagIds = $request->post('tag_ids');
-                $postedCollectionIds = $request->post('collection_ids');
-                $this->renderEditForm($content, $postedTagIds, $postedCollectionIds);
+                $this->renderEditForm($content);
             }
             return;
         }
@@ -146,22 +130,8 @@ class ContentController extends BackendController
         $this->renderEditForm($content);
     }
 
-    private function renderEditForm(Content $content, null|array|string $postedTagIds = null, null|array|string $postedCollectionIds = null): void
+    private function renderEditForm(Content $content): void
     {
-        // 如果是表单错误重新渲染，使用提交的数据；否则使用数据库中的关联数据
-        if ($postedTagIds !== null) {
-            $selectedTagIds = $postedTagIds;
-        } else {
-            $relatedTags = $this->curModel->getRelatedTags($content->id);
-            $selectedTagIds = array_column($relatedTags, 'id');
-        }
-        
-        if ($postedCollectionIds !== null) {
-            $selectedCollectionIds = $postedCollectionIds;
-        } else {
-            $relatedCollections = $this->curModel->getRelatedCollections($content->id);
-            $selectedCollectionIds = array_column($relatedCollections, 'id');
-        }
         
         $tagsList = Tag::loadList([
             'status_id' => TagStatus::getVisibleStatuses()
@@ -175,8 +145,6 @@ class ContentController extends BackendController
             'content' => $content,  // 传递Content实例而不是数组
             'tagsList' => $tagsList,
             'collectionsList' => $collectionsList,
-            'selectedTagIds' => $selectedTagIds,
-            'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '编辑内容',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
@@ -198,16 +166,11 @@ class ContentController extends BackendController
 
             $content->fill($request->post());
 
-            $postedTagIds = $request->post('tag_ids');
-            $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
-            $postedCollectionIds = $request->post('collection_ids');
-            $postedCollectionIds = $postedCollectionIds == '' ? [] : array_map('intval', explode(',', $postedCollectionIds));
-
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
             if (!$content->validate()) {
                 // 6. 如果验证失败，使用 $content->errors 返回给 view
 
-                $this->renderCreateForm($content, $postedTagIds, $postedCollectionIds);
+                $this->renderCreateForm($content);
                 return;
             }
 
@@ -215,13 +178,6 @@ class ContentController extends BackendController
             try {
                 // 7. 验证通过，写入数据库
                 if ($content->save()) {
-                    if (!empty($postedTagIds)) {
-                        $this->curModel->syncTagAssociations($content->id, $postedTagIds);
-                    }
-
-                    if (!empty($postedCollectionIds)) {
-                        $this->curModel->syncCollectionAssociations($content->id, $postedCollectionIds);
-                    }
 
                     // 成功后跳转到列表页面
                     $this->setFlashMessage('内容创建成功', 'success');
@@ -231,7 +187,7 @@ class ContentController extends BackendController
                     // 保存失败，返回创建页面并显示错误
                     $postedTagIds = $request->post('tag_ids');
                     $postedCollectionIds = $request->post('collection_ids');
-                    $this->renderCreateForm($content, $postedTagIds, $postedCollectionIds);
+                    $this->renderCreateForm($content);
                 }
             } catch (\Exception $e) {
                 error_log("Content creation error: " . $e->getMessage());
@@ -239,7 +195,7 @@ class ContentController extends BackendController
                 $content->errors['general'] = '创建失败: ' . $e->getMessage();
                 $postedTagIds = $request->post('tag_ids');
                 $postedCollectionIds = $request->post('collection_ids');
-                $this->renderCreateForm($content, $postedTagIds, $postedCollectionIds);
+                $this->renderCreateForm($content);
             }
             return;
         }
@@ -248,7 +204,7 @@ class ContentController extends BackendController
         $this->renderCreateForm($content);
     }
 
-    private function renderCreateForm(Content $content, array|string|null $postedTagIds = null, array|string|null $postedCollectionIds = null): void
+    private function renderCreateForm(Content $content): void
     {
         $tagsList = Tag::loadList([
             'status_id' => TagStatus::getVisibleStatuses()
@@ -258,18 +214,12 @@ class ContentController extends BackendController
             'status_id' => CollectionStatus::getVisibleStatuses()
         ]);
 
-        // 如果是表单错误重新渲染，使用提交的数据；否则为空数组
-        $selectedTagIds = $postedTagIds !== null ? $postedTagIds : [];
-        $selectedCollectionIds = $postedCollectionIds !== null ? $postedCollectionIds : [];
-
         $this->render('contents/create', [
             'content' => $content,  // 传递Content实例而不是数组
             'relatedTags' => [],
             'relatedCollections' => [],
             'tagsList' => $tagsList,
             'collectionsList' => $collectionsList,
-            'selectedTagIds' => $selectedTagIds,
-            'selectedCollectionIds' => $selectedCollectionIds,
             'pageTitle' => '创建内容',
             'css_files' => ['content_edit_10.css', 'multi_select_dropdown_1.css'],
             'js_files' => ['multi_select_dropdown_3.js',  'content_edit_11.js']
@@ -360,7 +310,7 @@ class ContentController extends BackendController
             // 5. 使用 Content 的 validate 对提取的 post 数值进行验证
             if (!$newContent->validate()) {
                 // 6. 如果验证失败，使用 $newContent->errors 返回给 view
-                $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+                $this->renderCopyForm($sourceContent, $newContent);
                 return;
             }
 
@@ -380,12 +330,12 @@ class ContentController extends BackendController
                     $this->redirect('/contents');
                 } else {
                     // 保存失败，返回复制页面并显示错误
-                    $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+                    $this->renderCopyForm($sourceContent, $newContent);
                 }
             } catch (\Exception $e) {
                 error_log("Content copy error: " . $e->getMessage());
                 $newContent->errors['general'] = '复制失败: ' . $e->getMessage();
-                $this->renderCopyForm($sourceContent, $newContent, $postedTagIds, $postedCollectionIds);
+                $this->renderCopyForm($sourceContent, $newContent);
             }
             return;
         }

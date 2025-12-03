@@ -115,7 +115,7 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                 </h4>
 
                 <div class="row">
-                    <?= FormFieldBuilder::for($content, 'tag_ids')
+                    <?= FormFieldBuilder::for($content, 'selectedTagIds')
                         ->type('multi-select')
                         ->label('内容标签')
                         ->containerId('contentTagsMultiSelect')
@@ -123,7 +123,7 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                         ->cssClass('col-md-6 pb-3')
                         ->render() ?>
                     
-                    <?= FormFieldBuilder::for($content, 'collection_ids')
+                    <?= FormFieldBuilder::for($content, 'selectedCollectionIds')
                         ->type('multi-select')
                         ->label('内容合集')
                         ->containerId('contentCollectionsMultiSelect')
@@ -269,11 +269,11 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
                         <div class="stat-label">PV计数</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value"><?= count($selectedTagIds ?? []) ?></div>
+                        <div class="stat-value"><?= count($content->selectedTagIds) ?></div>
                         <div class="stat-label">关联标签</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value"><?= count($selectedCollectionIds ?? []) ?></div>
+                        <div class="stat-value"><?= count($content->selectedCollectionIds) ?></div>
                         <div class="stat-label">关联合集</div>
                     </div>
                 </div>
@@ -324,10 +324,10 @@ $isNewContent = $content->isNew || $isCopyMode;  // 复制模式也视为新建
     window.inputData = {
         // 内容标签数据
         tagsList: <?= json_encode($tagsList ?? []) ?>,
-        selectedTagIds: <?= json_encode($selectedTagIds ?? []) ?>,
+        selectedTagIds: <?= json_encode($content->selectedTagIds) ?>,
 
         // 内容合集数据
         collectionsList: <?= json_encode($collectionsList ?? []) ?>,
-        selectedCollectionIds: <?= json_encode($selectedCollectionIds ?? []) ?>,
+        selectedCollectionIds: <?= json_encode($content->selectedCollectionIds) ?>,
     };
 </script>
