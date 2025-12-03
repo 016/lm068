@@ -345,32 +345,12 @@ class ContentController extends BackendController
             // 创建新的Content实例用于保存
             $newContent = new Content();
 
-            // 4. 对 POST 的数值进行提取并填充到新实例
-            $data = [
-                'content_type_id' => (int)($request->post('content_type_id') ?? ContentType::VIDEO->value),
-                'author' => $request->post('author') ?? 'DP',
-                'code' => $request->post('code') ?? '',
-                'title_cn' => $request->post('name_cn'),
-                'title_en' => $request->post('name_en'),
-                'short_desc_cn' => $request->post('short_desc_cn') ?? '',
-                'short_desc_en' => $request->post('short_desc_en') ?? '',
-                'desc_cn' => $request->post('desc_cn') ?? '',
-                'desc_en' => $request->post('desc_en') ?? '',
-                'sum_cn' => $request->post('sum_cn') ?? '',
-                'sum_en' => $request->post('sum_en') ?? '',
-                'duration' => $request->post('duration') ?? '',
-                'status_id' => (int)($request->post('status_id') ?? ContentStatus::DRAFT->value),
-                'pub_at' => $request->post('pub_at') ?? null,
-                'pv_cnt' => 0,
-                'view_cnt' => 0
-            ];
-
             // 处理文件上传（缩略图）
             if (!empty($_FILES)) {
                 $newContent->handleFileUploads($_FILES);
             }
 
-            $newContent->fill($data);
+            $newContent->fill($request->post());
 
             $postedTagIds = $request->post('tag_ids');
             $postedTagIds = $postedTagIds == '' ? [] : array_map('intval', explode(',', $postedTagIds));
